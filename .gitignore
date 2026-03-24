@@ -36,3 +36,4 @@ vendor/
 
 # FHIR schema (downloaded, not committed)
 internal/spec/fhir.schema.json
+TODO.md

@@ -81,8 +81,8 @@ func (r Condition) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Onset != nil {
-		vData, err := json.Marshal(r.Onset)
+	if r.Abatement != nil {
+		vData, err := json.Marshal(r.Abatement)
 		if err != nil {
 			return nil, err
 		}
@@ -94,8 +94,8 @@ func (r Condition) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Abatement != nil {
-		vData, err := json.Marshal(r.Abatement)
+	if r.Onset != nil {
+		vData, err := json.Marshal(r.Onset)
 		if err != nil {
 			return nil, err
 		}
@@ -419,80 +419,6 @@ type ConditionStage struct {
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 }
 
-// ConditionAbatement represents a polymorphic choice type in FHIR.
-type ConditionAbatement struct {
-	Age      *dt.Age    `json:"abatementAge,omitempty"`      // The date or estimated date that the condition resolved or went into remission. This is called "abatement" because of the many overloaded connotations associated with "remission" or "resolution" - C...
-	DateTime *string    `json:"abatementDateTime,omitempty"` // The date or estimated date that the condition resolved or went into remission. This is called "abatement" because of the many overloaded connotations associated with "remission" or "resolution" - C...
-	Period   *dt.Period `json:"abatementPeriod,omitempty"`   // The date or estimated date that the condition resolved or went into remission. This is called "abatement" because of the many overloaded connotations associated with "remission" or "resolution" - C...
-	Range    *dt.Range  `json:"abatementRange,omitempty"`    // The date or estimated date that the condition resolved or went into remission. This is called "abatement" because of the many overloaded connotations associated with "remission" or "resolution" - C...
-	String   *string    `json:"abatementString,omitempty"`   // The date or estimated date that the condition resolved or went into remission. This is called "abatement" because of the many overloaded connotations associated with "remission" or "resolution" - C...
-}
-
-// MarshalJSON implements the json.Marshaler interface for ConditionAbatement.
-func (v ConditionAbatement) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Age != nil {
-		m["abatementAge"] = v.Age
-	}
-	if v.DateTime != nil {
-		m["abatementDateTime"] = v.DateTime
-	}
-	if v.Period != nil {
-		m["abatementPeriod"] = v.Period
-	}
-	if v.Range != nil {
-		m["abatementRange"] = v.Range
-	}
-	if v.String != nil {
-		m["abatementString"] = v.String
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ConditionAbatement.
-func (v *ConditionAbatement) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["abatementAge"]; ok {
-		var val dt.Age
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling abatementAge: %w", err)
-		}
-		v.Age = &val
-	}
-	if d, ok := raw["abatementDateTime"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling abatementDateTime: %w", err)
-		}
-		v.DateTime = &val
-	}
-	if d, ok := raw["abatementPeriod"]; ok {
-		var val dt.Period
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling abatementPeriod: %w", err)
-		}
-		v.Period = &val
-	}
-	if d, ok := raw["abatementRange"]; ok {
-		var val dt.Range
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling abatementRange: %w", err)
-		}
-		v.Range = &val
-	}
-	if d, ok := raw["abatementString"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling abatementString: %w", err)
-		}
-		v.String = &val
-	}
-	return nil
-}
-
 // ConditionOnset represents a polymorphic choice type in FHIR.
 type ConditionOnset struct {
 	Age      *dt.Age    `json:"onsetAge,omitempty"`      // Estimated or actual date or date-time  the condition began, in the opinion of the clinician.
@@ -561,6 +487,80 @@ func (v *ConditionOnset) UnmarshalJSON(data []byte) error {
 		var val string
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling onsetString: %w", err)
+		}
+		v.String = &val
+	}
+	return nil
+}
+
+// ConditionAbatement represents a polymorphic choice type in FHIR.
+type ConditionAbatement struct {
+	Age      *dt.Age    `json:"abatementAge,omitempty"`      // The date or estimated date that the condition resolved or went into remission. This is called "abatement" because of the many overloaded connotations associated with "remission" or "resolution" - C...
+	DateTime *string    `json:"abatementDateTime,omitempty"` // The date or estimated date that the condition resolved or went into remission. This is called "abatement" because of the many overloaded connotations associated with "remission" or "resolution" - C...
+	Period   *dt.Period `json:"abatementPeriod,omitempty"`   // The date or estimated date that the condition resolved or went into remission. This is called "abatement" because of the many overloaded connotations associated with "remission" or "resolution" - C...
+	Range    *dt.Range  `json:"abatementRange,omitempty"`    // The date or estimated date that the condition resolved or went into remission. This is called "abatement" because of the many overloaded connotations associated with "remission" or "resolution" - C...
+	String   *string    `json:"abatementString,omitempty"`   // The date or estimated date that the condition resolved or went into remission. This is called "abatement" because of the many overloaded connotations associated with "remission" or "resolution" - C...
+}
+
+// MarshalJSON implements the json.Marshaler interface for ConditionAbatement.
+func (v ConditionAbatement) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Age != nil {
+		m["abatementAge"] = v.Age
+	}
+	if v.DateTime != nil {
+		m["abatementDateTime"] = v.DateTime
+	}
+	if v.Period != nil {
+		m["abatementPeriod"] = v.Period
+	}
+	if v.Range != nil {
+		m["abatementRange"] = v.Range
+	}
+	if v.String != nil {
+		m["abatementString"] = v.String
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ConditionAbatement.
+func (v *ConditionAbatement) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["abatementAge"]; ok {
+		var val dt.Age
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling abatementAge: %w", err)
+		}
+		v.Age = &val
+	}
+	if d, ok := raw["abatementDateTime"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling abatementDateTime: %w", err)
+		}
+		v.DateTime = &val
+	}
+	if d, ok := raw["abatementPeriod"]; ok {
+		var val dt.Period
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling abatementPeriod: %w", err)
+		}
+		v.Period = &val
+	}
+	if d, ok := raw["abatementRange"]; ok {
+		var val dt.Range
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling abatementRange: %w", err)
+		}
+		v.Range = &val
+	}
+	if d, ok := raw["abatementString"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling abatementString: %w", err)
 		}
 		v.String = &val
 	}

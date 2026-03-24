@@ -115,19 +115,19 @@ func (r *SupplyRequest) UnmarshalJSON(data []byte) error {
 	}
 	*r = SupplyRequest(alias)
 	// Unmarshal polymorphic fields
-	var itemVal SupplyRequestItem
-	if err := itemVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if itemVal.CodeableConcept != nil || itemVal.Reference != nil {
-		r.Item = &itemVal
-	}
 	var occurrenceVal SupplyRequestOccurrence
 	if err := occurrenceVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if occurrenceVal.DateTime != nil || occurrenceVal.Period != nil || occurrenceVal.Timing != nil {
 		r.Occurrence = &occurrenceVal
+	}
+	var itemVal SupplyRequestItem
+	if err := itemVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if itemVal.CodeableConcept != nil || itemVal.Reference != nil {
+		r.Item = &itemVal
 	}
 	return nil
 }

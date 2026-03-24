@@ -83,6 +83,19 @@ func (r FamilyMemberHistory) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
+	if r.Age != nil {
+		vData, err := json.Marshal(r.Age)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
 	if r.Born != nil {
 		vData, err := json.Marshal(r.Born)
 		if err != nil {
@@ -109,19 +122,6 @@ func (r FamilyMemberHistory) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Age != nil {
-		vData, err := json.Marshal(r.Age)
-		if err != nil {
-			return nil, err
-		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
-		}
-	}
 	return json.Marshal(m)
 }
 
@@ -134,13 +134,6 @@ func (r *FamilyMemberHistory) UnmarshalJSON(data []byte) error {
 	}
 	*r = FamilyMemberHistory(alias)
 	// Unmarshal polymorphic fields
-	var ageVal FamilyMemberHistoryAge
-	if err := ageVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if ageVal.Age != nil || ageVal.Range != nil || ageVal.String != nil {
-		r.Age = &ageVal
-	}
 	var bornVal FamilyMemberHistoryBorn
 	if err := bornVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -154,6 +147,13 @@ func (r *FamilyMemberHistory) UnmarshalJSON(data []byte) error {
 	}
 	if deceasedVal.Age != nil || deceasedVal.Boolean != nil || deceasedVal.Date != nil || deceasedVal.Range != nil || deceasedVal.String != nil {
 		r.Deceased = &deceasedVal
+	}
+	var ageVal FamilyMemberHistoryAge
+	if err := ageVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if ageVal.Age != nil || ageVal.Range != nil || ageVal.String != nil {
+		r.Age = &ageVal
 	}
 	return nil
 }
@@ -540,6 +540,80 @@ func (v *FamilyMemberHistoryConditionOnset) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// FamilyMemberHistoryDeceased represents a polymorphic choice type in FHIR.
+type FamilyMemberHistoryDeceased struct {
+	Age     *dt.Age   `json:"deceasedAge,omitempty"`     // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
+	Boolean *bool     `json:"deceasedBoolean,omitempty"` // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
+	Date    *string   `json:"deceasedDate,omitempty"`    // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
+	Range   *dt.Range `json:"deceasedRange,omitempty"`   // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
+	String  *string   `json:"deceasedString,omitempty"`  // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
+}
+
+// MarshalJSON implements the json.Marshaler interface for FamilyMemberHistoryDeceased.
+func (v FamilyMemberHistoryDeceased) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Age != nil {
+		m["deceasedAge"] = v.Age
+	}
+	if v.Boolean != nil {
+		m["deceasedBoolean"] = v.Boolean
+	}
+	if v.Date != nil {
+		m["deceasedDate"] = v.Date
+	}
+	if v.Range != nil {
+		m["deceasedRange"] = v.Range
+	}
+	if v.String != nil {
+		m["deceasedString"] = v.String
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for FamilyMemberHistoryDeceased.
+func (v *FamilyMemberHistoryDeceased) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["deceasedAge"]; ok {
+		var val dt.Age
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling deceasedAge: %w", err)
+		}
+		v.Age = &val
+	}
+	if d, ok := raw["deceasedBoolean"]; ok {
+		var val bool
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling deceasedBoolean: %w", err)
+		}
+		v.Boolean = &val
+	}
+	if d, ok := raw["deceasedDate"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling deceasedDate: %w", err)
+		}
+		v.Date = &val
+	}
+	if d, ok := raw["deceasedRange"]; ok {
+		var val dt.Range
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling deceasedRange: %w", err)
+		}
+		v.Range = &val
+	}
+	if d, ok := raw["deceasedString"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling deceasedString: %w", err)
+		}
+		v.String = &val
+	}
+	return nil
+}
+
 // FamilyMemberHistoryAge represents a polymorphic choice type in FHIR.
 type FamilyMemberHistoryAge struct {
 	Age    *dt.Age   `json:"ageAge,omitempty"`    // The age of the relative at the time the family member history is recorded.
@@ -638,80 +712,6 @@ func (v *FamilyMemberHistoryBorn) UnmarshalJSON(data []byte) error {
 		var val string
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling bornString: %w", err)
-		}
-		v.String = &val
-	}
-	return nil
-}
-
-// FamilyMemberHistoryDeceased represents a polymorphic choice type in FHIR.
-type FamilyMemberHistoryDeceased struct {
-	Age     *dt.Age   `json:"deceasedAge,omitempty"`     // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
-	Boolean *bool     `json:"deceasedBoolean,omitempty"` // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
-	Date    *string   `json:"deceasedDate,omitempty"`    // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
-	Range   *dt.Range `json:"deceasedRange,omitempty"`   // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
-	String  *string   `json:"deceasedString,omitempty"`  // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
-}
-
-// MarshalJSON implements the json.Marshaler interface for FamilyMemberHistoryDeceased.
-func (v FamilyMemberHistoryDeceased) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Age != nil {
-		m["deceasedAge"] = v.Age
-	}
-	if v.Boolean != nil {
-		m["deceasedBoolean"] = v.Boolean
-	}
-	if v.Date != nil {
-		m["deceasedDate"] = v.Date
-	}
-	if v.Range != nil {
-		m["deceasedRange"] = v.Range
-	}
-	if v.String != nil {
-		m["deceasedString"] = v.String
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for FamilyMemberHistoryDeceased.
-func (v *FamilyMemberHistoryDeceased) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["deceasedAge"]; ok {
-		var val dt.Age
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling deceasedAge: %w", err)
-		}
-		v.Age = &val
-	}
-	if d, ok := raw["deceasedBoolean"]; ok {
-		var val bool
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling deceasedBoolean: %w", err)
-		}
-		v.Boolean = &val
-	}
-	if d, ok := raw["deceasedDate"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling deceasedDate: %w", err)
-		}
-		v.Date = &val
-	}
-	if d, ok := raw["deceasedRange"]; ok {
-		var val dt.Range
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling deceasedRange: %w", err)
-		}
-		v.Range = &val
-	}
-	if d, ok := raw["deceasedString"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling deceasedString: %w", err)
 		}
 		v.String = &val
 	}

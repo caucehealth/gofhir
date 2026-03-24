@@ -166,6 +166,13 @@ func (r *ServiceRequest) UnmarshalJSON(data []byte) error {
 	}
 	*r = ServiceRequest(alias)
 	// Unmarshal polymorphic fields
+	var occurrenceVal ServiceRequestOccurrence
+	if err := occurrenceVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if occurrenceVal.DateTime != nil || occurrenceVal.Period != nil || occurrenceVal.Timing != nil {
+		r.Occurrence = &occurrenceVal
+	}
 	var asNeededVal ServiceRequestAsNeeded
 	if err := asNeededVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -179,13 +186,6 @@ func (r *ServiceRequest) UnmarshalJSON(data []byte) error {
 	}
 	if locationVal.Code != nil || locationVal.Reference != nil {
 		r.Location = &locationVal
-	}
-	var occurrenceVal ServiceRequestOccurrence
-	if err := occurrenceVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if occurrenceVal.DateTime != nil || occurrenceVal.Period != nil || occurrenceVal.Timing != nil {
-		r.Occurrence = &occurrenceVal
 	}
 	return nil
 }
@@ -504,6 +504,58 @@ func (b *ServiceRequestBuilder) Build() (*ServiceRequest, error) {
 	return &r, nil
 }
 
+// ServiceRequestOccurrence represents a polymorphic choice type in FHIR.
+type ServiceRequestOccurrence struct {
+	DateTime *string    `json:"occurrenceDateTime,omitempty"` // The date/time at which the requested service should occur.
+	Period   *dt.Period `json:"occurrencePeriod,omitempty"`   // The date/time at which the requested service should occur.
+	Timing   *dt.Timing `json:"occurrenceTiming,omitempty"`   // The date/time at which the requested service should occur.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ServiceRequestOccurrence.
+func (v ServiceRequestOccurrence) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.DateTime != nil {
+		m["occurrenceDateTime"] = v.DateTime
+	}
+	if v.Period != nil {
+		m["occurrencePeriod"] = v.Period
+	}
+	if v.Timing != nil {
+		m["occurrenceTiming"] = v.Timing
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ServiceRequestOccurrence.
+func (v *ServiceRequestOccurrence) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["occurrenceDateTime"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling occurrenceDateTime: %w", err)
+		}
+		v.DateTime = &val
+	}
+	if d, ok := raw["occurrencePeriod"]; ok {
+		var val dt.Period
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling occurrencePeriod: %w", err)
+		}
+		v.Period = &val
+	}
+	if d, ok := raw["occurrenceTiming"]; ok {
+		var val dt.Timing
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling occurrenceTiming: %w", err)
+		}
+		v.Timing = &val
+	}
+	return nil
+}
+
 // ServiceRequestAsNeeded represents a polymorphic choice type in FHIR.
 type ServiceRequestAsNeeded struct {
 	Boolean         *bool               `json:"asNeededBoolean,omitempty"`         // If a CodeableConcept is present, it indicates the pre-condition for performing the service.  For example "pain", "on flare-up", etc.
@@ -582,58 +634,6 @@ func (v *ServiceRequestLocation) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling locationReference: %w", err)
 		}
 		v.Reference = val
-	}
-	return nil
-}
-
-// ServiceRequestOccurrence represents a polymorphic choice type in FHIR.
-type ServiceRequestOccurrence struct {
-	DateTime *string    `json:"occurrenceDateTime,omitempty"` // The date/time at which the requested service should occur.
-	Period   *dt.Period `json:"occurrencePeriod,omitempty"`   // The date/time at which the requested service should occur.
-	Timing   *dt.Timing `json:"occurrenceTiming,omitempty"`   // The date/time at which the requested service should occur.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ServiceRequestOccurrence.
-func (v ServiceRequestOccurrence) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.DateTime != nil {
-		m["occurrenceDateTime"] = v.DateTime
-	}
-	if v.Period != nil {
-		m["occurrencePeriod"] = v.Period
-	}
-	if v.Timing != nil {
-		m["occurrenceTiming"] = v.Timing
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ServiceRequestOccurrence.
-func (v *ServiceRequestOccurrence) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["occurrenceDateTime"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling occurrenceDateTime: %w", err)
-		}
-		v.DateTime = &val
-	}
-	if d, ok := raw["occurrencePeriod"]; ok {
-		var val dt.Period
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling occurrencePeriod: %w", err)
-		}
-		v.Period = &val
-	}
-	if d, ok := raw["occurrenceTiming"]; ok {
-		var val dt.Timing
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling occurrenceTiming: %w", err)
-		}
-		v.Timing = &val
 	}
 	return nil
 }

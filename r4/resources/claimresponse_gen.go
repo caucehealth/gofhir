@@ -390,8 +390,8 @@ func (r ClaimResponseAddItem) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Location != nil {
-		vData, err := json.Marshal(r.Location)
+	if r.Serviced != nil {
+		vData, err := json.Marshal(r.Serviced)
 		if err != nil {
 			return nil, err
 		}
@@ -403,8 +403,8 @@ func (r ClaimResponseAddItem) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Serviced != nil {
-		vData, err := json.Marshal(r.Serviced)
+	if r.Location != nil {
+		vData, err := json.Marshal(r.Location)
 		if err != nil {
 			return nil, err
 		}
@@ -427,19 +427,19 @@ func (r *ClaimResponseAddItem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ClaimResponseAddItem(alias)
-	var servicedVal ClaimResponseAddItemServiced
-	if err := servicedVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if servicedVal.Date != nil || servicedVal.Period != nil {
-		r.Serviced = &servicedVal
-	}
 	var locationVal ClaimResponseAddItemLocation
 	if err := locationVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if locationVal.Address != nil || locationVal.CodeableConcept != nil || locationVal.Reference != nil {
 		r.Location = &locationVal
+	}
+	var servicedVal ClaimResponseAddItemServiced
+	if err := servicedVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if servicedVal.Date != nil || servicedVal.Period != nil {
+		r.Serviced = &servicedVal
 	}
 	return nil
 }

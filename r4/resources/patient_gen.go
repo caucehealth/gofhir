@@ -117,19 +117,19 @@ func (r *Patient) UnmarshalJSON(data []byte) error {
 	}
 	*r = Patient(alias)
 	// Unmarshal polymorphic fields
-	var deceasedVal PatientDeceased
-	if err := deceasedVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if deceasedVal.Boolean != nil || deceasedVal.DateTime != nil {
-		r.Deceased = &deceasedVal
-	}
 	var multipleBirthVal PatientMultipleBirth
 	if err := multipleBirthVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if multipleBirthVal.Boolean != nil || multipleBirthVal.Integer != nil {
 		r.MultipleBirth = &multipleBirthVal
+	}
+	var deceasedVal PatientDeceased
+	if err := deceasedVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if deceasedVal.Boolean != nil || deceasedVal.DateTime != nil {
+		r.Deceased = &deceasedVal
 	}
 	return nil
 }
