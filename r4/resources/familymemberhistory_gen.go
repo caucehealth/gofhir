@@ -156,13 +156,6 @@ func (r *FamilyMemberHistory) UnmarshalJSON(data []byte) error {
 	}
 	*r = FamilyMemberHistory(alias)
 	// Unmarshal polymorphic fields
-	var ageVal FamilyMemberHistoryAge
-	if err := ageVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if ageVal.Age != nil || ageVal.Range != nil || ageVal.String != nil {
-		r.Age = &ageVal
-	}
 	var bornVal FamilyMemberHistoryBorn
 	if err := bornVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -176,6 +169,13 @@ func (r *FamilyMemberHistory) UnmarshalJSON(data []byte) error {
 	}
 	if deceasedVal.Age != nil || deceasedVal.Boolean != nil || deceasedVal.Date != nil || deceasedVal.Range != nil || deceasedVal.String != nil {
 		r.Deceased = &deceasedVal
+	}
+	var ageVal FamilyMemberHistoryAge
+	if err := ageVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if ageVal.Age != nil || ageVal.Range != nil || ageVal.String != nil {
+		r.Age = &ageVal
 	}
 	// Capture unknown fields
 	var raw map[string]json.RawMessage

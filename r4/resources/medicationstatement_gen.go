@@ -392,47 +392,6 @@ func (b *MedicationStatementBuilder) Build() (*MedicationStatement, error) {
 	return &r, nil
 }
 
-// MedicationStatementMedication represents a polymorphic choice type in FHIR.
-type MedicationStatementMedication struct {
-	CodeableConcept *dt.CodeableConcept `json:"medicationCodeableConcept,omitempty"` // Identifies the medication being administered. This is either a link to a resource representing the details of the medication or a simple attribute carrying a code that identifies the medication fro...
-	Reference       *dt.Reference       `json:"medicationReference,omitempty"`       // Identifies the medication being administered. This is either a link to a resource representing the details of the medication or a simple attribute carrying a code that identifies the medication fro...
-}
-
-// MarshalJSON implements the json.Marshaler interface for MedicationStatementMedication.
-func (v MedicationStatementMedication) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.CodeableConcept != nil {
-		m["medicationCodeableConcept"] = v.CodeableConcept
-	}
-	if v.Reference != nil {
-		m["medicationReference"] = v.Reference
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for MedicationStatementMedication.
-func (v *MedicationStatementMedication) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["medicationCodeableConcept"]; ok {
-		var val dt.CodeableConcept
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling medicationCodeableConcept: %w", err)
-		}
-		v.CodeableConcept = &val
-	}
-	if d, ok := raw["medicationReference"]; ok {
-		var val dt.Reference
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling medicationReference: %w", err)
-		}
-		v.Reference = &val
-	}
-	return nil
-}
-
 // MedicationStatementEffective represents a polymorphic choice type in FHIR.
 type MedicationStatementEffective struct {
 	DateTime *string    `json:"effectiveDateTime,omitempty"` // The interval of time during which it is being asserted that the patient is/was/will be taking the medication (or was not taking, when the MedicationStatement.taken element is No).
@@ -470,6 +429,47 @@ func (v *MedicationStatementEffective) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling effectivePeriod: %w", err)
 		}
 		v.Period = &val
+	}
+	return nil
+}
+
+// MedicationStatementMedication represents a polymorphic choice type in FHIR.
+type MedicationStatementMedication struct {
+	CodeableConcept *dt.CodeableConcept `json:"medicationCodeableConcept,omitempty"` // Identifies the medication being administered. This is either a link to a resource representing the details of the medication or a simple attribute carrying a code that identifies the medication fro...
+	Reference       *dt.Reference       `json:"medicationReference,omitempty"`       // Identifies the medication being administered. This is either a link to a resource representing the details of the medication or a simple attribute carrying a code that identifies the medication fro...
+}
+
+// MarshalJSON implements the json.Marshaler interface for MedicationStatementMedication.
+func (v MedicationStatementMedication) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.CodeableConcept != nil {
+		m["medicationCodeableConcept"] = v.CodeableConcept
+	}
+	if v.Reference != nil {
+		m["medicationReference"] = v.Reference
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for MedicationStatementMedication.
+func (v *MedicationStatementMedication) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["medicationCodeableConcept"]; ok {
+		var val dt.CodeableConcept
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling medicationCodeableConcept: %w", err)
+		}
+		v.CodeableConcept = &val
+	}
+	if d, ok := raw["medicationReference"]; ok {
+		var val dt.Reference
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling medicationReference: %w", err)
+		}
+		v.Reference = &val
 	}
 	return nil
 }

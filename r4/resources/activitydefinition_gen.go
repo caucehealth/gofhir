@@ -192,8 +192,8 @@ func (r ActivityDefinition) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Product != nil {
-		vData, err := json.Marshal(r.Product)
+	if r.Timing != nil {
+		vData, err := json.Marshal(r.Timing)
 		if err != nil {
 			return nil, err
 		}
@@ -205,8 +205,8 @@ func (r ActivityDefinition) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Timing != nil {
-		vData, err := json.Marshal(r.Timing)
+	if r.Product != nil {
+		vData, err := json.Marshal(r.Product)
 		if err != nil {
 			return nil, err
 		}

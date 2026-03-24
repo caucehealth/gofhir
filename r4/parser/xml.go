@@ -68,57 +68,94 @@ func UnmarshalXML(data []byte, resource any) error {
 		return fmt.Errorf("xml: parse: %w", err)
 	}
 
+	// Use schema metadata to fix array fields
+	resourceType, _ := m["resourceType"].(string)
+	fixArrayFields(m, resourceType)
+
 	jsonData, err := json.Marshal(m)
 	if err != nil {
-		return fmt.Errorf("xml: json convert: %w", err)
+		return fmt.Errorf("xml: json re-convert: %w", err)
 	}
 
-	// First attempt: try direct unmarshal
-	if err := json.Unmarshal(jsonData, resource); err != nil {
-		// If it fails, try wrapping single objects in arrays
-		wrapSingleValuesAsArrays(m)
-		jsonData, _ = json.Marshal(m)
-		return json.Unmarshal(jsonData, resource)
-	}
-	return nil
+	return json.Unmarshal(jsonData, resource)
 }
 
-// wrapSingleValuesAsArrays wraps non-array values as single-element arrays
-// and recurses into maps. This handles XML-to-JSON conversion where single
-// XML elements need to become JSON arrays to match FHIR struct expectations.
-func wrapSingleValuesAsArrays(m map[string]any) {
-	// Fields that are always singular in FHIR (never arrays)
-	singular := map[string]bool{
-		"resourceType": true, "id": true, "meta": true, "text": true,
-		"implicitRules": true, "language": true, "url": true,
-		"status": true, "div": true, "system": true, "code": true,
-		"display": true, "value": true, "use": true, "type": true,
-		"family": true, "gender": true, "birthDate": true,
-		"active": true, "versionId": true, "lastUpdated": true,
-		"reference": true, "subject": true, "intent": true,
-	}
+// fixArrayFields uses schema metadata to wrap single values in arrays where
+// the FHIR spec defines the field as repeating. Recurses into nested maps.
+func fixArrayFields(m map[string]any, typeName string) {
 	for k, v := range m {
-		if strings.HasPrefix(k, "_") {
+		if strings.HasPrefix(k, "_") || k == "resourceType" {
 			continue
 		}
 		switch val := v.(type) {
 		case map[string]any:
-			wrapSingleValuesAsArrays(val)
-			if !singular[k] {
+			// Determine child type name for recursion
+			childType := inferChildType(typeName, k)
+			fixArrayFields(val, childType)
+			if IsArrayField(typeName, k) {
 				m[k] = []any{val}
 			}
 		case string:
-			if !singular[k] {
+			if IsArrayField(typeName, k) {
+				m[k] = []any{val}
+			}
+		case float64:
+			if IsArrayField(typeName, k) {
+				m[k] = []any{val}
+			}
+		case bool:
+			if IsArrayField(typeName, k) {
 				m[k] = []any{val}
 			}
 		case []any:
 			for _, item := range val {
 				if sub, ok := item.(map[string]any); ok {
-					wrapSingleValuesAsArrays(sub)
+					childType := inferChildType(typeName, k)
+					fixArrayFields(sub, childType)
 				}
 			}
 		}
 	}
+}
+
+// inferChildType guesses the FHIR type name for a nested element.
+func inferChildType(parentType, fieldName string) string {
+	// Common complex types
+	switch fieldName {
+	case "name":
+		return "HumanName"
+	case "telecom":
+		return "ContactPoint"
+	case "address":
+		return "Address"
+	case "identifier":
+		return "Identifier"
+	case "coding":
+		return "Coding"
+	case "code":
+		if parentType != "" {
+			return "CodeableConcept"
+		}
+	case "meta":
+		return "Meta"
+	case "text":
+		return "Narrative"
+	case "period":
+		return "Period"
+	case "quantity", "valueQuantity":
+		return "Quantity"
+	}
+	// Default: try ParentFieldName pattern
+	return parentType + exportFieldName(fieldName)
+}
+
+func exportFieldName(s string) string {
+	if s == "" {
+		return ""
+	}
+	r := []rune(s)
+	r[0] = []rune(strings.ToUpper(string(r[0])))[0]
+	return string(r)
 }
 
 type xmlEncoder struct {

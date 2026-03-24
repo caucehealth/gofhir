@@ -421,19 +421,19 @@ func (r *CoverageEligibilityResponseBenefit) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = CoverageEligibilityResponseBenefit(alias)
-	var allowedVal CoverageEligibilityResponseBenefitAllowed
-	if err := allowedVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if allowedVal.Money != nil || allowedVal.String != nil || allowedVal.UnsignedInt != nil {
-		r.Allowed = &allowedVal
-	}
 	var usedVal CoverageEligibilityResponseBenefitUsed
 	if err := usedVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if usedVal.Money != nil || usedVal.String != nil || usedVal.UnsignedInt != nil {
 		r.Used = &usedVal
+	}
+	var allowedVal CoverageEligibilityResponseBenefitAllowed
+	if err := allowedVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if allowedVal.Money != nil || allowedVal.String != nil || allowedVal.UnsignedInt != nil {
+		r.Allowed = &allowedVal
 	}
 	return nil
 }

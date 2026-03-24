@@ -185,6 +185,11 @@ func main() {
 		log.Fatalf("Failed to generate registry: %v", err)
 	}
 
+	// Generate schema metadata for XML parser
+	if err := generateSchemaMetadata(fhirSpec, skipResources); err != nil {
+		log.Fatalf("Failed to generate schema metadata: %v", err)
+	}
+
 	log.Println("Generation complete.")
 }
 
@@ -511,6 +516,91 @@ func generateRegistry(fhirSpec *spec.FHIRSpec, skip map[string]bool) error {
 	buf.WriteString("}\n")
 
 	return writeGoFile(filepath.Join(resourcesDir, "registry_gen.go"), buf.Bytes())
+}
+
+func generateSchemaMetadata(fhirSpec *spec.FHIRSpec, skip map[string]bool) error {
+	var buf bytes.Buffer
+	buf.WriteString(licenseHeader)
+	buf.WriteString("\npackage parser\n\n")
+
+	// Generate array field metadata: map[resourceType]map[fieldName]bool
+	// true = array field, false/absent = singular
+	buf.WriteString("// arrayFields maps resource/type names to their array field names.\n")
+	buf.WriteString("// Generated from the FHIR R4 JSON schema.\n")
+	buf.WriteString("var arrayFields = map[string]map[string]bool{\n")
+
+	// Resources
+	for _, name := range fhirSpec.ResourceNames {
+		if skip[name] {
+			continue
+		}
+		res := fhirSpec.Resources[name]
+		arrays := collectArrayFields(res.Fields)
+		if len(arrays) > 0 {
+			writeFieldMap(&buf, name, arrays)
+		}
+	}
+
+	// Complex types
+	var complexNames []string
+	for name := range fhirSpec.ComplexTypes {
+		complexNames = append(complexNames, name)
+	}
+	sort.Strings(complexNames)
+	for _, name := range complexNames {
+		ct := fhirSpec.ComplexTypes[name]
+		arrays := collectArrayFields(ct.Fields)
+		if len(arrays) > 0 {
+			writeFieldMap(&buf, name, arrays)
+		}
+	}
+
+	// Backbone elements
+	var bbNames []string
+	for name := range fhirSpec.BackboneElements {
+		bbNames = append(bbNames, name)
+	}
+	sort.Strings(bbNames)
+	for _, name := range bbNames {
+		be := fhirSpec.BackboneElements[name]
+		arrays := collectArrayFields(be.Fields)
+		if len(arrays) > 0 {
+			goName := strings.ReplaceAll(name, "_", "")
+			writeFieldMap(&buf, goName, arrays)
+		}
+	}
+
+	buf.WriteString("}\n\n")
+
+	// IsArrayField checks if a field is an array type for XML parsing.
+	buf.WriteString("// IsArrayField returns true if the given field on the given type is an array.\n")
+	buf.WriteString("func IsArrayField(typeName, fieldName string) bool {\n")
+	buf.WriteString("\tif fields, ok := arrayFields[typeName]; ok {\n")
+	buf.WriteString("\t\treturn fields[fieldName]\n")
+	buf.WriteString("\t}\n")
+	buf.WriteString("\treturn false\n")
+	buf.WriteString("}\n")
+
+	return writeGoFile("r4/parser/schema_gen.go", buf.Bytes())
+}
+
+func collectArrayFields(fields []*spec.FieldDef) []string {
+	var result []string
+	for _, f := range fields {
+		if f.IsArray {
+			result = append(result, f.JSONName)
+		}
+	}
+	sort.Strings(result)
+	return result
+}
+
+func writeFieldMap(buf *bytes.Buffer, name string, fields []string) {
+	fmt.Fprintf(buf, "\t%q: {\n", name)
+	for _, f := range fields {
+		fmt.Fprintf(buf, "\t\t%q: true,\n", f)
+	}
+	buf.WriteString("\t},\n")
 }
 
 func generateEnums(fhirSpec *spec.FHIRSpec) error {

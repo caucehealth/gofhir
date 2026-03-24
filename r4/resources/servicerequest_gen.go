@@ -192,6 +192,13 @@ func (r *ServiceRequest) UnmarshalJSON(data []byte) error {
 	}
 	*r = ServiceRequest(alias)
 	// Unmarshal polymorphic fields
+	var asNeededVal ServiceRequestAsNeeded
+	if err := asNeededVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if asNeededVal.Boolean != nil || asNeededVal.CodeableConcept != nil {
+		r.AsNeeded = &asNeededVal
+	}
 	var locationVal ServiceRequestLocation
 	if err := locationVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -205,13 +212,6 @@ func (r *ServiceRequest) UnmarshalJSON(data []byte) error {
 	}
 	if occurrenceVal.DateTime != nil || occurrenceVal.Period != nil || occurrenceVal.Timing != nil {
 		r.Occurrence = &occurrenceVal
-	}
-	var asNeededVal ServiceRequestAsNeeded
-	if err := asNeededVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if asNeededVal.Boolean != nil || asNeededVal.CodeableConcept != nil {
-		r.AsNeeded = &asNeededVal
 	}
 	// Capture unknown fields
 	var raw map[string]json.RawMessage
@@ -600,6 +600,47 @@ func (b *ServiceRequestBuilder) Build() (*ServiceRequest, error) {
 	return &r, nil
 }
 
+// ServiceRequestAsNeeded represents a polymorphic choice type in FHIR.
+type ServiceRequestAsNeeded struct {
+	Boolean         *bool               `json:"asNeededBoolean,omitempty"`         // If a CodeableConcept is present, it indicates the pre-condition for performing the service.  For example "pain", "on flare-up", etc.
+	CodeableConcept *dt.CodeableConcept `json:"asNeededCodeableConcept,omitempty"` // If a CodeableConcept is present, it indicates the pre-condition for performing the service.  For example "pain", "on flare-up", etc.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ServiceRequestAsNeeded.
+func (v ServiceRequestAsNeeded) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Boolean != nil {
+		m["asNeededBoolean"] = v.Boolean
+	}
+	if v.CodeableConcept != nil {
+		m["asNeededCodeableConcept"] = v.CodeableConcept
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ServiceRequestAsNeeded.
+func (v *ServiceRequestAsNeeded) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["asNeededBoolean"]; ok {
+		var val bool
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling asNeededBoolean: %w", err)
+		}
+		v.Boolean = &val
+	}
+	if d, ok := raw["asNeededCodeableConcept"]; ok {
+		var val dt.CodeableConcept
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling asNeededCodeableConcept: %w", err)
+		}
+		v.CodeableConcept = &val
+	}
+	return nil
+}
+
 // ServiceRequestLocation represents a polymorphic choice type in FHIR.
 type ServiceRequestLocation struct {
 	Code      []dt.CodeableConcept `json:"locationCode,omitempty"`      // The preferred location(s) where the procedure should actually happen in coded or free text form. E.g. at home or nursing day care center.
@@ -689,47 +730,6 @@ func (v *ServiceRequestOccurrence) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling occurrenceTiming: %w", err)
 		}
 		v.Timing = &val
-	}
-	return nil
-}
-
-// ServiceRequestAsNeeded represents a polymorphic choice type in FHIR.
-type ServiceRequestAsNeeded struct {
-	Boolean         *bool               `json:"asNeededBoolean,omitempty"`         // If a CodeableConcept is present, it indicates the pre-condition for performing the service.  For example "pain", "on flare-up", etc.
-	CodeableConcept *dt.CodeableConcept `json:"asNeededCodeableConcept,omitempty"` // If a CodeableConcept is present, it indicates the pre-condition for performing the service.  For example "pain", "on flare-up", etc.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ServiceRequestAsNeeded.
-func (v ServiceRequestAsNeeded) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Boolean != nil {
-		m["asNeededBoolean"] = v.Boolean
-	}
-	if v.CodeableConcept != nil {
-		m["asNeededCodeableConcept"] = v.CodeableConcept
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ServiceRequestAsNeeded.
-func (v *ServiceRequestAsNeeded) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["asNeededBoolean"]; ok {
-		var val bool
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling asNeededBoolean: %w", err)
-		}
-		v.Boolean = &val
-	}
-	if d, ok := raw["asNeededCodeableConcept"]; ok {
-		var val dt.CodeableConcept
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling asNeededCodeableConcept: %w", err)
-		}
-		v.CodeableConcept = &val
 	}
 	return nil
 }

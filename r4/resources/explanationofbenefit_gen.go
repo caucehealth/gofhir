@@ -759,8 +759,8 @@ func (r ExplanationOfBenefitAddItem) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Location != nil {
-		vData, err := json.Marshal(r.Location)
+	if r.Serviced != nil {
+		vData, err := json.Marshal(r.Serviced)
 		if err != nil {
 			return nil, err
 		}
@@ -772,8 +772,8 @@ func (r ExplanationOfBenefitAddItem) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Serviced != nil {
-		vData, err := json.Marshal(r.Serviced)
+	if r.Location != nil {
+		vData, err := json.Marshal(r.Location)
 		if err != nil {
 			return nil, err
 		}
@@ -796,19 +796,19 @@ func (r *ExplanationOfBenefitAddItem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ExplanationOfBenefitAddItem(alias)
-	var locationVal ExplanationOfBenefitAddItemLocation
-	if err := locationVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if locationVal.Address != nil || locationVal.CodeableConcept != nil || locationVal.Reference != nil {
-		r.Location = &locationVal
-	}
 	var servicedVal ExplanationOfBenefitAddItemServiced
 	if err := servicedVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if servicedVal.Date != nil || servicedVal.Period != nil {
 		r.Serviced = &servicedVal
+	}
+	var locationVal ExplanationOfBenefitAddItemLocation
+	if err := locationVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if locationVal.Address != nil || locationVal.CodeableConcept != nil || locationVal.Reference != nil {
+		r.Location = &locationVal
 	}
 	return nil
 }
@@ -1459,8 +1459,8 @@ func (r ExplanationOfBenefitItem) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Serviced != nil {
-		vData, err := json.Marshal(r.Serviced)
+	if r.Location != nil {
+		vData, err := json.Marshal(r.Location)
 		if err != nil {
 			return nil, err
 		}
@@ -1472,8 +1472,8 @@ func (r ExplanationOfBenefitItem) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Location != nil {
-		vData, err := json.Marshal(r.Location)
+	if r.Serviced != nil {
+		vData, err := json.Marshal(r.Serviced)
 		if err != nil {
 			return nil, err
 		}
@@ -1496,19 +1496,19 @@ func (r *ExplanationOfBenefitItem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ExplanationOfBenefitItem(alias)
-	var locationVal ExplanationOfBenefitItemLocation
-	if err := locationVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if locationVal.Address != nil || locationVal.CodeableConcept != nil || locationVal.Reference != nil {
-		r.Location = &locationVal
-	}
 	var servicedVal ExplanationOfBenefitItemServiced
 	if err := servicedVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if servicedVal.Date != nil || servicedVal.Period != nil {
 		r.Serviced = &servicedVal
+	}
+	var locationVal ExplanationOfBenefitItemLocation
+	if err := locationVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if locationVal.Address != nil || locationVal.CodeableConcept != nil || locationVal.Reference != nil {
+		r.Location = &locationVal
 	}
 	return nil
 }
@@ -1954,19 +1954,19 @@ func (r *ExplanationOfBenefitSupportingInfo) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ExplanationOfBenefitSupportingInfo(alias)
-	var timingVal ExplanationOfBenefitSupportingInfoTiming
-	if err := timingVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if timingVal.Date != nil || timingVal.Period != nil {
-		r.Timing = &timingVal
-	}
 	var valueVal ExplanationOfBenefitSupportingInfoValue
 	if err := valueVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if valueVal.Attachment != nil || valueVal.Boolean != nil || valueVal.Quantity != nil || valueVal.Reference != nil || valueVal.String != nil {
 		r.Value = &valueVal
+	}
+	var timingVal ExplanationOfBenefitSupportingInfoTiming
+	if err := timingVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if timingVal.Date != nil || timingVal.Period != nil {
+		r.Timing = &timingVal
 	}
 	return nil
 }

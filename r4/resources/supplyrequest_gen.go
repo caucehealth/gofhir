@@ -90,8 +90,8 @@ func (r SupplyRequest) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Item != nil {
-		vData, err := json.Marshal(r.Item)
+	if r.Occurrence != nil {
+		vData, err := json.Marshal(r.Occurrence)
 		if err != nil {
 			return nil, err
 		}
@@ -103,8 +103,8 @@ func (r SupplyRequest) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Occurrence != nil {
-		vData, err := json.Marshal(r.Occurrence)
+	if r.Item != nil {
+		vData, err := json.Marshal(r.Item)
 		if err != nil {
 			return nil, err
 		}

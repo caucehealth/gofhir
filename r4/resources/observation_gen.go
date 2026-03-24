@@ -147,19 +147,19 @@ func (r *Observation) UnmarshalJSON(data []byte) error {
 	}
 	*r = Observation(alias)
 	// Unmarshal polymorphic fields
-	var effectiveVal ObservationEffective
-	if err := effectiveVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if effectiveVal.DateTime != nil || effectiveVal.Instant != nil || effectiveVal.Period != nil || effectiveVal.Timing != nil {
-		r.Effective = &effectiveVal
-	}
 	var valueVal ObservationValue
 	if err := valueVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if valueVal.Boolean != nil || valueVal.CodeableConcept != nil || valueVal.DateTime != nil || valueVal.Integer != nil || valueVal.Period != nil || valueVal.Quantity != nil || valueVal.Range != nil || valueVal.Ratio != nil || valueVal.SampledData != nil || valueVal.String != nil || valueVal.Time != nil {
 		r.Value = &valueVal
+	}
+	var effectiveVal ObservationEffective
+	if err := effectiveVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if effectiveVal.DateTime != nil || effectiveVal.Instant != nil || effectiveVal.Period != nil || effectiveVal.Timing != nil {
+		r.Effective = &effectiveVal
 	}
 	// Capture unknown fields
 	var raw map[string]json.RawMessage

@@ -538,47 +538,6 @@ type MedicationAdministrationPerformer struct {
 	Function *dt.CodeableConcept `json:"function,omitempty"`
 }
 
-// MedicationAdministrationEffective represents a polymorphic choice type in FHIR.
-type MedicationAdministrationEffective struct {
-	DateTime *string    `json:"effectiveDateTime,omitempty"` // A specific date/time or interval of time during which the administration took place (or did not take place, when the 'notGiven' attribute is true). For many administrations, such as swallowing a ta...
-	Period   *dt.Period `json:"effectivePeriod,omitempty"`   // A specific date/time or interval of time during which the administration took place (or did not take place, when the 'notGiven' attribute is true). For many administrations, such as swallowing a ta...
-}
-
-// MarshalJSON implements the json.Marshaler interface for MedicationAdministrationEffective.
-func (v MedicationAdministrationEffective) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.DateTime != nil {
-		m["effectiveDateTime"] = v.DateTime
-	}
-	if v.Period != nil {
-		m["effectivePeriod"] = v.Period
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for MedicationAdministrationEffective.
-func (v *MedicationAdministrationEffective) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["effectiveDateTime"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling effectiveDateTime: %w", err)
-		}
-		v.DateTime = &val
-	}
-	if d, ok := raw["effectivePeriod"]; ok {
-		var val dt.Period
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling effectivePeriod: %w", err)
-		}
-		v.Period = &val
-	}
-	return nil
-}
-
 // MedicationAdministrationMedication represents a polymorphic choice type in FHIR.
 type MedicationAdministrationMedication struct {
 	CodeableConcept *dt.CodeableConcept `json:"medicationCodeableConcept,omitempty"` // Identifies the medication that was administered. This is either a link to a resource representing the details of the medication or a simple attribute carrying a code that identifies the medication ...
@@ -616,6 +575,47 @@ func (v *MedicationAdministrationMedication) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling medicationReference: %w", err)
 		}
 		v.Reference = &val
+	}
+	return nil
+}
+
+// MedicationAdministrationEffective represents a polymorphic choice type in FHIR.
+type MedicationAdministrationEffective struct {
+	DateTime *string    `json:"effectiveDateTime,omitempty"` // A specific date/time or interval of time during which the administration took place (or did not take place, when the 'notGiven' attribute is true). For many administrations, such as swallowing a ta...
+	Period   *dt.Period `json:"effectivePeriod,omitempty"`   // A specific date/time or interval of time during which the administration took place (or did not take place, when the 'notGiven' attribute is true). For many administrations, such as swallowing a ta...
+}
+
+// MarshalJSON implements the json.Marshaler interface for MedicationAdministrationEffective.
+func (v MedicationAdministrationEffective) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.DateTime != nil {
+		m["effectiveDateTime"] = v.DateTime
+	}
+	if v.Period != nil {
+		m["effectivePeriod"] = v.Period
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for MedicationAdministrationEffective.
+func (v *MedicationAdministrationEffective) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["effectiveDateTime"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling effectiveDateTime: %w", err)
+		}
+		v.DateTime = &val
+	}
+	if d, ok := raw["effectivePeriod"]; ok {
+		var val dt.Period
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling effectivePeriod: %w", err)
+		}
+		v.Period = &val
 	}
 	return nil
 }
