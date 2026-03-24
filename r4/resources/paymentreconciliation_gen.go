@@ -8,7 +8,7 @@ package resources
 import (
 	"encoding/json"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // PaymentReconciliation This resource provides the details including amount of a payment and allocates the payment items being paid.

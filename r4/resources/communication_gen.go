@@ -8,7 +8,7 @@ package resources
 import (
 	"encoding/json"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // Communication An occurrence of information being transmitted; e.g. an alert that was sent to a responsible provider, a public health agency that was notified about a reportable condition.

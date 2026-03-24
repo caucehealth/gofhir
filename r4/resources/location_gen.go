@@ -8,7 +8,7 @@ package resources
 import (
 	"encoding/json"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // Location Details and position information for a physical place where services are provided and resources and participants may be stored, found, contained, or accommodated.

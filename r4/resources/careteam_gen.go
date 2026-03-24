@@ -8,7 +8,7 @@ package resources
 import (
 	"encoding/json"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // CareTeam The Care Team includes all the people and organizations who plan to participate in the coordination and delivery of care for a patient.

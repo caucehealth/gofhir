@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // ImplementationGuide A set of rules of how a particular interoperability or standards problem is solved - typically through the use of FHIR resources. This resource is used to gather all the parts of an implementation ...

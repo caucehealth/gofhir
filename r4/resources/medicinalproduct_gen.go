@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // MedicinalProduct Detailed definition of a medicinal product, typically for uses other than direct patient care (e.g. regulatory use).

@@ -8,7 +8,7 @@ package resources
 import (
 	"encoding/json"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // AppointmentResponse A reply to an appointment request for a patient and/or practitioner(s), such as a confirmation or rejection.

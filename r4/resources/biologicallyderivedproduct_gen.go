@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // BiologicallyDerivedProduct A material substance originating from a biological entity intended to be transplanted or infused into another (possibly the same) biological entity.

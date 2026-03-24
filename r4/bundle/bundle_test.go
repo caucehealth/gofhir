@@ -7,8 +7,8 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/helixfhir/gofhir/r4/bundle"
-	"github.com/helixfhir/gofhir/r4/resources"
+	"github.com/caucehealth/gofhir/r4/bundle"
+	"github.com/caucehealth/gofhir/r4/resources"
 )
 
 func TestBundleBuilder(t *testing.T) {

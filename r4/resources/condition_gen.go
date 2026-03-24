@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // Condition A clinical condition, problem, diagnosis, or other event, situation, issue, or clinical concept that has risen to a level of concern.
@@ -81,8 +81,8 @@ func (r Condition) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Onset != nil {
-		vData, err := json.Marshal(r.Onset)
+	if r.Abatement != nil {
+		vData, err := json.Marshal(r.Abatement)
 		if err != nil {
 			return nil, err
 		}
@@ -94,8 +94,8 @@ func (r Condition) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Abatement != nil {
-		vData, err := json.Marshal(r.Abatement)
+	if r.Onset != nil {
+		vData, err := json.Marshal(r.Onset)
 		if err != nil {
 			return nil, err
 		}
@@ -119,19 +119,19 @@ func (r *Condition) UnmarshalJSON(data []byte) error {
 	}
 	*r = Condition(alias)
 	// Unmarshal polymorphic fields
-	var onsetVal ConditionOnset
-	if err := onsetVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if onsetVal.Age != nil || onsetVal.DateTime != nil || onsetVal.Period != nil || onsetVal.Range != nil || onsetVal.String != nil {
-		r.Onset = &onsetVal
-	}
 	var abatementVal ConditionAbatement
 	if err := abatementVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if abatementVal.Age != nil || abatementVal.DateTime != nil || abatementVal.Period != nil || abatementVal.Range != nil || abatementVal.String != nil {
 		r.Abatement = &abatementVal
+	}
+	var onsetVal ConditionOnset
+	if err := onsetVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if onsetVal.Age != nil || onsetVal.DateTime != nil || onsetVal.Period != nil || onsetVal.Range != nil || onsetVal.String != nil {
+		r.Onset = &onsetVal
 	}
 	return nil
 }

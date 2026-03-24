@@ -8,7 +8,7 @@ package resources
 import (
 	"encoding/json"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // ObservationDefinition Set of definitional characteristics for a kind of observation or measurement produced or consumed by an orderable health care service.

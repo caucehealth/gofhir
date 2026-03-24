@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // MedicationAdministration Describes the event of a patient consuming or otherwise being administered a medication.  This may be as simple as swallowing a tablet or it may be a long running infusion.  Related resources tie t...
@@ -85,8 +85,8 @@ func (r MedicationAdministration) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Medication != nil {
-		vData, err := json.Marshal(r.Medication)
+	if r.Effective != nil {
+		vData, err := json.Marshal(r.Effective)
 		if err != nil {
 			return nil, err
 		}
@@ -98,8 +98,8 @@ func (r MedicationAdministration) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Effective != nil {
-		vData, err := json.Marshal(r.Effective)
+	if r.Medication != nil {
+		vData, err := json.Marshal(r.Medication)
 		if err != nil {
 			return nil, err
 		}

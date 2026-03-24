@@ -10,8 +10,8 @@ import (
 	"strings"
 	"testing"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
-	"github.com/helixfhir/gofhir/r4/resources"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
+	"github.com/caucehealth/gofhir/r4/resources"
 )
 
 // --- Helpers ---

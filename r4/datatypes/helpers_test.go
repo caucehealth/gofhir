@@ -6,7 +6,7 @@ package datatypes_test
 import (
 	"testing"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 func TestExtensionsByURL(t *testing.T) {

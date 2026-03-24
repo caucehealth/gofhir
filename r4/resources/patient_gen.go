@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // Patient Demographics and other administrative information about an individual or animal receiving care or other health-related services.
@@ -376,47 +376,6 @@ type PatientLink struct {
 	Type *PatientLinkType `json:"type,omitempty"`
 }
 
-// PatientMultipleBirth represents a polymorphic choice type in FHIR.
-type PatientMultipleBirth struct {
-	Boolean *bool    `json:"multipleBirthBoolean,omitempty"` // Indicates whether the patient is part of a multiple (boolean) or indicates the actual birth order (integer).
-	Integer *float64 `json:"multipleBirthInteger,omitempty"` // Indicates whether the patient is part of a multiple (boolean) or indicates the actual birth order (integer).
-}
-
-// MarshalJSON implements the json.Marshaler interface for PatientMultipleBirth.
-func (v PatientMultipleBirth) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Boolean != nil {
-		m["multipleBirthBoolean"] = v.Boolean
-	}
-	if v.Integer != nil {
-		m["multipleBirthInteger"] = v.Integer
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for PatientMultipleBirth.
-func (v *PatientMultipleBirth) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["multipleBirthBoolean"]; ok {
-		var val bool
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling multipleBirthBoolean: %w", err)
-		}
-		v.Boolean = &val
-	}
-	if d, ok := raw["multipleBirthInteger"]; ok {
-		var val float64
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling multipleBirthInteger: %w", err)
-		}
-		v.Integer = &val
-	}
-	return nil
-}
-
 // PatientDeceased represents a polymorphic choice type in FHIR.
 type PatientDeceased struct {
 	Boolean  *bool   `json:"deceasedBoolean,omitempty"`  // Indicates if the individual is deceased or not.
@@ -454,6 +413,47 @@ func (v *PatientDeceased) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling deceasedDateTime: %w", err)
 		}
 		v.DateTime = &val
+	}
+	return nil
+}
+
+// PatientMultipleBirth represents a polymorphic choice type in FHIR.
+type PatientMultipleBirth struct {
+	Boolean *bool    `json:"multipleBirthBoolean,omitempty"` // Indicates whether the patient is part of a multiple (boolean) or indicates the actual birth order (integer).
+	Integer *float64 `json:"multipleBirthInteger,omitempty"` // Indicates whether the patient is part of a multiple (boolean) or indicates the actual birth order (integer).
+}
+
+// MarshalJSON implements the json.Marshaler interface for PatientMultipleBirth.
+func (v PatientMultipleBirth) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Boolean != nil {
+		m["multipleBirthBoolean"] = v.Boolean
+	}
+	if v.Integer != nil {
+		m["multipleBirthInteger"] = v.Integer
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for PatientMultipleBirth.
+func (v *PatientMultipleBirth) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["multipleBirthBoolean"]; ok {
+		var val bool
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling multipleBirthBoolean: %w", err)
+		}
+		v.Boolean = &val
+	}
+	if d, ok := raw["multipleBirthInteger"]; ok {
+		var val float64
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling multipleBirthInteger: %w", err)
+		}
+		v.Integer = &val
 	}
 	return nil
 }

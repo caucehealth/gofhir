@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // CoverageEligibilityResponse This resource provides eligibility and plan details from the processing of an CoverageEligibilityRequest resource.

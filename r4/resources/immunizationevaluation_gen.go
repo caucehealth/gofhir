@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // ImmunizationEvaluation Describes a comparison of an immunization event against published recommendations to determine if the administration is "valid" in relation to those  recommendations.

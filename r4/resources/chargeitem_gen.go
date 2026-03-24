@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // ChargeItem The resource ChargeItem describes the provision of healthcare provider products for a certain patient, therefore referring not only to the product, but containing in addition details of the provisi...
@@ -148,6 +148,13 @@ func (r *ChargeItem) UnmarshalJSON(data []byte) error {
 	}
 	*r = ChargeItem(alias)
 	// Unmarshal polymorphic fields
+	var definitionVal ChargeItemDefinitionChoice
+	if err := definitionVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if definitionVal.Canonical != nil || definitionVal.Uri != nil {
+		r.Definition = &definitionVal
+	}
 	var occurrenceVal ChargeItemOccurrence
 	if err := occurrenceVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -161,13 +168,6 @@ func (r *ChargeItem) UnmarshalJSON(data []byte) error {
 	}
 	if productVal.CodeableConcept != nil || productVal.Reference != nil {
 		r.Product = &productVal
-	}
-	var definitionVal ChargeItemDefinitionChoice
-	if err := definitionVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if definitionVal.Canonical != nil || definitionVal.Uri != nil {
-		r.Definition = &definitionVal
 	}
 	return nil
 }

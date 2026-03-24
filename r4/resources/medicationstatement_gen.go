@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // MedicationStatement A record of a medication that is being consumed by a patient.   A MedicationStatement may indicate that the patient may be taking the medication now or has taken the medication in the past or will ...
@@ -119,19 +119,19 @@ func (r *MedicationStatement) UnmarshalJSON(data []byte) error {
 	}
 	*r = MedicationStatement(alias)
 	// Unmarshal polymorphic fields
-	var medicationVal MedicationStatementMedication
-	if err := medicationVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if medicationVal.CodeableConcept != nil || medicationVal.Reference != nil {
-		r.Medication = &medicationVal
-	}
 	var effectiveVal MedicationStatementEffective
 	if err := effectiveVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if effectiveVal.DateTime != nil || effectiveVal.Period != nil {
 		r.Effective = &effectiveVal
+	}
+	var medicationVal MedicationStatementMedication
+	if err := medicationVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if medicationVal.CodeableConcept != nil || medicationVal.Reference != nil {
+		r.Medication = &medicationVal
 	}
 	return nil
 }

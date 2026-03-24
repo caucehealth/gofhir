@@ -8,7 +8,7 @@ package resources
 import (
 	"encoding/json"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // BodyStructure Record details about an anatomical structure.  This resource may be used when a coded concept does not provide the necessary detail needed for the use case.

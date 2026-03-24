@@ -17,7 +17,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/helixfhir/gofhir/internal/spec"
+	"github.com/caucehealth/gofhir/internal/spec"
 )
 
 const (
@@ -310,7 +310,7 @@ func generateResource(res *spec.ResourceDef, fhirSpec *spec.FHIRSpec) error {
 		buf.WriteString("\t\"fmt\"\n")
 	}
 	buf.WriteString("\n")
-	buf.WriteString("\tdt \"github.com/helixfhir/gofhir/r4/datatypes\"\n")
+	buf.WriteString("\tdt \"github.com/caucehealth/gofhir/r4/datatypes\"\n")
 	buf.WriteString(")\n\n")
 
 	// Write resource struct

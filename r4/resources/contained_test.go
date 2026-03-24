@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/helixfhir/gofhir/r4/resources"
+	"github.com/caucehealth/gofhir/r4/resources"
 )
 
 func TestContainedResourceType(t *testing.T) {

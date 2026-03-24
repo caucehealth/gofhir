@@ -6,7 +6,7 @@ package bundle
 import (
 	"encoding/json"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // BundleType represents the type of a FHIR Bundle.

@@ -8,7 +8,7 @@ package resources
 import (
 	"encoding/json"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // PractitionerRole A specific set of Roles/Locations/specialties/services that a practitioner may perform at an organization for a period of time.

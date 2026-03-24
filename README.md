@@ -7,7 +7,7 @@ Generated from the official [HL7 FHIR R4 JSON schema](https://hl7.org/fhir/R4/).
 ## Installation
 
 ```
-go get github.com/helixfhir/gofhir
+go get github.com/caucehealth/gofhir
 ```
 
 ## Usage
@@ -17,8 +17,8 @@ import (
     "encoding/json"
     "fmt"
 
-    "github.com/helixfhir/gofhir/r4/resources"
-    "github.com/helixfhir/gofhir/r4/bundle"
+    "github.com/caucehealth/gofhir/r4/resources"
+    "github.com/caucehealth/gofhir/r4/bundle"
 )
 
 // Parse a FHIR Patient from JSON

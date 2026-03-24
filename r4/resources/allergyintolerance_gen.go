@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // AllergyIntolerance Risk of harmful or undesirable, physiological response which is unique to an individual and associated with exposure to a substance.

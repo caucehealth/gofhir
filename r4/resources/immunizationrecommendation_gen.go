@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	dt "github.com/helixfhir/gofhir/r4/datatypes"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
 // ImmunizationRecommendation A patient's point-in-time set of recommendations (i.e. forecasting) according to a published schedule with optional supporting justification.
