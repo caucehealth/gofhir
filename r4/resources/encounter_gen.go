@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type Encounter struct {
 	ResourceType string `json:"resourceType"` // Always "Encounter"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,6 +42,8 @@ type Encounter struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status planned | arrived | triaged | in-progress | onleave | finished | cancelled +.
 	Status *EncounterStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Account The set of accounts that may be used for billing for this Encounter.
 	Account []dt.Reference `json:"account,omitempty"`
 	// Appointment The appointment that scheduled this encounter.
@@ -77,13 +86,29 @@ type Encounter struct {
 	Subject *dt.Reference `json:"subject,omitempty"`
 	// Type Specific type of encounter (e.g. e-mail consultation, surgical day-care, skilled nursing, rehabilitation).
 	Type []dt.CodeableConcept `json:"type,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Encounter.
 func (r Encounter) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Encounter"
 	type Alias Encounter
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Encounter.
@@ -94,22 +119,40 @@ func (r *Encounter) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Encounter(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_account", "_appointment", "_basedOn", "_class", "_classHistory", "_contained", "_diagnosis", "_episodeOfCare", "_extension", "_hospitalization", "_id", "_identifier", "_implicitRules", "_language", "_length", "_location", "_meta", "_modifierExtension", "_partOf", "_participant", "_period", "_priority", "_reasonCode", "_reasonReference", "_serviceProvider", "_serviceType", "_status", "_statusHistory", "_subject", "_text", "_type", "account", "appointment", "basedOn", "class", "classHistory", "contained", "diagnosis", "episodeOfCare", "extension", "hospitalization", "id", "identifier", "implicitRules", "language", "length", "location", "meta", "modifierExtension", "partOf", "participant", "period", "priority", "reasonCode", "reasonReference", "resourceType", "serviceProvider", "serviceType", "status", "statusHistory", "subject", "text", "type":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // EncounterBuilder provides a fluent API for constructing Encounter resources.
 type EncounterBuilder struct {
-	resource Encounter
+	resource  Encounter
+	fieldsSet map[string]bool
 }
 
 // NewEncounter creates a new EncounterBuilder for building a Encounter resource.
 func NewEncounter() *EncounterBuilder {
-	return &EncounterBuilder{resource: Encounter{ResourceType: "Encounter"}}
+	return &EncounterBuilder{resource: Encounter{ResourceType: "Encounter"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithStatus sets the encounter status.
 func (b *EncounterBuilder) WithStatus(status EncounterStatus) *EncounterBuilder {
 	b.resource.Status = &status
+	b.fieldsSet["status"] = true
 	return b
 }
 
@@ -121,186 +164,223 @@ func (b *EncounterBuilder) WithClass(system, code string) *EncounterBuilder {
 		System: &s,
 		Code:   &c,
 	}
+	b.fieldsSet["class"] = true
 	return b
 }
 
 // WithSubject sets the encounter subject reference.
 func (b *EncounterBuilder) WithSubject(reference string) *EncounterBuilder {
 	b.resource.Subject = &dt.Reference{Reference: &reference}
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithId sets the id field.
 func (b *EncounterBuilder) WithId(v dt.ID) *EncounterBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *EncounterBuilder) WithMeta(v dt.Meta) *EncounterBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *EncounterBuilder) WithImplicitRules(v dt.URI) *EncounterBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *EncounterBuilder) WithLanguage(v dt.Code) *EncounterBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *EncounterBuilder) WithText(v dt.Narrative) *EncounterBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *EncounterBuilder) WithContained(v json.RawMessage) *EncounterBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *EncounterBuilder) WithExtension(v dt.Extension) *EncounterBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *EncounterBuilder) WithModifierExtension(v dt.Extension) *EncounterBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *EncounterBuilder) WithIdentifier(v dt.Identifier) *EncounterBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithAccount adds an item to the account field.
 func (b *EncounterBuilder) WithAccount(v dt.Reference) *EncounterBuilder {
 	b.resource.Account = append(b.resource.Account, v)
+	b.fieldsSet["account"] = true
 	return b
 }
 
 // WithAppointment adds an item to the appointment field.
 func (b *EncounterBuilder) WithAppointment(v dt.Reference) *EncounterBuilder {
 	b.resource.Appointment = append(b.resource.Appointment, v)
+	b.fieldsSet["appointment"] = true
 	return b
 }
 
 // WithBasedOn adds an item to the basedOn field.
 func (b *EncounterBuilder) WithBasedOn(v dt.Reference) *EncounterBuilder {
 	b.resource.BasedOn = append(b.resource.BasedOn, v)
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithClassHistory adds an item to the classHistory field.
 func (b *EncounterBuilder) WithClassHistory(v EncounterClassHistory) *EncounterBuilder {
 	b.resource.ClassHistory = append(b.resource.ClassHistory, v)
+	b.fieldsSet["classHistory"] = true
 	return b
 }
 
 // WithDiagnosis adds an item to the diagnosis field.
 func (b *EncounterBuilder) WithDiagnosis(v EncounterDiagnosis) *EncounterBuilder {
 	b.resource.Diagnosis = append(b.resource.Diagnosis, v)
+	b.fieldsSet["diagnosis"] = true
 	return b
 }
 
 // WithEpisodeOfCare adds an item to the episodeOfCare field.
 func (b *EncounterBuilder) WithEpisodeOfCare(v dt.Reference) *EncounterBuilder {
 	b.resource.EpisodeOfCare = append(b.resource.EpisodeOfCare, v)
+	b.fieldsSet["episodeOfCare"] = true
 	return b
 }
 
 // WithHospitalization sets the hospitalization field.
 func (b *EncounterBuilder) WithHospitalization(v EncounterHospitalization) *EncounterBuilder {
 	b.resource.Hospitalization = &v
+	b.fieldsSet["hospitalization"] = true
 	return b
 }
 
 // WithLength sets the length field.
 func (b *EncounterBuilder) WithLength(v dt.Duration) *EncounterBuilder {
 	b.resource.Length = &v
+	b.fieldsSet["length"] = true
 	return b
 }
 
 // WithLocation adds an item to the location field.
 func (b *EncounterBuilder) WithLocation(v EncounterLocation) *EncounterBuilder {
 	b.resource.Location = append(b.resource.Location, v)
+	b.fieldsSet["location"] = true
 	return b
 }
 
 // WithPartOf sets the partOf field.
 func (b *EncounterBuilder) WithPartOf(v dt.Reference) *EncounterBuilder {
 	b.resource.PartOf = &v
+	b.fieldsSet["partOf"] = true
 	return b
 }
 
 // WithParticipant adds an item to the participant field.
 func (b *EncounterBuilder) WithParticipant(v EncounterParticipant) *EncounterBuilder {
 	b.resource.Participant = append(b.resource.Participant, v)
+	b.fieldsSet["participant"] = true
 	return b
 }
 
 // WithPeriod sets the period field.
 func (b *EncounterBuilder) WithPeriod(v dt.Period) *EncounterBuilder {
 	b.resource.Period = &v
+	b.fieldsSet["period"] = true
 	return b
 }
 
 // WithPriority sets the priority field.
 func (b *EncounterBuilder) WithPriority(v dt.CodeableConcept) *EncounterBuilder {
 	b.resource.Priority = &v
+	b.fieldsSet["priority"] = true
 	return b
 }
 
 // WithReasonCode adds an item to the reasonCode field.
 func (b *EncounterBuilder) WithReasonCode(v dt.CodeableConcept) *EncounterBuilder {
 	b.resource.ReasonCode = append(b.resource.ReasonCode, v)
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithReasonReference adds an item to the reasonReference field.
 func (b *EncounterBuilder) WithReasonReference(v dt.Reference) *EncounterBuilder {
 	b.resource.ReasonReference = append(b.resource.ReasonReference, v)
+	b.fieldsSet["reasonReference"] = true
 	return b
 }
 
 // WithServiceProvider sets the serviceProvider field.
 func (b *EncounterBuilder) WithServiceProvider(v dt.Reference) *EncounterBuilder {
 	b.resource.ServiceProvider = &v
+	b.fieldsSet["serviceProvider"] = true
 	return b
 }
 
 // WithServiceType sets the serviceType field.
 func (b *EncounterBuilder) WithServiceType(v dt.CodeableConcept) *EncounterBuilder {
 	b.resource.ServiceType = &v
+	b.fieldsSet["serviceType"] = true
 	return b
 }
 
 // WithStatusHistory adds an item to the statusHistory field.
 func (b *EncounterBuilder) WithStatusHistory(v EncounterStatusHistory) *EncounterBuilder {
 	b.resource.StatusHistory = append(b.resource.StatusHistory, v)
+	b.fieldsSet["statusHistory"] = true
 	return b
 }
 
 // WithType adds an item to the type field.
 func (b *EncounterBuilder) WithType(v dt.CodeableConcept) *EncounterBuilder {
 	b.resource.Type = append(b.resource.Type, v)
+	b.fieldsSet["type"] = true
 	return b
 }
 
 // Build returns the constructed Encounter. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *EncounterBuilder) Build() (*Encounter, error) {
+	var missing []string
+	if !b.fieldsSet["class"] {
+		missing = append(missing, "class")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("Encounter: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -309,6 +389,8 @@ func (b *EncounterBuilder) Build() (*Encounter, error) {
 type EncounterClassHistory struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -323,6 +405,8 @@ type EncounterClassHistory struct {
 type EncounterDiagnosis struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -331,6 +415,8 @@ type EncounterDiagnosis struct {
 	Condition dt.Reference `json:"condition"`
 	// Rank Ranking of the diagnosis (for each role type).
 	Rank *uint32 `json:"rank,omitempty"`
+	// RankElement contains element extensions for rank.
+	RankElement *dt.Element `json:"_rank,omitempty"`
 	// Use Role that this diagnosis has within the encounter (e.g. admission, billing, discharge …).
 	Use *dt.CodeableConcept `json:"use,omitempty"`
 }
@@ -339,6 +425,8 @@ type EncounterDiagnosis struct {
 type EncounterHospitalization struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -367,12 +455,16 @@ type EncounterHospitalization struct {
 type EncounterLocation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The status of the participants' presence at the specified location during the period specified. If the participant is no longer at the location, then the period will have an end date/time.
 	Status *EncounterLocationStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Location The location where the encounter takes place.
 	Location dt.Reference `json:"location"`
 	// Period Time period during which the patient was present at the location.
@@ -385,6 +477,8 @@ type EncounterLocation struct {
 type EncounterParticipant struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -401,12 +495,16 @@ type EncounterParticipant struct {
 type EncounterStatusHistory struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status planned | arrived | triaged | in-progress | onleave | finished | cancelled +.
 	Status *EncounterStatusHistoryStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Period The time that the episode was in the specified status.
 	Period dt.Period `json:"period"`
 }

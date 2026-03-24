@@ -17,12 +17,18 @@ type GuidanceResponse struct {
 	ResourceType string `json:"resourceType"` // Always "GuidanceResponse"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,6 +41,8 @@ type GuidanceResponse struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the response. If the evaluation is completed successfully, the status will indicate success. However, in order to complete the evaluation, the engine may require more information. In ...
 	Status *GuidanceResponseStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// DataRequirement If the evaluation could not be completed due to lack of information, or additional information would potentially result in a more accurate response, this element will a description of the data requ...
 	DataRequirement []dt.DataRequirement `json:"dataRequirement,omitempty"`
 	// Encounter The encounter during which this response was created or to which the creation of this record is tightly associated.
@@ -43,14 +51,20 @@ type GuidanceResponse struct {
 	EvaluationMessage []dt.Reference `json:"evaluationMessage,omitempty"`
 	// ModuleCanonical An identifier, CodeableConcept or canonical reference to the guidance that was requested.
 	ModuleCanonical *string `json:"moduleCanonical,omitempty"`
+	// ModuleCanonicalElement contains element extensions for moduleCanonical.
+	ModuleCanonicalElement *dt.Element `json:"_moduleCanonical,omitempty"`
 	// ModuleCodeableConcept An identifier, CodeableConcept or canonical reference to the guidance that was requested.
 	ModuleCodeableConcept *dt.CodeableConcept `json:"moduleCodeableConcept,omitempty"`
 	// ModuleUri An identifier, CodeableConcept or canonical reference to the guidance that was requested.
 	ModuleUri *string `json:"moduleUri,omitempty"`
+	// ModuleUriElement contains element extensions for moduleUri.
+	ModuleUriElement *dt.Element `json:"_moduleUri,omitempty"`
 	// Note Provides a mechanism to communicate additional information about the response.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// OccurrenceDateTime Indicates when the guidance response was processed.
 	OccurrenceDateTime *dt.DateTime `json:"occurrenceDateTime,omitempty"`
+	// OccurrenceDateTimeElement contains element extensions for occurrenceDateTime.
+	OccurrenceDateTimeElement *dt.Element `json:"_occurrenceDateTime,omitempty"`
 	// OutputParameters The output parameters of the evaluation, if any. Many modules will result in the return of specific resources such as procedure or communication requests that are returned as part of the operation ...
 	OutputParameters *dt.Reference `json:"outputParameters,omitempty"`
 	// Performer Provides a reference to the device that performed the guidance.
@@ -65,13 +79,29 @@ type GuidanceResponse struct {
 	Result *dt.Reference `json:"result,omitempty"`
 	// Subject The patient for which the request was processed.
 	Subject *dt.Reference `json:"subject,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for GuidanceResponse.
 func (r GuidanceResponse) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "GuidanceResponse"
 	type Alias GuidanceResponse
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for GuidanceResponse.
@@ -82,166 +112,208 @@ func (r *GuidanceResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = GuidanceResponse(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contained", "_dataRequirement", "_encounter", "_evaluationMessage", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_modifierExtension", "_moduleCanonical", "_moduleCodeableConcept", "_moduleUri", "_note", "_occurrenceDateTime", "_outputParameters", "_performer", "_reasonCode", "_reasonReference", "_requestIdentifier", "_result", "_status", "_subject", "_text", "contained", "dataRequirement", "encounter", "evaluationMessage", "extension", "id", "identifier", "implicitRules", "language", "meta", "modifierExtension", "moduleCanonical", "moduleCodeableConcept", "moduleUri", "note", "occurrenceDateTime", "outputParameters", "performer", "reasonCode", "reasonReference", "requestIdentifier", "resourceType", "result", "status", "subject", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // GuidanceResponseBuilder provides a fluent API for constructing GuidanceResponse resources.
 type GuidanceResponseBuilder struct {
-	resource GuidanceResponse
+	resource  GuidanceResponse
+	fieldsSet map[string]bool
 }
 
 // NewGuidanceResponse creates a new GuidanceResponseBuilder for building a GuidanceResponse resource.
 func NewGuidanceResponse() *GuidanceResponseBuilder {
-	return &GuidanceResponseBuilder{resource: GuidanceResponse{ResourceType: "GuidanceResponse"}}
+	return &GuidanceResponseBuilder{resource: GuidanceResponse{ResourceType: "GuidanceResponse"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *GuidanceResponseBuilder) WithId(v dt.ID) *GuidanceResponseBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *GuidanceResponseBuilder) WithMeta(v dt.Meta) *GuidanceResponseBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *GuidanceResponseBuilder) WithImplicitRules(v dt.URI) *GuidanceResponseBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *GuidanceResponseBuilder) WithLanguage(v dt.Code) *GuidanceResponseBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *GuidanceResponseBuilder) WithText(v dt.Narrative) *GuidanceResponseBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *GuidanceResponseBuilder) WithContained(v json.RawMessage) *GuidanceResponseBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *GuidanceResponseBuilder) WithExtension(v dt.Extension) *GuidanceResponseBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *GuidanceResponseBuilder) WithModifierExtension(v dt.Extension) *GuidanceResponseBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *GuidanceResponseBuilder) WithIdentifier(v dt.Identifier) *GuidanceResponseBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *GuidanceResponseBuilder) WithStatus(v GuidanceResponseStatus) *GuidanceResponseBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithDataRequirement adds an item to the dataRequirement field.
 func (b *GuidanceResponseBuilder) WithDataRequirement(v dt.DataRequirement) *GuidanceResponseBuilder {
 	b.resource.DataRequirement = append(b.resource.DataRequirement, v)
+	b.fieldsSet["dataRequirement"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *GuidanceResponseBuilder) WithEncounter(v dt.Reference) *GuidanceResponseBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithEvaluationMessage adds an item to the evaluationMessage field.
 func (b *GuidanceResponseBuilder) WithEvaluationMessage(v dt.Reference) *GuidanceResponseBuilder {
 	b.resource.EvaluationMessage = append(b.resource.EvaluationMessage, v)
+	b.fieldsSet["evaluationMessage"] = true
 	return b
 }
 
 // WithModuleCanonical sets the moduleCanonical field.
 func (b *GuidanceResponseBuilder) WithModuleCanonical(v string) *GuidanceResponseBuilder {
 	b.resource.ModuleCanonical = &v
+	b.fieldsSet["moduleCanonical"] = true
 	return b
 }
 
 // WithModuleCodeableConcept sets the moduleCodeableConcept field.
 func (b *GuidanceResponseBuilder) WithModuleCodeableConcept(v dt.CodeableConcept) *GuidanceResponseBuilder {
 	b.resource.ModuleCodeableConcept = &v
+	b.fieldsSet["moduleCodeableConcept"] = true
 	return b
 }
 
 // WithModuleUri sets the moduleUri field.
 func (b *GuidanceResponseBuilder) WithModuleUri(v string) *GuidanceResponseBuilder {
 	b.resource.ModuleUri = &v
+	b.fieldsSet["moduleUri"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *GuidanceResponseBuilder) WithNote(v dt.Annotation) *GuidanceResponseBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithOccurrenceDateTime sets the occurrenceDateTime field.
 func (b *GuidanceResponseBuilder) WithOccurrenceDateTime(v dt.DateTime) *GuidanceResponseBuilder {
 	b.resource.OccurrenceDateTime = &v
+	b.fieldsSet["occurrenceDateTime"] = true
 	return b
 }
 
 // WithOutputParameters sets the outputParameters field.
 func (b *GuidanceResponseBuilder) WithOutputParameters(v dt.Reference) *GuidanceResponseBuilder {
 	b.resource.OutputParameters = &v
+	b.fieldsSet["outputParameters"] = true
 	return b
 }
 
 // WithPerformer sets the performer field.
 func (b *GuidanceResponseBuilder) WithPerformer(v dt.Reference) *GuidanceResponseBuilder {
 	b.resource.Performer = &v
+	b.fieldsSet["performer"] = true
 	return b
 }
 
 // WithReasonCode adds an item to the reasonCode field.
 func (b *GuidanceResponseBuilder) WithReasonCode(v dt.CodeableConcept) *GuidanceResponseBuilder {
 	b.resource.ReasonCode = append(b.resource.ReasonCode, v)
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithReasonReference adds an item to the reasonReference field.
 func (b *GuidanceResponseBuilder) WithReasonReference(v dt.Reference) *GuidanceResponseBuilder {
 	b.resource.ReasonReference = append(b.resource.ReasonReference, v)
+	b.fieldsSet["reasonReference"] = true
 	return b
 }
 
 // WithRequestIdentifier sets the requestIdentifier field.
 func (b *GuidanceResponseBuilder) WithRequestIdentifier(v dt.Identifier) *GuidanceResponseBuilder {
 	b.resource.RequestIdentifier = &v
+	b.fieldsSet["requestIdentifier"] = true
 	return b
 }
 
 // WithResult sets the result field.
 func (b *GuidanceResponseBuilder) WithResult(v dt.Reference) *GuidanceResponseBuilder {
 	b.resource.Result = &v
+	b.fieldsSet["result"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *GuidanceResponseBuilder) WithSubject(v dt.Reference) *GuidanceResponseBuilder {
 	b.resource.Subject = &v
+	b.fieldsSet["subject"] = true
 	return b
 }
 

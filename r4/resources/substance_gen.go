@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type Substance struct {
 	ResourceType string `json:"resourceType"` // Always "Substance"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,23 +42,43 @@ type Substance struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status A code to indicate if the substance is actively used.
 	Status *SubstanceStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Category A code that classifies the general type of substance.  This is used  for searching, sorting and display purposes.
 	Category []dt.CodeableConcept `json:"category,omitempty"`
 	// Code A code (or set of codes) that identify this substance.
 	Code dt.CodeableConcept `json:"code"`
 	// Description A description of the substance - its appearance, handling requirements, and other usage notes.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Ingredient A substance can be composed of other substances.
 	Ingredient []SubstanceIngredient `json:"ingredient,omitempty"`
 	// Instance Substance may be used to describe a kind of substance, or a specific package/container of the substance: an instance.
 	Instance []SubstanceInstance `json:"instance,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Substance.
 func (r Substance) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Substance"
 	type Alias Substance
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Substance.
@@ -62,112 +89,151 @@ func (r *Substance) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Substance(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_category", "_code", "_contained", "_description", "_extension", "_id", "_identifier", "_implicitRules", "_ingredient", "_instance", "_language", "_meta", "_modifierExtension", "_status", "_text", "category", "code", "contained", "description", "extension", "id", "identifier", "implicitRules", "ingredient", "instance", "language", "meta", "modifierExtension", "resourceType", "status", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // SubstanceBuilder provides a fluent API for constructing Substance resources.
 type SubstanceBuilder struct {
-	resource Substance
+	resource  Substance
+	fieldsSet map[string]bool
 }
 
 // NewSubstance creates a new SubstanceBuilder for building a Substance resource.
 func NewSubstance() *SubstanceBuilder {
-	return &SubstanceBuilder{resource: Substance{ResourceType: "Substance"}}
+	return &SubstanceBuilder{resource: Substance{ResourceType: "Substance"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *SubstanceBuilder) WithId(v dt.ID) *SubstanceBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *SubstanceBuilder) WithMeta(v dt.Meta) *SubstanceBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *SubstanceBuilder) WithImplicitRules(v dt.URI) *SubstanceBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *SubstanceBuilder) WithLanguage(v dt.Code) *SubstanceBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *SubstanceBuilder) WithText(v dt.Narrative) *SubstanceBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *SubstanceBuilder) WithContained(v json.RawMessage) *SubstanceBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *SubstanceBuilder) WithExtension(v dt.Extension) *SubstanceBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *SubstanceBuilder) WithModifierExtension(v dt.Extension) *SubstanceBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *SubstanceBuilder) WithIdentifier(v dt.Identifier) *SubstanceBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *SubstanceBuilder) WithStatus(v SubstanceStatus) *SubstanceBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithCategory adds an item to the category field.
 func (b *SubstanceBuilder) WithCategory(v dt.CodeableConcept) *SubstanceBuilder {
 	b.resource.Category = append(b.resource.Category, v)
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *SubstanceBuilder) WithCode(v dt.CodeableConcept) *SubstanceBuilder {
 	b.resource.Code = v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *SubstanceBuilder) WithDescription(v string) *SubstanceBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithIngredient adds an item to the ingredient field.
 func (b *SubstanceBuilder) WithIngredient(v SubstanceIngredient) *SubstanceBuilder {
 	b.resource.Ingredient = append(b.resource.Ingredient, v)
+	b.fieldsSet["ingredient"] = true
 	return b
 }
 
 // WithInstance adds an item to the instance field.
 func (b *SubstanceBuilder) WithInstance(v SubstanceInstance) *SubstanceBuilder {
 	b.resource.Instance = append(b.resource.Instance, v)
+	b.fieldsSet["instance"] = true
 	return b
 }
 
 // Build returns the constructed Substance. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *SubstanceBuilder) Build() (*Substance, error) {
+	var missing []string
+	if !b.fieldsSet["code"] {
+		missing = append(missing, "code")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("Substance: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -176,6 +242,8 @@ func (b *SubstanceBuilder) Build() (*Substance, error) {
 type SubstanceIngredient struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -192,6 +260,8 @@ type SubstanceIngredient struct {
 type SubstanceInstance struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -200,6 +270,8 @@ type SubstanceInstance struct {
 	Identifier *dt.Identifier `json:"identifier,omitempty"`
 	// Expiry When the substance is no longer valid to use. For some substances, a single arbitrary date is used for expiry.
 	Expiry *dt.DateTime `json:"expiry,omitempty"`
+	// ExpiryElement contains element extensions for expiry.
+	ExpiryElement *dt.Element `json:"_expiry,omitempty"`
 	// Quantity The amount of the substance.
 	Quantity *dt.Quantity `json:"quantity,omitempty"`
 }

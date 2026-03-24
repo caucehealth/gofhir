@@ -18,12 +18,18 @@ type DeviceUseStatement struct {
 	ResourceType string `json:"resourceType"` // Always "DeviceUseStatement"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type DeviceUseStatement struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status A code representing the patient or other source's judgment about the state of the device used that this statement is about.  Generally this will be active or completed.
 	Status *DeviceUseStatementStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// BasedOn A plan, proposal or order that is fulfilled in whole or in part by this DeviceUseStatement.
 	BasedOn []dt.Reference `json:"basedOn,omitempty"`
 	// BodySite Indicates the anotomic location on the subject's body where the device was used ( i.e. the target).
@@ -52,12 +60,16 @@ type DeviceUseStatement struct {
 	ReasonReference []dt.Reference `json:"reasonReference,omitempty"`
 	// RecordedOn The time at which the statement was made/recorded.
 	RecordedOn *dt.DateTime `json:"recordedOn,omitempty"`
+	// RecordedOnElement contains element extensions for recordedOn.
+	RecordedOnElement *dt.Element `json:"_recordedOn,omitempty"`
 	// Source Who reported the device was being used by the patient.
 	Source *dt.Reference `json:"source,omitempty"`
 	// Subject The patient who used the device.
 	Subject dt.Reference `json:"subject"`
 	// Timing How often the device was used.
 	Timing *DeviceUseStatementTiming `json:"-"` // polymorphic
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for DeviceUseStatement.
@@ -68,7 +80,6 @@ func (r DeviceUseStatement) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -85,6 +96,9 @@ func (r DeviceUseStatement) MarshalJSON() ([]byte, error) {
 		for k, v := range vm {
 			m[k] = v
 		}
+	}
+	for k, v := range r.Extra {
+		m[k] = v
 	}
 	return json.Marshal(m)
 }
@@ -105,136 +119,173 @@ func (r *DeviceUseStatement) UnmarshalJSON(data []byte) error {
 	if timingVal.DateTime != nil || timingVal.Period != nil || timingVal.Timing != nil {
 		r.Timing = &timingVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_basedOn", "_bodySite", "_contained", "_derivedFrom", "_device", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_modifierExtension", "_note", "_reasonCode", "_reasonReference", "_recordedOn", "_source", "_status", "_subject", "_text", "_timingDateTime", "_timingPeriod", "_timingTiming", "basedOn", "bodySite", "contained", "derivedFrom", "device", "extension", "id", "identifier", "implicitRules", "language", "meta", "modifierExtension", "note", "reasonCode", "reasonReference", "recordedOn", "resourceType", "source", "status", "subject", "text", "timingDateTime", "timingPeriod", "timingTiming":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // DeviceUseStatementBuilder provides a fluent API for constructing DeviceUseStatement resources.
 type DeviceUseStatementBuilder struct {
-	resource DeviceUseStatement
+	resource  DeviceUseStatement
+	fieldsSet map[string]bool
 }
 
 // NewDeviceUseStatement creates a new DeviceUseStatementBuilder for building a DeviceUseStatement resource.
 func NewDeviceUseStatement() *DeviceUseStatementBuilder {
-	return &DeviceUseStatementBuilder{resource: DeviceUseStatement{ResourceType: "DeviceUseStatement"}}
+	return &DeviceUseStatementBuilder{resource: DeviceUseStatement{ResourceType: "DeviceUseStatement"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *DeviceUseStatementBuilder) WithId(v dt.ID) *DeviceUseStatementBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *DeviceUseStatementBuilder) WithMeta(v dt.Meta) *DeviceUseStatementBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *DeviceUseStatementBuilder) WithImplicitRules(v dt.URI) *DeviceUseStatementBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *DeviceUseStatementBuilder) WithLanguage(v dt.Code) *DeviceUseStatementBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *DeviceUseStatementBuilder) WithText(v dt.Narrative) *DeviceUseStatementBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *DeviceUseStatementBuilder) WithContained(v json.RawMessage) *DeviceUseStatementBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *DeviceUseStatementBuilder) WithExtension(v dt.Extension) *DeviceUseStatementBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *DeviceUseStatementBuilder) WithModifierExtension(v dt.Extension) *DeviceUseStatementBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *DeviceUseStatementBuilder) WithIdentifier(v dt.Identifier) *DeviceUseStatementBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *DeviceUseStatementBuilder) WithStatus(v DeviceUseStatementStatus) *DeviceUseStatementBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithBasedOn adds an item to the basedOn field.
 func (b *DeviceUseStatementBuilder) WithBasedOn(v dt.Reference) *DeviceUseStatementBuilder {
 	b.resource.BasedOn = append(b.resource.BasedOn, v)
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithBodySite sets the bodySite field.
 func (b *DeviceUseStatementBuilder) WithBodySite(v dt.CodeableConcept) *DeviceUseStatementBuilder {
 	b.resource.BodySite = &v
+	b.fieldsSet["bodySite"] = true
 	return b
 }
 
 // WithDerivedFrom adds an item to the derivedFrom field.
 func (b *DeviceUseStatementBuilder) WithDerivedFrom(v dt.Reference) *DeviceUseStatementBuilder {
 	b.resource.DerivedFrom = append(b.resource.DerivedFrom, v)
+	b.fieldsSet["derivedFrom"] = true
 	return b
 }
 
 // WithDevice sets the device field.
 func (b *DeviceUseStatementBuilder) WithDevice(v dt.Reference) *DeviceUseStatementBuilder {
 	b.resource.Device = v
+	b.fieldsSet["device"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *DeviceUseStatementBuilder) WithNote(v dt.Annotation) *DeviceUseStatementBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithReasonCode adds an item to the reasonCode field.
 func (b *DeviceUseStatementBuilder) WithReasonCode(v dt.CodeableConcept) *DeviceUseStatementBuilder {
 	b.resource.ReasonCode = append(b.resource.ReasonCode, v)
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithReasonReference adds an item to the reasonReference field.
 func (b *DeviceUseStatementBuilder) WithReasonReference(v dt.Reference) *DeviceUseStatementBuilder {
 	b.resource.ReasonReference = append(b.resource.ReasonReference, v)
+	b.fieldsSet["reasonReference"] = true
 	return b
 }
 
 // WithRecordedOn sets the recordedOn field.
 func (b *DeviceUseStatementBuilder) WithRecordedOn(v dt.DateTime) *DeviceUseStatementBuilder {
 	b.resource.RecordedOn = &v
+	b.fieldsSet["recordedOn"] = true
 	return b
 }
 
 // WithSource sets the source field.
 func (b *DeviceUseStatementBuilder) WithSource(v dt.Reference) *DeviceUseStatementBuilder {
 	b.resource.Source = &v
+	b.fieldsSet["source"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *DeviceUseStatementBuilder) WithSubject(v dt.Reference) *DeviceUseStatementBuilder {
 	b.resource.Subject = v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
@@ -244,6 +295,7 @@ func (b *DeviceUseStatementBuilder) WithTimingDateTime(v string) *DeviceUseState
 		b.resource.Timing = &DeviceUseStatementTiming{}
 	}
 	b.resource.Timing.DateTime = &v
+	b.fieldsSet["timing"] = true
 	return b
 }
 
@@ -253,6 +305,7 @@ func (b *DeviceUseStatementBuilder) WithTimingPeriod(v dt.Period) *DeviceUseStat
 		b.resource.Timing = &DeviceUseStatementTiming{}
 	}
 	b.resource.Timing.Period = &v
+	b.fieldsSet["timing"] = true
 	return b
 }
 
@@ -262,12 +315,23 @@ func (b *DeviceUseStatementBuilder) WithTimingTiming(v dt.Timing) *DeviceUseStat
 		b.resource.Timing = &DeviceUseStatementTiming{}
 	}
 	b.resource.Timing.Timing = &v
+	b.fieldsSet["timing"] = true
 	return b
 }
 
 // Build returns the constructed DeviceUseStatement. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *DeviceUseStatementBuilder) Build() (*DeviceUseStatement, error) {
+	var missing []string
+	if !b.fieldsSet["device"] {
+		missing = append(missing, "device")
+	}
+	if !b.fieldsSet["subject"] {
+		missing = append(missing, "subject")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("DeviceUseStatement: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }

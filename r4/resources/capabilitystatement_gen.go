@@ -17,12 +17,18 @@ type CapabilityStatement struct {
 	ResourceType string `json:"resourceType"` // Always "CapabilityStatement"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -33,63 +39,115 @@ type CapabilityStatement struct {
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The status of this capability statement. Enables tracking the life-cycle of the content.
 	Status *CapabilityStatementStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the capability statement and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the capability statement.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date  (and optionally time) when the capability statement was published. The date must change when the business version changes and it must change if the status code changes. In addition, it sh...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description A free text natural language description of the capability statement from a consumer's perspective. Typically, this is used when the capability statement describes a desired rather than an actual s...
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Document A document definition.
 	Document []CapabilityStatementDocument `json:"document,omitempty"`
 	// Experimental A Boolean value to indicate that this capability statement is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// FhirVersion The version of the FHIR specification that this CapabilityStatement describes (which SHALL be the same as the FHIR version of the CapabilityStatement itself). There is no default value.
 	FhirVersion *CapabilityStatementFhirVersion `json:"fhirVersion,omitempty"`
+	// FhirVersionElement contains element extensions for fhirVersion.
+	FhirVersionElement *dt.Element `json:"_fhirVersion,omitempty"`
 	// Format A list of the formats supported by this implementation using their content types.
 	Format []dt.Code `json:"format,omitempty"`
+	// FormatElement contains element extensions for each format.
+	FormatElement []dt.Element `json:"_format,omitempty"`
 	// Implementation Identifies a specific implementation instance that is described by the capability statement - i.e. a particular installation, rather than the capabilities of a software program.
 	Implementation *CapabilityStatementImplementation `json:"implementation,omitempty"`
 	// ImplementationGuide A list of implementation guides that the server does (or should) support in their entirety.
 	ImplementationGuide []dt.Canonical `json:"implementationGuide,omitempty"`
+	// ImplementationGuideElement contains element extensions for each implementationGuide.
+	ImplementationGuideElement []dt.Element `json:"_implementationGuide,omitempty"`
 	// Imports Reference to a canonical URL of another CapabilityStatement that this software adds to. The capability statement automatically includes everything in the other statement, and it is not duplicated, ...
 	Imports []dt.Canonical `json:"imports,omitempty"`
+	// ImportsElement contains element extensions for each imports.
+	ImportsElement []dt.Element `json:"_imports,omitempty"`
 	// Instantiates Reference to a canonical URL of another CapabilityStatement that this software implements. This capability statement is a published API description that corresponds to a business service. The serve...
 	Instantiates []dt.Canonical `json:"instantiates,omitempty"`
+	// InstantiatesElement contains element extensions for each instantiates.
+	InstantiatesElement []dt.Element `json:"_instantiates,omitempty"`
 	// Jurisdiction A legal or geographic region in which the capability statement is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Kind The way that this statement is intended to be used, to describe an actual running instance of software, a particular product (kind, not instance of software) or a class of implementation (e.g. a de...
 	Kind *CapabilityStatementKind `json:"kind,omitempty"`
+	// KindElement contains element extensions for kind.
+	KindElement *dt.Element `json:"_kind,omitempty"`
 	// Messaging A description of the messaging capabilities of the solution.
 	Messaging []CapabilityStatementMessaging `json:"messaging,omitempty"`
 	// Name A natural language name identifying the capability statement. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// PatchFormat A list of the patch formats supported by this implementation using their content types.
 	PatchFormat []dt.Code `json:"patchFormat,omitempty"`
+	// PatchFormatElement contains element extensions for each patchFormat.
+	PatchFormatElement []dt.Element `json:"_patchFormat,omitempty"`
 	// Publisher The name of the organization or individual that published the capability statement.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Purpose Explanation of why this capability statement is needed and why it has been designed as it has.
 	Purpose *dt.Markdown `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for purpose.
+	PurposeElement *dt.Element `json:"_purpose,omitempty"`
 	// Rest A definition of the restful capabilities of the solution, if any.
 	Rest []CapabilityStatementRest `json:"rest,omitempty"`
 	// Software Software that is covered by this capability statement.  It is used when the capability statement describes the capabilities of a particular software version, independent of an installation.
 	Software *CapabilityStatementSoftware `json:"software,omitempty"`
 	// Title A short, descriptive, user-friendly title for the capability statement.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Url An absolute URI that is used to identify this capability statement when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globa...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the capability statement when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the capab...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for CapabilityStatement.
 func (r CapabilityStatement) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "CapabilityStatement"
 	type Alias CapabilityStatement
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for CapabilityStatement.
@@ -100,220 +158,271 @@ func (r *CapabilityStatement) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = CapabilityStatement(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contact", "_contained", "_copyright", "_date", "_description", "_document", "_experimental", "_extension", "_fhirVersion", "_format", "_id", "_implementation", "_implementationGuide", "_implicitRules", "_imports", "_instantiates", "_jurisdiction", "_kind", "_language", "_messaging", "_meta", "_modifierExtension", "_name", "_patchFormat", "_publisher", "_purpose", "_rest", "_software", "_status", "_text", "_title", "_url", "_useContext", "_version", "contact", "contained", "copyright", "date", "description", "document", "experimental", "extension", "fhirVersion", "format", "id", "implementation", "implementationGuide", "implicitRules", "imports", "instantiates", "jurisdiction", "kind", "language", "messaging", "meta", "modifierExtension", "name", "patchFormat", "publisher", "purpose", "resourceType", "rest", "software", "status", "text", "title", "url", "useContext", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // CapabilityStatementBuilder provides a fluent API for constructing CapabilityStatement resources.
 type CapabilityStatementBuilder struct {
-	resource CapabilityStatement
+	resource  CapabilityStatement
+	fieldsSet map[string]bool
 }
 
 // NewCapabilityStatement creates a new CapabilityStatementBuilder for building a CapabilityStatement resource.
 func NewCapabilityStatement() *CapabilityStatementBuilder {
-	return &CapabilityStatementBuilder{resource: CapabilityStatement{ResourceType: "CapabilityStatement"}}
+	return &CapabilityStatementBuilder{resource: CapabilityStatement{ResourceType: "CapabilityStatement"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *CapabilityStatementBuilder) WithId(v dt.ID) *CapabilityStatementBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *CapabilityStatementBuilder) WithMeta(v dt.Meta) *CapabilityStatementBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *CapabilityStatementBuilder) WithImplicitRules(v dt.URI) *CapabilityStatementBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *CapabilityStatementBuilder) WithLanguage(v dt.Code) *CapabilityStatementBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *CapabilityStatementBuilder) WithText(v dt.Narrative) *CapabilityStatementBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *CapabilityStatementBuilder) WithContained(v json.RawMessage) *CapabilityStatementBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *CapabilityStatementBuilder) WithExtension(v dt.Extension) *CapabilityStatementBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *CapabilityStatementBuilder) WithModifierExtension(v dt.Extension) *CapabilityStatementBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *CapabilityStatementBuilder) WithStatus(v CapabilityStatementStatus) *CapabilityStatementBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *CapabilityStatementBuilder) WithContact(v dt.ContactDetail) *CapabilityStatementBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *CapabilityStatementBuilder) WithCopyright(v dt.Markdown) *CapabilityStatementBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *CapabilityStatementBuilder) WithDate(v dt.DateTime) *CapabilityStatementBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *CapabilityStatementBuilder) WithDescription(v dt.Markdown) *CapabilityStatementBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithDocument adds an item to the document field.
 func (b *CapabilityStatementBuilder) WithDocument(v CapabilityStatementDocument) *CapabilityStatementBuilder {
 	b.resource.Document = append(b.resource.Document, v)
+	b.fieldsSet["document"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *CapabilityStatementBuilder) WithExperimental(v bool) *CapabilityStatementBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithFhirVersion sets the fhirVersion field.
 func (b *CapabilityStatementBuilder) WithFhirVersion(v CapabilityStatementFhirVersion) *CapabilityStatementBuilder {
 	b.resource.FhirVersion = &v
+	b.fieldsSet["fhirVersion"] = true
 	return b
 }
 
 // WithFormat adds an item to the format field.
 func (b *CapabilityStatementBuilder) WithFormat(v dt.Code) *CapabilityStatementBuilder {
 	b.resource.Format = append(b.resource.Format, v)
+	b.fieldsSet["format"] = true
 	return b
 }
 
 // WithImplementation sets the implementation field.
 func (b *CapabilityStatementBuilder) WithImplementation(v CapabilityStatementImplementation) *CapabilityStatementBuilder {
 	b.resource.Implementation = &v
+	b.fieldsSet["implementation"] = true
 	return b
 }
 
 // WithImplementationGuide adds an item to the implementationGuide field.
 func (b *CapabilityStatementBuilder) WithImplementationGuide(v dt.Canonical) *CapabilityStatementBuilder {
 	b.resource.ImplementationGuide = append(b.resource.ImplementationGuide, v)
+	b.fieldsSet["implementationGuide"] = true
 	return b
 }
 
 // WithImports adds an item to the imports field.
 func (b *CapabilityStatementBuilder) WithImports(v dt.Canonical) *CapabilityStatementBuilder {
 	b.resource.Imports = append(b.resource.Imports, v)
+	b.fieldsSet["imports"] = true
 	return b
 }
 
 // WithInstantiates adds an item to the instantiates field.
 func (b *CapabilityStatementBuilder) WithInstantiates(v dt.Canonical) *CapabilityStatementBuilder {
 	b.resource.Instantiates = append(b.resource.Instantiates, v)
+	b.fieldsSet["instantiates"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *CapabilityStatementBuilder) WithJurisdiction(v dt.CodeableConcept) *CapabilityStatementBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithKind sets the kind field.
 func (b *CapabilityStatementBuilder) WithKind(v CapabilityStatementKind) *CapabilityStatementBuilder {
 	b.resource.Kind = &v
+	b.fieldsSet["kind"] = true
 	return b
 }
 
 // WithMessaging adds an item to the messaging field.
 func (b *CapabilityStatementBuilder) WithMessaging(v CapabilityStatementMessaging) *CapabilityStatementBuilder {
 	b.resource.Messaging = append(b.resource.Messaging, v)
+	b.fieldsSet["messaging"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *CapabilityStatementBuilder) WithName(v string) *CapabilityStatementBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithPatchFormat adds an item to the patchFormat field.
 func (b *CapabilityStatementBuilder) WithPatchFormat(v dt.Code) *CapabilityStatementBuilder {
 	b.resource.PatchFormat = append(b.resource.PatchFormat, v)
+	b.fieldsSet["patchFormat"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *CapabilityStatementBuilder) WithPublisher(v string) *CapabilityStatementBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithPurpose sets the purpose field.
 func (b *CapabilityStatementBuilder) WithPurpose(v dt.Markdown) *CapabilityStatementBuilder {
 	b.resource.Purpose = &v
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
 // WithRest adds an item to the rest field.
 func (b *CapabilityStatementBuilder) WithRest(v CapabilityStatementRest) *CapabilityStatementBuilder {
 	b.resource.Rest = append(b.resource.Rest, v)
+	b.fieldsSet["rest"] = true
 	return b
 }
 
 // WithSoftware sets the software field.
 func (b *CapabilityStatementBuilder) WithSoftware(v CapabilityStatementSoftware) *CapabilityStatementBuilder {
 	b.resource.Software = &v
+	b.fieldsSet["software"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *CapabilityStatementBuilder) WithTitle(v string) *CapabilityStatementBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *CapabilityStatementBuilder) WithUrl(v dt.URI) *CapabilityStatementBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *CapabilityStatementBuilder) WithUseContext(v dt.UsageContext) *CapabilityStatementBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *CapabilityStatementBuilder) WithVersion(v string) *CapabilityStatementBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -328,28 +437,40 @@ func (b *CapabilityStatementBuilder) Build() (*CapabilityStatement, error) {
 type CapabilityStatementDocument struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Documentation A description of how the application supports or uses the specified document profile.  For example, when documents are created, what action is taken with consumed documents, etc.
 	Documentation *dt.Markdown `json:"documentation,omitempty"`
+	// DocumentationElement contains element extensions for documentation.
+	DocumentationElement *dt.Element `json:"_documentation,omitempty"`
 	// Mode Mode of this document declaration - whether an application is a producer or consumer.
 	Mode *CapabilityStatementDocumentMode `json:"mode,omitempty"`
+	// ModeElement contains element extensions for mode.
+	ModeElement *dt.Element `json:"_mode,omitempty"`
 	// Profile A profile on the document Bundle that constrains which resources are present, and their contents.
 	Profile dt.Canonical `json:"profile"`
+	// ProfileElement contains element extensions for profile.
+	ProfileElement *dt.Element `json:"_profile,omitempty"`
 }
 
 // CapabilityStatementEndpoint A Capability Statement documents a set of capabilities (behaviors) of a FHIR Server for a particular version of FHIR that may be used as a statement of actual server functionality or a statement of...
 type CapabilityStatementEndpoint struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Address The network address of the endpoint. For solutions that do not use network addresses for routing, it can be just an identifier.
 	Address *dt.URL `json:"address,omitempty"`
+	// AddressElement contains element extensions for address.
+	AddressElement *dt.Element `json:"_address,omitempty"`
 	// Protocol A list of the messaging transport protocol(s) identifiers, supported by this endpoint.
 	Protocol dt.Coding `json:"protocol"`
 }
@@ -358,6 +479,8 @@ type CapabilityStatementEndpoint struct {
 type CapabilityStatementImplementation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -366,52 +489,74 @@ type CapabilityStatementImplementation struct {
 	Custodian *dt.Reference `json:"custodian,omitempty"`
 	// Description Information about the specific installation that this capability statement relates to.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Url An absolute base URL for the implementation.  This forms the base for REST interfaces as well as the mailbox and document interfaces.
 	Url *dt.URL `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 }
 
 // CapabilityStatementInteraction A Capability Statement documents a set of capabilities (behaviors) of a FHIR Server for a particular version of FHIR that may be used as a statement of actual server functionality or a statement of...
 type CapabilityStatementInteraction struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code Coded identifier of the operation, supported by the system resource.
 	Code *CapabilityStatementInteractionCode `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Documentation Guidance specific to the implementation of this operation, such as 'delete is a logical delete' or 'updates are only allowed with version id' or 'creates permitted from pre-authorized certificates ...
 	Documentation *dt.Markdown `json:"documentation,omitempty"`
+	// DocumentationElement contains element extensions for documentation.
+	DocumentationElement *dt.Element `json:"_documentation,omitempty"`
 }
 
 // CapabilityStatementInteraction1 A Capability Statement documents a set of capabilities (behaviors) of a FHIR Server for a particular version of FHIR that may be used as a statement of actual server functionality or a statement of...
 type CapabilityStatementInteraction1 struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code A coded identifier of the operation, supported by the system.
 	Code *CapabilityStatementInteraction1Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Documentation Guidance specific to the implementation of this operation, such as limitations on the kind of transactions allowed, or information about system wide search is implemented.
 	Documentation *dt.Markdown `json:"documentation,omitempty"`
+	// DocumentationElement contains element extensions for documentation.
+	DocumentationElement *dt.Element `json:"_documentation,omitempty"`
 }
 
 // CapabilityStatementMessaging A Capability Statement documents a set of capabilities (behaviors) of a FHIR Server for a particular version of FHIR that may be used as a statement of actual server functionality or a statement of...
 type CapabilityStatementMessaging struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Documentation Documentation about the system's messaging capabilities for this endpoint not otherwise documented by the capability statement.  For example, the process for becoming an authorized messaging exchan...
 	Documentation *dt.Markdown `json:"documentation,omitempty"`
+	// DocumentationElement contains element extensions for documentation.
+	DocumentationElement *dt.Element `json:"_documentation,omitempty"`
 	// Endpoint An endpoint (network accessible address) to which messages and/or replies are to be sent.
 	Endpoint []CapabilityStatementEndpoint `json:"endpoint,omitempty"`
 	// ReliableCache Length if the receiver's reliable messaging cache in minutes (if a receiver) or how long the cache length on the receiver should be (if a sender).
 	ReliableCache *uint32 `json:"reliableCache,omitempty"`
+	// ReliableCacheElement contains element extensions for reliableCache.
+	ReliableCacheElement *dt.Element `json:"_reliableCache,omitempty"`
 	// SupportedMessage References to message definitions for messages this system can send or receive.
 	SupportedMessage []CapabilityStatementSupportedMessage `json:"supportedMessage,omitempty"`
 }
@@ -420,78 +565,124 @@ type CapabilityStatementMessaging struct {
 type CapabilityStatementOperation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Definition Where the formal definition can be found. If a server references the base definition of an Operation (i.e. from the specification itself such as ```http://hl7.org/fhir/OperationDefinition/ValueSet-...
 	Definition dt.Canonical `json:"definition"`
+	// DefinitionElement contains element extensions for definition.
+	DefinitionElement *dt.Element `json:"_definition,omitempty"`
 	// Documentation Documentation that describes anything special about the operation behavior, possibly detailing different behavior for system, type and instance-level invocation of the operation.
 	Documentation *dt.Markdown `json:"documentation,omitempty"`
+	// DocumentationElement contains element extensions for documentation.
+	DocumentationElement *dt.Element `json:"_documentation,omitempty"`
 	// Name The name of the operation or query. For an operation, this is the name  prefixed with $ and used in the URL. For a query, this is the name used in the _query parameter when the query is called.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 }
 
 // CapabilityStatementResource A Capability Statement documents a set of capabilities (behaviors) of a FHIR Server for a particular version of FHIR that may be used as a statement of actual server functionality or a statement of...
 type CapabilityStatementResource struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// ConditionalCreate A flag that indicates that the server supports conditional create.
 	ConditionalCreate *bool `json:"conditionalCreate,omitempty"`
+	// ConditionalCreateElement contains element extensions for conditionalCreate.
+	ConditionalCreateElement *dt.Element `json:"_conditionalCreate,omitempty"`
 	// ConditionalDelete A code that indicates how the server supports conditional delete.
 	ConditionalDelete *CapabilityStatementResourceConditionalDelete `json:"conditionalDelete,omitempty"`
+	// ConditionalDeleteElement contains element extensions for conditionalDelete.
+	ConditionalDeleteElement *dt.Element `json:"_conditionalDelete,omitempty"`
 	// ConditionalRead A code that indicates how the server supports conditional read.
 	ConditionalRead *CapabilityStatementResourceConditionalRead `json:"conditionalRead,omitempty"`
+	// ConditionalReadElement contains element extensions for conditionalRead.
+	ConditionalReadElement *dt.Element `json:"_conditionalRead,omitempty"`
 	// ConditionalUpdate A flag that indicates that the server supports conditional update.
 	ConditionalUpdate *bool `json:"conditionalUpdate,omitempty"`
+	// ConditionalUpdateElement contains element extensions for conditionalUpdate.
+	ConditionalUpdateElement *dt.Element `json:"_conditionalUpdate,omitempty"`
 	// Documentation Additional information about the resource type used by the system.
 	Documentation *dt.Markdown `json:"documentation,omitempty"`
+	// DocumentationElement contains element extensions for documentation.
+	DocumentationElement *dt.Element `json:"_documentation,omitempty"`
 	// Interaction Identifies a restful operation supported by the solution.
 	Interaction []CapabilityStatementInteraction `json:"interaction,omitempty"`
 	// Operation Definition of an operation or a named query together with its parameters and their meaning and type. Consult the definition of the operation for details about how to invoke the operation, and the p...
 	Operation []CapabilityStatementOperation `json:"operation,omitempty"`
 	// Profile A specification of the profile that describes the solution's overall support for the resource, including any constraints on cardinality, bindings, lengths or other limitations. See further discussi...
 	Profile *dt.Canonical `json:"profile,omitempty"`
+	// ProfileElement contains element extensions for profile.
+	ProfileElement *dt.Element `json:"_profile,omitempty"`
 	// ReadHistory A flag for whether the server is able to return past versions as part of the vRead operation.
 	ReadHistory *bool `json:"readHistory,omitempty"`
+	// ReadHistoryElement contains element extensions for readHistory.
+	ReadHistoryElement *dt.Element `json:"_readHistory,omitempty"`
 	// ReferencePolicy A set of flags that defines how references are supported.
 	ReferencePolicy []CapabilityStatementResourceReferencePolicy `json:"referencePolicy,omitempty"`
+	// ReferencePolicyElement contains element extensions for each referencePolicy.
+	ReferencePolicyElement []dt.Element `json:"_referencePolicy,omitempty"`
 	// SearchInclude A list of _include values supported by the server.
 	SearchInclude []string `json:"searchInclude,omitempty"`
+	// SearchIncludeElement contains element extensions for each searchInclude.
+	SearchIncludeElement []dt.Element `json:"_searchInclude,omitempty"`
 	// SearchParam Search parameters for implementations to support and/or make use of - either references to ones defined in the specification, or additional ones defined for/by the implementation.
 	SearchParam []CapabilityStatementSearchParam `json:"searchParam,omitempty"`
 	// SearchRevInclude A list of _revinclude (reverse include) values supported by the server.
 	SearchRevInclude []string `json:"searchRevInclude,omitempty"`
+	// SearchRevIncludeElement contains element extensions for each searchRevInclude.
+	SearchRevIncludeElement []dt.Element `json:"_searchRevInclude,omitempty"`
 	// SupportedProfile A list of profiles that represent different use cases supported by the system. For a server, "supported by the system" means the system hosts/produces a set of resources that are conformant to a pa...
 	SupportedProfile []dt.Canonical `json:"supportedProfile,omitempty"`
+	// SupportedProfileElement contains element extensions for each supportedProfile.
+	SupportedProfileElement []dt.Element `json:"_supportedProfile,omitempty"`
 	// Type A type of resource exposed via the restful interface.
 	Type *dt.Code `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 	// UpdateCreate A flag to indicate that the server allows or needs to allow the client to create new identities on the server (that is, the client PUTs to a location where there is no existing resource). Allowing ...
 	UpdateCreate *bool `json:"updateCreate,omitempty"`
+	// UpdateCreateElement contains element extensions for updateCreate.
+	UpdateCreateElement *dt.Element `json:"_updateCreate,omitempty"`
 	// Versioning This field is set to no-version to specify that the system does not support (server) or use (client) versioning for this resource type. If this has some other value, the server must at least correc...
 	Versioning *CapabilityStatementResourceVersioning `json:"versioning,omitempty"`
+	// VersioningElement contains element extensions for versioning.
+	VersioningElement *dt.Element `json:"_versioning,omitempty"`
 }
 
 // CapabilityStatementRest A Capability Statement documents a set of capabilities (behaviors) of a FHIR Server for a particular version of FHIR that may be used as a statement of actual server functionality or a statement of...
 type CapabilityStatementRest struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Compartment An absolute URI which is a reference to the definition of a compartment that the system supports. The reference is to a CompartmentDefinition resource by its canonical URL .
 	Compartment []dt.Canonical `json:"compartment,omitempty"`
+	// CompartmentElement contains element extensions for each compartment.
+	CompartmentElement []dt.Element `json:"_compartment,omitempty"`
 	// Documentation Information about the system's restful capabilities that apply across all applications, such as security.
 	Documentation *dt.Markdown `json:"documentation,omitempty"`
+	// DocumentationElement contains element extensions for documentation.
+	DocumentationElement *dt.Element `json:"_documentation,omitempty"`
 	// Interaction A specification of restful operations supported by the system.
 	Interaction []CapabilityStatementInteraction1 `json:"interaction,omitempty"`
 	// Mode Identifies whether this portion of the statement is describing the ability to initiate or receive restful operations.
 	Mode *CapabilityStatementRestMode `json:"mode,omitempty"`
+	// ModeElement contains element extensions for mode.
+	ModeElement *dt.Element `json:"_mode,omitempty"`
 	// Operation Definition of an operation or a named query together with its parameters and their meaning and type.
 	Operation []CapabilityStatementOperation `json:"operation,omitempty"`
 	// Resource A specification of the restful capabilities of the solution for a specific resource type.
@@ -506,32 +697,48 @@ type CapabilityStatementRest struct {
 type CapabilityStatementSearchParam struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Definition An absolute URI that is a formal reference to where this parameter was first defined, so that a client can be confident of the meaning of the search parameter (a reference to [[[SearchParameter.url...
 	Definition *dt.Canonical `json:"definition,omitempty"`
+	// DefinitionElement contains element extensions for definition.
+	DefinitionElement *dt.Element `json:"_definition,omitempty"`
 	// Documentation This allows documentation of any distinct behaviors about how the search parameter is used.  For example, text matching algorithms.
 	Documentation *dt.Markdown `json:"documentation,omitempty"`
+	// DocumentationElement contains element extensions for documentation.
+	DocumentationElement *dt.Element `json:"_documentation,omitempty"`
 	// Name The name of the search parameter used in the interface.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Type The type of value a search parameter refers to, and how the content is interpreted.
 	Type *CapabilityStatementSearchParamType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }
 
 // CapabilityStatementSecurity A Capability Statement documents a set of capabilities (behaviors) of a FHIR Server for a particular version of FHIR that may be used as a statement of actual server functionality or a statement of...
 type CapabilityStatementSecurity struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Cors Server adds CORS headers when responding to requests - this enables Javascript applications to use the server.
 	Cors *bool `json:"cors,omitempty"`
+	// CorsElement contains element extensions for cors.
+	CorsElement *dt.Element `json:"_cors,omitempty"`
 	// Description General description of how security works.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Service Types of security services that are supported/required by the system.
 	Service []dt.CodeableConcept `json:"service,omitempty"`
 }
@@ -540,28 +747,42 @@ type CapabilityStatementSecurity struct {
 type CapabilityStatementSoftware struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Name Name the software is known by.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// ReleaseDate Date this version of the software was released.
 	ReleaseDate *dt.DateTime `json:"releaseDate,omitempty"`
+	// ReleaseDateElement contains element extensions for releaseDate.
+	ReleaseDateElement *dt.Element `json:"_releaseDate,omitempty"`
 	// Version The version identifier for the software covered by this statement.
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
 }
 
 // CapabilityStatementSupportedMessage A Capability Statement documents a set of capabilities (behaviors) of a FHIR Server for a particular version of FHIR that may be used as a statement of actual server functionality or a statement of...
 type CapabilityStatementSupportedMessage struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Definition Points to a message definition that identifies the messaging event, message structure, allowed responses, etc.
 	Definition dt.Canonical `json:"definition"`
+	// DefinitionElement contains element extensions for definition.
+	DefinitionElement *dt.Element `json:"_definition,omitempty"`
 	// Mode The mode of this event declaration - whether application is sender or receiver.
 	Mode *CapabilityStatementSupportedMessageMode `json:"mode,omitempty"`
+	// ModeElement contains element extensions for mode.
+	ModeElement *dt.Element `json:"_mode,omitempty"`
 }

@@ -17,12 +17,18 @@ type EnrollmentRequest struct {
 	ResourceType string `json:"resourceType"` // Always "EnrollmentRequest"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,23 +41,43 @@ type EnrollmentRequest struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the resource instance.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Candidate Patient Resource.
 	Candidate *dt.Reference `json:"candidate,omitempty"`
 	// Coverage Reference to the program or plan identification, underwriter or payor.
 	Coverage *dt.Reference `json:"coverage,omitempty"`
 	// Created The date when this resource was created.
 	Created *dt.DateTime `json:"created,omitempty"`
+	// CreatedElement contains element extensions for created.
+	CreatedElement *dt.Element `json:"_created,omitempty"`
 	// Insurer The Insurer who is target  of the request.
 	Insurer *dt.Reference `json:"insurer,omitempty"`
 	// Provider The practitioner who is responsible for the services rendered to the patient.
 	Provider *dt.Reference `json:"provider,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for EnrollmentRequest.
 func (r EnrollmentRequest) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "EnrollmentRequest"
 	type Alias EnrollmentRequest
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for EnrollmentRequest.
@@ -62,106 +88,138 @@ func (r *EnrollmentRequest) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = EnrollmentRequest(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_candidate", "_contained", "_coverage", "_created", "_extension", "_id", "_identifier", "_implicitRules", "_insurer", "_language", "_meta", "_modifierExtension", "_provider", "_status", "_text", "candidate", "contained", "coverage", "created", "extension", "id", "identifier", "implicitRules", "insurer", "language", "meta", "modifierExtension", "provider", "resourceType", "status", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // EnrollmentRequestBuilder provides a fluent API for constructing EnrollmentRequest resources.
 type EnrollmentRequestBuilder struct {
-	resource EnrollmentRequest
+	resource  EnrollmentRequest
+	fieldsSet map[string]bool
 }
 
 // NewEnrollmentRequest creates a new EnrollmentRequestBuilder for building a EnrollmentRequest resource.
 func NewEnrollmentRequest() *EnrollmentRequestBuilder {
-	return &EnrollmentRequestBuilder{resource: EnrollmentRequest{ResourceType: "EnrollmentRequest"}}
+	return &EnrollmentRequestBuilder{resource: EnrollmentRequest{ResourceType: "EnrollmentRequest"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *EnrollmentRequestBuilder) WithId(v dt.ID) *EnrollmentRequestBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *EnrollmentRequestBuilder) WithMeta(v dt.Meta) *EnrollmentRequestBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *EnrollmentRequestBuilder) WithImplicitRules(v dt.URI) *EnrollmentRequestBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *EnrollmentRequestBuilder) WithLanguage(v dt.Code) *EnrollmentRequestBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *EnrollmentRequestBuilder) WithText(v dt.Narrative) *EnrollmentRequestBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *EnrollmentRequestBuilder) WithContained(v json.RawMessage) *EnrollmentRequestBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *EnrollmentRequestBuilder) WithExtension(v dt.Extension) *EnrollmentRequestBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *EnrollmentRequestBuilder) WithModifierExtension(v dt.Extension) *EnrollmentRequestBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *EnrollmentRequestBuilder) WithIdentifier(v dt.Identifier) *EnrollmentRequestBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *EnrollmentRequestBuilder) WithStatus(v dt.Code) *EnrollmentRequestBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithCandidate sets the candidate field.
 func (b *EnrollmentRequestBuilder) WithCandidate(v dt.Reference) *EnrollmentRequestBuilder {
 	b.resource.Candidate = &v
+	b.fieldsSet["candidate"] = true
 	return b
 }
 
 // WithCoverage sets the coverage field.
 func (b *EnrollmentRequestBuilder) WithCoverage(v dt.Reference) *EnrollmentRequestBuilder {
 	b.resource.Coverage = &v
+	b.fieldsSet["coverage"] = true
 	return b
 }
 
 // WithCreated sets the created field.
 func (b *EnrollmentRequestBuilder) WithCreated(v dt.DateTime) *EnrollmentRequestBuilder {
 	b.resource.Created = &v
+	b.fieldsSet["created"] = true
 	return b
 }
 
 // WithInsurer sets the insurer field.
 func (b *EnrollmentRequestBuilder) WithInsurer(v dt.Reference) *EnrollmentRequestBuilder {
 	b.resource.Insurer = &v
+	b.fieldsSet["insurer"] = true
 	return b
 }
 
 // WithProvider sets the provider field.
 func (b *EnrollmentRequestBuilder) WithProvider(v dt.Reference) *EnrollmentRequestBuilder {
 	b.resource.Provider = &v
+	b.fieldsSet["provider"] = true
 	return b
 }
 

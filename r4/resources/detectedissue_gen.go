@@ -17,12 +17,18 @@ type DetectedIssue struct {
 	ResourceType string `json:"resourceType"` // Always "DetectedIssue"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,16 +41,22 @@ type DetectedIssue struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Indicates the status of the detected issue.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Author Individual or device responsible for the issue being raised.  For example, a decision support application or a pharmacist conducting a medication review.
 	Author *dt.Reference `json:"author,omitempty"`
 	// Code Identifies the general type of issue identified.
 	Code *dt.CodeableConcept `json:"code,omitempty"`
 	// Detail A textual explanation of the detected issue.
 	Detail *string `json:"detail,omitempty"`
+	// DetailElement contains element extensions for detail.
+	DetailElement *dt.Element `json:"_detail,omitempty"`
 	// Evidence Supporting evidence or manifestations that provide the basis for identifying the detected issue such as a GuidanceResponse or MeasureReport.
 	Evidence []DetectedIssueEvidence `json:"evidence,omitempty"`
 	// IdentifiedDateTime The date or period when the detected issue was initially identified.
 	IdentifiedDateTime *string `json:"identifiedDateTime,omitempty"`
+	// IdentifiedDateTimeElement contains element extensions for identifiedDateTime.
+	IdentifiedDateTimeElement *dt.Element `json:"_identifiedDateTime,omitempty"`
 	// IdentifiedPeriod The date or period when the detected issue was initially identified.
 	IdentifiedPeriod *dt.Period `json:"identifiedPeriod,omitempty"`
 	// Implicated Indicates the resource representing the current activity or proposed activity that is potentially problematic.
@@ -55,15 +67,35 @@ type DetectedIssue struct {
 	Patient *dt.Reference `json:"patient,omitempty"`
 	// Reference The literature, knowledge-base or similar reference that describes the propensity for the detected issue identified.
 	Reference *dt.URI `json:"reference,omitempty"`
+	// ReferenceElement contains element extensions for reference.
+	ReferenceElement *dt.Element `json:"_reference,omitempty"`
 	// Severity Indicates the degree of importance associated with the identified issue based on the potential impact on the patient.
 	Severity *DetectedIssueSeverity `json:"severity,omitempty"`
+	// SeverityElement contains element extensions for severity.
+	SeverityElement *dt.Element `json:"_severity,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for DetectedIssue.
 func (r DetectedIssue) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "DetectedIssue"
 	type Alias DetectedIssue
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for DetectedIssue.
@@ -74,142 +106,180 @@ func (r *DetectedIssue) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = DetectedIssue(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_author", "_code", "_contained", "_detail", "_evidence", "_extension", "_id", "_identifiedDateTime", "_identifiedPeriod", "_identifier", "_implicated", "_implicitRules", "_language", "_meta", "_mitigation", "_modifierExtension", "_patient", "_reference", "_severity", "_status", "_text", "author", "code", "contained", "detail", "evidence", "extension", "id", "identifiedDateTime", "identifiedPeriod", "identifier", "implicated", "implicitRules", "language", "meta", "mitigation", "modifierExtension", "patient", "reference", "resourceType", "severity", "status", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // DetectedIssueBuilder provides a fluent API for constructing DetectedIssue resources.
 type DetectedIssueBuilder struct {
-	resource DetectedIssue
+	resource  DetectedIssue
+	fieldsSet map[string]bool
 }
 
 // NewDetectedIssue creates a new DetectedIssueBuilder for building a DetectedIssue resource.
 func NewDetectedIssue() *DetectedIssueBuilder {
-	return &DetectedIssueBuilder{resource: DetectedIssue{ResourceType: "DetectedIssue"}}
+	return &DetectedIssueBuilder{resource: DetectedIssue{ResourceType: "DetectedIssue"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *DetectedIssueBuilder) WithId(v dt.ID) *DetectedIssueBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *DetectedIssueBuilder) WithMeta(v dt.Meta) *DetectedIssueBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *DetectedIssueBuilder) WithImplicitRules(v dt.URI) *DetectedIssueBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *DetectedIssueBuilder) WithLanguage(v dt.Code) *DetectedIssueBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *DetectedIssueBuilder) WithText(v dt.Narrative) *DetectedIssueBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *DetectedIssueBuilder) WithContained(v json.RawMessage) *DetectedIssueBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *DetectedIssueBuilder) WithExtension(v dt.Extension) *DetectedIssueBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *DetectedIssueBuilder) WithModifierExtension(v dt.Extension) *DetectedIssueBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *DetectedIssueBuilder) WithIdentifier(v dt.Identifier) *DetectedIssueBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *DetectedIssueBuilder) WithStatus(v dt.Code) *DetectedIssueBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAuthor sets the author field.
 func (b *DetectedIssueBuilder) WithAuthor(v dt.Reference) *DetectedIssueBuilder {
 	b.resource.Author = &v
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *DetectedIssueBuilder) WithCode(v dt.CodeableConcept) *DetectedIssueBuilder {
 	b.resource.Code = &v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithDetail sets the detail field.
 func (b *DetectedIssueBuilder) WithDetail(v string) *DetectedIssueBuilder {
 	b.resource.Detail = &v
+	b.fieldsSet["detail"] = true
 	return b
 }
 
 // WithEvidence adds an item to the evidence field.
 func (b *DetectedIssueBuilder) WithEvidence(v DetectedIssueEvidence) *DetectedIssueBuilder {
 	b.resource.Evidence = append(b.resource.Evidence, v)
+	b.fieldsSet["evidence"] = true
 	return b
 }
 
 // WithIdentifiedDateTime sets the identifiedDateTime field.
 func (b *DetectedIssueBuilder) WithIdentifiedDateTime(v string) *DetectedIssueBuilder {
 	b.resource.IdentifiedDateTime = &v
+	b.fieldsSet["identifiedDateTime"] = true
 	return b
 }
 
 // WithIdentifiedPeriod sets the identifiedPeriod field.
 func (b *DetectedIssueBuilder) WithIdentifiedPeriod(v dt.Period) *DetectedIssueBuilder {
 	b.resource.IdentifiedPeriod = &v
+	b.fieldsSet["identifiedPeriod"] = true
 	return b
 }
 
 // WithImplicated adds an item to the implicated field.
 func (b *DetectedIssueBuilder) WithImplicated(v dt.Reference) *DetectedIssueBuilder {
 	b.resource.Implicated = append(b.resource.Implicated, v)
+	b.fieldsSet["implicated"] = true
 	return b
 }
 
 // WithMitigation adds an item to the mitigation field.
 func (b *DetectedIssueBuilder) WithMitigation(v DetectedIssueMitigation) *DetectedIssueBuilder {
 	b.resource.Mitigation = append(b.resource.Mitigation, v)
+	b.fieldsSet["mitigation"] = true
 	return b
 }
 
 // WithPatient sets the patient field.
 func (b *DetectedIssueBuilder) WithPatient(v dt.Reference) *DetectedIssueBuilder {
 	b.resource.Patient = &v
+	b.fieldsSet["patient"] = true
 	return b
 }
 
 // WithReference sets the reference field.
 func (b *DetectedIssueBuilder) WithReference(v dt.URI) *DetectedIssueBuilder {
 	b.resource.Reference = &v
+	b.fieldsSet["reference"] = true
 	return b
 }
 
 // WithSeverity sets the severity field.
 func (b *DetectedIssueBuilder) WithSeverity(v DetectedIssueSeverity) *DetectedIssueBuilder {
 	b.resource.Severity = &v
+	b.fieldsSet["severity"] = true
 	return b
 }
 
@@ -224,6 +294,8 @@ func (b *DetectedIssueBuilder) Build() (*DetectedIssue, error) {
 type DetectedIssueEvidence struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -238,6 +310,8 @@ type DetectedIssueEvidence struct {
 type DetectedIssueMitigation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -248,4 +322,6 @@ type DetectedIssueMitigation struct {
 	Author *dt.Reference `json:"author,omitempty"`
 	// Date Indicates when the mitigating action was documented.
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 }

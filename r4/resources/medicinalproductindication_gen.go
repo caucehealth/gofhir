@@ -18,12 +18,18 @@ type MedicinalProductIndication struct {
 	ResourceType string `json:"resourceType"` // Always "MedicinalProductIndication"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -50,13 +56,29 @@ type MedicinalProductIndication struct {
 	Subject []dt.Reference `json:"subject,omitempty"`
 	// UndesirableEffect Describe the undesirable effects of the medicinal product.
 	UndesirableEffect []dt.Reference `json:"undesirableEffect,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for MedicinalProductIndication.
 func (r MedicinalProductIndication) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "MedicinalProductIndication"
 	type Alias MedicinalProductIndication
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for MedicinalProductIndication.
@@ -67,118 +89,152 @@ func (r *MedicinalProductIndication) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = MedicinalProductIndication(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_comorbidity", "_contained", "_diseaseStatus", "_diseaseSymptomProcedure", "_duration", "_extension", "_id", "_implicitRules", "_intendedEffect", "_language", "_meta", "_modifierExtension", "_otherTherapy", "_population", "_subject", "_text", "_undesirableEffect", "comorbidity", "contained", "diseaseStatus", "diseaseSymptomProcedure", "duration", "extension", "id", "implicitRules", "intendedEffect", "language", "meta", "modifierExtension", "otherTherapy", "population", "resourceType", "subject", "text", "undesirableEffect":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // MedicinalProductIndicationBuilder provides a fluent API for constructing MedicinalProductIndication resources.
 type MedicinalProductIndicationBuilder struct {
-	resource MedicinalProductIndication
+	resource  MedicinalProductIndication
+	fieldsSet map[string]bool
 }
 
 // NewMedicinalProductIndication creates a new MedicinalProductIndicationBuilder for building a MedicinalProductIndication resource.
 func NewMedicinalProductIndication() *MedicinalProductIndicationBuilder {
-	return &MedicinalProductIndicationBuilder{resource: MedicinalProductIndication{ResourceType: "MedicinalProductIndication"}}
+	return &MedicinalProductIndicationBuilder{resource: MedicinalProductIndication{ResourceType: "MedicinalProductIndication"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *MedicinalProductIndicationBuilder) WithId(v dt.ID) *MedicinalProductIndicationBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *MedicinalProductIndicationBuilder) WithMeta(v dt.Meta) *MedicinalProductIndicationBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *MedicinalProductIndicationBuilder) WithImplicitRules(v dt.URI) *MedicinalProductIndicationBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *MedicinalProductIndicationBuilder) WithLanguage(v dt.Code) *MedicinalProductIndicationBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *MedicinalProductIndicationBuilder) WithText(v dt.Narrative) *MedicinalProductIndicationBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *MedicinalProductIndicationBuilder) WithContained(v json.RawMessage) *MedicinalProductIndicationBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *MedicinalProductIndicationBuilder) WithExtension(v dt.Extension) *MedicinalProductIndicationBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *MedicinalProductIndicationBuilder) WithModifierExtension(v dt.Extension) *MedicinalProductIndicationBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithComorbidity adds an item to the comorbidity field.
 func (b *MedicinalProductIndicationBuilder) WithComorbidity(v dt.CodeableConcept) *MedicinalProductIndicationBuilder {
 	b.resource.Comorbidity = append(b.resource.Comorbidity, v)
+	b.fieldsSet["comorbidity"] = true
 	return b
 }
 
 // WithDiseaseStatus sets the diseaseStatus field.
 func (b *MedicinalProductIndicationBuilder) WithDiseaseStatus(v dt.CodeableConcept) *MedicinalProductIndicationBuilder {
 	b.resource.DiseaseStatus = &v
+	b.fieldsSet["diseaseStatus"] = true
 	return b
 }
 
 // WithDiseaseSymptomProcedure sets the diseaseSymptomProcedure field.
 func (b *MedicinalProductIndicationBuilder) WithDiseaseSymptomProcedure(v dt.CodeableConcept) *MedicinalProductIndicationBuilder {
 	b.resource.DiseaseSymptomProcedure = &v
+	b.fieldsSet["diseaseSymptomProcedure"] = true
 	return b
 }
 
 // WithDuration sets the duration field.
 func (b *MedicinalProductIndicationBuilder) WithDuration(v dt.Quantity) *MedicinalProductIndicationBuilder {
 	b.resource.Duration = &v
+	b.fieldsSet["duration"] = true
 	return b
 }
 
 // WithIntendedEffect sets the intendedEffect field.
 func (b *MedicinalProductIndicationBuilder) WithIntendedEffect(v dt.CodeableConcept) *MedicinalProductIndicationBuilder {
 	b.resource.IntendedEffect = &v
+	b.fieldsSet["intendedEffect"] = true
 	return b
 }
 
 // WithOtherTherapy adds an item to the otherTherapy field.
 func (b *MedicinalProductIndicationBuilder) WithOtherTherapy(v MedicinalProductIndicationOtherTherapy) *MedicinalProductIndicationBuilder {
 	b.resource.OtherTherapy = append(b.resource.OtherTherapy, v)
+	b.fieldsSet["otherTherapy"] = true
 	return b
 }
 
 // WithPopulation adds an item to the population field.
 func (b *MedicinalProductIndicationBuilder) WithPopulation(v dt.Population) *MedicinalProductIndicationBuilder {
 	b.resource.Population = append(b.resource.Population, v)
+	b.fieldsSet["population"] = true
 	return b
 }
 
 // WithSubject adds an item to the subject field.
 func (b *MedicinalProductIndicationBuilder) WithSubject(v dt.Reference) *MedicinalProductIndicationBuilder {
 	b.resource.Subject = append(b.resource.Subject, v)
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithUndesirableEffect adds an item to the undesirableEffect field.
 func (b *MedicinalProductIndicationBuilder) WithUndesirableEffect(v dt.Reference) *MedicinalProductIndicationBuilder {
 	b.resource.UndesirableEffect = append(b.resource.UndesirableEffect, v)
+	b.fieldsSet["undesirableEffect"] = true
 	return b
 }
 
@@ -193,6 +249,8 @@ func (b *MedicinalProductIndicationBuilder) Build() (*MedicinalProductIndication
 type MedicinalProductIndicationOtherTherapy struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

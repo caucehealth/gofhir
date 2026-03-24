@@ -18,12 +18,18 @@ type Composition struct {
 	ResourceType string `json:"resourceType"` // Always "Composition"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type Composition struct {
 	Identifier *dt.Identifier `json:"identifier,omitempty"`
 	// Status The workflow/clinical status of this composition. The status is a marker for the clinical standing of the document.
 	Status *CompositionStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Attester A participant who has attested to the accuracy of the composition/document.
 	Attester []CompositionAttester `json:"attester,omitempty"`
 	// Author Identifies who is responsible for the information in the composition, not necessarily who typed it in.
@@ -44,10 +52,14 @@ type Composition struct {
 	Category []dt.CodeableConcept `json:"category,omitempty"`
 	// Confidentiality The code specifying the level of confidentiality of the Composition.
 	Confidentiality *dt.Code `json:"confidentiality,omitempty"`
+	// ConfidentialityElement contains element extensions for confidentiality.
+	ConfidentialityElement *dt.Element `json:"_confidentiality,omitempty"`
 	// Custodian Identifies the organization or group who is responsible for ongoing maintenance of and access to the composition/document information.
 	Custodian *dt.Reference `json:"custodian,omitempty"`
 	// Date The composition editing time, when the composition was last logically changed by the author.
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Encounter Describes the clinical encounter or type of care this documentation is associated with.
 	Encounter *dt.Reference `json:"encounter,omitempty"`
 	// Event The clinical service, such as a colonoscopy or an appendectomy, being documented.
@@ -60,15 +72,33 @@ type Composition struct {
 	Subject *dt.Reference `json:"subject,omitempty"`
 	// Title Official human-readable label for the composition.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Type Specifies the particular kind of composition (e.g. History and Physical, Discharge Summary, Progress Note). This usually equates to the purpose of making the composition.
 	Type dt.CodeableConcept `json:"type"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Composition.
 func (r Composition) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Composition"
 	type Alias Composition
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Composition.
@@ -79,154 +109,194 @@ func (r *Composition) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Composition(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_attester", "_author", "_category", "_confidentiality", "_contained", "_custodian", "_date", "_encounter", "_event", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_modifierExtension", "_relatesTo", "_section", "_status", "_subject", "_text", "_title", "_type", "attester", "author", "category", "confidentiality", "contained", "custodian", "date", "encounter", "event", "extension", "id", "identifier", "implicitRules", "language", "meta", "modifierExtension", "relatesTo", "resourceType", "section", "status", "subject", "text", "title", "type":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // CompositionBuilder provides a fluent API for constructing Composition resources.
 type CompositionBuilder struct {
-	resource Composition
+	resource  Composition
+	fieldsSet map[string]bool
 }
 
 // NewComposition creates a new CompositionBuilder for building a Composition resource.
 func NewComposition() *CompositionBuilder {
-	return &CompositionBuilder{resource: Composition{ResourceType: "Composition"}}
+	return &CompositionBuilder{resource: Composition{ResourceType: "Composition"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *CompositionBuilder) WithId(v dt.ID) *CompositionBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *CompositionBuilder) WithMeta(v dt.Meta) *CompositionBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *CompositionBuilder) WithImplicitRules(v dt.URI) *CompositionBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *CompositionBuilder) WithLanguage(v dt.Code) *CompositionBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *CompositionBuilder) WithText(v dt.Narrative) *CompositionBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *CompositionBuilder) WithContained(v json.RawMessage) *CompositionBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *CompositionBuilder) WithExtension(v dt.Extension) *CompositionBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *CompositionBuilder) WithModifierExtension(v dt.Extension) *CompositionBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier sets the identifier field.
 func (b *CompositionBuilder) WithIdentifier(v dt.Identifier) *CompositionBuilder {
 	b.resource.Identifier = &v
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *CompositionBuilder) WithStatus(v CompositionStatus) *CompositionBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAttester adds an item to the attester field.
 func (b *CompositionBuilder) WithAttester(v CompositionAttester) *CompositionBuilder {
 	b.resource.Attester = append(b.resource.Attester, v)
+	b.fieldsSet["attester"] = true
 	return b
 }
 
 // WithAuthor adds an item to the author field.
 func (b *CompositionBuilder) WithAuthor(v dt.Reference) *CompositionBuilder {
 	b.resource.Author = append(b.resource.Author, v)
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithCategory adds an item to the category field.
 func (b *CompositionBuilder) WithCategory(v dt.CodeableConcept) *CompositionBuilder {
 	b.resource.Category = append(b.resource.Category, v)
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithConfidentiality sets the confidentiality field.
 func (b *CompositionBuilder) WithConfidentiality(v dt.Code) *CompositionBuilder {
 	b.resource.Confidentiality = &v
+	b.fieldsSet["confidentiality"] = true
 	return b
 }
 
 // WithCustodian sets the custodian field.
 func (b *CompositionBuilder) WithCustodian(v dt.Reference) *CompositionBuilder {
 	b.resource.Custodian = &v
+	b.fieldsSet["custodian"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *CompositionBuilder) WithDate(v dt.DateTime) *CompositionBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *CompositionBuilder) WithEncounter(v dt.Reference) *CompositionBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithEvent adds an item to the event field.
 func (b *CompositionBuilder) WithEvent(v CompositionEvent) *CompositionBuilder {
 	b.resource.Event = append(b.resource.Event, v)
+	b.fieldsSet["event"] = true
 	return b
 }
 
 // WithRelatesTo adds an item to the relatesTo field.
 func (b *CompositionBuilder) WithRelatesTo(v CompositionRelatesTo) *CompositionBuilder {
 	b.resource.RelatesTo = append(b.resource.RelatesTo, v)
+	b.fieldsSet["relatesTo"] = true
 	return b
 }
 
 // WithSection adds an item to the section field.
 func (b *CompositionBuilder) WithSection(v CompositionSection) *CompositionBuilder {
 	b.resource.Section = append(b.resource.Section, v)
+	b.fieldsSet["section"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *CompositionBuilder) WithSubject(v dt.Reference) *CompositionBuilder {
 	b.resource.Subject = &v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *CompositionBuilder) WithTitle(v string) *CompositionBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *CompositionBuilder) WithType(v dt.CodeableConcept) *CompositionBuilder {
 	b.resource.Type = v
+	b.fieldsSet["type"] = true
 	return b
 }
 
@@ -234,8 +304,11 @@ func (b *CompositionBuilder) WithType(v dt.CodeableConcept) *CompositionBuilder 
 // field (cardinality 1..1) is not set.
 func (b *CompositionBuilder) Build() (*Composition, error) {
 	var missing []string
-	if len(b.resource.Author) == 0 {
+	if !b.fieldsSet["author"] {
 		missing = append(missing, "author")
+	}
+	if !b.fieldsSet["type"] {
+		missing = append(missing, "type")
 	}
 	if len(missing) > 0 {
 		return nil, fmt.Errorf("Composition: required fields missing: %v", missing)
@@ -248,22 +321,30 @@ func (b *CompositionBuilder) Build() (*Composition, error) {
 type CompositionAttester struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Mode The type of attestation the authenticator offers.
 	Mode *CompositionAttesterMode `json:"mode,omitempty"`
+	// ModeElement contains element extensions for mode.
+	ModeElement *dt.Element `json:"_mode,omitempty"`
 	// Party Who attested the composition in the specified way.
 	Party *dt.Reference `json:"party,omitempty"`
 	// Time When the composition was attested by the party.
 	Time *dt.DateTime `json:"time,omitempty"`
+	// TimeElement contains element extensions for time.
+	TimeElement *dt.Element `json:"_time,omitempty"`
 }
 
 // CompositionEvent A set of healthcare-related information that is assembled together into a single logical package that provides a single coherent statement of meaning, establishes its own context and that has clini...
 type CompositionEvent struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -280,12 +361,16 @@ type CompositionEvent struct {
 type CompositionRelatesTo struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code The type of relationship that this composition has with anther composition or document.
 	Code *dt.Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// TargetIdentifier The target composition/document of this relationship.
 	TargetIdentifier *dt.Identifier `json:"targetIdentifier,omitempty"`
 	// TargetReference The target composition/document of this relationship.
@@ -296,6 +381,8 @@ type CompositionRelatesTo struct {
 type CompositionSection struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Text A human-readable narrative that contains the attested content of the section, used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
@@ -314,10 +401,14 @@ type CompositionSection struct {
 	Focus *dt.Reference `json:"focus,omitempty"`
 	// Mode How the entry list was prepared - whether it is a working list that is suitable for being maintained on an ongoing basis, or if it represents a snapshot of a list of items from another source, or w...
 	Mode *dt.Code `json:"mode,omitempty"`
+	// ModeElement contains element extensions for mode.
+	ModeElement *dt.Element `json:"_mode,omitempty"`
 	// OrderedBy Specifies the order applied to the items in the section entries.
 	OrderedBy *dt.CodeableConcept `json:"orderedBy,omitempty"`
 	// Section A nested sub-section within this section.
 	Section []CompositionSection `json:"section,omitempty"`
 	// Title The label for this particular section.  This will be part of the rendered content for the document, and is often used to build a table of contents.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 }

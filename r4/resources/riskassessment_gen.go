@@ -18,12 +18,18 @@ type RiskAssessment struct {
 	ResourceType string `json:"resourceType"` // Always "RiskAssessment"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type RiskAssessment struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the RiskAssessment, using the same statuses as an Observation.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// BasedOn A reference to the request that is fulfilled by this risk assessment.
 	BasedOn *dt.Reference `json:"basedOn,omitempty"`
 	// Basis Indicates the source data considered as part of the assessment (for example, FamilyHistory, Observations, Procedures, Conditions, etc.).
@@ -50,6 +58,8 @@ type RiskAssessment struct {
 	Method *dt.CodeableConcept `json:"method,omitempty"`
 	// Mitigation A description of the steps that might be taken to reduce the identified risk(s).
 	Mitigation *string `json:"mitigation,omitempty"`
+	// MitigationElement contains element extensions for mitigation.
+	MitigationElement *dt.Element `json:"_mitigation,omitempty"`
 	// Note Additional comments about the risk assessment.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// Occurrence The date (and possibly time) the risk assessment was performed.
@@ -66,6 +76,8 @@ type RiskAssessment struct {
 	ReasonReference []dt.Reference `json:"reasonReference,omitempty"`
 	// Subject The patient or group the risk assessment applies to.
 	Subject dt.Reference `json:"subject"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for RiskAssessment.
@@ -76,7 +88,6 @@ func (r RiskAssessment) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -93,6 +104,9 @@ func (r RiskAssessment) MarshalJSON() ([]byte, error) {
 		for k, v := range vm {
 			m[k] = v
 		}
+	}
+	for k, v := range r.Extra {
+		m[k] = v
 	}
 	return json.Marshal(m)
 }
@@ -113,124 +127,159 @@ func (r *RiskAssessment) UnmarshalJSON(data []byte) error {
 	if occurrenceVal.DateTime != nil || occurrenceVal.Period != nil {
 		r.Occurrence = &occurrenceVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_basedOn", "_basis", "_code", "_condition", "_contained", "_encounter", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_method", "_mitigation", "_modifierExtension", "_note", "_occurrenceDateTime", "_occurrencePeriod", "_parent", "_performer", "_prediction", "_reasonCode", "_reasonReference", "_status", "_subject", "_text", "basedOn", "basis", "code", "condition", "contained", "encounter", "extension", "id", "identifier", "implicitRules", "language", "meta", "method", "mitigation", "modifierExtension", "note", "occurrenceDateTime", "occurrencePeriod", "parent", "performer", "prediction", "reasonCode", "reasonReference", "resourceType", "status", "subject", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // RiskAssessmentBuilder provides a fluent API for constructing RiskAssessment resources.
 type RiskAssessmentBuilder struct {
-	resource RiskAssessment
+	resource  RiskAssessment
+	fieldsSet map[string]bool
 }
 
 // NewRiskAssessment creates a new RiskAssessmentBuilder for building a RiskAssessment resource.
 func NewRiskAssessment() *RiskAssessmentBuilder {
-	return &RiskAssessmentBuilder{resource: RiskAssessment{ResourceType: "RiskAssessment"}}
+	return &RiskAssessmentBuilder{resource: RiskAssessment{ResourceType: "RiskAssessment"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *RiskAssessmentBuilder) WithId(v dt.ID) *RiskAssessmentBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *RiskAssessmentBuilder) WithMeta(v dt.Meta) *RiskAssessmentBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *RiskAssessmentBuilder) WithImplicitRules(v dt.URI) *RiskAssessmentBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *RiskAssessmentBuilder) WithLanguage(v dt.Code) *RiskAssessmentBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *RiskAssessmentBuilder) WithText(v dt.Narrative) *RiskAssessmentBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *RiskAssessmentBuilder) WithContained(v json.RawMessage) *RiskAssessmentBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *RiskAssessmentBuilder) WithExtension(v dt.Extension) *RiskAssessmentBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *RiskAssessmentBuilder) WithModifierExtension(v dt.Extension) *RiskAssessmentBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *RiskAssessmentBuilder) WithIdentifier(v dt.Identifier) *RiskAssessmentBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *RiskAssessmentBuilder) WithStatus(v dt.Code) *RiskAssessmentBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithBasedOn sets the basedOn field.
 func (b *RiskAssessmentBuilder) WithBasedOn(v dt.Reference) *RiskAssessmentBuilder {
 	b.resource.BasedOn = &v
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithBasis adds an item to the basis field.
 func (b *RiskAssessmentBuilder) WithBasis(v dt.Reference) *RiskAssessmentBuilder {
 	b.resource.Basis = append(b.resource.Basis, v)
+	b.fieldsSet["basis"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *RiskAssessmentBuilder) WithCode(v dt.CodeableConcept) *RiskAssessmentBuilder {
 	b.resource.Code = &v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithCondition sets the condition field.
 func (b *RiskAssessmentBuilder) WithCondition(v dt.Reference) *RiskAssessmentBuilder {
 	b.resource.Condition = &v
+	b.fieldsSet["condition"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *RiskAssessmentBuilder) WithEncounter(v dt.Reference) *RiskAssessmentBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithMethod sets the method field.
 func (b *RiskAssessmentBuilder) WithMethod(v dt.CodeableConcept) *RiskAssessmentBuilder {
 	b.resource.Method = &v
+	b.fieldsSet["method"] = true
 	return b
 }
 
 // WithMitigation sets the mitigation field.
 func (b *RiskAssessmentBuilder) WithMitigation(v string) *RiskAssessmentBuilder {
 	b.resource.Mitigation = &v
+	b.fieldsSet["mitigation"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *RiskAssessmentBuilder) WithNote(v dt.Annotation) *RiskAssessmentBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
@@ -240,6 +289,7 @@ func (b *RiskAssessmentBuilder) WithOccurrenceDateTime(v string) *RiskAssessment
 		b.resource.Occurrence = &RiskAssessmentOccurrence{}
 	}
 	b.resource.Occurrence.DateTime = &v
+	b.fieldsSet["occurrence"] = true
 	return b
 }
 
@@ -249,48 +299,62 @@ func (b *RiskAssessmentBuilder) WithOccurrencePeriod(v dt.Period) *RiskAssessmen
 		b.resource.Occurrence = &RiskAssessmentOccurrence{}
 	}
 	b.resource.Occurrence.Period = &v
+	b.fieldsSet["occurrence"] = true
 	return b
 }
 
 // WithParent sets the parent field.
 func (b *RiskAssessmentBuilder) WithParent(v dt.Reference) *RiskAssessmentBuilder {
 	b.resource.Parent = &v
+	b.fieldsSet["parent"] = true
 	return b
 }
 
 // WithPerformer sets the performer field.
 func (b *RiskAssessmentBuilder) WithPerformer(v dt.Reference) *RiskAssessmentBuilder {
 	b.resource.Performer = &v
+	b.fieldsSet["performer"] = true
 	return b
 }
 
 // WithPrediction adds an item to the prediction field.
 func (b *RiskAssessmentBuilder) WithPrediction(v RiskAssessmentPrediction) *RiskAssessmentBuilder {
 	b.resource.Prediction = append(b.resource.Prediction, v)
+	b.fieldsSet["prediction"] = true
 	return b
 }
 
 // WithReasonCode adds an item to the reasonCode field.
 func (b *RiskAssessmentBuilder) WithReasonCode(v dt.CodeableConcept) *RiskAssessmentBuilder {
 	b.resource.ReasonCode = append(b.resource.ReasonCode, v)
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithReasonReference adds an item to the reasonReference field.
 func (b *RiskAssessmentBuilder) WithReasonReference(v dt.Reference) *RiskAssessmentBuilder {
 	b.resource.ReasonReference = append(b.resource.ReasonReference, v)
+	b.fieldsSet["reasonReference"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *RiskAssessmentBuilder) WithSubject(v dt.Reference) *RiskAssessmentBuilder {
 	b.resource.Subject = v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // Build returns the constructed RiskAssessment. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *RiskAssessmentBuilder) Build() (*RiskAssessment, error) {
+	var missing []string
+	if !b.fieldsSet["subject"] {
+		missing = append(missing, "subject")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("RiskAssessment: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -299,6 +363,8 @@ func (b *RiskAssessmentBuilder) Build() (*RiskAssessment, error) {
 type RiskAssessmentPrediction struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -307,14 +373,20 @@ type RiskAssessmentPrediction struct {
 	Outcome *dt.CodeableConcept `json:"outcome,omitempty"`
 	// ProbabilityDecimal Indicates how likely the outcome is (in the specified timeframe).
 	ProbabilityDecimal *float64 `json:"probabilityDecimal,omitempty"`
+	// ProbabilityDecimalElement contains element extensions for probabilityDecimal.
+	ProbabilityDecimalElement *dt.Element `json:"_probabilityDecimal,omitempty"`
 	// ProbabilityRange Indicates how likely the outcome is (in the specified timeframe).
 	ProbabilityRange *dt.Range `json:"probabilityRange,omitempty"`
 	// QualitativeRisk Indicates how likely the outcome is (in the specified timeframe), expressed as a qualitative value (e.g. low, medium, or high).
 	QualitativeRisk *dt.CodeableConcept `json:"qualitativeRisk,omitempty"`
 	// Rationale Additional information explaining the basis for the prediction.
 	Rationale *string `json:"rationale,omitempty"`
+	// RationaleElement contains element extensions for rationale.
+	RationaleElement *dt.Element `json:"_rationale,omitempty"`
 	// RelativeRisk Indicates the risk for this particular subject (with their specific characteristics) divided by the risk of the population in general.  (Numbers greater than 1 = higher risk than the population, nu...
 	RelativeRisk *float64 `json:"relativeRisk,omitempty"`
+	// RelativeRiskElement contains element extensions for relativeRisk.
+	RelativeRiskElement *dt.Element `json:"_relativeRisk,omitempty"`
 	// WhenPeriod Indicates the period of time or age range of the subject to which the specified probability applies.
 	WhenPeriod *dt.Period `json:"whenPeriod,omitempty"`
 	// WhenRange Indicates the period of time or age range of the subject to which the specified probability applies.

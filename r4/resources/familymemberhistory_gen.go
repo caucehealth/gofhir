@@ -18,12 +18,18 @@ type FamilyMemberHistory struct {
 	ResourceType string `json:"resourceType"` // Always "FamilyMemberHistory"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type FamilyMemberHistory struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status A code specifying the status of the record of the family history of a specific family member.
 	Status *FamilyMemberHistoryStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Age The age of the relative at the time the family member history is recorded.
 	Age *FamilyMemberHistoryAge `json:"-"` // polymorphic
 	// Born The actual or approximate date of birth of the relative.
@@ -46,16 +54,26 @@ type FamilyMemberHistory struct {
 	DataAbsentReason *dt.CodeableConcept `json:"dataAbsentReason,omitempty"`
 	// Date The date (and possibly time) when the family member history was recorded or last updated.
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Deceased Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
 	Deceased *FamilyMemberHistoryDeceased `json:"-"` // polymorphic
 	// EstimatedAge If true, indicates that the age value specified is an estimated value.
 	EstimatedAge *bool `json:"estimatedAge,omitempty"`
+	// EstimatedAgeElement contains element extensions for estimatedAge.
+	EstimatedAgeElement *dt.Element `json:"_estimatedAge,omitempty"`
 	// InstantiatesCanonical The URL pointing to a FHIR-defined protocol, guideline, orderset or other definition that is adhered to in whole or in part by this FamilyMemberHistory.
 	InstantiatesCanonical []dt.Canonical `json:"instantiatesCanonical,omitempty"`
+	// InstantiatesCanonicalElement contains element extensions for each instantiatesCanonical.
+	InstantiatesCanonicalElement []dt.Element `json:"_instantiatesCanonical,omitempty"`
 	// InstantiatesUri The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this FamilyMemberHistory.
 	InstantiatesUri []dt.URI `json:"instantiatesUri,omitempty"`
+	// InstantiatesUriElement contains element extensions for each instantiatesUri.
+	InstantiatesUriElement []dt.Element `json:"_instantiatesUri,omitempty"`
 	// Name This will either be a name or a description; e.g. "Aunt Susan", "my cousin with the red hair".
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Note This property allows a non condition-specific note to the made about the related person. Ideally, the note would be in the condition property, but this is not always possible.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// Patient The person who this history concerns.
@@ -68,6 +86,8 @@ type FamilyMemberHistory struct {
 	Relationship dt.CodeableConcept `json:"relationship"`
 	// Sex The birth sex of the family member.
 	Sex *dt.CodeableConcept `json:"sex,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for FamilyMemberHistory.
@@ -78,7 +98,6 @@ func (r FamilyMemberHistory) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -122,6 +141,9 @@ func (r FamilyMemberHistory) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
 	return json.Marshal(m)
 }
 
@@ -134,6 +156,13 @@ func (r *FamilyMemberHistory) UnmarshalJSON(data []byte) error {
 	}
 	*r = FamilyMemberHistory(alias)
 	// Unmarshal polymorphic fields
+	var ageVal FamilyMemberHistoryAge
+	if err := ageVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if ageVal.Age != nil || ageVal.Range != nil || ageVal.String != nil {
+		r.Age = &ageVal
+	}
 	var bornVal FamilyMemberHistoryBorn
 	if err := bornVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -148,83 +177,103 @@ func (r *FamilyMemberHistory) UnmarshalJSON(data []byte) error {
 	if deceasedVal.Age != nil || deceasedVal.Boolean != nil || deceasedVal.Date != nil || deceasedVal.Range != nil || deceasedVal.String != nil {
 		r.Deceased = &deceasedVal
 	}
-	var ageVal FamilyMemberHistoryAge
-	if err := ageVal.UnmarshalJSON(data); err != nil {
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
 		return err
 	}
-	if ageVal.Age != nil || ageVal.Range != nil || ageVal.String != nil {
-		r.Age = &ageVal
+	for k, v := range raw {
+		switch k {
+		case "_ageAge", "_ageRange", "_ageString", "_bornDate", "_bornPeriod", "_bornString", "_condition", "_contained", "_dataAbsentReason", "_date", "_deceasedAge", "_deceasedBoolean", "_deceasedDate", "_deceasedRange", "_deceasedString", "_estimatedAge", "_extension", "_id", "_identifier", "_implicitRules", "_instantiatesCanonical", "_instantiatesUri", "_language", "_meta", "_modifierExtension", "_name", "_note", "_patient", "_reasonCode", "_reasonReference", "_relationship", "_sex", "_status", "_text", "ageAge", "ageRange", "ageString", "bornDate", "bornPeriod", "bornString", "condition", "contained", "dataAbsentReason", "date", "deceasedAge", "deceasedBoolean", "deceasedDate", "deceasedRange", "deceasedString", "estimatedAge", "extension", "id", "identifier", "implicitRules", "instantiatesCanonical", "instantiatesUri", "language", "meta", "modifierExtension", "name", "note", "patient", "reasonCode", "reasonReference", "relationship", "resourceType", "sex", "status", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
 	}
 	return nil
 }
 
 // FamilyMemberHistoryBuilder provides a fluent API for constructing FamilyMemberHistory resources.
 type FamilyMemberHistoryBuilder struct {
-	resource FamilyMemberHistory
+	resource  FamilyMemberHistory
+	fieldsSet map[string]bool
 }
 
 // NewFamilyMemberHistory creates a new FamilyMemberHistoryBuilder for building a FamilyMemberHistory resource.
 func NewFamilyMemberHistory() *FamilyMemberHistoryBuilder {
-	return &FamilyMemberHistoryBuilder{resource: FamilyMemberHistory{ResourceType: "FamilyMemberHistory"}}
+	return &FamilyMemberHistoryBuilder{resource: FamilyMemberHistory{ResourceType: "FamilyMemberHistory"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *FamilyMemberHistoryBuilder) WithId(v dt.ID) *FamilyMemberHistoryBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *FamilyMemberHistoryBuilder) WithMeta(v dt.Meta) *FamilyMemberHistoryBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *FamilyMemberHistoryBuilder) WithImplicitRules(v dt.URI) *FamilyMemberHistoryBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *FamilyMemberHistoryBuilder) WithLanguage(v dt.Code) *FamilyMemberHistoryBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *FamilyMemberHistoryBuilder) WithText(v dt.Narrative) *FamilyMemberHistoryBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *FamilyMemberHistoryBuilder) WithContained(v json.RawMessage) *FamilyMemberHistoryBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *FamilyMemberHistoryBuilder) WithExtension(v dt.Extension) *FamilyMemberHistoryBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *FamilyMemberHistoryBuilder) WithModifierExtension(v dt.Extension) *FamilyMemberHistoryBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *FamilyMemberHistoryBuilder) WithIdentifier(v dt.Identifier) *FamilyMemberHistoryBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *FamilyMemberHistoryBuilder) WithStatus(v FamilyMemberHistoryStatus) *FamilyMemberHistoryBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
@@ -234,6 +283,7 @@ func (b *FamilyMemberHistoryBuilder) WithAgeAge(v dt.Age) *FamilyMemberHistoryBu
 		b.resource.Age = &FamilyMemberHistoryAge{}
 	}
 	b.resource.Age.Age = &v
+	b.fieldsSet["age"] = true
 	return b
 }
 
@@ -243,6 +293,7 @@ func (b *FamilyMemberHistoryBuilder) WithAgeRange(v dt.Range) *FamilyMemberHisto
 		b.resource.Age = &FamilyMemberHistoryAge{}
 	}
 	b.resource.Age.Range = &v
+	b.fieldsSet["age"] = true
 	return b
 }
 
@@ -252,6 +303,7 @@ func (b *FamilyMemberHistoryBuilder) WithAgeString(v string) *FamilyMemberHistor
 		b.resource.Age = &FamilyMemberHistoryAge{}
 	}
 	b.resource.Age.String = &v
+	b.fieldsSet["age"] = true
 	return b
 }
 
@@ -261,6 +313,7 @@ func (b *FamilyMemberHistoryBuilder) WithBornDate(v string) *FamilyMemberHistory
 		b.resource.Born = &FamilyMemberHistoryBorn{}
 	}
 	b.resource.Born.Date = &v
+	b.fieldsSet["born"] = true
 	return b
 }
 
@@ -270,6 +323,7 @@ func (b *FamilyMemberHistoryBuilder) WithBornPeriod(v dt.Period) *FamilyMemberHi
 		b.resource.Born = &FamilyMemberHistoryBorn{}
 	}
 	b.resource.Born.Period = &v
+	b.fieldsSet["born"] = true
 	return b
 }
 
@@ -279,24 +333,28 @@ func (b *FamilyMemberHistoryBuilder) WithBornString(v string) *FamilyMemberHisto
 		b.resource.Born = &FamilyMemberHistoryBorn{}
 	}
 	b.resource.Born.String = &v
+	b.fieldsSet["born"] = true
 	return b
 }
 
 // WithCondition adds an item to the condition field.
 func (b *FamilyMemberHistoryBuilder) WithCondition(v FamilyMemberHistoryCondition) *FamilyMemberHistoryBuilder {
 	b.resource.Condition = append(b.resource.Condition, v)
+	b.fieldsSet["condition"] = true
 	return b
 }
 
 // WithDataAbsentReason sets the dataAbsentReason field.
 func (b *FamilyMemberHistoryBuilder) WithDataAbsentReason(v dt.CodeableConcept) *FamilyMemberHistoryBuilder {
 	b.resource.DataAbsentReason = &v
+	b.fieldsSet["dataAbsentReason"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *FamilyMemberHistoryBuilder) WithDate(v dt.DateTime) *FamilyMemberHistoryBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
@@ -306,6 +364,7 @@ func (b *FamilyMemberHistoryBuilder) WithDeceasedAge(v dt.Age) *FamilyMemberHist
 		b.resource.Deceased = &FamilyMemberHistoryDeceased{}
 	}
 	b.resource.Deceased.Age = &v
+	b.fieldsSet["deceased"] = true
 	return b
 }
 
@@ -315,6 +374,7 @@ func (b *FamilyMemberHistoryBuilder) WithDeceasedBoolean(v bool) *FamilyMemberHi
 		b.resource.Deceased = &FamilyMemberHistoryDeceased{}
 	}
 	b.resource.Deceased.Boolean = &v
+	b.fieldsSet["deceased"] = true
 	return b
 }
 
@@ -324,6 +384,7 @@ func (b *FamilyMemberHistoryBuilder) WithDeceasedDate(v string) *FamilyMemberHis
 		b.resource.Deceased = &FamilyMemberHistoryDeceased{}
 	}
 	b.resource.Deceased.Date = &v
+	b.fieldsSet["deceased"] = true
 	return b
 }
 
@@ -333,6 +394,7 @@ func (b *FamilyMemberHistoryBuilder) WithDeceasedRange(v dt.Range) *FamilyMember
 		b.resource.Deceased = &FamilyMemberHistoryDeceased{}
 	}
 	b.resource.Deceased.Range = &v
+	b.fieldsSet["deceased"] = true
 	return b
 }
 
@@ -342,72 +404,93 @@ func (b *FamilyMemberHistoryBuilder) WithDeceasedString(v string) *FamilyMemberH
 		b.resource.Deceased = &FamilyMemberHistoryDeceased{}
 	}
 	b.resource.Deceased.String = &v
+	b.fieldsSet["deceased"] = true
 	return b
 }
 
 // WithEstimatedAge sets the estimatedAge field.
 func (b *FamilyMemberHistoryBuilder) WithEstimatedAge(v bool) *FamilyMemberHistoryBuilder {
 	b.resource.EstimatedAge = &v
+	b.fieldsSet["estimatedAge"] = true
 	return b
 }
 
 // WithInstantiatesCanonical adds an item to the instantiatesCanonical field.
 func (b *FamilyMemberHistoryBuilder) WithInstantiatesCanonical(v dt.Canonical) *FamilyMemberHistoryBuilder {
 	b.resource.InstantiatesCanonical = append(b.resource.InstantiatesCanonical, v)
+	b.fieldsSet["instantiatesCanonical"] = true
 	return b
 }
 
 // WithInstantiatesUri adds an item to the instantiatesUri field.
 func (b *FamilyMemberHistoryBuilder) WithInstantiatesUri(v dt.URI) *FamilyMemberHistoryBuilder {
 	b.resource.InstantiatesUri = append(b.resource.InstantiatesUri, v)
+	b.fieldsSet["instantiatesUri"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *FamilyMemberHistoryBuilder) WithName(v string) *FamilyMemberHistoryBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *FamilyMemberHistoryBuilder) WithNote(v dt.Annotation) *FamilyMemberHistoryBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithPatient sets the patient field.
 func (b *FamilyMemberHistoryBuilder) WithPatient(v dt.Reference) *FamilyMemberHistoryBuilder {
 	b.resource.Patient = v
+	b.fieldsSet["patient"] = true
 	return b
 }
 
 // WithReasonCode adds an item to the reasonCode field.
 func (b *FamilyMemberHistoryBuilder) WithReasonCode(v dt.CodeableConcept) *FamilyMemberHistoryBuilder {
 	b.resource.ReasonCode = append(b.resource.ReasonCode, v)
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithReasonReference adds an item to the reasonReference field.
 func (b *FamilyMemberHistoryBuilder) WithReasonReference(v dt.Reference) *FamilyMemberHistoryBuilder {
 	b.resource.ReasonReference = append(b.resource.ReasonReference, v)
+	b.fieldsSet["reasonReference"] = true
 	return b
 }
 
 // WithRelationship sets the relationship field.
 func (b *FamilyMemberHistoryBuilder) WithRelationship(v dt.CodeableConcept) *FamilyMemberHistoryBuilder {
 	b.resource.Relationship = v
+	b.fieldsSet["relationship"] = true
 	return b
 }
 
 // WithSex sets the sex field.
 func (b *FamilyMemberHistoryBuilder) WithSex(v dt.CodeableConcept) *FamilyMemberHistoryBuilder {
 	b.resource.Sex = &v
+	b.fieldsSet["sex"] = true
 	return b
 }
 
 // Build returns the constructed FamilyMemberHistory. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *FamilyMemberHistoryBuilder) Build() (*FamilyMemberHistory, error) {
+	var missing []string
+	if !b.fieldsSet["patient"] {
+		missing = append(missing, "patient")
+	}
+	if !b.fieldsSet["relationship"] {
+		missing = append(missing, "relationship")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("FamilyMemberHistory: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -416,6 +499,8 @@ func (b *FamilyMemberHistoryBuilder) Build() (*FamilyMemberHistory, error) {
 type FamilyMemberHistoryCondition struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -424,6 +509,8 @@ type FamilyMemberHistoryCondition struct {
 	Code dt.CodeableConcept `json:"code"`
 	// ContributedToDeath This condition contributed to the cause of death of the related person. If contributedToDeath is not populated, then it is unknown.
 	ContributedToDeath *bool `json:"contributedToDeath,omitempty"`
+	// ContributedToDeathElement contains element extensions for contributedToDeath.
+	ContributedToDeathElement *dt.Element `json:"_contributedToDeath,omitempty"`
 	// Note An area where general notes can be placed about this specific condition.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// Onset Either the age of onset, range of approximate age or descriptive string can be recorded.  For conditions with multiple occurrences, this describes the first known occurrence.
@@ -540,80 +627,6 @@ func (v *FamilyMemberHistoryConditionOnset) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// FamilyMemberHistoryDeceased represents a polymorphic choice type in FHIR.
-type FamilyMemberHistoryDeceased struct {
-	Age     *dt.Age   `json:"deceasedAge,omitempty"`     // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
-	Boolean *bool     `json:"deceasedBoolean,omitempty"` // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
-	Date    *string   `json:"deceasedDate,omitempty"`    // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
-	Range   *dt.Range `json:"deceasedRange,omitempty"`   // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
-	String  *string   `json:"deceasedString,omitempty"`  // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
-}
-
-// MarshalJSON implements the json.Marshaler interface for FamilyMemberHistoryDeceased.
-func (v FamilyMemberHistoryDeceased) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Age != nil {
-		m["deceasedAge"] = v.Age
-	}
-	if v.Boolean != nil {
-		m["deceasedBoolean"] = v.Boolean
-	}
-	if v.Date != nil {
-		m["deceasedDate"] = v.Date
-	}
-	if v.Range != nil {
-		m["deceasedRange"] = v.Range
-	}
-	if v.String != nil {
-		m["deceasedString"] = v.String
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for FamilyMemberHistoryDeceased.
-func (v *FamilyMemberHistoryDeceased) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["deceasedAge"]; ok {
-		var val dt.Age
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling deceasedAge: %w", err)
-		}
-		v.Age = &val
-	}
-	if d, ok := raw["deceasedBoolean"]; ok {
-		var val bool
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling deceasedBoolean: %w", err)
-		}
-		v.Boolean = &val
-	}
-	if d, ok := raw["deceasedDate"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling deceasedDate: %w", err)
-		}
-		v.Date = &val
-	}
-	if d, ok := raw["deceasedRange"]; ok {
-		var val dt.Range
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling deceasedRange: %w", err)
-		}
-		v.Range = &val
-	}
-	if d, ok := raw["deceasedString"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling deceasedString: %w", err)
-		}
-		v.String = &val
-	}
-	return nil
-}
-
 // FamilyMemberHistoryAge represents a polymorphic choice type in FHIR.
 type FamilyMemberHistoryAge struct {
 	Age    *dt.Age   `json:"ageAge,omitempty"`    // The age of the relative at the time the family member history is recorded.
@@ -712,6 +725,80 @@ func (v *FamilyMemberHistoryBorn) UnmarshalJSON(data []byte) error {
 		var val string
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling bornString: %w", err)
+		}
+		v.String = &val
+	}
+	return nil
+}
+
+// FamilyMemberHistoryDeceased represents a polymorphic choice type in FHIR.
+type FamilyMemberHistoryDeceased struct {
+	Age     *dt.Age   `json:"deceasedAge,omitempty"`     // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
+	Boolean *bool     `json:"deceasedBoolean,omitempty"` // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
+	Date    *string   `json:"deceasedDate,omitempty"`    // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
+	Range   *dt.Range `json:"deceasedRange,omitempty"`   // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
+	String  *string   `json:"deceasedString,omitempty"`  // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
+}
+
+// MarshalJSON implements the json.Marshaler interface for FamilyMemberHistoryDeceased.
+func (v FamilyMemberHistoryDeceased) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Age != nil {
+		m["deceasedAge"] = v.Age
+	}
+	if v.Boolean != nil {
+		m["deceasedBoolean"] = v.Boolean
+	}
+	if v.Date != nil {
+		m["deceasedDate"] = v.Date
+	}
+	if v.Range != nil {
+		m["deceasedRange"] = v.Range
+	}
+	if v.String != nil {
+		m["deceasedString"] = v.String
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for FamilyMemberHistoryDeceased.
+func (v *FamilyMemberHistoryDeceased) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["deceasedAge"]; ok {
+		var val dt.Age
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling deceasedAge: %w", err)
+		}
+		v.Age = &val
+	}
+	if d, ok := raw["deceasedBoolean"]; ok {
+		var val bool
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling deceasedBoolean: %w", err)
+		}
+		v.Boolean = &val
+	}
+	if d, ok := raw["deceasedDate"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling deceasedDate: %w", err)
+		}
+		v.Date = &val
+	}
+	if d, ok := raw["deceasedRange"]; ok {
+		var val dt.Range
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling deceasedRange: %w", err)
+		}
+		v.Range = &val
+	}
+	if d, ok := raw["deceasedString"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling deceasedString: %w", err)
 		}
 		v.String = &val
 	}

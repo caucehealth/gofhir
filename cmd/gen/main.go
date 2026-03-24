@@ -180,6 +180,11 @@ func main() {
 		log.Fatalf("Failed to generate enums: %v", err)
 	}
 
+	// Generate resource registry
+	if err := generateRegistry(fhirSpec, skipResources); err != nil {
+		log.Fatalf("Failed to generate registry: %v", err)
+	}
+
 	log.Println("Generation complete.")
 }
 
@@ -189,7 +194,7 @@ func generateDatatypes(fhirSpec *spec.FHIRSpec) error {
 	buf.WriteString("\npackage datatypes\n\n")
 	buf.WriteString("import (\n\t\"fmt\"\n\t\"time\"\n)\n\n")
 
-	// Primitive type aliases
+	// Primitive type aliases — used as the Value field type in wrappers
 	buf.WriteString("// --- Primitive Types ---\n\n")
 	primitiveTypes := []struct {
 		name, goType, desc string
@@ -210,6 +215,19 @@ func generateDatatypes(fhirSpec *spec.FHIRSpec) error {
 	for _, pt := range primitiveTypes {
 		fmt.Fprintf(&buf, "// %s\ntype %s %s\n\n", pt.desc, pt.name, pt.goType)
 	}
+
+	// Element type for primitive element extensions (_field companions)
+	buf.WriteString(`// Element holds the id and extensions for a FHIR primitive element.
+// In the FHIR JSON representation, primitive fields like "birthDate" can have
+// a companion "_birthDate" object containing an id and/or extensions.
+type Element struct {
+	// Id is the unique id for the element within a resource.
+	Id *string ` + "`json:\"id,omitempty\"`" + `
+	// Extension contains additional information for the element.
+	Extension []Extension ` + "`json:\"extension,omitempty\"`" + `
+}
+`)
+	buf.WriteString("\n")
 
 	// ParseInstant helper
 	buf.WriteString(`// ParseInstant parses a FHIR instant string (RFC3339 with mandatory timezone)
@@ -278,15 +296,8 @@ func generateResource(res *spec.ResourceDef, fhirSpec *spec.FHIRSpec) error {
 	if !needsFmt {
 		for _, f := range res.Fields {
 			if f.IsRequired && f.JSONName != "resourceType" {
-				if f.IsArray {
-					needsFmt = true
-					break
-				}
-				goType := resolveGoType(f, fhirSpec, false, "")
-				if isStringLikeType(goType) || isNumericType(goType) {
-					needsFmt = true
-					break
-				}
+				needsFmt = true
+				break
 			}
 		}
 	}
@@ -333,6 +344,9 @@ func generateResource(res *spec.ResourceDef, fhirSpec *spec.FHIRSpec) error {
 		}
 		writeStructField(&buf, f, fhirSpec, false, res.Name)
 	}
+	// Extra captures any JSON fields not mapped to struct fields.
+	buf.WriteString("\t// Extra contains any JSON fields not recognized by this resource type.\n")
+	buf.WriteString("\tExtra map[string]json.RawMessage `json:\"-\"`\n")
 	buf.WriteString("}\n\n")
 
 	// Custom MarshalJSON
@@ -402,6 +416,38 @@ type enumDef struct {
 	typeName string
 	values   []string
 	desc     string
+}
+
+func generateRegistry(fhirSpec *spec.FHIRSpec, skip map[string]bool) error {
+	var buf bytes.Buffer
+	buf.WriteString(licenseHeader)
+	buf.WriteString("\npackage resources\n\n")
+	buf.WriteString("import \"encoding/json\"\n\n")
+
+	buf.WriteString("// ParseResource unmarshals a FHIR resource from JSON based on its resourceType.\n")
+	buf.WriteString("// Returns the typed resource as an any value. The caller should type-assert\n")
+	buf.WriteString("// to the expected resource type.\n")
+	buf.WriteString("func ParseResource(data json.RawMessage) (any, error) {\n")
+	buf.WriteString("\tvar header struct{ ResourceType string `json:\"resourceType\"` }\n")
+	buf.WriteString("\tif err := json.Unmarshal(data, &header); err != nil {\n")
+	buf.WriteString("\t\treturn nil, err\n")
+	buf.WriteString("\t}\n")
+	buf.WriteString("\tswitch header.ResourceType {\n")
+	for _, name := range fhirSpec.ResourceNames {
+		if skip[name] {
+			continue
+		}
+		fmt.Fprintf(&buf, "\tcase %q:\n", name)
+		fmt.Fprintf(&buf, "\t\tvar r %s\n", name)
+		fmt.Fprintf(&buf, "\t\treturn &r, json.Unmarshal(data, &r)\n")
+	}
+	buf.WriteString("\tdefault:\n")
+	buf.WriteString("\t\tvar m map[string]any\n")
+	buf.WriteString("\t\treturn m, json.Unmarshal(data, &m)\n")
+	buf.WriteString("\t}\n")
+	buf.WriteString("}\n")
+
+	return writeGoFile(filepath.Join(resourcesDir, "registry_gen.go"), buf.Bytes())
 }
 
 func generateEnums(fhirSpec *spec.FHIRSpec) error {
@@ -636,17 +682,50 @@ func getValueXFieldName(jsonName string) string {
 	return exportName(jsonName)
 }
 
+// isFHIRPrimitive returns true if the field's resolved type is a FHIR primitive
+// that can carry element extensions via a _field companion.
+func isFHIRPrimitive(f *spec.FieldDef) bool {
+	if len(f.Enum) > 0 {
+		return true // enum fields are string-based primitives
+	}
+	fhirType := f.FHIRType
+	if f.IsRef {
+		fhirType = f.RefTarget
+	}
+	switch fhirType {
+	case "string", "boolean", "integer", "decimal", "uri", "url", "canonical",
+		"code", "date", "dateTime", "instant", "base64Binary", "id", "markdown",
+		"oid", "positiveInt", "unsignedInt", "xhtml", "time", "uuid", "number":
+		return true
+	}
+	return false
+}
+
 func writeStructField(buf *bytes.Buffer, f *spec.FieldDef, fhirSpec *spec.FHIRSpec, isDatatypes bool, parentName string) {
 	goType := resolveGoType(f, fhirSpec, isDatatypes, parentName)
 	jsonTag := f.JSONName
+
+	// Determine the Element type qualifier
+	elemType := "dt.Element"
+	if isDatatypes {
+		elemType = "Element"
+	}
 
 	if f.IsArray {
 		omit := ",omitempty"
 		fmt.Fprintf(buf, "\t// %s %s\n", exportName(f.JSONName), cleanDescription(f.Description))
 		fmt.Fprintf(buf, "\t%s %s `json:\"%s%s\"`\n", exportName(f.JSONName), goType, jsonTag, omit)
+		if isFHIRPrimitive(f) {
+			fmt.Fprintf(buf, "\t// %sElement contains element extensions for each %s.\n", exportName(f.JSONName), f.JSONName)
+			fmt.Fprintf(buf, "\t%sElement []%s `json:\"_%s,omitempty\"`\n", exportName(f.JSONName), elemType, jsonTag)
+		}
 	} else if f.IsRequired {
 		fmt.Fprintf(buf, "\t// %s %s\n", exportName(f.JSONName), cleanDescription(f.Description))
 		fmt.Fprintf(buf, "\t%s %s `json:\"%s\"`\n", exportName(f.JSONName), goType, jsonTag)
+		if isFHIRPrimitive(f) {
+			fmt.Fprintf(buf, "\t// %sElement contains element extensions for %s.\n", exportName(f.JSONName), f.JSONName)
+			fmt.Fprintf(buf, "\t%sElement *%s `json:\"_%s,omitempty\"`\n", exportName(f.JSONName), elemType, jsonTag)
+		}
 	} else {
 		ptr := goType
 		if !strings.HasPrefix(ptr, "*") && !strings.HasPrefix(ptr, "[]") {
@@ -654,6 +733,10 @@ func writeStructField(buf *bytes.Buffer, f *spec.FieldDef, fhirSpec *spec.FHIRSp
 		}
 		fmt.Fprintf(buf, "\t// %s %s\n", exportName(f.JSONName), cleanDescription(f.Description))
 		fmt.Fprintf(buf, "\t%s %s `json:\"%s,omitempty\"`\n", exportName(f.JSONName), ptr, jsonTag)
+		if isFHIRPrimitive(f) {
+			fmt.Fprintf(buf, "\t// %sElement contains element extensions for %s.\n", exportName(f.JSONName), f.JSONName)
+			fmt.Fprintf(buf, "\t%sElement *%s `json:\"_%s,omitempty\"`\n", exportName(f.JSONName), elemType, jsonTag)
+		}
 	}
 }
 
@@ -825,38 +908,41 @@ func writeResourceMarshalJSON(buf *bytes.Buffer, res *spec.ResourceDef, fhirSpec
 	fmt.Fprintf(buf, "\tr.ResourceType = %q\n", res.Name)
 	fmt.Fprintf(buf, "\ttype Alias %s\n", res.Name)
 
-	// Check if there are value[x] groups
 	valueGroups := detectValueGroups(res.Fields)
+	buf.WriteString("\tdata, err := json.Marshal((Alias)(r))\n")
+	buf.WriteString("\tif err != nil {\n")
+	buf.WriteString("\t\treturn nil, err\n")
+	buf.WriteString("\t}\n")
+	// If no polymorphic fields and no Extra, fast path
 	if len(valueGroups) == 0 {
-		buf.WriteString("\treturn json.Marshal((Alias)(r))\n")
-	} else {
-		buf.WriteString("\tdata, err := json.Marshal((Alias)(r))\n")
-		buf.WriteString("\tif err != nil {\n")
-		buf.WriteString("\t\treturn nil, err\n")
+		buf.WriteString("\tif len(r.Extra) == 0 {\n")
+		buf.WriteString("\t\treturn data, nil\n")
 		buf.WriteString("\t}\n")
-		buf.WriteString("\t// Merge polymorphic fields into the JSON object\n")
-		buf.WriteString("\tvar m map[string]json.RawMessage\n")
-		buf.WriteString("\tif err := json.Unmarshal(data, &m); err != nil {\n")
-		buf.WriteString("\t\treturn nil, err\n")
-		buf.WriteString("\t}\n")
-		for prefix := range valueGroups {
-			fieldName := exportName(prefix)
-			fmt.Fprintf(buf, "\tif r.%s != nil {\n", fieldName)
-			fmt.Fprintf(buf, "\t\tvData, err := json.Marshal(r.%s)\n", fieldName)
-			fmt.Fprintf(buf, "\t\tif err != nil {\n")
-			fmt.Fprintf(buf, "\t\t\treturn nil, err\n")
-			fmt.Fprintf(buf, "\t\t}\n")
-			buf.WriteString("\t\tvar vm map[string]json.RawMessage\n")
-			buf.WriteString("\t\tif err := json.Unmarshal(vData, &vm); err != nil {\n")
-			buf.WriteString("\t\t\treturn nil, err\n")
-			buf.WriteString("\t\t}\n")
-			buf.WriteString("\t\tfor k, v := range vm {\n")
-			buf.WriteString("\t\t\tm[k] = v\n")
-			buf.WriteString("\t\t}\n")
-			fmt.Fprintf(buf, "\t}\n")
-		}
-		buf.WriteString("\treturn json.Marshal(m)\n")
 	}
+	buf.WriteString("\tvar m map[string]json.RawMessage\n")
+	buf.WriteString("\tif err := json.Unmarshal(data, &m); err != nil {\n")
+	buf.WriteString("\t\treturn nil, err\n")
+	buf.WriteString("\t}\n")
+	for prefix := range valueGroups {
+		fieldName := exportName(prefix)
+		fmt.Fprintf(buf, "\tif r.%s != nil {\n", fieldName)
+		fmt.Fprintf(buf, "\t\tvData, err := json.Marshal(r.%s)\n", fieldName)
+		fmt.Fprintf(buf, "\t\tif err != nil {\n")
+		fmt.Fprintf(buf, "\t\t\treturn nil, err\n")
+		fmt.Fprintf(buf, "\t\t}\n")
+		buf.WriteString("\t\tvar vm map[string]json.RawMessage\n")
+		buf.WriteString("\t\tif err := json.Unmarshal(vData, &vm); err != nil {\n")
+		buf.WriteString("\t\t\treturn nil, err\n")
+		buf.WriteString("\t\t}\n")
+		buf.WriteString("\t\tfor k, v := range vm {\n")
+		buf.WriteString("\t\t\tm[k] = v\n")
+		buf.WriteString("\t\t}\n")
+		fmt.Fprintf(buf, "\t}\n")
+	}
+	buf.WriteString("\tfor k, v := range r.Extra {\n")
+	buf.WriteString("\t\tm[k] = v\n")
+	buf.WriteString("\t}\n")
+	buf.WriteString("\treturn json.Marshal(m)\n")
 	buf.WriteString("}\n\n")
 }
 
@@ -867,20 +953,12 @@ func writeResourceUnmarshalJSON(buf *bytes.Buffer, res *spec.ResourceDef, fhirSp
 	fmt.Fprintf(buf, "func (r *%s) UnmarshalJSON(data []byte) error {\n", res.Name)
 	fmt.Fprintf(buf, "\ttype Alias %s\n", res.Name)
 
-	if len(valueGroups) == 0 {
-		buf.WriteString("\tvar alias Alias\n")
-		buf.WriteString("\tif err := json.Unmarshal(data, &alias); err != nil {\n")
-		buf.WriteString("\t\treturn err\n")
-		buf.WriteString("\t}\n")
-		buf.WriteString("\t*r = ")
-		fmt.Fprintf(buf, "%s(alias)\n", res.Name)
-		buf.WriteString("\treturn nil\n")
-	} else {
-		buf.WriteString("\tvar alias Alias\n")
-		buf.WriteString("\tif err := json.Unmarshal(data, &alias); err != nil {\n")
-		buf.WriteString("\t\treturn err\n")
-		buf.WriteString("\t}\n")
-		fmt.Fprintf(buf, "\t*r = %s(alias)\n", res.Name)
+	buf.WriteString("\tvar alias Alias\n")
+	buf.WriteString("\tif err := json.Unmarshal(data, &alias); err != nil {\n")
+	buf.WriteString("\t\treturn err\n")
+	buf.WriteString("\t}\n")
+	fmt.Fprintf(buf, "\t*r = %s(alias)\n", res.Name)
+	if len(valueGroups) > 0 {
 		buf.WriteString("\t// Unmarshal polymorphic fields\n")
 		for prefix, fields := range valueGroups {
 			fieldName := exportName(prefix)
@@ -889,7 +967,6 @@ func writeResourceUnmarshalJSON(buf *bytes.Buffer, res *spec.ResourceDef, fhirSp
 			fmt.Fprintf(buf, "\tif err := %sVal.UnmarshalJSON(data); err != nil {\n", prefix)
 			buf.WriteString("\t\treturn err\n")
 			buf.WriteString("\t}\n")
-			// Check if any field is set
 			fmt.Fprintf(buf, "\tif ")
 			for i, f := range fields {
 				fn := getValueXFieldName(f.JSONName)
@@ -902,8 +979,53 @@ func writeResourceUnmarshalJSON(buf *bytes.Buffer, res *spec.ResourceDef, fhirSp
 			fmt.Fprintf(buf, "\t\tr.%s = &%sVal\n", fieldName, prefix)
 			buf.WriteString("\t}\n")
 		}
-		buf.WriteString("\treturn nil\n")
 	}
+	// Capture unknown fields into Extra
+	buf.WriteString("\t// Capture unknown fields\n")
+	buf.WriteString("\tvar raw map[string]json.RawMessage\n")
+	buf.WriteString("\tif err := json.Unmarshal(data, &raw); err != nil {\n")
+	buf.WriteString("\t\treturn err\n")
+	buf.WriteString("\t}\n")
+	// Build set of known keys
+	knownKeys := make(map[string]bool)
+	knownKeys["resourceType"] = true
+	for _, f := range res.Fields {
+		knownKeys[f.JSONName] = true
+		knownKeys["_"+f.JSONName] = true // element extensions
+	}
+	// Also add value[x] variant keys
+	for _, fields := range valueGroups {
+		for _, f := range fields {
+			knownKeys[f.JSONName] = true
+		}
+	}
+	buf.WriteString("\tfor k, v := range raw {\n")
+	buf.WriteString("\t\tswitch k {\n")
+	buf.WriteString("\t\tcase ")
+	first := true
+	// Sort for deterministic output
+	var sortedKeys []string
+	for k := range knownKeys {
+		sortedKeys = append(sortedKeys, k)
+	}
+	sort.Strings(sortedKeys)
+	for _, k := range sortedKeys {
+		if !first {
+			buf.WriteString(", ")
+		}
+		fmt.Fprintf(buf, "%q", k)
+		first = false
+	}
+	buf.WriteString(":\n")
+	buf.WriteString("\t\t\t// known field\n")
+	buf.WriteString("\t\tdefault:\n")
+	buf.WriteString("\t\t\tif r.Extra == nil {\n")
+	buf.WriteString("\t\t\t\tr.Extra = make(map[string]json.RawMessage)\n")
+	buf.WriteString("\t\t\t}\n")
+	buf.WriteString("\t\t\tr.Extra[k] = v\n")
+	buf.WriteString("\t\t}\n")
+	buf.WriteString("\t}\n")
+	buf.WriteString("\treturn nil\n")
 	buf.WriteString("}\n\n")
 }
 
@@ -913,12 +1035,13 @@ func writeBuilder(buf *bytes.Buffer, res *spec.ResourceDef, fhirSpec *spec.FHIRS
 	fmt.Fprintf(buf, "// %s provides a fluent API for constructing %s resources.\n", builderName, res.Name)
 	fmt.Fprintf(buf, "type %s struct {\n", builderName)
 	fmt.Fprintf(buf, "\tresource %s\n", res.Name)
+	fmt.Fprintf(buf, "\tfieldsSet map[string]bool\n")
 	buf.WriteString("}\n\n")
 
 	// Constructor
 	fmt.Fprintf(buf, "// New%s creates a new %s for building a %s resource.\n", res.Name, builderName, res.Name)
 	fmt.Fprintf(buf, "func New%s() *%s {\n", res.Name, builderName)
-	fmt.Fprintf(buf, "\treturn &%s{resource: %s{ResourceType: %q}}\n", builderName, res.Name, res.Name)
+	fmt.Fprintf(buf, "\treturn &%s{resource: %s{ResourceType: %q}, fieldsSet: make(map[string]bool)}\n", builderName, res.Name, res.Name)
 	buf.WriteString("}\n\n")
 
 	// Convenience methods for common fields
@@ -946,38 +1069,18 @@ func writeBuilder(buf *bytes.Buffer, res *spec.ResourceDef, fhirSpec *spec.FHIRS
 	fmt.Fprintf(buf, "// field (cardinality 1..1) is not set.\n")
 	fmt.Fprintf(buf, "func (b *%s) Build() (*%s, error) {\n", builderName, res.Name)
 
-	// Collect actionable required field checks
-	type requiredCheck struct {
-		fieldName string
-		jsonName  string
-		checkExpr string
-	}
-	var checks []requiredCheck
+	// Validate all required fields using fieldsSet
+	var requiredFields []string
 	for _, f := range res.Fields {
-		if !f.IsRequired || f.JSONName == "resourceType" {
-			continue
-		}
-		goFieldName := exportName(f.JSONName)
-		if f.IsArray {
-			checks = append(checks, requiredCheck{goFieldName, f.JSONName,
-				fmt.Sprintf("len(b.resource.%s) == 0", goFieldName)})
-		} else {
-			goType := resolveGoType(f, fhirSpec, false, "")
-			if isStringLikeType(goType) {
-				checks = append(checks, requiredCheck{goFieldName, f.JSONName,
-					fmt.Sprintf("b.resource.%s == \"\"", goFieldName)})
-			} else if isNumericType(goType) {
-				checks = append(checks, requiredCheck{goFieldName, f.JSONName,
-					fmt.Sprintf("b.resource.%s == 0", goFieldName)})
-			}
-			// Skip struct types — zero-value struct is valid in Go
+		if f.IsRequired && f.JSONName != "resourceType" {
+			requiredFields = append(requiredFields, f.JSONName)
 		}
 	}
-	if len(checks) > 0 {
+	if len(requiredFields) > 0 {
 		buf.WriteString("\tvar missing []string\n")
-		for _, c := range checks {
-			fmt.Fprintf(buf, "\tif %s {\n", c.checkExpr)
-			fmt.Fprintf(buf, "\t\tmissing = append(missing, %q)\n", c.jsonName)
+		for _, jsonName := range requiredFields {
+			fmt.Fprintf(buf, "\tif !b.fieldsSet[%q] {\n", jsonName)
+			fmt.Fprintf(buf, "\t\tmissing = append(missing, %q)\n", jsonName)
 			buf.WriteString("\t}\n")
 		}
 		buf.WriteString("\tif len(missing) > 0 {\n")
@@ -988,24 +1091,6 @@ func writeBuilder(buf *bytes.Buffer, res *spec.ResourceDef, fhirSpec *spec.FHIRS
 	buf.WriteString("\tr := b.resource\n")
 	buf.WriteString("\treturn &r, nil\n")
 	buf.WriteString("}\n\n")
-}
-
-func isStringLikeType(goType string) bool {
-	switch goType {
-	case "string", "dt.Code", "dt.URI", "dt.URL", "dt.ID", "dt.Date",
-		"dt.DateTime", "dt.Instant", "dt.Markdown", "dt.OID", "dt.Canonical",
-		"dt.Time", "dt.UUID":
-		return true
-	}
-	return false
-}
-
-func isNumericType(goType string) bool {
-	switch goType {
-	case "int32", "uint32", "float64", "bool":
-		return true
-	}
-	return false
 }
 
 func writeConvenienceBuilderMethods(buf *bytes.Buffer, res *spec.ResourceDef, builderName string, fhirSpec *spec.FHIRSpec, valueGroups map[string][]*spec.FieldDef) map[string]bool {
@@ -1056,6 +1141,7 @@ func (b *%s) WithName(given, family string) *%s {
 		Family: &family,
 	}
 	b.resource.Name = append(b.resource.Name, name)
+	b.fieldsSet["name"] = true
 	return b
 }
 
@@ -1063,12 +1149,14 @@ func (b *%s) WithName(given, family string) *%s {
 func (b *%s) WithBirthDate(date string) *%s {
 	d := dt.Date(date)
 	b.resource.BirthDate = &d
+	b.fieldsSet["birthDate"] = true
 	return b
 }
 
 // WithGender sets the patient's administrative gender.
 func (b *%s) WithGender(gender AdministrativeGender) *%s {
 	b.resource.Gender = &gender
+	b.fieldsSet["gender"] = true
 	return b
 }
 
@@ -1079,6 +1167,7 @@ func observationConvenienceMethods(builder string) string {
 	return fmt.Sprintf(`// WithStatus sets the observation status.
 func (b *%s) WithStatus(status ObservationStatus) *%s {
 	b.resource.Status = &status
+	b.fieldsSet["status"] = true
 	return b
 }
 
@@ -1093,12 +1182,14 @@ func (b *%s) WithCode(system, code, display string) *%s {
 			Display: &display,
 		}},
 	}
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithSubject sets the observation subject reference.
 func (b *%s) WithSubject(reference string) *%s {
 	b.resource.Subject = &dt.Reference{Reference: &reference}
+	b.fieldsSet["subject"] = true
 	return b
 }
 
@@ -1109,6 +1200,7 @@ func encounterConvenienceMethods(builder string) string {
 	return fmt.Sprintf(`// WithStatus sets the encounter status.
 func (b *%s) WithStatus(status EncounterStatus) *%s {
 	b.resource.Status = &status
+	b.fieldsSet["status"] = true
 	return b
 }
 
@@ -1120,12 +1212,14 @@ func (b *%s) WithClass(system, code string) *%s {
 		System: &s,
 		Code:   &c,
 	}
+	b.fieldsSet["class"] = true
 	return b
 }
 
 // WithSubject sets the encounter subject reference.
 func (b *%s) WithSubject(reference string) *%s {
 	b.resource.Subject = &dt.Reference{Reference: &reference}
+	b.fieldsSet["subject"] = true
 	return b
 }
 
@@ -1140,6 +1234,7 @@ func (b *%s) WithName(given, family string) *%s {
 		Family: &family,
 	}
 	b.resource.Name = append(b.resource.Name, name)
+	b.fieldsSet["name"] = true
 	return b
 }
 
@@ -1158,12 +1253,14 @@ func (b *%s) WithCode(system, code, display string) *%s {
 			Display: &display,
 		}},
 	}
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithSubject sets the condition subject reference.
 func (b *%s) WithSubject(reference string) *%s {
 	b.resource.Subject = dt.Reference{Reference: &reference}
+	b.fieldsSet["subject"] = true
 	return b
 }
 
@@ -1174,6 +1271,7 @@ func diagnosticReportConvenienceMethods(builder string) string {
 	return fmt.Sprintf(`// WithStatus sets the diagnostic report status.
 func (b *%s) WithStatus(status DiagnosticReportStatus) *%s {
 	b.resource.Status = &status
+	b.fieldsSet["status"] = true
 	return b
 }
 
@@ -1188,12 +1286,14 @@ func (b *%s) WithCode(system, code, display string) *%s {
 			Display: &display,
 		}},
 	}
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithSubject sets the diagnostic report subject reference.
 func (b *%s) WithSubject(reference string) *%s {
 	b.resource.Subject = &dt.Reference{Reference: &reference}
+	b.fieldsSet["subject"] = true
 	return b
 }
 
@@ -1204,18 +1304,21 @@ func medicationRequestConvenienceMethods(builder string) string {
 	return fmt.Sprintf(`// WithStatus sets the medication request status.
 func (b *%s) WithStatus(status dt.Code) *%s {
 	b.resource.Status = &status
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithIntent sets the medication request intent.
 func (b *%s) WithIntent(intent dt.Code) *%s {
 	b.resource.Intent = &intent
+	b.fieldsSet["intent"] = true
 	return b
 }
 
 // WithSubject sets the medication request subject reference.
 func (b *%s) WithSubject(reference string) *%s {
 	b.resource.Subject = dt.Reference{Reference: &reference}
+	b.fieldsSet["subject"] = true
 	return b
 }
 
@@ -1234,6 +1337,7 @@ func (b *%s) WithMedicationCodeableConcept(system, code, display string) *%s {
 		b.resource.Medication = &MedicationRequestMedication{}
 	}
 	b.resource.Medication.CodeableConcept = &cc
+	b.fieldsSet["medication"] = true
 	return b
 }
 
@@ -1267,6 +1371,7 @@ func writeValueXBuilderMethod(buf *bytes.Buffer, builderName, resName, prefix st
 		} else {
 			fmt.Fprintf(buf, "\tb.resource.%s.%s = &v\n", fieldName, valFieldName)
 		}
+		fmt.Fprintf(buf, "\tb.fieldsSet[%q] = true\n", prefix)
 		fmt.Fprintf(buf, "\treturn b\n")
 		fmt.Fprintf(buf, "}\n\n")
 	}
@@ -1277,22 +1382,24 @@ func writeBuilderSetter(buf *bytes.Buffer, builderName string, f *spec.FieldDef,
 	goFieldName := exportName(f.JSONName)
 	methodName := "With" + goFieldName
 
+	setField := fmt.Sprintf("\tb.fieldsSet[%q] = true\n", f.JSONName)
+
 	if f.IsArray {
-		// For arrays, allow adding single items
 		elemType := goType[2:] // strip []
 		fmt.Fprintf(buf, "// %s adds an item to the %s field.\n", methodName, f.JSONName)
 		fmt.Fprintf(buf, "func (b *%s) %s(v %s) *%s {\n", builderName, methodName, elemType, builderName)
 		fmt.Fprintf(buf, "\tb.resource.%s = append(b.resource.%s, v)\n", goFieldName, goFieldName)
+		buf.WriteString(setField)
 		buf.WriteString("\treturn b\n")
 		buf.WriteString("}\n\n")
 	} else if f.IsRequired {
 		fmt.Fprintf(buf, "// %s sets the %s field.\n", methodName, f.JSONName)
 		fmt.Fprintf(buf, "func (b *%s) %s(v %s) *%s {\n", builderName, methodName, goType, builderName)
 		fmt.Fprintf(buf, "\tb.resource.%s = v\n", goFieldName)
+		buf.WriteString(setField)
 		buf.WriteString("\treturn b\n")
 		buf.WriteString("}\n\n")
 	} else {
-		// Optional fields - take value, set pointer
 		if strings.HasPrefix(goType, "*") || strings.HasPrefix(goType, "[]") {
 			fmt.Fprintf(buf, "// %s sets the %s field.\n", methodName, f.JSONName)
 			fmt.Fprintf(buf, "func (b *%s) %s(v %s) *%s {\n", builderName, methodName, goType, builderName)
@@ -1302,6 +1409,7 @@ func writeBuilderSetter(buf *bytes.Buffer, builderName string, f *spec.FieldDef,
 			fmt.Fprintf(buf, "func (b *%s) %s(v %s) *%s {\n", builderName, methodName, goType, builderName)
 			fmt.Fprintf(buf, "\tb.resource.%s = &v\n", goFieldName)
 		}
+		buf.WriteString(setField)
 		buf.WriteString("\treturn b\n")
 		buf.WriteString("}\n\n")
 	}

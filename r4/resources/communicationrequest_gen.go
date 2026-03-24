@@ -18,12 +18,18 @@ type CommunicationRequest struct {
 	ResourceType string `json:"resourceType"` // Always "CommunicationRequest"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,16 +42,22 @@ type CommunicationRequest struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the proposal or order.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// About Other resources that pertain to this communication request and to which this communication request should be associated.
 	About []dt.Reference `json:"about,omitempty"`
 	// AuthoredOn For draft requests, indicates the date of initial creation.  For requests with other statuses, indicates the date of activation.
 	AuthoredOn *dt.DateTime `json:"authoredOn,omitempty"`
+	// AuthoredOnElement contains element extensions for authoredOn.
+	AuthoredOnElement *dt.Element `json:"_authoredOn,omitempty"`
 	// BasedOn A plan or proposal that is fulfilled in whole or in part by this request.
 	BasedOn []dt.Reference `json:"basedOn,omitempty"`
 	// Category The type of message to be sent such as alert, notification, reminder, instruction, etc.
 	Category []dt.CodeableConcept `json:"category,omitempty"`
 	// DoNotPerform If true indicates that the CommunicationRequest is asking for the specified action to *not* occur.
 	DoNotPerform *bool `json:"doNotPerform,omitempty"`
+	// DoNotPerformElement contains element extensions for doNotPerform.
+	DoNotPerformElement *dt.Element `json:"_doNotPerform,omitempty"`
 	// Encounter The Encounter during which this CommunicationRequest was created or to which the creation of this record is tightly associated.
 	Encounter *dt.Reference `json:"encounter,omitempty"`
 	// GroupIdentifier A shared identifier common to all requests that were authorized more or less simultaneously by a single author, representing the identifier of the requisition, prescription or similar form.
@@ -60,6 +72,8 @@ type CommunicationRequest struct {
 	Payload []CommunicationRequestPayload `json:"payload,omitempty"`
 	// Priority Characterizes how quickly the proposed act must be initiated. Includes concepts such as stat, urgent, routine.
 	Priority *dt.Code `json:"priority,omitempty"`
+	// PriorityElement contains element extensions for priority.
+	PriorityElement *dt.Element `json:"_priority,omitempty"`
 	// ReasonCode Describes why the request is being made in coded or textual form.
 	ReasonCode []dt.CodeableConcept `json:"reasonCode,omitempty"`
 	// ReasonReference Indicates another resource whose existence justifies this request.
@@ -76,6 +90,8 @@ type CommunicationRequest struct {
 	StatusReason *dt.CodeableConcept `json:"statusReason,omitempty"`
 	// Subject The patient or group that is the focus of this communication request.
 	Subject *dt.Reference `json:"subject,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for CommunicationRequest.
@@ -86,7 +102,6 @@ func (r CommunicationRequest) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -103,6 +118,9 @@ func (r CommunicationRequest) MarshalJSON() ([]byte, error) {
 		for k, v := range vm {
 			m[k] = v
 		}
+	}
+	for k, v := range r.Extra {
+		m[k] = v
 	}
 	return json.Marshal(m)
 }
@@ -123,130 +141,166 @@ func (r *CommunicationRequest) UnmarshalJSON(data []byte) error {
 	if occurrenceVal.DateTime != nil || occurrenceVal.Period != nil {
 		r.Occurrence = &occurrenceVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_about", "_authoredOn", "_basedOn", "_category", "_contained", "_doNotPerform", "_encounter", "_extension", "_groupIdentifier", "_id", "_identifier", "_implicitRules", "_language", "_medium", "_meta", "_modifierExtension", "_note", "_occurrenceDateTime", "_occurrencePeriod", "_payload", "_priority", "_reasonCode", "_reasonReference", "_recipient", "_replaces", "_requester", "_sender", "_status", "_statusReason", "_subject", "_text", "about", "authoredOn", "basedOn", "category", "contained", "doNotPerform", "encounter", "extension", "groupIdentifier", "id", "identifier", "implicitRules", "language", "medium", "meta", "modifierExtension", "note", "occurrenceDateTime", "occurrencePeriod", "payload", "priority", "reasonCode", "reasonReference", "recipient", "replaces", "requester", "resourceType", "sender", "status", "statusReason", "subject", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // CommunicationRequestBuilder provides a fluent API for constructing CommunicationRequest resources.
 type CommunicationRequestBuilder struct {
-	resource CommunicationRequest
+	resource  CommunicationRequest
+	fieldsSet map[string]bool
 }
 
 // NewCommunicationRequest creates a new CommunicationRequestBuilder for building a CommunicationRequest resource.
 func NewCommunicationRequest() *CommunicationRequestBuilder {
-	return &CommunicationRequestBuilder{resource: CommunicationRequest{ResourceType: "CommunicationRequest"}}
+	return &CommunicationRequestBuilder{resource: CommunicationRequest{ResourceType: "CommunicationRequest"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *CommunicationRequestBuilder) WithId(v dt.ID) *CommunicationRequestBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *CommunicationRequestBuilder) WithMeta(v dt.Meta) *CommunicationRequestBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *CommunicationRequestBuilder) WithImplicitRules(v dt.URI) *CommunicationRequestBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *CommunicationRequestBuilder) WithLanguage(v dt.Code) *CommunicationRequestBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *CommunicationRequestBuilder) WithText(v dt.Narrative) *CommunicationRequestBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *CommunicationRequestBuilder) WithContained(v json.RawMessage) *CommunicationRequestBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *CommunicationRequestBuilder) WithExtension(v dt.Extension) *CommunicationRequestBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *CommunicationRequestBuilder) WithModifierExtension(v dt.Extension) *CommunicationRequestBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *CommunicationRequestBuilder) WithIdentifier(v dt.Identifier) *CommunicationRequestBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *CommunicationRequestBuilder) WithStatus(v dt.Code) *CommunicationRequestBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAbout adds an item to the about field.
 func (b *CommunicationRequestBuilder) WithAbout(v dt.Reference) *CommunicationRequestBuilder {
 	b.resource.About = append(b.resource.About, v)
+	b.fieldsSet["about"] = true
 	return b
 }
 
 // WithAuthoredOn sets the authoredOn field.
 func (b *CommunicationRequestBuilder) WithAuthoredOn(v dt.DateTime) *CommunicationRequestBuilder {
 	b.resource.AuthoredOn = &v
+	b.fieldsSet["authoredOn"] = true
 	return b
 }
 
 // WithBasedOn adds an item to the basedOn field.
 func (b *CommunicationRequestBuilder) WithBasedOn(v dt.Reference) *CommunicationRequestBuilder {
 	b.resource.BasedOn = append(b.resource.BasedOn, v)
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithCategory adds an item to the category field.
 func (b *CommunicationRequestBuilder) WithCategory(v dt.CodeableConcept) *CommunicationRequestBuilder {
 	b.resource.Category = append(b.resource.Category, v)
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithDoNotPerform sets the doNotPerform field.
 func (b *CommunicationRequestBuilder) WithDoNotPerform(v bool) *CommunicationRequestBuilder {
 	b.resource.DoNotPerform = &v
+	b.fieldsSet["doNotPerform"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *CommunicationRequestBuilder) WithEncounter(v dt.Reference) *CommunicationRequestBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithGroupIdentifier sets the groupIdentifier field.
 func (b *CommunicationRequestBuilder) WithGroupIdentifier(v dt.Identifier) *CommunicationRequestBuilder {
 	b.resource.GroupIdentifier = &v
+	b.fieldsSet["groupIdentifier"] = true
 	return b
 }
 
 // WithMedium adds an item to the medium field.
 func (b *CommunicationRequestBuilder) WithMedium(v dt.CodeableConcept) *CommunicationRequestBuilder {
 	b.resource.Medium = append(b.resource.Medium, v)
+	b.fieldsSet["medium"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *CommunicationRequestBuilder) WithNote(v dt.Annotation) *CommunicationRequestBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
@@ -256,6 +310,7 @@ func (b *CommunicationRequestBuilder) WithOccurrenceDateTime(v string) *Communic
 		b.resource.Occurrence = &CommunicationRequestOccurrence{}
 	}
 	b.resource.Occurrence.DateTime = &v
+	b.fieldsSet["occurrence"] = true
 	return b
 }
 
@@ -265,66 +320,77 @@ func (b *CommunicationRequestBuilder) WithOccurrencePeriod(v dt.Period) *Communi
 		b.resource.Occurrence = &CommunicationRequestOccurrence{}
 	}
 	b.resource.Occurrence.Period = &v
+	b.fieldsSet["occurrence"] = true
 	return b
 }
 
 // WithPayload adds an item to the payload field.
 func (b *CommunicationRequestBuilder) WithPayload(v CommunicationRequestPayload) *CommunicationRequestBuilder {
 	b.resource.Payload = append(b.resource.Payload, v)
+	b.fieldsSet["payload"] = true
 	return b
 }
 
 // WithPriority sets the priority field.
 func (b *CommunicationRequestBuilder) WithPriority(v dt.Code) *CommunicationRequestBuilder {
 	b.resource.Priority = &v
+	b.fieldsSet["priority"] = true
 	return b
 }
 
 // WithReasonCode adds an item to the reasonCode field.
 func (b *CommunicationRequestBuilder) WithReasonCode(v dt.CodeableConcept) *CommunicationRequestBuilder {
 	b.resource.ReasonCode = append(b.resource.ReasonCode, v)
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithReasonReference adds an item to the reasonReference field.
 func (b *CommunicationRequestBuilder) WithReasonReference(v dt.Reference) *CommunicationRequestBuilder {
 	b.resource.ReasonReference = append(b.resource.ReasonReference, v)
+	b.fieldsSet["reasonReference"] = true
 	return b
 }
 
 // WithRecipient adds an item to the recipient field.
 func (b *CommunicationRequestBuilder) WithRecipient(v dt.Reference) *CommunicationRequestBuilder {
 	b.resource.Recipient = append(b.resource.Recipient, v)
+	b.fieldsSet["recipient"] = true
 	return b
 }
 
 // WithReplaces adds an item to the replaces field.
 func (b *CommunicationRequestBuilder) WithReplaces(v dt.Reference) *CommunicationRequestBuilder {
 	b.resource.Replaces = append(b.resource.Replaces, v)
+	b.fieldsSet["replaces"] = true
 	return b
 }
 
 // WithRequester sets the requester field.
 func (b *CommunicationRequestBuilder) WithRequester(v dt.Reference) *CommunicationRequestBuilder {
 	b.resource.Requester = &v
+	b.fieldsSet["requester"] = true
 	return b
 }
 
 // WithSender sets the sender field.
 func (b *CommunicationRequestBuilder) WithSender(v dt.Reference) *CommunicationRequestBuilder {
 	b.resource.Sender = &v
+	b.fieldsSet["sender"] = true
 	return b
 }
 
 // WithStatusReason sets the statusReason field.
 func (b *CommunicationRequestBuilder) WithStatusReason(v dt.CodeableConcept) *CommunicationRequestBuilder {
 	b.resource.StatusReason = &v
+	b.fieldsSet["statusReason"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *CommunicationRequestBuilder) WithSubject(v dt.Reference) *CommunicationRequestBuilder {
 	b.resource.Subject = &v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
@@ -339,6 +405,8 @@ func (b *CommunicationRequestBuilder) Build() (*CommunicationRequest, error) {
 type CommunicationRequestPayload struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -349,6 +417,8 @@ type CommunicationRequestPayload struct {
 	ContentReference *dt.Reference `json:"contentReference,omitempty"`
 	// ContentString The communicated content (or for multi-part communications, one portion of the communication).
 	ContentString *string `json:"contentString,omitempty"`
+	// ContentStringElement contains element extensions for contentString.
+	ContentStringElement *dt.Element `json:"_contentString,omitempty"`
 }
 
 // CommunicationRequestOccurrence represents a polymorphic choice type in FHIR.

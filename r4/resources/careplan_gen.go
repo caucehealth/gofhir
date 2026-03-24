@@ -18,12 +18,18 @@ type CarePlan struct {
 	ResourceType string `json:"resourceType"` // Always "CarePlan"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type CarePlan struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Indicates whether the plan is currently being acted upon, represents future intentions or is now a historical record.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Activity Identifies a planned action to occur as part of the plan.  For example, a medication to be used, lab tests to perform, self-monitoring, education, etc.
 	Activity []CarePlanActivity `json:"activity,omitempty"`
 	// Addresses Identifies the conditions/problems/concerns/diagnoses/etc. whose management and/or mitigation are handled by this plan.
@@ -52,18 +60,28 @@ type CarePlan struct {
 	Contributor []dt.Reference `json:"contributor,omitempty"`
 	// Created Represents when this particular CarePlan record was created in the system, which is often a system-generated date.
 	Created *dt.DateTime `json:"created,omitempty"`
+	// CreatedElement contains element extensions for created.
+	CreatedElement *dt.Element `json:"_created,omitempty"`
 	// Description A description of the scope and nature of the plan.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Encounter The Encounter during which this CarePlan was created or to which the creation of this record is tightly associated.
 	Encounter *dt.Reference `json:"encounter,omitempty"`
 	// Goal Describes the intended objective(s) of carrying out the care plan.
 	Goal []dt.Reference `json:"goal,omitempty"`
 	// InstantiatesCanonical The URL pointing to a FHIR-defined protocol, guideline, questionnaire or other definition that is adhered to in whole or in part by this CarePlan.
 	InstantiatesCanonical []dt.Canonical `json:"instantiatesCanonical,omitempty"`
+	// InstantiatesCanonicalElement contains element extensions for each instantiatesCanonical.
+	InstantiatesCanonicalElement []dt.Element `json:"_instantiatesCanonical,omitempty"`
 	// InstantiatesUri The URL pointing to an externally maintained protocol, guideline, questionnaire or other definition that is adhered to in whole or in part by this CarePlan.
 	InstantiatesUri []dt.URI `json:"instantiatesUri,omitempty"`
+	// InstantiatesUriElement contains element extensions for each instantiatesUri.
+	InstantiatesUriElement []dt.Element `json:"_instantiatesUri,omitempty"`
 	// Intent Indicates the level of authority/intentionality associated with the care plan and where the care plan fits into the workflow chain.
 	Intent *dt.Code `json:"intent,omitempty"`
+	// IntentElement contains element extensions for intent.
+	IntentElement *dt.Element `json:"_intent,omitempty"`
 	// Note General notes about the care plan not covered elsewhere.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// PartOf A larger care plan of which this particular care plan is a component or step.
@@ -78,13 +96,31 @@ type CarePlan struct {
 	SupportingInfo []dt.Reference `json:"supportingInfo,omitempty"`
 	// Title Human-friendly name for the care plan.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for CarePlan.
 func (r CarePlan) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "CarePlan"
 	type Alias CarePlan
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for CarePlan.
@@ -95,208 +131,263 @@ func (r *CarePlan) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = CarePlan(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_activity", "_addresses", "_author", "_basedOn", "_careTeam", "_category", "_contained", "_contributor", "_created", "_description", "_encounter", "_extension", "_goal", "_id", "_identifier", "_implicitRules", "_instantiatesCanonical", "_instantiatesUri", "_intent", "_language", "_meta", "_modifierExtension", "_note", "_partOf", "_period", "_replaces", "_status", "_subject", "_supportingInfo", "_text", "_title", "activity", "addresses", "author", "basedOn", "careTeam", "category", "contained", "contributor", "created", "description", "encounter", "extension", "goal", "id", "identifier", "implicitRules", "instantiatesCanonical", "instantiatesUri", "intent", "language", "meta", "modifierExtension", "note", "partOf", "period", "replaces", "resourceType", "status", "subject", "supportingInfo", "text", "title":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // CarePlanBuilder provides a fluent API for constructing CarePlan resources.
 type CarePlanBuilder struct {
-	resource CarePlan
+	resource  CarePlan
+	fieldsSet map[string]bool
 }
 
 // NewCarePlan creates a new CarePlanBuilder for building a CarePlan resource.
 func NewCarePlan() *CarePlanBuilder {
-	return &CarePlanBuilder{resource: CarePlan{ResourceType: "CarePlan"}}
+	return &CarePlanBuilder{resource: CarePlan{ResourceType: "CarePlan"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *CarePlanBuilder) WithId(v dt.ID) *CarePlanBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *CarePlanBuilder) WithMeta(v dt.Meta) *CarePlanBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *CarePlanBuilder) WithImplicitRules(v dt.URI) *CarePlanBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *CarePlanBuilder) WithLanguage(v dt.Code) *CarePlanBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *CarePlanBuilder) WithText(v dt.Narrative) *CarePlanBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *CarePlanBuilder) WithContained(v json.RawMessage) *CarePlanBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *CarePlanBuilder) WithExtension(v dt.Extension) *CarePlanBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *CarePlanBuilder) WithModifierExtension(v dt.Extension) *CarePlanBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *CarePlanBuilder) WithIdentifier(v dt.Identifier) *CarePlanBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *CarePlanBuilder) WithStatus(v dt.Code) *CarePlanBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithActivity adds an item to the activity field.
 func (b *CarePlanBuilder) WithActivity(v CarePlanActivity) *CarePlanBuilder {
 	b.resource.Activity = append(b.resource.Activity, v)
+	b.fieldsSet["activity"] = true
 	return b
 }
 
 // WithAddresses adds an item to the addresses field.
 func (b *CarePlanBuilder) WithAddresses(v dt.Reference) *CarePlanBuilder {
 	b.resource.Addresses = append(b.resource.Addresses, v)
+	b.fieldsSet["addresses"] = true
 	return b
 }
 
 // WithAuthor sets the author field.
 func (b *CarePlanBuilder) WithAuthor(v dt.Reference) *CarePlanBuilder {
 	b.resource.Author = &v
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithBasedOn adds an item to the basedOn field.
 func (b *CarePlanBuilder) WithBasedOn(v dt.Reference) *CarePlanBuilder {
 	b.resource.BasedOn = append(b.resource.BasedOn, v)
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithCareTeam adds an item to the careTeam field.
 func (b *CarePlanBuilder) WithCareTeam(v dt.Reference) *CarePlanBuilder {
 	b.resource.CareTeam = append(b.resource.CareTeam, v)
+	b.fieldsSet["careTeam"] = true
 	return b
 }
 
 // WithCategory adds an item to the category field.
 func (b *CarePlanBuilder) WithCategory(v dt.CodeableConcept) *CarePlanBuilder {
 	b.resource.Category = append(b.resource.Category, v)
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithContributor adds an item to the contributor field.
 func (b *CarePlanBuilder) WithContributor(v dt.Reference) *CarePlanBuilder {
 	b.resource.Contributor = append(b.resource.Contributor, v)
+	b.fieldsSet["contributor"] = true
 	return b
 }
 
 // WithCreated sets the created field.
 func (b *CarePlanBuilder) WithCreated(v dt.DateTime) *CarePlanBuilder {
 	b.resource.Created = &v
+	b.fieldsSet["created"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *CarePlanBuilder) WithDescription(v string) *CarePlanBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *CarePlanBuilder) WithEncounter(v dt.Reference) *CarePlanBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithGoal adds an item to the goal field.
 func (b *CarePlanBuilder) WithGoal(v dt.Reference) *CarePlanBuilder {
 	b.resource.Goal = append(b.resource.Goal, v)
+	b.fieldsSet["goal"] = true
 	return b
 }
 
 // WithInstantiatesCanonical adds an item to the instantiatesCanonical field.
 func (b *CarePlanBuilder) WithInstantiatesCanonical(v dt.Canonical) *CarePlanBuilder {
 	b.resource.InstantiatesCanonical = append(b.resource.InstantiatesCanonical, v)
+	b.fieldsSet["instantiatesCanonical"] = true
 	return b
 }
 
 // WithInstantiatesUri adds an item to the instantiatesUri field.
 func (b *CarePlanBuilder) WithInstantiatesUri(v dt.URI) *CarePlanBuilder {
 	b.resource.InstantiatesUri = append(b.resource.InstantiatesUri, v)
+	b.fieldsSet["instantiatesUri"] = true
 	return b
 }
 
 // WithIntent sets the intent field.
 func (b *CarePlanBuilder) WithIntent(v dt.Code) *CarePlanBuilder {
 	b.resource.Intent = &v
+	b.fieldsSet["intent"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *CarePlanBuilder) WithNote(v dt.Annotation) *CarePlanBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithPartOf adds an item to the partOf field.
 func (b *CarePlanBuilder) WithPartOf(v dt.Reference) *CarePlanBuilder {
 	b.resource.PartOf = append(b.resource.PartOf, v)
+	b.fieldsSet["partOf"] = true
 	return b
 }
 
 // WithPeriod sets the period field.
 func (b *CarePlanBuilder) WithPeriod(v dt.Period) *CarePlanBuilder {
 	b.resource.Period = &v
+	b.fieldsSet["period"] = true
 	return b
 }
 
 // WithReplaces adds an item to the replaces field.
 func (b *CarePlanBuilder) WithReplaces(v dt.Reference) *CarePlanBuilder {
 	b.resource.Replaces = append(b.resource.Replaces, v)
+	b.fieldsSet["replaces"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *CarePlanBuilder) WithSubject(v dt.Reference) *CarePlanBuilder {
 	b.resource.Subject = v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithSupportingInfo adds an item to the supportingInfo field.
 func (b *CarePlanBuilder) WithSupportingInfo(v dt.Reference) *CarePlanBuilder {
 	b.resource.SupportingInfo = append(b.resource.SupportingInfo, v)
+	b.fieldsSet["supportingInfo"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *CarePlanBuilder) WithTitle(v string) *CarePlanBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // Build returns the constructed CarePlan. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *CarePlanBuilder) Build() (*CarePlan, error) {
+	var missing []string
+	if !b.fieldsSet["subject"] {
+		missing = append(missing, "subject")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("CarePlan: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -305,6 +396,8 @@ func (b *CarePlanBuilder) Build() (*CarePlan, error) {
 type CarePlanActivity struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -325,28 +418,42 @@ type CarePlanActivity struct {
 type CarePlanDetail struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status Identifies what progress is being made for the specific activity.
 	Status *CarePlanDetailStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Code Detailed description of the type of planned activity; e.g. what lab test, what procedure, what kind of encounter.
 	Code *dt.CodeableConcept `json:"code,omitempty"`
 	// DailyAmount Identifies the quantity expected to be consumed in a given day.
 	DailyAmount *dt.Quantity `json:"dailyAmount,omitempty"`
 	// Description This provides a textual description of constraints on the intended activity occurrence, including relation to other activities.  It may also include objectives, pre-conditions and end-conditions.  ...
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// DoNotPerform If true, indicates that the described activity is one that must NOT be engaged in when following the plan.  If false, or missing, indicates that the described activity is one that should be engaged...
 	DoNotPerform *bool `json:"doNotPerform,omitempty"`
+	// DoNotPerformElement contains element extensions for doNotPerform.
+	DoNotPerformElement *dt.Element `json:"_doNotPerform,omitempty"`
 	// Goal Internal reference that identifies the goals that this activity is intended to contribute towards meeting.
 	Goal []dt.Reference `json:"goal,omitempty"`
 	// InstantiatesCanonical The URL pointing to a FHIR-defined protocol, guideline, questionnaire or other definition that is adhered to in whole or in part by this CarePlan activity.
 	InstantiatesCanonical []dt.Canonical `json:"instantiatesCanonical,omitempty"`
+	// InstantiatesCanonicalElement contains element extensions for each instantiatesCanonical.
+	InstantiatesCanonicalElement []dt.Element `json:"_instantiatesCanonical,omitempty"`
 	// InstantiatesUri The URL pointing to an externally maintained protocol, guideline, questionnaire or other definition that is adhered to in whole or in part by this CarePlan activity.
 	InstantiatesUri []dt.URI `json:"instantiatesUri,omitempty"`
+	// InstantiatesUriElement contains element extensions for each instantiatesUri.
+	InstantiatesUriElement []dt.Element `json:"_instantiatesUri,omitempty"`
 	// Kind A description of the kind of resource the in-line definition of a care plan activity is representing.  The CarePlan.activity.detail is an in-line definition when a resource is not referenced using ...
 	Kind *dt.Code `json:"kind,omitempty"`
+	// KindElement contains element extensions for kind.
+	KindElement *dt.Element `json:"_kind,omitempty"`
 	// Location Identifies the facility where the activity will occur; e.g. home, hospital, specific clinic, etc.
 	Location *dt.Reference `json:"location,omitempty"`
 	// Performer Identifies who's expected to be involved in the activity.
@@ -363,6 +470,8 @@ type CarePlanDetail struct {
 	ScheduledPeriod *dt.Period `json:"scheduledPeriod,omitempty"`
 	// ScheduledString The period, timing or frequency upon which the described activity is to occur.
 	ScheduledString *string `json:"scheduledString,omitempty"`
+	// ScheduledStringElement contains element extensions for scheduledString.
+	ScheduledStringElement *dt.Element `json:"_scheduledString,omitempty"`
 	// ScheduledTiming The period, timing or frequency upon which the described activity is to occur.
 	ScheduledTiming *dt.Timing `json:"scheduledTiming,omitempty"`
 	// StatusReason Provides reason why the activity isn't yet started, is on hold, was cancelled, etc.

@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type PaymentNotice struct {
 	ResourceType string `json:"resourceType"` // Always "PaymentNotice"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,16 +42,22 @@ type PaymentNotice struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the resource instance.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Amount The amount sent to the payee.
 	Amount dt.Money `json:"amount"`
 	// Created The date when this resource was created.
 	Created *dt.DateTime `json:"created,omitempty"`
+	// CreatedElement contains element extensions for created.
+	CreatedElement *dt.Element `json:"_created,omitempty"`
 	// Payee The party who will receive or has received payment that is the subject of this notification.
 	Payee *dt.Reference `json:"payee,omitempty"`
 	// Payment A reference to the payment which is the subject of this notice.
 	Payment dt.Reference `json:"payment"`
 	// PaymentDate The date when the above payment action occurred.
 	PaymentDate *dt.Date `json:"paymentDate,omitempty"`
+	// PaymentDateElement contains element extensions for paymentDate.
+	PaymentDateElement *dt.Element `json:"_paymentDate,omitempty"`
 	// PaymentStatus A code indicating whether payment has been sent or cleared.
 	PaymentStatus *dt.CodeableConcept `json:"paymentStatus,omitempty"`
 	// Provider The practitioner who is responsible for the services rendered to the patient.
@@ -55,13 +68,29 @@ type PaymentNotice struct {
 	Request *dt.Reference `json:"request,omitempty"`
 	// Response Reference of response to resource for which payment is being made.
 	Response *dt.Reference `json:"response,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for PaymentNotice.
 func (r PaymentNotice) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "PaymentNotice"
 	type Alias PaymentNotice
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for PaymentNotice.
@@ -72,142 +101,192 @@ func (r *PaymentNotice) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = PaymentNotice(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_amount", "_contained", "_created", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_modifierExtension", "_payee", "_payment", "_paymentDate", "_paymentStatus", "_provider", "_recipient", "_request", "_response", "_status", "_text", "amount", "contained", "created", "extension", "id", "identifier", "implicitRules", "language", "meta", "modifierExtension", "payee", "payment", "paymentDate", "paymentStatus", "provider", "recipient", "request", "resourceType", "response", "status", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // PaymentNoticeBuilder provides a fluent API for constructing PaymentNotice resources.
 type PaymentNoticeBuilder struct {
-	resource PaymentNotice
+	resource  PaymentNotice
+	fieldsSet map[string]bool
 }
 
 // NewPaymentNotice creates a new PaymentNoticeBuilder for building a PaymentNotice resource.
 func NewPaymentNotice() *PaymentNoticeBuilder {
-	return &PaymentNoticeBuilder{resource: PaymentNotice{ResourceType: "PaymentNotice"}}
+	return &PaymentNoticeBuilder{resource: PaymentNotice{ResourceType: "PaymentNotice"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *PaymentNoticeBuilder) WithId(v dt.ID) *PaymentNoticeBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *PaymentNoticeBuilder) WithMeta(v dt.Meta) *PaymentNoticeBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *PaymentNoticeBuilder) WithImplicitRules(v dt.URI) *PaymentNoticeBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *PaymentNoticeBuilder) WithLanguage(v dt.Code) *PaymentNoticeBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *PaymentNoticeBuilder) WithText(v dt.Narrative) *PaymentNoticeBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *PaymentNoticeBuilder) WithContained(v json.RawMessage) *PaymentNoticeBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *PaymentNoticeBuilder) WithExtension(v dt.Extension) *PaymentNoticeBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *PaymentNoticeBuilder) WithModifierExtension(v dt.Extension) *PaymentNoticeBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *PaymentNoticeBuilder) WithIdentifier(v dt.Identifier) *PaymentNoticeBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *PaymentNoticeBuilder) WithStatus(v dt.Code) *PaymentNoticeBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAmount sets the amount field.
 func (b *PaymentNoticeBuilder) WithAmount(v dt.Money) *PaymentNoticeBuilder {
 	b.resource.Amount = v
+	b.fieldsSet["amount"] = true
 	return b
 }
 
 // WithCreated sets the created field.
 func (b *PaymentNoticeBuilder) WithCreated(v dt.DateTime) *PaymentNoticeBuilder {
 	b.resource.Created = &v
+	b.fieldsSet["created"] = true
 	return b
 }
 
 // WithPayee sets the payee field.
 func (b *PaymentNoticeBuilder) WithPayee(v dt.Reference) *PaymentNoticeBuilder {
 	b.resource.Payee = &v
+	b.fieldsSet["payee"] = true
 	return b
 }
 
 // WithPayment sets the payment field.
 func (b *PaymentNoticeBuilder) WithPayment(v dt.Reference) *PaymentNoticeBuilder {
 	b.resource.Payment = v
+	b.fieldsSet["payment"] = true
 	return b
 }
 
 // WithPaymentDate sets the paymentDate field.
 func (b *PaymentNoticeBuilder) WithPaymentDate(v dt.Date) *PaymentNoticeBuilder {
 	b.resource.PaymentDate = &v
+	b.fieldsSet["paymentDate"] = true
 	return b
 }
 
 // WithPaymentStatus sets the paymentStatus field.
 func (b *PaymentNoticeBuilder) WithPaymentStatus(v dt.CodeableConcept) *PaymentNoticeBuilder {
 	b.resource.PaymentStatus = &v
+	b.fieldsSet["paymentStatus"] = true
 	return b
 }
 
 // WithProvider sets the provider field.
 func (b *PaymentNoticeBuilder) WithProvider(v dt.Reference) *PaymentNoticeBuilder {
 	b.resource.Provider = &v
+	b.fieldsSet["provider"] = true
 	return b
 }
 
 // WithRecipient sets the recipient field.
 func (b *PaymentNoticeBuilder) WithRecipient(v dt.Reference) *PaymentNoticeBuilder {
 	b.resource.Recipient = v
+	b.fieldsSet["recipient"] = true
 	return b
 }
 
 // WithRequest sets the request field.
 func (b *PaymentNoticeBuilder) WithRequest(v dt.Reference) *PaymentNoticeBuilder {
 	b.resource.Request = &v
+	b.fieldsSet["request"] = true
 	return b
 }
 
 // WithResponse sets the response field.
 func (b *PaymentNoticeBuilder) WithResponse(v dt.Reference) *PaymentNoticeBuilder {
 	b.resource.Response = &v
+	b.fieldsSet["response"] = true
 	return b
 }
 
 // Build returns the constructed PaymentNotice. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *PaymentNoticeBuilder) Build() (*PaymentNotice, error) {
+	var missing []string
+	if !b.fieldsSet["amount"] {
+		missing = append(missing, "amount")
+	}
+	if !b.fieldsSet["payment"] {
+		missing = append(missing, "payment")
+	}
+	if !b.fieldsSet["recipient"] {
+		missing = append(missing, "recipient")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("PaymentNotice: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }

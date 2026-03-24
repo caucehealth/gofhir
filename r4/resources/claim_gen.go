@@ -18,12 +18,18 @@ type Claim struct {
 	ResourceType string `json:"resourceType"` // Always "Claim"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type Claim struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the resource instance.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Accident Details of an accident which resulted in injuries which required the products and services listed in the claim.
 	Accident *ClaimAccident `json:"accident,omitempty"`
 	// BillablePeriod The period for which charges are being submitted.
@@ -44,6 +52,8 @@ type Claim struct {
 	CareTeam []ClaimCareTeam `json:"careTeam,omitempty"`
 	// Created The date this resource was created.
 	Created *dt.DateTime `json:"created,omitempty"`
+	// CreatedElement contains element extensions for created.
+	CreatedElement *dt.Element `json:"_created,omitempty"`
 	// Diagnosis Information about diagnoses relevant to the claim items.
 	Diagnosis []ClaimDiagnosis `json:"diagnosis,omitempty"`
 	// Enterer Individual who created the claim, predetermination or preauthorization.
@@ -86,13 +96,31 @@ type Claim struct {
 	Type dt.CodeableConcept `json:"type"`
 	// Use A code to indicate whether the nature of the request is: to request adjudication of products and services previously rendered; or requesting authorization and adjudication for provision in the futu...
 	Use *ClaimUse `json:"use,omitempty"`
+	// UseElement contains element extensions for use.
+	UseElement *dt.Element `json:"_use,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Claim.
 func (r Claim) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Claim"
 	type Alias Claim
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Claim.
@@ -103,226 +131,278 @@ func (r *Claim) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Claim(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_accident", "_billablePeriod", "_careTeam", "_contained", "_created", "_diagnosis", "_enterer", "_extension", "_facility", "_fundsReserve", "_id", "_identifier", "_implicitRules", "_insurance", "_insurer", "_item", "_language", "_meta", "_modifierExtension", "_originalPrescription", "_patient", "_payee", "_prescription", "_priority", "_procedure", "_provider", "_referral", "_related", "_status", "_subType", "_supportingInfo", "_text", "_total", "_type", "_use", "accident", "billablePeriod", "careTeam", "contained", "created", "diagnosis", "enterer", "extension", "facility", "fundsReserve", "id", "identifier", "implicitRules", "insurance", "insurer", "item", "language", "meta", "modifierExtension", "originalPrescription", "patient", "payee", "prescription", "priority", "procedure", "provider", "referral", "related", "resourceType", "status", "subType", "supportingInfo", "text", "total", "type", "use":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ClaimBuilder provides a fluent API for constructing Claim resources.
 type ClaimBuilder struct {
-	resource Claim
+	resource  Claim
+	fieldsSet map[string]bool
 }
 
 // NewClaim creates a new ClaimBuilder for building a Claim resource.
 func NewClaim() *ClaimBuilder {
-	return &ClaimBuilder{resource: Claim{ResourceType: "Claim"}}
+	return &ClaimBuilder{resource: Claim{ResourceType: "Claim"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ClaimBuilder) WithId(v dt.ID) *ClaimBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ClaimBuilder) WithMeta(v dt.Meta) *ClaimBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ClaimBuilder) WithImplicitRules(v dt.URI) *ClaimBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ClaimBuilder) WithLanguage(v dt.Code) *ClaimBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ClaimBuilder) WithText(v dt.Narrative) *ClaimBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ClaimBuilder) WithContained(v json.RawMessage) *ClaimBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ClaimBuilder) WithExtension(v dt.Extension) *ClaimBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ClaimBuilder) WithModifierExtension(v dt.Extension) *ClaimBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ClaimBuilder) WithIdentifier(v dt.Identifier) *ClaimBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ClaimBuilder) WithStatus(v dt.Code) *ClaimBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAccident sets the accident field.
 func (b *ClaimBuilder) WithAccident(v ClaimAccident) *ClaimBuilder {
 	b.resource.Accident = &v
+	b.fieldsSet["accident"] = true
 	return b
 }
 
 // WithBillablePeriod sets the billablePeriod field.
 func (b *ClaimBuilder) WithBillablePeriod(v dt.Period) *ClaimBuilder {
 	b.resource.BillablePeriod = &v
+	b.fieldsSet["billablePeriod"] = true
 	return b
 }
 
 // WithCareTeam adds an item to the careTeam field.
 func (b *ClaimBuilder) WithCareTeam(v ClaimCareTeam) *ClaimBuilder {
 	b.resource.CareTeam = append(b.resource.CareTeam, v)
+	b.fieldsSet["careTeam"] = true
 	return b
 }
 
 // WithCreated sets the created field.
 func (b *ClaimBuilder) WithCreated(v dt.DateTime) *ClaimBuilder {
 	b.resource.Created = &v
+	b.fieldsSet["created"] = true
 	return b
 }
 
 // WithDiagnosis adds an item to the diagnosis field.
 func (b *ClaimBuilder) WithDiagnosis(v ClaimDiagnosis) *ClaimBuilder {
 	b.resource.Diagnosis = append(b.resource.Diagnosis, v)
+	b.fieldsSet["diagnosis"] = true
 	return b
 }
 
 // WithEnterer sets the enterer field.
 func (b *ClaimBuilder) WithEnterer(v dt.Reference) *ClaimBuilder {
 	b.resource.Enterer = &v
+	b.fieldsSet["enterer"] = true
 	return b
 }
 
 // WithFacility sets the facility field.
 func (b *ClaimBuilder) WithFacility(v dt.Reference) *ClaimBuilder {
 	b.resource.Facility = &v
+	b.fieldsSet["facility"] = true
 	return b
 }
 
 // WithFundsReserve sets the fundsReserve field.
 func (b *ClaimBuilder) WithFundsReserve(v dt.CodeableConcept) *ClaimBuilder {
 	b.resource.FundsReserve = &v
+	b.fieldsSet["fundsReserve"] = true
 	return b
 }
 
 // WithInsurance adds an item to the insurance field.
 func (b *ClaimBuilder) WithInsurance(v ClaimInsurance) *ClaimBuilder {
 	b.resource.Insurance = append(b.resource.Insurance, v)
+	b.fieldsSet["insurance"] = true
 	return b
 }
 
 // WithInsurer sets the insurer field.
 func (b *ClaimBuilder) WithInsurer(v dt.Reference) *ClaimBuilder {
 	b.resource.Insurer = &v
+	b.fieldsSet["insurer"] = true
 	return b
 }
 
 // WithItem adds an item to the item field.
 func (b *ClaimBuilder) WithItem(v ClaimItem) *ClaimBuilder {
 	b.resource.Item = append(b.resource.Item, v)
+	b.fieldsSet["item"] = true
 	return b
 }
 
 // WithOriginalPrescription sets the originalPrescription field.
 func (b *ClaimBuilder) WithOriginalPrescription(v dt.Reference) *ClaimBuilder {
 	b.resource.OriginalPrescription = &v
+	b.fieldsSet["originalPrescription"] = true
 	return b
 }
 
 // WithPatient sets the patient field.
 func (b *ClaimBuilder) WithPatient(v dt.Reference) *ClaimBuilder {
 	b.resource.Patient = v
+	b.fieldsSet["patient"] = true
 	return b
 }
 
 // WithPayee sets the payee field.
 func (b *ClaimBuilder) WithPayee(v ClaimPayee) *ClaimBuilder {
 	b.resource.Payee = &v
+	b.fieldsSet["payee"] = true
 	return b
 }
 
 // WithPrescription sets the prescription field.
 func (b *ClaimBuilder) WithPrescription(v dt.Reference) *ClaimBuilder {
 	b.resource.Prescription = &v
+	b.fieldsSet["prescription"] = true
 	return b
 }
 
 // WithPriority sets the priority field.
 func (b *ClaimBuilder) WithPriority(v dt.CodeableConcept) *ClaimBuilder {
 	b.resource.Priority = v
+	b.fieldsSet["priority"] = true
 	return b
 }
 
 // WithProcedure adds an item to the procedure field.
 func (b *ClaimBuilder) WithProcedure(v ClaimProcedure) *ClaimBuilder {
 	b.resource.Procedure = append(b.resource.Procedure, v)
+	b.fieldsSet["procedure"] = true
 	return b
 }
 
 // WithProvider sets the provider field.
 func (b *ClaimBuilder) WithProvider(v dt.Reference) *ClaimBuilder {
 	b.resource.Provider = v
+	b.fieldsSet["provider"] = true
 	return b
 }
 
 // WithReferral sets the referral field.
 func (b *ClaimBuilder) WithReferral(v dt.Reference) *ClaimBuilder {
 	b.resource.Referral = &v
+	b.fieldsSet["referral"] = true
 	return b
 }
 
 // WithRelated adds an item to the related field.
 func (b *ClaimBuilder) WithRelated(v ClaimRelated) *ClaimBuilder {
 	b.resource.Related = append(b.resource.Related, v)
+	b.fieldsSet["related"] = true
 	return b
 }
 
 // WithSubType sets the subType field.
 func (b *ClaimBuilder) WithSubType(v dt.CodeableConcept) *ClaimBuilder {
 	b.resource.SubType = &v
+	b.fieldsSet["subType"] = true
 	return b
 }
 
 // WithSupportingInfo adds an item to the supportingInfo field.
 func (b *ClaimBuilder) WithSupportingInfo(v ClaimSupportingInfo) *ClaimBuilder {
 	b.resource.SupportingInfo = append(b.resource.SupportingInfo, v)
+	b.fieldsSet["supportingInfo"] = true
 	return b
 }
 
 // WithTotal sets the total field.
 func (b *ClaimBuilder) WithTotal(v dt.Money) *ClaimBuilder {
 	b.resource.Total = &v
+	b.fieldsSet["total"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *ClaimBuilder) WithType(v dt.CodeableConcept) *ClaimBuilder {
 	b.resource.Type = v
+	b.fieldsSet["type"] = true
 	return b
 }
 
 // WithUse sets the use field.
 func (b *ClaimBuilder) WithUse(v ClaimUse) *ClaimBuilder {
 	b.resource.Use = &v
+	b.fieldsSet["use"] = true
 	return b
 }
 
@@ -330,8 +410,20 @@ func (b *ClaimBuilder) WithUse(v ClaimUse) *ClaimBuilder {
 // field (cardinality 1..1) is not set.
 func (b *ClaimBuilder) Build() (*Claim, error) {
 	var missing []string
-	if len(b.resource.Insurance) == 0 {
+	if !b.fieldsSet["insurance"] {
 		missing = append(missing, "insurance")
+	}
+	if !b.fieldsSet["patient"] {
+		missing = append(missing, "patient")
+	}
+	if !b.fieldsSet["priority"] {
+		missing = append(missing, "priority")
+	}
+	if !b.fieldsSet["provider"] {
+		missing = append(missing, "provider")
+	}
+	if !b.fieldsSet["type"] {
+		missing = append(missing, "type")
 	}
 	if len(missing) > 0 {
 		return nil, fmt.Errorf("Claim: required fields missing: %v", missing)
@@ -344,12 +436,16 @@ func (b *ClaimBuilder) Build() (*Claim, error) {
 type ClaimAccident struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Date Date of an accident event  related to the products and services contained in the claim.
 	Date *dt.Date `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Location The physical location of the accident event.
 	Location *ClaimAccidentLocation `json:"-"` // polymorphic
 	// Type The type or context of the accident event for the purposes of selection of potential insurance coverages and determination of coordination between insurers.
@@ -446,6 +542,8 @@ func (v *ClaimAccidentLocation) UnmarshalJSON(data []byte) error {
 type ClaimCareTeam struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -456,16 +554,22 @@ type ClaimCareTeam struct {
 	Qualification *dt.CodeableConcept `json:"qualification,omitempty"`
 	// Responsible The party who is billing and/or responsible for the claimed products or services.
 	Responsible *bool `json:"responsible,omitempty"`
+	// ResponsibleElement contains element extensions for responsible.
+	ResponsibleElement *dt.Element `json:"_responsible,omitempty"`
 	// Role The lead, assisting or supervising practitioner and their discipline if a multidisciplinary team.
 	Role *dt.CodeableConcept `json:"role,omitempty"`
 	// Sequence A number to uniquely identify care team entries.
 	Sequence *uint32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 }
 
 // ClaimDetail A provider issued list of professional services and products which have been provided, or are to be provided, to a patient which is sent to an insurer for reimbursement.
 type ClaimDetail struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -474,6 +578,8 @@ type ClaimDetail struct {
 	Category *dt.CodeableConcept `json:"category,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
 	Factor *float64 `json:"factor,omitempty"`
+	// FactorElement contains element extensions for factor.
+	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
 	Modifier []dt.CodeableConcept `json:"modifier,omitempty"`
 	// Net The quantity times the unit price for an additional service or product or charge.
@@ -488,6 +594,8 @@ type ClaimDetail struct {
 	Revenue *dt.CodeableConcept `json:"revenue,omitempty"`
 	// Sequence A number to uniquely identify item entries.
 	Sequence *uint32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 	// SubDetail A claim detail line. Either a simple (a product or service) or a 'group' of sub-details which are simple items.
 	SubDetail []ClaimSubDetail `json:"subDetail,omitempty"`
 	// Udi Unique Device Identifiers associated with this line item.
@@ -500,6 +608,8 @@ type ClaimDetail struct {
 type ClaimDiagnosis struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -512,6 +622,8 @@ type ClaimDiagnosis struct {
 	PackageCode *dt.CodeableConcept `json:"packageCode,omitempty"`
 	// Sequence A number to uniquely identify diagnosis entries.
 	Sequence *uint32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 	// Type When the condition was observed or the relative ranking.
 	Type []dt.CodeableConcept `json:"type,omitempty"`
 }
@@ -606,6 +718,8 @@ func (v *ClaimDiagnosisDiagnosis) UnmarshalJSON(data []byte) error {
 type ClaimInsurance struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -614,22 +728,32 @@ type ClaimInsurance struct {
 	Identifier *dt.Identifier `json:"identifier,omitempty"`
 	// BusinessArrangement A business agreement number established between the provider and the insurer for special business processing purposes.
 	BusinessArrangement *string `json:"businessArrangement,omitempty"`
+	// BusinessArrangementElement contains element extensions for businessArrangement.
+	BusinessArrangementElement *dt.Element `json:"_businessArrangement,omitempty"`
 	// ClaimResponse The result of the adjudication of the line items for the Coverage specified in this insurance.
 	ClaimResponse *dt.Reference `json:"claimResponse,omitempty"`
 	// Coverage Reference to the insurance card level information contained in the Coverage resource. The coverage issuing insurer will use these details to locate the patient's actual coverage within the insurer'...
 	Coverage dt.Reference `json:"coverage"`
 	// Focal A flag to indicate that this Coverage is to be used for adjudication of this claim when set to true.
 	Focal *bool `json:"focal,omitempty"`
+	// FocalElement contains element extensions for focal.
+	FocalElement *dt.Element `json:"_focal,omitempty"`
 	// PreAuthRef Reference numbers previously provided by the insurer to the provider to be quoted on subsequent claims containing services or products related to the prior authorization.
 	PreAuthRef []string `json:"preAuthRef,omitempty"`
+	// PreAuthRefElement contains element extensions for each preAuthRef.
+	PreAuthRefElement []dt.Element `json:"_preAuthRef,omitempty"`
 	// Sequence A number to uniquely identify insurance entries and provide a sequence of coverages to convey coordination of benefit order.
 	Sequence *uint32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 }
 
 // ClaimItem A provider issued list of professional services and products which have been provided, or are to be provided, to a patient which is sent to an insurer for reimbursement.
 type ClaimItem struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -638,18 +762,26 @@ type ClaimItem struct {
 	BodySite *dt.CodeableConcept `json:"bodySite,omitempty"`
 	// CareTeamSequence CareTeam members related to this service or product.
 	CareTeamSequence []uint32 `json:"careTeamSequence,omitempty"`
+	// CareTeamSequenceElement contains element extensions for each careTeamSequence.
+	CareTeamSequenceElement []dt.Element `json:"_careTeamSequence,omitempty"`
 	// Category Code to identify the general type of benefits under which products and services are provided.
 	Category *dt.CodeableConcept `json:"category,omitempty"`
 	// Detail A claim detail line. Either a simple (a product or service) or a 'group' of sub-details which are simple items.
 	Detail []ClaimDetail `json:"detail,omitempty"`
 	// DiagnosisSequence Diagnosis applicable for this service or product.
 	DiagnosisSequence []uint32 `json:"diagnosisSequence,omitempty"`
+	// DiagnosisSequenceElement contains element extensions for each diagnosisSequence.
+	DiagnosisSequenceElement []dt.Element `json:"_diagnosisSequence,omitempty"`
 	// Encounter The Encounters during which this Claim was created or to which the creation of this record is tightly associated.
 	Encounter []dt.Reference `json:"encounter,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
 	Factor *float64 `json:"factor,omitempty"`
+	// FactorElement contains element extensions for factor.
+	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// InformationSequence Exceptions, special conditions and supporting information applicable for this service or product.
 	InformationSequence []uint32 `json:"informationSequence,omitempty"`
+	// InformationSequenceElement contains element extensions for each informationSequence.
+	InformationSequenceElement []dt.Element `json:"_informationSequence,omitempty"`
 	// Location Where the product or service was provided.
 	Location *ClaimItemLocation `json:"-"` // polymorphic
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
@@ -658,6 +790,8 @@ type ClaimItem struct {
 	Net *dt.Money `json:"net,omitempty"`
 	// ProcedureSequence Procedures applicable for this service or product.
 	ProcedureSequence []uint32 `json:"procedureSequence,omitempty"`
+	// ProcedureSequenceElement contains element extensions for each procedureSequence.
+	ProcedureSequenceElement []dt.Element `json:"_procedureSequence,omitempty"`
 	// ProductOrService When the value is a group code then this item collects a set of related claim details, otherwise this contains the product, service, drug or other billing code for the item.
 	ProductOrService dt.CodeableConcept `json:"productOrService"`
 	// ProgramCode Identifies the program under which this may be recovered.
@@ -668,6 +802,8 @@ type ClaimItem struct {
 	Revenue *dt.CodeableConcept `json:"revenue,omitempty"`
 	// Sequence A number to uniquely identify item entries.
 	Sequence *uint32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 	// Serviced The date or dates when the service or product was supplied, performed or completed.
 	Serviced *ClaimItemServiced `json:"-"` // polymorphic
 	// SubSite A region or surface of the bodySite, e.g. limb region or tooth surface(s).
@@ -726,19 +862,19 @@ func (r *ClaimItem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ClaimItem(alias)
-	var servicedVal ClaimItemServiced
-	if err := servicedVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if servicedVal.Date != nil || servicedVal.Period != nil {
-		r.Serviced = &servicedVal
-	}
 	var locationVal ClaimItemLocation
 	if err := locationVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if locationVal.Address != nil || locationVal.CodeableConcept != nil || locationVal.Reference != nil {
 		r.Location = &locationVal
+	}
+	var servicedVal ClaimItemServiced
+	if err := servicedVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if servicedVal.Date != nil || servicedVal.Period != nil {
+		r.Serviced = &servicedVal
 	}
 	return nil
 }
@@ -840,6 +976,8 @@ func (v *ClaimItemLocation) UnmarshalJSON(data []byte) error {
 type ClaimPayee struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -854,16 +992,22 @@ type ClaimPayee struct {
 type ClaimProcedure struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Date Date and optionally time the procedure was performed.
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Procedure The code or reference to a Procedure resource which identifies the clinical intervention performed.
 	Procedure *ClaimProcedureProcedure `json:"-"` // polymorphic
 	// Sequence A number to uniquely identify procedure entries.
 	Sequence *uint32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 	// Type When the condition was observed or the relative ranking.
 	Type []dt.CodeableConcept `json:"type,omitempty"`
 	// Udi Unique Device Identifiers associated with this line item.
@@ -960,6 +1104,8 @@ func (v *ClaimProcedureProcedure) UnmarshalJSON(data []byte) error {
 type ClaimRelated struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -976,6 +1122,8 @@ type ClaimRelated struct {
 type ClaimSubDetail struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -984,6 +1132,8 @@ type ClaimSubDetail struct {
 	Category *dt.CodeableConcept `json:"category,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
 	Factor *float64 `json:"factor,omitempty"`
+	// FactorElement contains element extensions for factor.
+	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
 	Modifier []dt.CodeableConcept `json:"modifier,omitempty"`
 	// Net The quantity times the unit price for an additional service or product or charge.
@@ -998,6 +1148,8 @@ type ClaimSubDetail struct {
 	Revenue *dt.CodeableConcept `json:"revenue,omitempty"`
 	// Sequence A number to uniquely identify item entries.
 	Sequence *uint32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 	// Udi Unique Device Identifiers associated with this line item.
 	Udi []dt.Reference `json:"udi,omitempty"`
 	// UnitPrice If the item is not a group then this is the fee for the product or service, otherwise this is the total of the fees for the details of the group.
@@ -1008,6 +1160,8 @@ type ClaimSubDetail struct {
 type ClaimSupportingInfo struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1020,6 +1174,8 @@ type ClaimSupportingInfo struct {
 	Reason *dt.CodeableConcept `json:"reason,omitempty"`
 	// Sequence A number to uniquely identify supporting information entries.
 	Sequence *uint32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 	// Timing The date when or period to which this information refers.
 	Timing *ClaimSupportingInfoTiming `json:"-"` // polymorphic
 	// Value Additional data or information such as resources, documents, images etc. including references to the data or the actual inclusion of the data.

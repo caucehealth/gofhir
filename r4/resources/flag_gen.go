@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type Flag struct {
 	ResourceType string `json:"resourceType"` // Always "Flag"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,6 +42,8 @@ type Flag struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Supports basic workflow.
 	Status *FlagStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Author The person, organization or device that created the flag.
 	Author *dt.Reference `json:"author,omitempty"`
 	// Category Allows a flag to be divided into different categories like clinical, administrative etc. Intended to be used as a means of filtering which flags are displayed to particular user or in a given context.
@@ -47,13 +56,29 @@ type Flag struct {
 	Period *dt.Period `json:"period,omitempty"`
 	// Subject The patient, location, group, organization, or practitioner etc. this is about record this flag is associated with.
 	Subject dt.Reference `json:"subject"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Flag.
 func (r Flag) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Flag"
 	type Alias Flag
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Flag.
@@ -64,118 +89,161 @@ func (r *Flag) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Flag(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_author", "_category", "_code", "_contained", "_encounter", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_modifierExtension", "_period", "_status", "_subject", "_text", "author", "category", "code", "contained", "encounter", "extension", "id", "identifier", "implicitRules", "language", "meta", "modifierExtension", "period", "resourceType", "status", "subject", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // FlagBuilder provides a fluent API for constructing Flag resources.
 type FlagBuilder struct {
-	resource Flag
+	resource  Flag
+	fieldsSet map[string]bool
 }
 
 // NewFlag creates a new FlagBuilder for building a Flag resource.
 func NewFlag() *FlagBuilder {
-	return &FlagBuilder{resource: Flag{ResourceType: "Flag"}}
+	return &FlagBuilder{resource: Flag{ResourceType: "Flag"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *FlagBuilder) WithId(v dt.ID) *FlagBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *FlagBuilder) WithMeta(v dt.Meta) *FlagBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *FlagBuilder) WithImplicitRules(v dt.URI) *FlagBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *FlagBuilder) WithLanguage(v dt.Code) *FlagBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *FlagBuilder) WithText(v dt.Narrative) *FlagBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *FlagBuilder) WithContained(v json.RawMessage) *FlagBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *FlagBuilder) WithExtension(v dt.Extension) *FlagBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *FlagBuilder) WithModifierExtension(v dt.Extension) *FlagBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *FlagBuilder) WithIdentifier(v dt.Identifier) *FlagBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *FlagBuilder) WithStatus(v FlagStatus) *FlagBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAuthor sets the author field.
 func (b *FlagBuilder) WithAuthor(v dt.Reference) *FlagBuilder {
 	b.resource.Author = &v
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithCategory adds an item to the category field.
 func (b *FlagBuilder) WithCategory(v dt.CodeableConcept) *FlagBuilder {
 	b.resource.Category = append(b.resource.Category, v)
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *FlagBuilder) WithCode(v dt.CodeableConcept) *FlagBuilder {
 	b.resource.Code = v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *FlagBuilder) WithEncounter(v dt.Reference) *FlagBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithPeriod sets the period field.
 func (b *FlagBuilder) WithPeriod(v dt.Period) *FlagBuilder {
 	b.resource.Period = &v
+	b.fieldsSet["period"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *FlagBuilder) WithSubject(v dt.Reference) *FlagBuilder {
 	b.resource.Subject = v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // Build returns the constructed Flag. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *FlagBuilder) Build() (*Flag, error) {
+	var missing []string
+	if !b.fieldsSet["code"] {
+		missing = append(missing, "code")
+	}
+	if !b.fieldsSet["subject"] {
+		missing = append(missing, "subject")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("Flag: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }

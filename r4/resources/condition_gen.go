@@ -18,12 +18,18 @@ type Condition struct {
 	ResourceType string `json:"resourceType"` // Always "Condition"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -56,6 +62,8 @@ type Condition struct {
 	Onset *ConditionOnset `json:"-"` // polymorphic
 	// RecordedDate The recordedDate represents when this particular Condition record was created in the system, which is often a system-generated date.
 	RecordedDate *dt.DateTime `json:"recordedDate,omitempty"`
+	// RecordedDateElement contains element extensions for recordedDate.
+	RecordedDateElement *dt.Element `json:"_recordedDate,omitempty"`
 	// Recorder Individual who recorded the record and takes responsibility for its content.
 	Recorder *dt.Reference `json:"recorder,omitempty"`
 	// Severity A subjective assessment of the severity of the condition as evaluated by the clinician.
@@ -66,6 +74,8 @@ type Condition struct {
 	Subject dt.Reference `json:"subject"`
 	// VerificationStatus The verification status to support the clinical status of the condition.
 	VerificationStatus *dt.CodeableConcept `json:"verificationStatus,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Condition.
@@ -76,7 +86,6 @@ func (r Condition) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -107,6 +116,9 @@ func (r Condition) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
 	return json.Marshal(m)
 }
 
@@ -133,17 +145,34 @@ func (r *Condition) UnmarshalJSON(data []byte) error {
 	if onsetVal.Age != nil || onsetVal.DateTime != nil || onsetVal.Period != nil || onsetVal.Range != nil || onsetVal.String != nil {
 		r.Onset = &onsetVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_abatementAge", "_abatementDateTime", "_abatementPeriod", "_abatementRange", "_abatementString", "_asserter", "_bodySite", "_category", "_clinicalStatus", "_code", "_contained", "_encounter", "_evidence", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_modifierExtension", "_note", "_onsetAge", "_onsetDateTime", "_onsetPeriod", "_onsetRange", "_onsetString", "_recordedDate", "_recorder", "_severity", "_stage", "_subject", "_text", "_verificationStatus", "abatementAge", "abatementDateTime", "abatementPeriod", "abatementRange", "abatementString", "asserter", "bodySite", "category", "clinicalStatus", "code", "contained", "encounter", "evidence", "extension", "id", "identifier", "implicitRules", "language", "meta", "modifierExtension", "note", "onsetAge", "onsetDateTime", "onsetPeriod", "onsetRange", "onsetString", "recordedDate", "recorder", "resourceType", "severity", "stage", "subject", "text", "verificationStatus":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ConditionBuilder provides a fluent API for constructing Condition resources.
 type ConditionBuilder struct {
-	resource Condition
+	resource  Condition
+	fieldsSet map[string]bool
 }
 
 // NewCondition creates a new ConditionBuilder for building a Condition resource.
 func NewCondition() *ConditionBuilder {
-	return &ConditionBuilder{resource: Condition{ResourceType: "Condition"}}
+	return &ConditionBuilder{resource: Condition{ResourceType: "Condition"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithCode sets the condition code.
@@ -157,66 +186,77 @@ func (b *ConditionBuilder) WithCode(system, code, display string) *ConditionBuil
 			Display: &display,
 		}},
 	}
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithSubject sets the condition subject reference.
 func (b *ConditionBuilder) WithSubject(reference string) *ConditionBuilder {
 	b.resource.Subject = dt.Reference{Reference: &reference}
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithId sets the id field.
 func (b *ConditionBuilder) WithId(v dt.ID) *ConditionBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ConditionBuilder) WithMeta(v dt.Meta) *ConditionBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ConditionBuilder) WithImplicitRules(v dt.URI) *ConditionBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ConditionBuilder) WithLanguage(v dt.Code) *ConditionBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ConditionBuilder) WithText(v dt.Narrative) *ConditionBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ConditionBuilder) WithContained(v json.RawMessage) *ConditionBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ConditionBuilder) WithExtension(v dt.Extension) *ConditionBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ConditionBuilder) WithModifierExtension(v dt.Extension) *ConditionBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ConditionBuilder) WithIdentifier(v dt.Identifier) *ConditionBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
@@ -226,6 +266,7 @@ func (b *ConditionBuilder) WithAbatementAge(v dt.Age) *ConditionBuilder {
 		b.resource.Abatement = &ConditionAbatement{}
 	}
 	b.resource.Abatement.Age = &v
+	b.fieldsSet["abatement"] = true
 	return b
 }
 
@@ -235,6 +276,7 @@ func (b *ConditionBuilder) WithAbatementDateTime(v string) *ConditionBuilder {
 		b.resource.Abatement = &ConditionAbatement{}
 	}
 	b.resource.Abatement.DateTime = &v
+	b.fieldsSet["abatement"] = true
 	return b
 }
 
@@ -244,6 +286,7 @@ func (b *ConditionBuilder) WithAbatementPeriod(v dt.Period) *ConditionBuilder {
 		b.resource.Abatement = &ConditionAbatement{}
 	}
 	b.resource.Abatement.Period = &v
+	b.fieldsSet["abatement"] = true
 	return b
 }
 
@@ -253,6 +296,7 @@ func (b *ConditionBuilder) WithAbatementRange(v dt.Range) *ConditionBuilder {
 		b.resource.Abatement = &ConditionAbatement{}
 	}
 	b.resource.Abatement.Range = &v
+	b.fieldsSet["abatement"] = true
 	return b
 }
 
@@ -262,48 +306,56 @@ func (b *ConditionBuilder) WithAbatementString(v string) *ConditionBuilder {
 		b.resource.Abatement = &ConditionAbatement{}
 	}
 	b.resource.Abatement.String = &v
+	b.fieldsSet["abatement"] = true
 	return b
 }
 
 // WithAsserter sets the asserter field.
 func (b *ConditionBuilder) WithAsserter(v dt.Reference) *ConditionBuilder {
 	b.resource.Asserter = &v
+	b.fieldsSet["asserter"] = true
 	return b
 }
 
 // WithBodySite adds an item to the bodySite field.
 func (b *ConditionBuilder) WithBodySite(v dt.CodeableConcept) *ConditionBuilder {
 	b.resource.BodySite = append(b.resource.BodySite, v)
+	b.fieldsSet["bodySite"] = true
 	return b
 }
 
 // WithCategory adds an item to the category field.
 func (b *ConditionBuilder) WithCategory(v dt.CodeableConcept) *ConditionBuilder {
 	b.resource.Category = append(b.resource.Category, v)
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithClinicalStatus sets the clinicalStatus field.
 func (b *ConditionBuilder) WithClinicalStatus(v dt.CodeableConcept) *ConditionBuilder {
 	b.resource.ClinicalStatus = &v
+	b.fieldsSet["clinicalStatus"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *ConditionBuilder) WithEncounter(v dt.Reference) *ConditionBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithEvidence adds an item to the evidence field.
 func (b *ConditionBuilder) WithEvidence(v ConditionEvidence) *ConditionBuilder {
 	b.resource.Evidence = append(b.resource.Evidence, v)
+	b.fieldsSet["evidence"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *ConditionBuilder) WithNote(v dt.Annotation) *ConditionBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
@@ -313,6 +365,7 @@ func (b *ConditionBuilder) WithOnsetAge(v dt.Age) *ConditionBuilder {
 		b.resource.Onset = &ConditionOnset{}
 	}
 	b.resource.Onset.Age = &v
+	b.fieldsSet["onset"] = true
 	return b
 }
 
@@ -322,6 +375,7 @@ func (b *ConditionBuilder) WithOnsetDateTime(v string) *ConditionBuilder {
 		b.resource.Onset = &ConditionOnset{}
 	}
 	b.resource.Onset.DateTime = &v
+	b.fieldsSet["onset"] = true
 	return b
 }
 
@@ -331,6 +385,7 @@ func (b *ConditionBuilder) WithOnsetPeriod(v dt.Period) *ConditionBuilder {
 		b.resource.Onset = &ConditionOnset{}
 	}
 	b.resource.Onset.Period = &v
+	b.fieldsSet["onset"] = true
 	return b
 }
 
@@ -340,6 +395,7 @@ func (b *ConditionBuilder) WithOnsetRange(v dt.Range) *ConditionBuilder {
 		b.resource.Onset = &ConditionOnset{}
 	}
 	b.resource.Onset.Range = &v
+	b.fieldsSet["onset"] = true
 	return b
 }
 
@@ -349,42 +405,55 @@ func (b *ConditionBuilder) WithOnsetString(v string) *ConditionBuilder {
 		b.resource.Onset = &ConditionOnset{}
 	}
 	b.resource.Onset.String = &v
+	b.fieldsSet["onset"] = true
 	return b
 }
 
 // WithRecordedDate sets the recordedDate field.
 func (b *ConditionBuilder) WithRecordedDate(v dt.DateTime) *ConditionBuilder {
 	b.resource.RecordedDate = &v
+	b.fieldsSet["recordedDate"] = true
 	return b
 }
 
 // WithRecorder sets the recorder field.
 func (b *ConditionBuilder) WithRecorder(v dt.Reference) *ConditionBuilder {
 	b.resource.Recorder = &v
+	b.fieldsSet["recorder"] = true
 	return b
 }
 
 // WithSeverity sets the severity field.
 func (b *ConditionBuilder) WithSeverity(v dt.CodeableConcept) *ConditionBuilder {
 	b.resource.Severity = &v
+	b.fieldsSet["severity"] = true
 	return b
 }
 
 // WithStage adds an item to the stage field.
 func (b *ConditionBuilder) WithStage(v ConditionStage) *ConditionBuilder {
 	b.resource.Stage = append(b.resource.Stage, v)
+	b.fieldsSet["stage"] = true
 	return b
 }
 
 // WithVerificationStatus sets the verificationStatus field.
 func (b *ConditionBuilder) WithVerificationStatus(v dt.CodeableConcept) *ConditionBuilder {
 	b.resource.VerificationStatus = &v
+	b.fieldsSet["verificationStatus"] = true
 	return b
 }
 
 // Build returns the constructed Condition. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *ConditionBuilder) Build() (*Condition, error) {
+	var missing []string
+	if !b.fieldsSet["subject"] {
+		missing = append(missing, "subject")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("Condition: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -393,6 +462,8 @@ func (b *ConditionBuilder) Build() (*Condition, error) {
 type ConditionEvidence struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -407,6 +478,8 @@ type ConditionEvidence struct {
 type ConditionStage struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -417,80 +490,6 @@ type ConditionStage struct {
 	Summary *dt.CodeableConcept `json:"summary,omitempty"`
 	// Type The kind of staging, such as pathological or clinical staging.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
-}
-
-// ConditionOnset represents a polymorphic choice type in FHIR.
-type ConditionOnset struct {
-	Age      *dt.Age    `json:"onsetAge,omitempty"`      // Estimated or actual date or date-time  the condition began, in the opinion of the clinician.
-	DateTime *string    `json:"onsetDateTime,omitempty"` // Estimated or actual date or date-time  the condition began, in the opinion of the clinician.
-	Period   *dt.Period `json:"onsetPeriod,omitempty"`   // Estimated or actual date or date-time  the condition began, in the opinion of the clinician.
-	Range    *dt.Range  `json:"onsetRange,omitempty"`    // Estimated or actual date or date-time  the condition began, in the opinion of the clinician.
-	String   *string    `json:"onsetString,omitempty"`   // Estimated or actual date or date-time  the condition began, in the opinion of the clinician.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ConditionOnset.
-func (v ConditionOnset) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Age != nil {
-		m["onsetAge"] = v.Age
-	}
-	if v.DateTime != nil {
-		m["onsetDateTime"] = v.DateTime
-	}
-	if v.Period != nil {
-		m["onsetPeriod"] = v.Period
-	}
-	if v.Range != nil {
-		m["onsetRange"] = v.Range
-	}
-	if v.String != nil {
-		m["onsetString"] = v.String
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ConditionOnset.
-func (v *ConditionOnset) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["onsetAge"]; ok {
-		var val dt.Age
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling onsetAge: %w", err)
-		}
-		v.Age = &val
-	}
-	if d, ok := raw["onsetDateTime"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling onsetDateTime: %w", err)
-		}
-		v.DateTime = &val
-	}
-	if d, ok := raw["onsetPeriod"]; ok {
-		var val dt.Period
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling onsetPeriod: %w", err)
-		}
-		v.Period = &val
-	}
-	if d, ok := raw["onsetRange"]; ok {
-		var val dt.Range
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling onsetRange: %w", err)
-		}
-		v.Range = &val
-	}
-	if d, ok := raw["onsetString"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling onsetString: %w", err)
-		}
-		v.String = &val
-	}
-	return nil
 }
 
 // ConditionAbatement represents a polymorphic choice type in FHIR.
@@ -561,6 +560,80 @@ func (v *ConditionAbatement) UnmarshalJSON(data []byte) error {
 		var val string
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling abatementString: %w", err)
+		}
+		v.String = &val
+	}
+	return nil
+}
+
+// ConditionOnset represents a polymorphic choice type in FHIR.
+type ConditionOnset struct {
+	Age      *dt.Age    `json:"onsetAge,omitempty"`      // Estimated or actual date or date-time  the condition began, in the opinion of the clinician.
+	DateTime *string    `json:"onsetDateTime,omitempty"` // Estimated or actual date or date-time  the condition began, in the opinion of the clinician.
+	Period   *dt.Period `json:"onsetPeriod,omitempty"`   // Estimated or actual date or date-time  the condition began, in the opinion of the clinician.
+	Range    *dt.Range  `json:"onsetRange,omitempty"`    // Estimated or actual date or date-time  the condition began, in the opinion of the clinician.
+	String   *string    `json:"onsetString,omitempty"`   // Estimated or actual date or date-time  the condition began, in the opinion of the clinician.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ConditionOnset.
+func (v ConditionOnset) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Age != nil {
+		m["onsetAge"] = v.Age
+	}
+	if v.DateTime != nil {
+		m["onsetDateTime"] = v.DateTime
+	}
+	if v.Period != nil {
+		m["onsetPeriod"] = v.Period
+	}
+	if v.Range != nil {
+		m["onsetRange"] = v.Range
+	}
+	if v.String != nil {
+		m["onsetString"] = v.String
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ConditionOnset.
+func (v *ConditionOnset) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["onsetAge"]; ok {
+		var val dt.Age
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling onsetAge: %w", err)
+		}
+		v.Age = &val
+	}
+	if d, ok := raw["onsetDateTime"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling onsetDateTime: %w", err)
+		}
+		v.DateTime = &val
+	}
+	if d, ok := raw["onsetPeriod"]; ok {
+		var val dt.Period
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling onsetPeriod: %w", err)
+		}
+		v.Period = &val
+	}
+	if d, ok := raw["onsetRange"]; ok {
+		var val dt.Range
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling onsetRange: %w", err)
+		}
+		v.Range = &val
+	}
+	if d, ok := raw["onsetString"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling onsetString: %w", err)
 		}
 		v.String = &val
 	}

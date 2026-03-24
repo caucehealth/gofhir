@@ -17,12 +17,18 @@ type Account struct {
 	ResourceType string `json:"resourceType"` // Always "Account"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,14 +41,20 @@ type Account struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Indicates whether the account is presently used/usable or not.
 	Status *AccountStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Coverage The party(s) that are responsible for covering the payment of this account, and what order should they be applied to the account.
 	Coverage []AccountCoverage `json:"coverage,omitempty"`
 	// Description Provides additional information about what the account tracks and how it is used.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Guarantor The parties responsible for balancing the account if other payment options fall short.
 	Guarantor []AccountGuarantor `json:"guarantor,omitempty"`
 	// Name Name used for the account when displaying it to humans in reports, etc.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Owner Indicates the service area, hospital, department, etc. with responsibility for managing the Account.
 	Owner *dt.Reference `json:"owner,omitempty"`
 	// PartOf Reference to a parent Account.
@@ -53,13 +65,29 @@ type Account struct {
 	Subject []dt.Reference `json:"subject,omitempty"`
 	// Type Categorizes the account for reporting and searching purposes.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Account.
 func (r Account) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Account"
 	type Alias Account
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Account.
@@ -70,130 +98,166 @@ func (r *Account) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Account(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contained", "_coverage", "_description", "_extension", "_guarantor", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_modifierExtension", "_name", "_owner", "_partOf", "_servicePeriod", "_status", "_subject", "_text", "_type", "contained", "coverage", "description", "extension", "guarantor", "id", "identifier", "implicitRules", "language", "meta", "modifierExtension", "name", "owner", "partOf", "resourceType", "servicePeriod", "status", "subject", "text", "type":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // AccountBuilder provides a fluent API for constructing Account resources.
 type AccountBuilder struct {
-	resource Account
+	resource  Account
+	fieldsSet map[string]bool
 }
 
 // NewAccount creates a new AccountBuilder for building a Account resource.
 func NewAccount() *AccountBuilder {
-	return &AccountBuilder{resource: Account{ResourceType: "Account"}}
+	return &AccountBuilder{resource: Account{ResourceType: "Account"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *AccountBuilder) WithId(v dt.ID) *AccountBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *AccountBuilder) WithMeta(v dt.Meta) *AccountBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *AccountBuilder) WithImplicitRules(v dt.URI) *AccountBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *AccountBuilder) WithLanguage(v dt.Code) *AccountBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *AccountBuilder) WithText(v dt.Narrative) *AccountBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *AccountBuilder) WithContained(v json.RawMessage) *AccountBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *AccountBuilder) WithExtension(v dt.Extension) *AccountBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *AccountBuilder) WithModifierExtension(v dt.Extension) *AccountBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *AccountBuilder) WithIdentifier(v dt.Identifier) *AccountBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *AccountBuilder) WithStatus(v AccountStatus) *AccountBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithCoverage adds an item to the coverage field.
 func (b *AccountBuilder) WithCoverage(v AccountCoverage) *AccountBuilder {
 	b.resource.Coverage = append(b.resource.Coverage, v)
+	b.fieldsSet["coverage"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *AccountBuilder) WithDescription(v string) *AccountBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithGuarantor adds an item to the guarantor field.
 func (b *AccountBuilder) WithGuarantor(v AccountGuarantor) *AccountBuilder {
 	b.resource.Guarantor = append(b.resource.Guarantor, v)
+	b.fieldsSet["guarantor"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *AccountBuilder) WithName(v string) *AccountBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithOwner sets the owner field.
 func (b *AccountBuilder) WithOwner(v dt.Reference) *AccountBuilder {
 	b.resource.Owner = &v
+	b.fieldsSet["owner"] = true
 	return b
 }
 
 // WithPartOf sets the partOf field.
 func (b *AccountBuilder) WithPartOf(v dt.Reference) *AccountBuilder {
 	b.resource.PartOf = &v
+	b.fieldsSet["partOf"] = true
 	return b
 }
 
 // WithServicePeriod sets the servicePeriod field.
 func (b *AccountBuilder) WithServicePeriod(v dt.Period) *AccountBuilder {
 	b.resource.ServicePeriod = &v
+	b.fieldsSet["servicePeriod"] = true
 	return b
 }
 
 // WithSubject adds an item to the subject field.
 func (b *AccountBuilder) WithSubject(v dt.Reference) *AccountBuilder {
 	b.resource.Subject = append(b.resource.Subject, v)
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *AccountBuilder) WithType(v dt.CodeableConcept) *AccountBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
@@ -208,6 +272,8 @@ func (b *AccountBuilder) Build() (*Account, error) {
 type AccountCoverage struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -216,18 +282,24 @@ type AccountCoverage struct {
 	Coverage dt.Reference `json:"coverage"`
 	// Priority The priority of the coverage in the context of this account.
 	Priority *uint32 `json:"priority,omitempty"`
+	// PriorityElement contains element extensions for priority.
+	PriorityElement *dt.Element `json:"_priority,omitempty"`
 }
 
 // AccountGuarantor A financial tool for tracking value accrued for a particular purpose.  In the healthcare field, used to track charges for a patient, cost centers, etc.
 type AccountGuarantor struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// OnHold A guarantor may be placed on credit hold or otherwise have their role temporarily suspended.
 	OnHold *bool `json:"onHold,omitempty"`
+	// OnHoldElement contains element extensions for onHold.
+	OnHoldElement *dt.Element `json:"_onHold,omitempty"`
 	// Party The entity who is responsible.
 	Party dt.Reference `json:"party"`
 	// Period The timeframe during which the guarantor accepts responsibility for the account.

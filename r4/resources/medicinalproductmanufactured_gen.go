@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type MedicinalProductManufactured struct {
 	ResourceType string `json:"resourceType"` // Always "MedicinalProductManufactured"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -45,13 +52,29 @@ type MedicinalProductManufactured struct {
 	Quantity dt.Quantity `json:"quantity"`
 	// UnitOfPresentation The “real world” units in which the quantity of the manufactured item is described.
 	UnitOfPresentation *dt.CodeableConcept `json:"unitOfPresentation,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for MedicinalProductManufactured.
 func (r MedicinalProductManufactured) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "MedicinalProductManufactured"
 	type Alias MedicinalProductManufactured
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for MedicinalProductManufactured.
@@ -62,112 +85,154 @@ func (r *MedicinalProductManufactured) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = MedicinalProductManufactured(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contained", "_extension", "_id", "_implicitRules", "_ingredient", "_language", "_manufacturedDoseForm", "_manufacturer", "_meta", "_modifierExtension", "_otherCharacteristics", "_physicalCharacteristics", "_quantity", "_text", "_unitOfPresentation", "contained", "extension", "id", "implicitRules", "ingredient", "language", "manufacturedDoseForm", "manufacturer", "meta", "modifierExtension", "otherCharacteristics", "physicalCharacteristics", "quantity", "resourceType", "text", "unitOfPresentation":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // MedicinalProductManufacturedBuilder provides a fluent API for constructing MedicinalProductManufactured resources.
 type MedicinalProductManufacturedBuilder struct {
-	resource MedicinalProductManufactured
+	resource  MedicinalProductManufactured
+	fieldsSet map[string]bool
 }
 
 // NewMedicinalProductManufactured creates a new MedicinalProductManufacturedBuilder for building a MedicinalProductManufactured resource.
 func NewMedicinalProductManufactured() *MedicinalProductManufacturedBuilder {
-	return &MedicinalProductManufacturedBuilder{resource: MedicinalProductManufactured{ResourceType: "MedicinalProductManufactured"}}
+	return &MedicinalProductManufacturedBuilder{resource: MedicinalProductManufactured{ResourceType: "MedicinalProductManufactured"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *MedicinalProductManufacturedBuilder) WithId(v dt.ID) *MedicinalProductManufacturedBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *MedicinalProductManufacturedBuilder) WithMeta(v dt.Meta) *MedicinalProductManufacturedBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *MedicinalProductManufacturedBuilder) WithImplicitRules(v dt.URI) *MedicinalProductManufacturedBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *MedicinalProductManufacturedBuilder) WithLanguage(v dt.Code) *MedicinalProductManufacturedBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *MedicinalProductManufacturedBuilder) WithText(v dt.Narrative) *MedicinalProductManufacturedBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *MedicinalProductManufacturedBuilder) WithContained(v json.RawMessage) *MedicinalProductManufacturedBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *MedicinalProductManufacturedBuilder) WithExtension(v dt.Extension) *MedicinalProductManufacturedBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *MedicinalProductManufacturedBuilder) WithModifierExtension(v dt.Extension) *MedicinalProductManufacturedBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIngredient adds an item to the ingredient field.
 func (b *MedicinalProductManufacturedBuilder) WithIngredient(v dt.Reference) *MedicinalProductManufacturedBuilder {
 	b.resource.Ingredient = append(b.resource.Ingredient, v)
+	b.fieldsSet["ingredient"] = true
 	return b
 }
 
 // WithManufacturedDoseForm sets the manufacturedDoseForm field.
 func (b *MedicinalProductManufacturedBuilder) WithManufacturedDoseForm(v dt.CodeableConcept) *MedicinalProductManufacturedBuilder {
 	b.resource.ManufacturedDoseForm = v
+	b.fieldsSet["manufacturedDoseForm"] = true
 	return b
 }
 
 // WithManufacturer adds an item to the manufacturer field.
 func (b *MedicinalProductManufacturedBuilder) WithManufacturer(v dt.Reference) *MedicinalProductManufacturedBuilder {
 	b.resource.Manufacturer = append(b.resource.Manufacturer, v)
+	b.fieldsSet["manufacturer"] = true
 	return b
 }
 
 // WithOtherCharacteristics adds an item to the otherCharacteristics field.
 func (b *MedicinalProductManufacturedBuilder) WithOtherCharacteristics(v dt.CodeableConcept) *MedicinalProductManufacturedBuilder {
 	b.resource.OtherCharacteristics = append(b.resource.OtherCharacteristics, v)
+	b.fieldsSet["otherCharacteristics"] = true
 	return b
 }
 
 // WithPhysicalCharacteristics sets the physicalCharacteristics field.
 func (b *MedicinalProductManufacturedBuilder) WithPhysicalCharacteristics(v dt.ProdCharacteristic) *MedicinalProductManufacturedBuilder {
 	b.resource.PhysicalCharacteristics = &v
+	b.fieldsSet["physicalCharacteristics"] = true
 	return b
 }
 
 // WithQuantity sets the quantity field.
 func (b *MedicinalProductManufacturedBuilder) WithQuantity(v dt.Quantity) *MedicinalProductManufacturedBuilder {
 	b.resource.Quantity = v
+	b.fieldsSet["quantity"] = true
 	return b
 }
 
 // WithUnitOfPresentation sets the unitOfPresentation field.
 func (b *MedicinalProductManufacturedBuilder) WithUnitOfPresentation(v dt.CodeableConcept) *MedicinalProductManufacturedBuilder {
 	b.resource.UnitOfPresentation = &v
+	b.fieldsSet["unitOfPresentation"] = true
 	return b
 }
 
 // Build returns the constructed MedicinalProductManufactured. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *MedicinalProductManufacturedBuilder) Build() (*MedicinalProductManufactured, error) {
+	var missing []string
+	if !b.fieldsSet["manufacturedDoseForm"] {
+		missing = append(missing, "manufacturedDoseForm")
+	}
+	if !b.fieldsSet["quantity"] {
+		missing = append(missing, "quantity")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("MedicinalProductManufactured: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }

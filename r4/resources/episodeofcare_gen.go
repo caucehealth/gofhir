@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type EpisodeOfCare struct {
 	ResourceType string `json:"resourceType"` // Always "EpisodeOfCare"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,6 +42,8 @@ type EpisodeOfCare struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status planned | waitlist | active | onhold | finished | cancelled.
 	Status *EpisodeOfCareStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Account The set of accounts that may be used for billing for this EpisodeOfCare.
 	Account []dt.Reference `json:"account,omitempty"`
 	// CareManager The practitioner that is the care manager/care coordinator for this patient.
@@ -55,13 +64,29 @@ type EpisodeOfCare struct {
 	Team []dt.Reference `json:"team,omitempty"`
 	// Type A classification of the type of episode of care; e.g. specialist referral, disease management, type of funded care.
 	Type []dt.CodeableConcept `json:"type,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for EpisodeOfCare.
 func (r EpisodeOfCare) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "EpisodeOfCare"
 	type Alias EpisodeOfCare
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for EpisodeOfCare.
@@ -72,142 +97,186 @@ func (r *EpisodeOfCare) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = EpisodeOfCare(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_account", "_careManager", "_contained", "_diagnosis", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_managingOrganization", "_meta", "_modifierExtension", "_patient", "_period", "_referralRequest", "_status", "_statusHistory", "_team", "_text", "_type", "account", "careManager", "contained", "diagnosis", "extension", "id", "identifier", "implicitRules", "language", "managingOrganization", "meta", "modifierExtension", "patient", "period", "referralRequest", "resourceType", "status", "statusHistory", "team", "text", "type":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // EpisodeOfCareBuilder provides a fluent API for constructing EpisodeOfCare resources.
 type EpisodeOfCareBuilder struct {
-	resource EpisodeOfCare
+	resource  EpisodeOfCare
+	fieldsSet map[string]bool
 }
 
 // NewEpisodeOfCare creates a new EpisodeOfCareBuilder for building a EpisodeOfCare resource.
 func NewEpisodeOfCare() *EpisodeOfCareBuilder {
-	return &EpisodeOfCareBuilder{resource: EpisodeOfCare{ResourceType: "EpisodeOfCare"}}
+	return &EpisodeOfCareBuilder{resource: EpisodeOfCare{ResourceType: "EpisodeOfCare"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *EpisodeOfCareBuilder) WithId(v dt.ID) *EpisodeOfCareBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *EpisodeOfCareBuilder) WithMeta(v dt.Meta) *EpisodeOfCareBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *EpisodeOfCareBuilder) WithImplicitRules(v dt.URI) *EpisodeOfCareBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *EpisodeOfCareBuilder) WithLanguage(v dt.Code) *EpisodeOfCareBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *EpisodeOfCareBuilder) WithText(v dt.Narrative) *EpisodeOfCareBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *EpisodeOfCareBuilder) WithContained(v json.RawMessage) *EpisodeOfCareBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *EpisodeOfCareBuilder) WithExtension(v dt.Extension) *EpisodeOfCareBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *EpisodeOfCareBuilder) WithModifierExtension(v dt.Extension) *EpisodeOfCareBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *EpisodeOfCareBuilder) WithIdentifier(v dt.Identifier) *EpisodeOfCareBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *EpisodeOfCareBuilder) WithStatus(v EpisodeOfCareStatus) *EpisodeOfCareBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAccount adds an item to the account field.
 func (b *EpisodeOfCareBuilder) WithAccount(v dt.Reference) *EpisodeOfCareBuilder {
 	b.resource.Account = append(b.resource.Account, v)
+	b.fieldsSet["account"] = true
 	return b
 }
 
 // WithCareManager sets the careManager field.
 func (b *EpisodeOfCareBuilder) WithCareManager(v dt.Reference) *EpisodeOfCareBuilder {
 	b.resource.CareManager = &v
+	b.fieldsSet["careManager"] = true
 	return b
 }
 
 // WithDiagnosis adds an item to the diagnosis field.
 func (b *EpisodeOfCareBuilder) WithDiagnosis(v EpisodeOfCareDiagnosis) *EpisodeOfCareBuilder {
 	b.resource.Diagnosis = append(b.resource.Diagnosis, v)
+	b.fieldsSet["diagnosis"] = true
 	return b
 }
 
 // WithManagingOrganization sets the managingOrganization field.
 func (b *EpisodeOfCareBuilder) WithManagingOrganization(v dt.Reference) *EpisodeOfCareBuilder {
 	b.resource.ManagingOrganization = &v
+	b.fieldsSet["managingOrganization"] = true
 	return b
 }
 
 // WithPatient sets the patient field.
 func (b *EpisodeOfCareBuilder) WithPatient(v dt.Reference) *EpisodeOfCareBuilder {
 	b.resource.Patient = v
+	b.fieldsSet["patient"] = true
 	return b
 }
 
 // WithPeriod sets the period field.
 func (b *EpisodeOfCareBuilder) WithPeriod(v dt.Period) *EpisodeOfCareBuilder {
 	b.resource.Period = &v
+	b.fieldsSet["period"] = true
 	return b
 }
 
 // WithReferralRequest adds an item to the referralRequest field.
 func (b *EpisodeOfCareBuilder) WithReferralRequest(v dt.Reference) *EpisodeOfCareBuilder {
 	b.resource.ReferralRequest = append(b.resource.ReferralRequest, v)
+	b.fieldsSet["referralRequest"] = true
 	return b
 }
 
 // WithStatusHistory adds an item to the statusHistory field.
 func (b *EpisodeOfCareBuilder) WithStatusHistory(v EpisodeOfCareStatusHistory) *EpisodeOfCareBuilder {
 	b.resource.StatusHistory = append(b.resource.StatusHistory, v)
+	b.fieldsSet["statusHistory"] = true
 	return b
 }
 
 // WithTeam adds an item to the team field.
 func (b *EpisodeOfCareBuilder) WithTeam(v dt.Reference) *EpisodeOfCareBuilder {
 	b.resource.Team = append(b.resource.Team, v)
+	b.fieldsSet["team"] = true
 	return b
 }
 
 // WithType adds an item to the type field.
 func (b *EpisodeOfCareBuilder) WithType(v dt.CodeableConcept) *EpisodeOfCareBuilder {
 	b.resource.Type = append(b.resource.Type, v)
+	b.fieldsSet["type"] = true
 	return b
 }
 
 // Build returns the constructed EpisodeOfCare. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *EpisodeOfCareBuilder) Build() (*EpisodeOfCare, error) {
+	var missing []string
+	if !b.fieldsSet["patient"] {
+		missing = append(missing, "patient")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("EpisodeOfCare: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -216,6 +285,8 @@ func (b *EpisodeOfCareBuilder) Build() (*EpisodeOfCare, error) {
 type EpisodeOfCareDiagnosis struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -224,6 +295,8 @@ type EpisodeOfCareDiagnosis struct {
 	Condition dt.Reference `json:"condition"`
 	// Rank Ranking of the diagnosis (for each role type).
 	Rank *uint32 `json:"rank,omitempty"`
+	// RankElement contains element extensions for rank.
+	RankElement *dt.Element `json:"_rank,omitempty"`
 	// Role Role that this diagnosis has within the episode of care (e.g. admission, billing, discharge …).
 	Role *dt.CodeableConcept `json:"role,omitempty"`
 }
@@ -232,12 +305,16 @@ type EpisodeOfCareDiagnosis struct {
 type EpisodeOfCareStatusHistory struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status planned | waitlist | active | onhold | finished | cancelled.
 	Status *EpisodeOfCareStatusHistoryStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Period The period during this EpisodeOfCare that the specific status applied.
 	Period dt.Period `json:"period"`
 }

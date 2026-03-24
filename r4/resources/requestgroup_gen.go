@@ -18,12 +18,18 @@ type RequestGroup struct {
 	ResourceType string `json:"resourceType"` // Always "RequestGroup"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,12 +42,16 @@ type RequestGroup struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The current state of the request. For request groups, the status reflects the status of all the requests in the group.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Action The actions, if any, produced by the evaluation of the artifact.
 	Action []RequestGroupAction `json:"action,omitempty"`
 	// Author Provides a reference to the author of the request group.
 	Author *dt.Reference `json:"author,omitempty"`
 	// AuthoredOn Indicates when the request group was created.
 	AuthoredOn *dt.DateTime `json:"authoredOn,omitempty"`
+	// AuthoredOnElement contains element extensions for authoredOn.
+	AuthoredOnElement *dt.Element `json:"_authoredOn,omitempty"`
 	// BasedOn A plan, proposal or order that is fulfilled in whole or in part by this request.
 	BasedOn []dt.Reference `json:"basedOn,omitempty"`
 	// Code A code that identifies what the overall request group is.
@@ -52,14 +62,22 @@ type RequestGroup struct {
 	GroupIdentifier *dt.Identifier `json:"groupIdentifier,omitempty"`
 	// InstantiatesCanonical A canonical URL referencing a FHIR-defined protocol, guideline, orderset or other definition that is adhered to in whole or in part by this request.
 	InstantiatesCanonical []dt.Canonical `json:"instantiatesCanonical,omitempty"`
+	// InstantiatesCanonicalElement contains element extensions for each instantiatesCanonical.
+	InstantiatesCanonicalElement []dt.Element `json:"_instantiatesCanonical,omitempty"`
 	// InstantiatesUri A URL referencing an externally defined protocol, guideline, orderset or other definition that is adhered to in whole or in part by this request.
 	InstantiatesUri []dt.URI `json:"instantiatesUri,omitempty"`
+	// InstantiatesUriElement contains element extensions for each instantiatesUri.
+	InstantiatesUriElement []dt.Element `json:"_instantiatesUri,omitempty"`
 	// Intent Indicates the level of authority/intentionality associated with the request and where the request fits into the workflow chain.
 	Intent *dt.Code `json:"intent,omitempty"`
+	// IntentElement contains element extensions for intent.
+	IntentElement *dt.Element `json:"_intent,omitempty"`
 	// Note Provides a mechanism to communicate additional information about the response.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// Priority Indicates how quickly the request should be addressed with respect to other requests.
 	Priority *dt.Code `json:"priority,omitempty"`
+	// PriorityElement contains element extensions for priority.
+	PriorityElement *dt.Element `json:"_priority,omitempty"`
 	// ReasonCode Describes the reason for the request group in coded or textual form.
 	ReasonCode []dt.CodeableConcept `json:"reasonCode,omitempty"`
 	// ReasonReference Indicates another resource whose existence justifies this request group.
@@ -68,13 +86,29 @@ type RequestGroup struct {
 	Replaces []dt.Reference `json:"replaces,omitempty"`
 	// Subject The subject for which the request group was created.
 	Subject *dt.Reference `json:"subject,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for RequestGroup.
 func (r RequestGroup) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "RequestGroup"
 	type Alias RequestGroup
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for RequestGroup.
@@ -85,172 +119,215 @@ func (r *RequestGroup) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = RequestGroup(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_action", "_author", "_authoredOn", "_basedOn", "_code", "_contained", "_encounter", "_extension", "_groupIdentifier", "_id", "_identifier", "_implicitRules", "_instantiatesCanonical", "_instantiatesUri", "_intent", "_language", "_meta", "_modifierExtension", "_note", "_priority", "_reasonCode", "_reasonReference", "_replaces", "_status", "_subject", "_text", "action", "author", "authoredOn", "basedOn", "code", "contained", "encounter", "extension", "groupIdentifier", "id", "identifier", "implicitRules", "instantiatesCanonical", "instantiatesUri", "intent", "language", "meta", "modifierExtension", "note", "priority", "reasonCode", "reasonReference", "replaces", "resourceType", "status", "subject", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // RequestGroupBuilder provides a fluent API for constructing RequestGroup resources.
 type RequestGroupBuilder struct {
-	resource RequestGroup
+	resource  RequestGroup
+	fieldsSet map[string]bool
 }
 
 // NewRequestGroup creates a new RequestGroupBuilder for building a RequestGroup resource.
 func NewRequestGroup() *RequestGroupBuilder {
-	return &RequestGroupBuilder{resource: RequestGroup{ResourceType: "RequestGroup"}}
+	return &RequestGroupBuilder{resource: RequestGroup{ResourceType: "RequestGroup"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *RequestGroupBuilder) WithId(v dt.ID) *RequestGroupBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *RequestGroupBuilder) WithMeta(v dt.Meta) *RequestGroupBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *RequestGroupBuilder) WithImplicitRules(v dt.URI) *RequestGroupBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *RequestGroupBuilder) WithLanguage(v dt.Code) *RequestGroupBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *RequestGroupBuilder) WithText(v dt.Narrative) *RequestGroupBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *RequestGroupBuilder) WithContained(v json.RawMessage) *RequestGroupBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *RequestGroupBuilder) WithExtension(v dt.Extension) *RequestGroupBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *RequestGroupBuilder) WithModifierExtension(v dt.Extension) *RequestGroupBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *RequestGroupBuilder) WithIdentifier(v dt.Identifier) *RequestGroupBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *RequestGroupBuilder) WithStatus(v dt.Code) *RequestGroupBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAction adds an item to the action field.
 func (b *RequestGroupBuilder) WithAction(v RequestGroupAction) *RequestGroupBuilder {
 	b.resource.Action = append(b.resource.Action, v)
+	b.fieldsSet["action"] = true
 	return b
 }
 
 // WithAuthor sets the author field.
 func (b *RequestGroupBuilder) WithAuthor(v dt.Reference) *RequestGroupBuilder {
 	b.resource.Author = &v
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithAuthoredOn sets the authoredOn field.
 func (b *RequestGroupBuilder) WithAuthoredOn(v dt.DateTime) *RequestGroupBuilder {
 	b.resource.AuthoredOn = &v
+	b.fieldsSet["authoredOn"] = true
 	return b
 }
 
 // WithBasedOn adds an item to the basedOn field.
 func (b *RequestGroupBuilder) WithBasedOn(v dt.Reference) *RequestGroupBuilder {
 	b.resource.BasedOn = append(b.resource.BasedOn, v)
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *RequestGroupBuilder) WithCode(v dt.CodeableConcept) *RequestGroupBuilder {
 	b.resource.Code = &v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *RequestGroupBuilder) WithEncounter(v dt.Reference) *RequestGroupBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithGroupIdentifier sets the groupIdentifier field.
 func (b *RequestGroupBuilder) WithGroupIdentifier(v dt.Identifier) *RequestGroupBuilder {
 	b.resource.GroupIdentifier = &v
+	b.fieldsSet["groupIdentifier"] = true
 	return b
 }
 
 // WithInstantiatesCanonical adds an item to the instantiatesCanonical field.
 func (b *RequestGroupBuilder) WithInstantiatesCanonical(v dt.Canonical) *RequestGroupBuilder {
 	b.resource.InstantiatesCanonical = append(b.resource.InstantiatesCanonical, v)
+	b.fieldsSet["instantiatesCanonical"] = true
 	return b
 }
 
 // WithInstantiatesUri adds an item to the instantiatesUri field.
 func (b *RequestGroupBuilder) WithInstantiatesUri(v dt.URI) *RequestGroupBuilder {
 	b.resource.InstantiatesUri = append(b.resource.InstantiatesUri, v)
+	b.fieldsSet["instantiatesUri"] = true
 	return b
 }
 
 // WithIntent sets the intent field.
 func (b *RequestGroupBuilder) WithIntent(v dt.Code) *RequestGroupBuilder {
 	b.resource.Intent = &v
+	b.fieldsSet["intent"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *RequestGroupBuilder) WithNote(v dt.Annotation) *RequestGroupBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithPriority sets the priority field.
 func (b *RequestGroupBuilder) WithPriority(v dt.Code) *RequestGroupBuilder {
 	b.resource.Priority = &v
+	b.fieldsSet["priority"] = true
 	return b
 }
 
 // WithReasonCode adds an item to the reasonCode field.
 func (b *RequestGroupBuilder) WithReasonCode(v dt.CodeableConcept) *RequestGroupBuilder {
 	b.resource.ReasonCode = append(b.resource.ReasonCode, v)
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithReasonReference adds an item to the reasonReference field.
 func (b *RequestGroupBuilder) WithReasonReference(v dt.Reference) *RequestGroupBuilder {
 	b.resource.ReasonReference = append(b.resource.ReasonReference, v)
+	b.fieldsSet["reasonReference"] = true
 	return b
 }
 
 // WithReplaces adds an item to the replaces field.
 func (b *RequestGroupBuilder) WithReplaces(v dt.Reference) *RequestGroupBuilder {
 	b.resource.Replaces = append(b.resource.Replaces, v)
+	b.fieldsSet["replaces"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *RequestGroupBuilder) WithSubject(v dt.Reference) *RequestGroupBuilder {
 	b.resource.Subject = &v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
@@ -265,6 +342,8 @@ func (b *RequestGroupBuilder) Build() (*RequestGroup, error) {
 type RequestGroupAction struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -273,38 +352,58 @@ type RequestGroupAction struct {
 	Action []RequestGroupAction `json:"action,omitempty"`
 	// CardinalityBehavior Defines whether the action can be selected multiple times.
 	CardinalityBehavior *dt.Code `json:"cardinalityBehavior,omitempty"`
+	// CardinalityBehaviorElement contains element extensions for cardinalityBehavior.
+	CardinalityBehaviorElement *dt.Element `json:"_cardinalityBehavior,omitempty"`
 	// Code A code that provides meaning for the action or action group. For example, a section may have a LOINC code for a section of a documentation template.
 	Code []dt.CodeableConcept `json:"code,omitempty"`
 	// Condition An expression that describes applicability criteria, or start/stop conditions for the action.
 	Condition []RequestGroupCondition `json:"condition,omitempty"`
 	// Description A short description of the action used to provide a summary to display to the user.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Documentation Didactic or other informational resources associated with the action that can be provided to the CDS recipient. Information resources can include inline text commentary and links to web resources.
 	Documentation []dt.RelatedArtifact `json:"documentation,omitempty"`
 	// GroupingBehavior Defines the grouping behavior for the action and its children.
 	GroupingBehavior *dt.Code `json:"groupingBehavior,omitempty"`
+	// GroupingBehaviorElement contains element extensions for groupingBehavior.
+	GroupingBehaviorElement *dt.Element `json:"_groupingBehavior,omitempty"`
 	// Participant The participant that should perform or be responsible for this action.
 	Participant []dt.Reference `json:"participant,omitempty"`
 	// PrecheckBehavior Defines whether the action should usually be preselected.
 	PrecheckBehavior *dt.Code `json:"precheckBehavior,omitempty"`
+	// PrecheckBehaviorElement contains element extensions for precheckBehavior.
+	PrecheckBehaviorElement *dt.Element `json:"_precheckBehavior,omitempty"`
 	// Prefix A user-visible prefix for the action.
 	Prefix *string `json:"prefix,omitempty"`
+	// PrefixElement contains element extensions for prefix.
+	PrefixElement *dt.Element `json:"_prefix,omitempty"`
 	// Priority Indicates how quickly the action should be addressed with respect to other actions.
 	Priority *dt.Code `json:"priority,omitempty"`
+	// PriorityElement contains element extensions for priority.
+	PriorityElement *dt.Element `json:"_priority,omitempty"`
 	// RelatedAction A relationship to another action such as "before" or "30-60 minutes after start of".
 	RelatedAction []RequestGroupRelatedAction `json:"relatedAction,omitempty"`
 	// RequiredBehavior Defines expectations around whether an action is required.
 	RequiredBehavior *dt.Code `json:"requiredBehavior,omitempty"`
+	// RequiredBehaviorElement contains element extensions for requiredBehavior.
+	RequiredBehaviorElement *dt.Element `json:"_requiredBehavior,omitempty"`
 	// Resource The resource that is the target of the action (e.g. CommunicationRequest).
 	Resource *dt.Reference `json:"resource,omitempty"`
 	// SelectionBehavior Defines the selection behavior for the action and its children.
 	SelectionBehavior *dt.Code `json:"selectionBehavior,omitempty"`
+	// SelectionBehaviorElement contains element extensions for selectionBehavior.
+	SelectionBehaviorElement *dt.Element `json:"_selectionBehavior,omitempty"`
 	// TextEquivalent A text equivalent of the action to be performed. This provides a human-interpretable description of the action when the definition is consumed by a system that might not be capable of interpreting ...
 	TextEquivalent *string `json:"textEquivalent,omitempty"`
+	// TextEquivalentElement contains element extensions for textEquivalent.
+	TextEquivalentElement *dt.Element `json:"_textEquivalent,omitempty"`
 	// Timing An optional value describing when the action should be performed.
 	Timing *RequestGroupActionTiming `json:"-"` // polymorphic
 	// Title The title of the action displayed to a user.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Type The type of action to perform (create, update, remove).
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 }
@@ -443,6 +542,8 @@ func (v *RequestGroupActionTiming) UnmarshalJSON(data []byte) error {
 type RequestGroupCondition struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -451,22 +552,30 @@ type RequestGroupCondition struct {
 	Expression *dt.Expression `json:"expression,omitempty"`
 	// Kind The kind of condition.
 	Kind *dt.Code `json:"kind,omitempty"`
+	// KindElement contains element extensions for kind.
+	KindElement *dt.Element `json:"_kind,omitempty"`
 }
 
 // RequestGroupRelatedAction A group of related requests that can be used to capture intended activities that have inter-dependencies such as "give this medication after that one".
 type RequestGroupRelatedAction struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// ActionId The element id of the action this is related to.
 	ActionId *dt.ID `json:"actionId,omitempty"`
+	// ActionIdElement contains element extensions for actionId.
+	ActionIdElement *dt.Element `json:"_actionId,omitempty"`
 	// OffsetDuration A duration or range of durations to apply to the relationship. For example, 30-60 minutes before.
 	OffsetDuration *dt.Duration `json:"offsetDuration,omitempty"`
 	// OffsetRange A duration or range of durations to apply to the relationship. For example, 30-60 minutes before.
 	OffsetRange *dt.Range `json:"offsetRange,omitempty"`
 	// Relationship The relationship of this action to the related action.
 	Relationship *dt.Code `json:"relationship,omitempty"`
+	// RelationshipElement contains element extensions for relationship.
+	RelationshipElement *dt.Element `json:"_relationship,omitempty"`
 }

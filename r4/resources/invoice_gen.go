@@ -17,12 +17,18 @@ type Invoice struct {
 	ResourceType string `json:"resourceType"` // Always "Invoice"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,12 +41,18 @@ type Invoice struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The current state of the Invoice.
 	Status *InvoiceStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Account Account which is supposed to be balanced with this Invoice.
 	Account *dt.Reference `json:"account,omitempty"`
 	// CancelledReason In case of Invoice cancellation a reason must be given (entered in error, superseded by corrected invoice etc.).
 	CancelledReason *string `json:"cancelledReason,omitempty"`
+	// CancelledReasonElement contains element extensions for cancelledReason.
+	CancelledReasonElement *dt.Element `json:"_cancelledReason,omitempty"`
 	// Date Date/time(s) of when this Invoice was posted.
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Issuer The organizationissuing the Invoice.
 	Issuer *dt.Reference `json:"issuer,omitempty"`
 	// LineItem Each line item represents one charge for goods and services rendered. Details such as date, code and amount are found in the referenced ChargeItem resource.
@@ -51,6 +63,8 @@ type Invoice struct {
 	Participant []InvoiceParticipant `json:"participant,omitempty"`
 	// PaymentTerms Payment details such as banking details, period of payment, deductibles, methods of payment.
 	PaymentTerms *dt.Markdown `json:"paymentTerms,omitempty"`
+	// PaymentTermsElement contains element extensions for paymentTerms.
+	PaymentTermsElement *dt.Element `json:"_paymentTerms,omitempty"`
 	// Recipient The individual or Organization responsible for balancing of this invoice.
 	Recipient *dt.Reference `json:"recipient,omitempty"`
 	// Subject The individual or set of individuals receiving the goods and services billed in this invoice.
@@ -63,13 +77,29 @@ type Invoice struct {
 	TotalPriceComponent []InvoicePriceComponent `json:"totalPriceComponent,omitempty"`
 	// Type Type of Invoice depending on domain, realm an usage (e.g. internal/external, dental, preliminary).
 	Type *dt.CodeableConcept `json:"type,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Invoice.
 func (r Invoice) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Invoice"
 	type Alias Invoice
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Invoice.
@@ -80,160 +110,201 @@ func (r *Invoice) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Invoice(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_account", "_cancelledReason", "_contained", "_date", "_extension", "_id", "_identifier", "_implicitRules", "_issuer", "_language", "_lineItem", "_meta", "_modifierExtension", "_note", "_participant", "_paymentTerms", "_recipient", "_status", "_subject", "_text", "_totalGross", "_totalNet", "_totalPriceComponent", "_type", "account", "cancelledReason", "contained", "date", "extension", "id", "identifier", "implicitRules", "issuer", "language", "lineItem", "meta", "modifierExtension", "note", "participant", "paymentTerms", "recipient", "resourceType", "status", "subject", "text", "totalGross", "totalNet", "totalPriceComponent", "type":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // InvoiceBuilder provides a fluent API for constructing Invoice resources.
 type InvoiceBuilder struct {
-	resource Invoice
+	resource  Invoice
+	fieldsSet map[string]bool
 }
 
 // NewInvoice creates a new InvoiceBuilder for building a Invoice resource.
 func NewInvoice() *InvoiceBuilder {
-	return &InvoiceBuilder{resource: Invoice{ResourceType: "Invoice"}}
+	return &InvoiceBuilder{resource: Invoice{ResourceType: "Invoice"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *InvoiceBuilder) WithId(v dt.ID) *InvoiceBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *InvoiceBuilder) WithMeta(v dt.Meta) *InvoiceBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *InvoiceBuilder) WithImplicitRules(v dt.URI) *InvoiceBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *InvoiceBuilder) WithLanguage(v dt.Code) *InvoiceBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *InvoiceBuilder) WithText(v dt.Narrative) *InvoiceBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *InvoiceBuilder) WithContained(v json.RawMessage) *InvoiceBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *InvoiceBuilder) WithExtension(v dt.Extension) *InvoiceBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *InvoiceBuilder) WithModifierExtension(v dt.Extension) *InvoiceBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *InvoiceBuilder) WithIdentifier(v dt.Identifier) *InvoiceBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *InvoiceBuilder) WithStatus(v InvoiceStatus) *InvoiceBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAccount sets the account field.
 func (b *InvoiceBuilder) WithAccount(v dt.Reference) *InvoiceBuilder {
 	b.resource.Account = &v
+	b.fieldsSet["account"] = true
 	return b
 }
 
 // WithCancelledReason sets the cancelledReason field.
 func (b *InvoiceBuilder) WithCancelledReason(v string) *InvoiceBuilder {
 	b.resource.CancelledReason = &v
+	b.fieldsSet["cancelledReason"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *InvoiceBuilder) WithDate(v dt.DateTime) *InvoiceBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithIssuer sets the issuer field.
 func (b *InvoiceBuilder) WithIssuer(v dt.Reference) *InvoiceBuilder {
 	b.resource.Issuer = &v
+	b.fieldsSet["issuer"] = true
 	return b
 }
 
 // WithLineItem adds an item to the lineItem field.
 func (b *InvoiceBuilder) WithLineItem(v InvoiceLineItem) *InvoiceBuilder {
 	b.resource.LineItem = append(b.resource.LineItem, v)
+	b.fieldsSet["lineItem"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *InvoiceBuilder) WithNote(v dt.Annotation) *InvoiceBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithParticipant adds an item to the participant field.
 func (b *InvoiceBuilder) WithParticipant(v InvoiceParticipant) *InvoiceBuilder {
 	b.resource.Participant = append(b.resource.Participant, v)
+	b.fieldsSet["participant"] = true
 	return b
 }
 
 // WithPaymentTerms sets the paymentTerms field.
 func (b *InvoiceBuilder) WithPaymentTerms(v dt.Markdown) *InvoiceBuilder {
 	b.resource.PaymentTerms = &v
+	b.fieldsSet["paymentTerms"] = true
 	return b
 }
 
 // WithRecipient sets the recipient field.
 func (b *InvoiceBuilder) WithRecipient(v dt.Reference) *InvoiceBuilder {
 	b.resource.Recipient = &v
+	b.fieldsSet["recipient"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *InvoiceBuilder) WithSubject(v dt.Reference) *InvoiceBuilder {
 	b.resource.Subject = &v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithTotalGross sets the totalGross field.
 func (b *InvoiceBuilder) WithTotalGross(v dt.Money) *InvoiceBuilder {
 	b.resource.TotalGross = &v
+	b.fieldsSet["totalGross"] = true
 	return b
 }
 
 // WithTotalNet sets the totalNet field.
 func (b *InvoiceBuilder) WithTotalNet(v dt.Money) *InvoiceBuilder {
 	b.resource.TotalNet = &v
+	b.fieldsSet["totalNet"] = true
 	return b
 }
 
 // WithTotalPriceComponent adds an item to the totalPriceComponent field.
 func (b *InvoiceBuilder) WithTotalPriceComponent(v InvoicePriceComponent) *InvoiceBuilder {
 	b.resource.TotalPriceComponent = append(b.resource.TotalPriceComponent, v)
+	b.fieldsSet["totalPriceComponent"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *InvoiceBuilder) WithType(v dt.CodeableConcept) *InvoiceBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
@@ -248,6 +319,8 @@ func (b *InvoiceBuilder) Build() (*Invoice, error) {
 type InvoiceLineItem struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -260,12 +333,16 @@ type InvoiceLineItem struct {
 	PriceComponent []InvoicePriceComponent `json:"priceComponent,omitempty"`
 	// Sequence Sequence in which the items appear on the invoice.
 	Sequence *uint32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 }
 
 // InvoiceParticipant Invoice containing collected ChargeItems from an Account with calculated individual and total price for Billing purpose.
 type InvoiceParticipant struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -280,6 +357,8 @@ type InvoiceParticipant struct {
 type InvoicePriceComponent struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -290,6 +369,10 @@ type InvoicePriceComponent struct {
 	Code *dt.CodeableConcept `json:"code,omitempty"`
 	// Factor The factor that has been applied on the base price for calculating this component.
 	Factor *float64 `json:"factor,omitempty"`
+	// FactorElement contains element extensions for factor.
+	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// Type This code identifies the type of the component.
 	Type *InvoicePriceComponentType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }

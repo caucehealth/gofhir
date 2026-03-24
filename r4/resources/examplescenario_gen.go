@@ -17,12 +17,18 @@ type ExampleScenario struct {
 	ResourceType string `json:"resourceType"` // Always "ExampleScenario"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,43 +41,79 @@ type ExampleScenario struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this example scenario. Enables tracking the life-cycle of the content.
 	Status *ExampleScenarioStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Actor Actor participating in the resource.
 	Actor []ExampleScenarioActor `json:"actor,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the example scenario and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the example scenario.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date  (and optionally time) when the example scenario was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Experimental A Boolean value to indicate that this example scenario is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// Instance Each resource and each version that is present in the workflow.
 	Instance []ExampleScenarioInstance `json:"instance,omitempty"`
 	// Jurisdiction A legal or geographic region in which the example scenario is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Name A natural language name identifying the example scenario. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Process Each major process - a group of operations.
 	Process []ExampleScenarioProcess `json:"process,omitempty"`
 	// Publisher The name of the organization or individual that published the example scenario.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Purpose What the example scenario resource is created for. This should not be used to show the business purpose of the scenario itself, but the purpose of documenting a scenario.
 	Purpose *dt.Markdown `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for purpose.
+	PurposeElement *dt.Element `json:"_purpose,omitempty"`
 	// Url An absolute URI that is used to identify this example scenario when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally ...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the example scenario when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the example s...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
 	// Workflow Another nested workflow.
 	Workflow []dt.Canonical `json:"workflow,omitempty"`
+	// WorkflowElement contains element extensions for each workflow.
+	WorkflowElement []dt.Element `json:"_workflow,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for ExampleScenario.
 func (r ExampleScenario) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "ExampleScenario"
 	type Alias ExampleScenario
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ExampleScenario.
@@ -82,166 +124,208 @@ func (r *ExampleScenario) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ExampleScenario(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_actor", "_contact", "_contained", "_copyright", "_date", "_experimental", "_extension", "_id", "_identifier", "_implicitRules", "_instance", "_jurisdiction", "_language", "_meta", "_modifierExtension", "_name", "_process", "_publisher", "_purpose", "_status", "_text", "_url", "_useContext", "_version", "_workflow", "actor", "contact", "contained", "copyright", "date", "experimental", "extension", "id", "identifier", "implicitRules", "instance", "jurisdiction", "language", "meta", "modifierExtension", "name", "process", "publisher", "purpose", "resourceType", "status", "text", "url", "useContext", "version", "workflow":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ExampleScenarioBuilder provides a fluent API for constructing ExampleScenario resources.
 type ExampleScenarioBuilder struct {
-	resource ExampleScenario
+	resource  ExampleScenario
+	fieldsSet map[string]bool
 }
 
 // NewExampleScenario creates a new ExampleScenarioBuilder for building a ExampleScenario resource.
 func NewExampleScenario() *ExampleScenarioBuilder {
-	return &ExampleScenarioBuilder{resource: ExampleScenario{ResourceType: "ExampleScenario"}}
+	return &ExampleScenarioBuilder{resource: ExampleScenario{ResourceType: "ExampleScenario"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ExampleScenarioBuilder) WithId(v dt.ID) *ExampleScenarioBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ExampleScenarioBuilder) WithMeta(v dt.Meta) *ExampleScenarioBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ExampleScenarioBuilder) WithImplicitRules(v dt.URI) *ExampleScenarioBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ExampleScenarioBuilder) WithLanguage(v dt.Code) *ExampleScenarioBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ExampleScenarioBuilder) WithText(v dt.Narrative) *ExampleScenarioBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ExampleScenarioBuilder) WithContained(v json.RawMessage) *ExampleScenarioBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ExampleScenarioBuilder) WithExtension(v dt.Extension) *ExampleScenarioBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ExampleScenarioBuilder) WithModifierExtension(v dt.Extension) *ExampleScenarioBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ExampleScenarioBuilder) WithIdentifier(v dt.Identifier) *ExampleScenarioBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ExampleScenarioBuilder) WithStatus(v ExampleScenarioStatus) *ExampleScenarioBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithActor adds an item to the actor field.
 func (b *ExampleScenarioBuilder) WithActor(v ExampleScenarioActor) *ExampleScenarioBuilder {
 	b.resource.Actor = append(b.resource.Actor, v)
+	b.fieldsSet["actor"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *ExampleScenarioBuilder) WithContact(v dt.ContactDetail) *ExampleScenarioBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *ExampleScenarioBuilder) WithCopyright(v dt.Markdown) *ExampleScenarioBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *ExampleScenarioBuilder) WithDate(v dt.DateTime) *ExampleScenarioBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *ExampleScenarioBuilder) WithExperimental(v bool) *ExampleScenarioBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithInstance adds an item to the instance field.
 func (b *ExampleScenarioBuilder) WithInstance(v ExampleScenarioInstance) *ExampleScenarioBuilder {
 	b.resource.Instance = append(b.resource.Instance, v)
+	b.fieldsSet["instance"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *ExampleScenarioBuilder) WithJurisdiction(v dt.CodeableConcept) *ExampleScenarioBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *ExampleScenarioBuilder) WithName(v string) *ExampleScenarioBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithProcess adds an item to the process field.
 func (b *ExampleScenarioBuilder) WithProcess(v ExampleScenarioProcess) *ExampleScenarioBuilder {
 	b.resource.Process = append(b.resource.Process, v)
+	b.fieldsSet["process"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *ExampleScenarioBuilder) WithPublisher(v string) *ExampleScenarioBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithPurpose sets the purpose field.
 func (b *ExampleScenarioBuilder) WithPurpose(v dt.Markdown) *ExampleScenarioBuilder {
 	b.resource.Purpose = &v
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *ExampleScenarioBuilder) WithUrl(v dt.URI) *ExampleScenarioBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *ExampleScenarioBuilder) WithUseContext(v dt.UsageContext) *ExampleScenarioBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *ExampleScenarioBuilder) WithVersion(v string) *ExampleScenarioBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
 // WithWorkflow adds an item to the workflow field.
 func (b *ExampleScenarioBuilder) WithWorkflow(v dt.Canonical) *ExampleScenarioBuilder {
 	b.resource.Workflow = append(b.resource.Workflow, v)
+	b.fieldsSet["workflow"] = true
 	return b
 }
 
@@ -256,54 +340,78 @@ func (b *ExampleScenarioBuilder) Build() (*ExampleScenario, error) {
 type ExampleScenarioActor struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// ActorId ID or acronym of actor.
 	ActorId *string `json:"actorId,omitempty"`
+	// ActorIdElement contains element extensions for actorId.
+	ActorIdElement *dt.Element `json:"_actorId,omitempty"`
 	// Description The description of the actor.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Name The name of the actor as shown in the page.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Type The type of actor - person or system.
 	Type *ExampleScenarioActorType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }
 
 // ExampleScenarioAlternative Example of workflow instance.
 type ExampleScenarioAlternative struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description A human-readable description of the alternative explaining when the alternative should occur rather than the base step.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Step What happens in each alternative option.
 	Step []ExampleScenarioStep `json:"step,omitempty"`
 	// Title The label to display for the alternative that gives a sense of the circumstance in which the alternative should be invoked.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 }
 
 // ExampleScenarioContainedInstance Example of workflow instance.
 type ExampleScenarioContainedInstance struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// ResourceId Each resource contained in the instance.
 	ResourceId *string `json:"resourceId,omitempty"`
+	// ResourceIdElement contains element extensions for resourceId.
+	ResourceIdElement *dt.Element `json:"_resourceId,omitempty"`
 	// VersionId A specific version of a resource contained in the instance.
 	VersionId *string `json:"versionId,omitempty"`
+	// VersionIdElement contains element extensions for versionId.
+	VersionIdElement *dt.Element `json:"_versionId,omitempty"`
 }
 
 // ExampleScenarioInstance Example of workflow instance.
 type ExampleScenarioInstance struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -312,10 +420,16 @@ type ExampleScenarioInstance struct {
 	ContainedInstance []ExampleScenarioContainedInstance `json:"containedInstance,omitempty"`
 	// Description Human-friendly description of the resource instance.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Name A short name for the resource instance.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// ResourceId The id of the resource for referencing.
 	ResourceId *string `json:"resourceId,omitempty"`
+	// ResourceIdElement contains element extensions for resourceId.
+	ResourceIdElement *dt.Element `json:"_resourceId,omitempty"`
 	// Version A specific version of the resource.
 	Version []ExampleScenarioVersion `json:"version,omitempty"`
 }
@@ -324,56 +438,86 @@ type ExampleScenarioInstance struct {
 type ExampleScenarioOperation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description A comment to be inserted in the diagram.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Initiator Who starts the transaction.
 	Initiator *string `json:"initiator,omitempty"`
+	// InitiatorElement contains element extensions for initiator.
+	InitiatorElement *dt.Element `json:"_initiator,omitempty"`
 	// InitiatorActive Whether the initiator is deactivated right after the transaction.
 	InitiatorActive *bool `json:"initiatorActive,omitempty"`
+	// InitiatorActiveElement contains element extensions for initiatorActive.
+	InitiatorActiveElement *dt.Element `json:"_initiatorActive,omitempty"`
 	// Name The human-friendly name of the interaction.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Number The sequential number of the interaction, e.g. 1.2.5.
 	Number *string `json:"number,omitempty"`
+	// NumberElement contains element extensions for number.
+	NumberElement *dt.Element `json:"_number,omitempty"`
 	// Receiver Who receives the transaction.
 	Receiver *string `json:"receiver,omitempty"`
+	// ReceiverElement contains element extensions for receiver.
+	ReceiverElement *dt.Element `json:"_receiver,omitempty"`
 	// ReceiverActive Whether the receiver is deactivated right after the transaction.
 	ReceiverActive *bool `json:"receiverActive,omitempty"`
+	// ReceiverActiveElement contains element extensions for receiverActive.
+	ReceiverActiveElement *dt.Element `json:"_receiverActive,omitempty"`
 	// Request Each resource instance used by the initiator.
 	Request *ExampleScenarioContainedInstance `json:"request,omitempty"`
 	// Response Each resource instance used by the responder.
 	Response *ExampleScenarioContainedInstance `json:"response,omitempty"`
 	// Type The type of operation - CRUD.
 	Type *string `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }
 
 // ExampleScenarioProcess Example of workflow instance.
 type ExampleScenarioProcess struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description A longer description of the group of operations.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// PostConditions Description of final status after the process ends.
 	PostConditions *dt.Markdown `json:"postConditions,omitempty"`
+	// PostConditionsElement contains element extensions for postConditions.
+	PostConditionsElement *dt.Element `json:"_postConditions,omitempty"`
 	// PreConditions Description of initial status before the process starts.
 	PreConditions *dt.Markdown `json:"preConditions,omitempty"`
+	// PreConditionsElement contains element extensions for preConditions.
+	PreConditionsElement *dt.Element `json:"_preConditions,omitempty"`
 	// Step Each step of the process.
 	Step []ExampleScenarioStep `json:"step,omitempty"`
 	// Title The diagram title of the group of operations.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 }
 
 // ExampleScenarioStep Example of workflow instance.
 type ExampleScenarioStep struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -384,6 +528,8 @@ type ExampleScenarioStep struct {
 	Operation *ExampleScenarioOperation `json:"operation,omitempty"`
 	// Pause If there is a pause in the flow.
 	Pause *bool `json:"pause,omitempty"`
+	// PauseElement contains element extensions for pause.
+	PauseElement *dt.Element `json:"_pause,omitempty"`
 	// Process Nested process.
 	Process []ExampleScenarioProcess `json:"process,omitempty"`
 }
@@ -392,12 +538,18 @@ type ExampleScenarioStep struct {
 type ExampleScenarioVersion struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description The description of the resource version.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// VersionId The identifier of a specific version of a resource.
 	VersionId *string `json:"versionId,omitempty"`
+	// VersionIdElement contains element extensions for versionId.
+	VersionIdElement *dt.Element `json:"_versionId,omitempty"`
 }

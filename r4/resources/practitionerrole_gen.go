@@ -17,12 +17,18 @@ type PractitionerRole struct {
 	ResourceType string `json:"resourceType"` // Always "PractitionerRole"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,8 +41,12 @@ type PractitionerRole struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Active Whether this practitioner role record is in active use.
 	Active *bool `json:"active,omitempty"`
+	// ActiveElement contains element extensions for active.
+	ActiveElement *dt.Element `json:"_active,omitempty"`
 	// AvailabilityExceptions A description of site availability exceptions, e.g. public holiday availability. Succinctly describing all possible exceptions to normal site availability as details in the available Times and not ...
 	AvailabilityExceptions *string `json:"availabilityExceptions,omitempty"`
+	// AvailabilityExceptionsElement contains element extensions for availabilityExceptions.
+	AvailabilityExceptionsElement *dt.Element `json:"_availabilityExceptions,omitempty"`
 	// AvailableTime A collection of times the practitioner is available or performing this role at the location and/or healthcareservice.
 	AvailableTime []PractitionerRoleAvailableTime `json:"availableTime,omitempty"`
 	// Code Roles which this practitioner is authorized to perform for the organization.
@@ -59,13 +69,29 @@ type PractitionerRole struct {
 	Specialty []dt.CodeableConcept `json:"specialty,omitempty"`
 	// Telecom Contact details that are specific to the role/location/service.
 	Telecom []dt.ContactPoint `json:"telecom,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for PractitionerRole.
 func (r PractitionerRole) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "PractitionerRole"
 	type Alias PractitionerRole
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for PractitionerRole.
@@ -76,148 +102,187 @@ func (r *PractitionerRole) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = PractitionerRole(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_active", "_availabilityExceptions", "_availableTime", "_code", "_contained", "_endpoint", "_extension", "_healthcareService", "_id", "_identifier", "_implicitRules", "_language", "_location", "_meta", "_modifierExtension", "_notAvailable", "_organization", "_period", "_practitioner", "_specialty", "_telecom", "_text", "active", "availabilityExceptions", "availableTime", "code", "contained", "endpoint", "extension", "healthcareService", "id", "identifier", "implicitRules", "language", "location", "meta", "modifierExtension", "notAvailable", "organization", "period", "practitioner", "resourceType", "specialty", "telecom", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // PractitionerRoleBuilder provides a fluent API for constructing PractitionerRole resources.
 type PractitionerRoleBuilder struct {
-	resource PractitionerRole
+	resource  PractitionerRole
+	fieldsSet map[string]bool
 }
 
 // NewPractitionerRole creates a new PractitionerRoleBuilder for building a PractitionerRole resource.
 func NewPractitionerRole() *PractitionerRoleBuilder {
-	return &PractitionerRoleBuilder{resource: PractitionerRole{ResourceType: "PractitionerRole"}}
+	return &PractitionerRoleBuilder{resource: PractitionerRole{ResourceType: "PractitionerRole"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *PractitionerRoleBuilder) WithId(v dt.ID) *PractitionerRoleBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *PractitionerRoleBuilder) WithMeta(v dt.Meta) *PractitionerRoleBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *PractitionerRoleBuilder) WithImplicitRules(v dt.URI) *PractitionerRoleBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *PractitionerRoleBuilder) WithLanguage(v dt.Code) *PractitionerRoleBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *PractitionerRoleBuilder) WithText(v dt.Narrative) *PractitionerRoleBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *PractitionerRoleBuilder) WithContained(v json.RawMessage) *PractitionerRoleBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *PractitionerRoleBuilder) WithExtension(v dt.Extension) *PractitionerRoleBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *PractitionerRoleBuilder) WithModifierExtension(v dt.Extension) *PractitionerRoleBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *PractitionerRoleBuilder) WithIdentifier(v dt.Identifier) *PractitionerRoleBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithActive sets the active field.
 func (b *PractitionerRoleBuilder) WithActive(v bool) *PractitionerRoleBuilder {
 	b.resource.Active = &v
+	b.fieldsSet["active"] = true
 	return b
 }
 
 // WithAvailabilityExceptions sets the availabilityExceptions field.
 func (b *PractitionerRoleBuilder) WithAvailabilityExceptions(v string) *PractitionerRoleBuilder {
 	b.resource.AvailabilityExceptions = &v
+	b.fieldsSet["availabilityExceptions"] = true
 	return b
 }
 
 // WithAvailableTime adds an item to the availableTime field.
 func (b *PractitionerRoleBuilder) WithAvailableTime(v PractitionerRoleAvailableTime) *PractitionerRoleBuilder {
 	b.resource.AvailableTime = append(b.resource.AvailableTime, v)
+	b.fieldsSet["availableTime"] = true
 	return b
 }
 
 // WithCode adds an item to the code field.
 func (b *PractitionerRoleBuilder) WithCode(v dt.CodeableConcept) *PractitionerRoleBuilder {
 	b.resource.Code = append(b.resource.Code, v)
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithEndpoint adds an item to the endpoint field.
 func (b *PractitionerRoleBuilder) WithEndpoint(v dt.Reference) *PractitionerRoleBuilder {
 	b.resource.Endpoint = append(b.resource.Endpoint, v)
+	b.fieldsSet["endpoint"] = true
 	return b
 }
 
 // WithHealthcareService adds an item to the healthcareService field.
 func (b *PractitionerRoleBuilder) WithHealthcareService(v dt.Reference) *PractitionerRoleBuilder {
 	b.resource.HealthcareService = append(b.resource.HealthcareService, v)
+	b.fieldsSet["healthcareService"] = true
 	return b
 }
 
 // WithLocation adds an item to the location field.
 func (b *PractitionerRoleBuilder) WithLocation(v dt.Reference) *PractitionerRoleBuilder {
 	b.resource.Location = append(b.resource.Location, v)
+	b.fieldsSet["location"] = true
 	return b
 }
 
 // WithNotAvailable adds an item to the notAvailable field.
 func (b *PractitionerRoleBuilder) WithNotAvailable(v PractitionerRoleNotAvailable) *PractitionerRoleBuilder {
 	b.resource.NotAvailable = append(b.resource.NotAvailable, v)
+	b.fieldsSet["notAvailable"] = true
 	return b
 }
 
 // WithOrganization sets the organization field.
 func (b *PractitionerRoleBuilder) WithOrganization(v dt.Reference) *PractitionerRoleBuilder {
 	b.resource.Organization = &v
+	b.fieldsSet["organization"] = true
 	return b
 }
 
 // WithPeriod sets the period field.
 func (b *PractitionerRoleBuilder) WithPeriod(v dt.Period) *PractitionerRoleBuilder {
 	b.resource.Period = &v
+	b.fieldsSet["period"] = true
 	return b
 }
 
 // WithPractitioner sets the practitioner field.
 func (b *PractitionerRoleBuilder) WithPractitioner(v dt.Reference) *PractitionerRoleBuilder {
 	b.resource.Practitioner = &v
+	b.fieldsSet["practitioner"] = true
 	return b
 }
 
 // WithSpecialty adds an item to the specialty field.
 func (b *PractitionerRoleBuilder) WithSpecialty(v dt.CodeableConcept) *PractitionerRoleBuilder {
 	b.resource.Specialty = append(b.resource.Specialty, v)
+	b.fieldsSet["specialty"] = true
 	return b
 }
 
 // WithTelecom adds an item to the telecom field.
 func (b *PractitionerRoleBuilder) WithTelecom(v dt.ContactPoint) *PractitionerRoleBuilder {
 	b.resource.Telecom = append(b.resource.Telecom, v)
+	b.fieldsSet["telecom"] = true
 	return b
 }
 
@@ -232,30 +297,44 @@ func (b *PractitionerRoleBuilder) Build() (*PractitionerRole, error) {
 type PractitionerRoleAvailableTime struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// AllDay Is this always available? (hence times are irrelevant) e.g. 24 hour service.
 	AllDay *bool `json:"allDay,omitempty"`
+	// AllDayElement contains element extensions for allDay.
+	AllDayElement *dt.Element `json:"_allDay,omitempty"`
 	// AvailableEndTime The closing time of day. Note: If the AllDay flag is set, then this time is ignored.
 	AvailableEndTime *dt.Time `json:"availableEndTime,omitempty"`
+	// AvailableEndTimeElement contains element extensions for availableEndTime.
+	AvailableEndTimeElement *dt.Element `json:"_availableEndTime,omitempty"`
 	// AvailableStartTime The opening time of day. Note: If the AllDay flag is set, then this time is ignored.
 	AvailableStartTime *dt.Time `json:"availableStartTime,omitempty"`
+	// AvailableStartTimeElement contains element extensions for availableStartTime.
+	AvailableStartTimeElement *dt.Element `json:"_availableStartTime,omitempty"`
 	// DaysOfWeek Indicates which days of the week are available between the start and end Times.
 	DaysOfWeek []dt.Code `json:"daysOfWeek,omitempty"`
+	// DaysOfWeekElement contains element extensions for each daysOfWeek.
+	DaysOfWeekElement []dt.Element `json:"_daysOfWeek,omitempty"`
 }
 
 // PractitionerRoleNotAvailable A specific set of Roles/Locations/specialties/services that a practitioner may perform at an organization for a period of time.
 type PractitionerRoleNotAvailable struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description The reason that can be presented to the user as to why this time is not available.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// During Service is not available (seasonally or for a public holiday) from this date.
 	During *dt.Period `json:"during,omitempty"`
 }

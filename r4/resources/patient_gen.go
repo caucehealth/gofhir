@@ -18,12 +18,18 @@ type Patient struct {
 	ResourceType string `json:"resourceType"` // Always "Patient"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,10 +42,14 @@ type Patient struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Active Whether this patient record is in active use.  Many systems use this property to mark as non-current patients, such as those that have not been seen for a period of time based on an organization's ...
 	Active *bool `json:"active,omitempty"`
+	// ActiveElement contains element extensions for active.
+	ActiveElement *dt.Element `json:"_active,omitempty"`
 	// Address An address for the individual.
 	Address []dt.Address `json:"address,omitempty"`
 	// BirthDate The date of birth for the individual.
 	BirthDate *dt.Date `json:"birthDate,omitempty"`
+	// BirthDateElement contains element extensions for birthDate.
+	BirthDateElement *dt.Element `json:"_birthDate,omitempty"`
 	// Communication A language which may be used to communicate with the patient about his or her health.
 	Communication []PatientCommunication `json:"communication,omitempty"`
 	// Contact A contact party (e.g. guardian, partner, friend) for the patient.
@@ -48,6 +58,8 @@ type Patient struct {
 	Deceased *PatientDeceased `json:"-"` // polymorphic
 	// Gender Administrative Gender - the gender that the patient is considered to have for administration and record keeping purposes.
 	Gender *AdministrativeGender `json:"gender,omitempty"`
+	// GenderElement contains element extensions for gender.
+	GenderElement *dt.Element `json:"_gender,omitempty"`
 	// GeneralPractitioner Patient's nominated care provider.
 	GeneralPractitioner []dt.Reference `json:"generalPractitioner,omitempty"`
 	// Link Link to another patient resource that concerns the same actual patient.
@@ -64,6 +76,8 @@ type Patient struct {
 	Photo []dt.Attachment `json:"photo,omitempty"`
 	// Telecom A contact detail (e.g. a telephone number or an email address) by which the individual may be contacted.
 	Telecom []dt.ContactPoint `json:"telecom,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Patient.
@@ -74,7 +88,6 @@ func (r Patient) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -105,6 +118,9 @@ func (r Patient) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
 	return json.Marshal(m)
 }
 
@@ -117,13 +133,6 @@ func (r *Patient) UnmarshalJSON(data []byte) error {
 	}
 	*r = Patient(alias)
 	// Unmarshal polymorphic fields
-	var multipleBirthVal PatientMultipleBirth
-	if err := multipleBirthVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if multipleBirthVal.Boolean != nil || multipleBirthVal.Integer != nil {
-		r.MultipleBirth = &multipleBirthVal
-	}
 	var deceasedVal PatientDeceased
 	if err := deceasedVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -131,17 +140,41 @@ func (r *Patient) UnmarshalJSON(data []byte) error {
 	if deceasedVal.Boolean != nil || deceasedVal.DateTime != nil {
 		r.Deceased = &deceasedVal
 	}
+	var multipleBirthVal PatientMultipleBirth
+	if err := multipleBirthVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if multipleBirthVal.Boolean != nil || multipleBirthVal.Integer != nil {
+		r.MultipleBirth = &multipleBirthVal
+	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_active", "_address", "_birthDate", "_communication", "_contact", "_contained", "_deceasedBoolean", "_deceasedDateTime", "_extension", "_gender", "_generalPractitioner", "_id", "_identifier", "_implicitRules", "_language", "_link", "_managingOrganization", "_maritalStatus", "_meta", "_modifierExtension", "_multipleBirthBoolean", "_multipleBirthInteger", "_name", "_photo", "_telecom", "_text", "active", "address", "birthDate", "communication", "contact", "contained", "deceasedBoolean", "deceasedDateTime", "extension", "gender", "generalPractitioner", "id", "identifier", "implicitRules", "language", "link", "managingOrganization", "maritalStatus", "meta", "modifierExtension", "multipleBirthBoolean", "multipleBirthInteger", "name", "photo", "resourceType", "telecom", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // PatientBuilder provides a fluent API for constructing Patient resources.
 type PatientBuilder struct {
-	resource Patient
+	resource  Patient
+	fieldsSet map[string]bool
 }
 
 // NewPatient creates a new PatientBuilder for building a Patient resource.
 func NewPatient() *PatientBuilder {
-	return &PatientBuilder{resource: Patient{ResourceType: "Patient"}}
+	return &PatientBuilder{resource: Patient{ResourceType: "Patient"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithName adds a human name to the patient with the given given name and family name.
@@ -151,6 +184,7 @@ func (b *PatientBuilder) WithName(given, family string) *PatientBuilder {
 		Family: &family,
 	}
 	b.resource.Name = append(b.resource.Name, name)
+	b.fieldsSet["name"] = true
 	return b
 }
 
@@ -158,90 +192,105 @@ func (b *PatientBuilder) WithName(given, family string) *PatientBuilder {
 func (b *PatientBuilder) WithBirthDate(date string) *PatientBuilder {
 	d := dt.Date(date)
 	b.resource.BirthDate = &d
+	b.fieldsSet["birthDate"] = true
 	return b
 }
 
 // WithGender sets the patient's administrative gender.
 func (b *PatientBuilder) WithGender(gender AdministrativeGender) *PatientBuilder {
 	b.resource.Gender = &gender
+	b.fieldsSet["gender"] = true
 	return b
 }
 
 // WithId sets the id field.
 func (b *PatientBuilder) WithId(v dt.ID) *PatientBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *PatientBuilder) WithMeta(v dt.Meta) *PatientBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *PatientBuilder) WithImplicitRules(v dt.URI) *PatientBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *PatientBuilder) WithLanguage(v dt.Code) *PatientBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *PatientBuilder) WithText(v dt.Narrative) *PatientBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *PatientBuilder) WithContained(v json.RawMessage) *PatientBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *PatientBuilder) WithExtension(v dt.Extension) *PatientBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *PatientBuilder) WithModifierExtension(v dt.Extension) *PatientBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *PatientBuilder) WithIdentifier(v dt.Identifier) *PatientBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithActive sets the active field.
 func (b *PatientBuilder) WithActive(v bool) *PatientBuilder {
 	b.resource.Active = &v
+	b.fieldsSet["active"] = true
 	return b
 }
 
 // WithAddress adds an item to the address field.
 func (b *PatientBuilder) WithAddress(v dt.Address) *PatientBuilder {
 	b.resource.Address = append(b.resource.Address, v)
+	b.fieldsSet["address"] = true
 	return b
 }
 
 // WithCommunication adds an item to the communication field.
 func (b *PatientBuilder) WithCommunication(v PatientCommunication) *PatientBuilder {
 	b.resource.Communication = append(b.resource.Communication, v)
+	b.fieldsSet["communication"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *PatientBuilder) WithContact(v PatientContact) *PatientBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
@@ -251,6 +300,7 @@ func (b *PatientBuilder) WithDeceasedBoolean(v bool) *PatientBuilder {
 		b.resource.Deceased = &PatientDeceased{}
 	}
 	b.resource.Deceased.Boolean = &v
+	b.fieldsSet["deceased"] = true
 	return b
 }
 
@@ -260,30 +310,35 @@ func (b *PatientBuilder) WithDeceasedDateTime(v string) *PatientBuilder {
 		b.resource.Deceased = &PatientDeceased{}
 	}
 	b.resource.Deceased.DateTime = &v
+	b.fieldsSet["deceased"] = true
 	return b
 }
 
 // WithGeneralPractitioner adds an item to the generalPractitioner field.
 func (b *PatientBuilder) WithGeneralPractitioner(v dt.Reference) *PatientBuilder {
 	b.resource.GeneralPractitioner = append(b.resource.GeneralPractitioner, v)
+	b.fieldsSet["generalPractitioner"] = true
 	return b
 }
 
 // WithLink adds an item to the link field.
 func (b *PatientBuilder) WithLink(v PatientLink) *PatientBuilder {
 	b.resource.Link = append(b.resource.Link, v)
+	b.fieldsSet["link"] = true
 	return b
 }
 
 // WithManagingOrganization sets the managingOrganization field.
 func (b *PatientBuilder) WithManagingOrganization(v dt.Reference) *PatientBuilder {
 	b.resource.ManagingOrganization = &v
+	b.fieldsSet["managingOrganization"] = true
 	return b
 }
 
 // WithMaritalStatus sets the maritalStatus field.
 func (b *PatientBuilder) WithMaritalStatus(v dt.CodeableConcept) *PatientBuilder {
 	b.resource.MaritalStatus = &v
+	b.fieldsSet["maritalStatus"] = true
 	return b
 }
 
@@ -293,6 +348,7 @@ func (b *PatientBuilder) WithMultipleBirthBoolean(v bool) *PatientBuilder {
 		b.resource.MultipleBirth = &PatientMultipleBirth{}
 	}
 	b.resource.MultipleBirth.Boolean = &v
+	b.fieldsSet["multipleBirth"] = true
 	return b
 }
 
@@ -302,18 +358,21 @@ func (b *PatientBuilder) WithMultipleBirthInteger(v float64) *PatientBuilder {
 		b.resource.MultipleBirth = &PatientMultipleBirth{}
 	}
 	b.resource.MultipleBirth.Integer = &v
+	b.fieldsSet["multipleBirth"] = true
 	return b
 }
 
 // WithPhoto adds an item to the photo field.
 func (b *PatientBuilder) WithPhoto(v dt.Attachment) *PatientBuilder {
 	b.resource.Photo = append(b.resource.Photo, v)
+	b.fieldsSet["photo"] = true
 	return b
 }
 
 // WithTelecom adds an item to the telecom field.
 func (b *PatientBuilder) WithTelecom(v dt.ContactPoint) *PatientBuilder {
 	b.resource.Telecom = append(b.resource.Telecom, v)
+	b.fieldsSet["telecom"] = true
 	return b
 }
 
@@ -328,6 +387,8 @@ func (b *PatientBuilder) Build() (*Patient, error) {
 type PatientCommunication struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Language The ISO-639-1 alpha 2 code in lower case for the language, optionally followed by a hyphen and the ISO-3166-1 alpha 2 code for the region in upper case; e.g. "en" for English, or "en-US" for Americ...
 	Language dt.CodeableConcept `json:"language"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
@@ -336,12 +397,16 @@ type PatientCommunication struct {
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Preferred Indicates whether or not the patient prefers this language (over other languages he masters up a certain level).
 	Preferred *bool `json:"preferred,omitempty"`
+	// PreferredElement contains element extensions for preferred.
+	PreferredElement *dt.Element `json:"_preferred,omitempty"`
 }
 
 // PatientContact Demographics and other administrative information about an individual or animal receiving care or other health-related services.
 type PatientContact struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -350,6 +415,8 @@ type PatientContact struct {
 	Address *dt.Address `json:"address,omitempty"`
 	// Gender Administrative Gender - the gender that the contact person is considered to have for administration and record keeping purposes.
 	Gender *AdministrativeGender `json:"gender,omitempty"`
+	// GenderElement contains element extensions for gender.
+	GenderElement *dt.Element `json:"_gender,omitempty"`
 	// Name A name associated with the contact person.
 	Name *dt.HumanName `json:"name,omitempty"`
 	// Organization Organization on behalf of which the contact is acting or for which the contact is working.
@@ -366,6 +433,8 @@ type PatientContact struct {
 type PatientLink struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -374,6 +443,8 @@ type PatientLink struct {
 	Other dt.Reference `json:"other"`
 	// Type The type of link between this patient resource and another patient resource.
 	Type *PatientLinkType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }
 
 // PatientDeceased represents a polymorphic choice type in FHIR.

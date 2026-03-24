@@ -17,12 +17,18 @@ type HealthcareService struct {
 	ResourceType string `json:"resourceType"` // Always "HealthcareService"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,10 +41,16 @@ type HealthcareService struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Active This flag is used to mark the record to not be used. This is not used when a center is closed for maintenance, or for holidays, the notAvailable period is to be used for this.
 	Active *bool `json:"active,omitempty"`
+	// ActiveElement contains element extensions for active.
+	ActiveElement *dt.Element `json:"_active,omitempty"`
 	// AppointmentRequired Indicates whether or not a prospective consumer will require an appointment for a particular service at a site to be provided by the Organization. Indicates if an appointment is required for access...
 	AppointmentRequired *bool `json:"appointmentRequired,omitempty"`
+	// AppointmentRequiredElement contains element extensions for appointmentRequired.
+	AppointmentRequiredElement *dt.Element `json:"_appointmentRequired,omitempty"`
 	// AvailabilityExceptions A description of site availability exceptions, e.g. public holiday availability. Succinctly describing all possible exceptions to normal site availability as details in the available Times and not ...
 	AvailabilityExceptions *string `json:"availabilityExceptions,omitempty"`
+	// AvailabilityExceptionsElement contains element extensions for availabilityExceptions.
+	AvailabilityExceptionsElement *dt.Element `json:"_availabilityExceptions,omitempty"`
 	// AvailableTime A collection of times that the Service Site is available.
 	AvailableTime []HealthcareServiceAvailableTime `json:"availableTime,omitempty"`
 	// Category Identifies the broad category of service being performed or delivered.
@@ -47,6 +59,8 @@ type HealthcareService struct {
 	Characteristic []dt.CodeableConcept `json:"characteristic,omitempty"`
 	// Comment Any additional description of the service and/or any specific issues not covered by the other attributes, which can be displayed as further detail under the serviceName.
 	Comment *string `json:"comment,omitempty"`
+	// CommentElement contains element extensions for comment.
+	CommentElement *dt.Element `json:"_comment,omitempty"`
 	// Communication Some services are specifically made available in multiple languages, this property permits a directory to declare the languages this is offered in. Typically this is only provided where a service o...
 	Communication []dt.CodeableConcept `json:"communication,omitempty"`
 	// CoverageArea The location(s) that this service is available to (not where the service is provided).
@@ -57,10 +71,14 @@ type HealthcareService struct {
 	Endpoint []dt.Reference `json:"endpoint,omitempty"`
 	// ExtraDetails Extra details about the service that can't be placed in the other fields.
 	ExtraDetails *dt.Markdown `json:"extraDetails,omitempty"`
+	// ExtraDetailsElement contains element extensions for extraDetails.
+	ExtraDetailsElement *dt.Element `json:"_extraDetails,omitempty"`
 	// Location The location(s) where this healthcare service may be provided.
 	Location []dt.Reference `json:"location,omitempty"`
 	// Name Further description of the service as it would be presented to a consumer while searching.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// NotAvailable The HealthcareService is not available during this period of time due to the provided reason.
 	NotAvailable []HealthcareServiceNotAvailable `json:"notAvailable,omitempty"`
 	// Photo If there is a photo/symbol associated with this HealthcareService, it may be included here to facilitate quick identification of the service in a list.
@@ -79,13 +97,29 @@ type HealthcareService struct {
 	Telecom []dt.ContactPoint `json:"telecom,omitempty"`
 	// Type The specific type of service that may be delivered or performed.
 	Type []dt.CodeableConcept `json:"type,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for HealthcareService.
 func (r HealthcareService) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "HealthcareService"
 	type Alias HealthcareService
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for HealthcareService.
@@ -96,208 +130,257 @@ func (r *HealthcareService) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = HealthcareService(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_active", "_appointmentRequired", "_availabilityExceptions", "_availableTime", "_category", "_characteristic", "_comment", "_communication", "_contained", "_coverageArea", "_eligibility", "_endpoint", "_extension", "_extraDetails", "_id", "_identifier", "_implicitRules", "_language", "_location", "_meta", "_modifierExtension", "_name", "_notAvailable", "_photo", "_program", "_providedBy", "_referralMethod", "_serviceProvisionCode", "_specialty", "_telecom", "_text", "_type", "active", "appointmentRequired", "availabilityExceptions", "availableTime", "category", "characteristic", "comment", "communication", "contained", "coverageArea", "eligibility", "endpoint", "extension", "extraDetails", "id", "identifier", "implicitRules", "language", "location", "meta", "modifierExtension", "name", "notAvailable", "photo", "program", "providedBy", "referralMethod", "resourceType", "serviceProvisionCode", "specialty", "telecom", "text", "type":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // HealthcareServiceBuilder provides a fluent API for constructing HealthcareService resources.
 type HealthcareServiceBuilder struct {
-	resource HealthcareService
+	resource  HealthcareService
+	fieldsSet map[string]bool
 }
 
 // NewHealthcareService creates a new HealthcareServiceBuilder for building a HealthcareService resource.
 func NewHealthcareService() *HealthcareServiceBuilder {
-	return &HealthcareServiceBuilder{resource: HealthcareService{ResourceType: "HealthcareService"}}
+	return &HealthcareServiceBuilder{resource: HealthcareService{ResourceType: "HealthcareService"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *HealthcareServiceBuilder) WithId(v dt.ID) *HealthcareServiceBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *HealthcareServiceBuilder) WithMeta(v dt.Meta) *HealthcareServiceBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *HealthcareServiceBuilder) WithImplicitRules(v dt.URI) *HealthcareServiceBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *HealthcareServiceBuilder) WithLanguage(v dt.Code) *HealthcareServiceBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *HealthcareServiceBuilder) WithText(v dt.Narrative) *HealthcareServiceBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *HealthcareServiceBuilder) WithContained(v json.RawMessage) *HealthcareServiceBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *HealthcareServiceBuilder) WithExtension(v dt.Extension) *HealthcareServiceBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *HealthcareServiceBuilder) WithModifierExtension(v dt.Extension) *HealthcareServiceBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *HealthcareServiceBuilder) WithIdentifier(v dt.Identifier) *HealthcareServiceBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithActive sets the active field.
 func (b *HealthcareServiceBuilder) WithActive(v bool) *HealthcareServiceBuilder {
 	b.resource.Active = &v
+	b.fieldsSet["active"] = true
 	return b
 }
 
 // WithAppointmentRequired sets the appointmentRequired field.
 func (b *HealthcareServiceBuilder) WithAppointmentRequired(v bool) *HealthcareServiceBuilder {
 	b.resource.AppointmentRequired = &v
+	b.fieldsSet["appointmentRequired"] = true
 	return b
 }
 
 // WithAvailabilityExceptions sets the availabilityExceptions field.
 func (b *HealthcareServiceBuilder) WithAvailabilityExceptions(v string) *HealthcareServiceBuilder {
 	b.resource.AvailabilityExceptions = &v
+	b.fieldsSet["availabilityExceptions"] = true
 	return b
 }
 
 // WithAvailableTime adds an item to the availableTime field.
 func (b *HealthcareServiceBuilder) WithAvailableTime(v HealthcareServiceAvailableTime) *HealthcareServiceBuilder {
 	b.resource.AvailableTime = append(b.resource.AvailableTime, v)
+	b.fieldsSet["availableTime"] = true
 	return b
 }
 
 // WithCategory adds an item to the category field.
 func (b *HealthcareServiceBuilder) WithCategory(v dt.CodeableConcept) *HealthcareServiceBuilder {
 	b.resource.Category = append(b.resource.Category, v)
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithCharacteristic adds an item to the characteristic field.
 func (b *HealthcareServiceBuilder) WithCharacteristic(v dt.CodeableConcept) *HealthcareServiceBuilder {
 	b.resource.Characteristic = append(b.resource.Characteristic, v)
+	b.fieldsSet["characteristic"] = true
 	return b
 }
 
 // WithComment sets the comment field.
 func (b *HealthcareServiceBuilder) WithComment(v string) *HealthcareServiceBuilder {
 	b.resource.Comment = &v
+	b.fieldsSet["comment"] = true
 	return b
 }
 
 // WithCommunication adds an item to the communication field.
 func (b *HealthcareServiceBuilder) WithCommunication(v dt.CodeableConcept) *HealthcareServiceBuilder {
 	b.resource.Communication = append(b.resource.Communication, v)
+	b.fieldsSet["communication"] = true
 	return b
 }
 
 // WithCoverageArea adds an item to the coverageArea field.
 func (b *HealthcareServiceBuilder) WithCoverageArea(v dt.Reference) *HealthcareServiceBuilder {
 	b.resource.CoverageArea = append(b.resource.CoverageArea, v)
+	b.fieldsSet["coverageArea"] = true
 	return b
 }
 
 // WithEligibility adds an item to the eligibility field.
 func (b *HealthcareServiceBuilder) WithEligibility(v HealthcareServiceEligibility) *HealthcareServiceBuilder {
 	b.resource.Eligibility = append(b.resource.Eligibility, v)
+	b.fieldsSet["eligibility"] = true
 	return b
 }
 
 // WithEndpoint adds an item to the endpoint field.
 func (b *HealthcareServiceBuilder) WithEndpoint(v dt.Reference) *HealthcareServiceBuilder {
 	b.resource.Endpoint = append(b.resource.Endpoint, v)
+	b.fieldsSet["endpoint"] = true
 	return b
 }
 
 // WithExtraDetails sets the extraDetails field.
 func (b *HealthcareServiceBuilder) WithExtraDetails(v dt.Markdown) *HealthcareServiceBuilder {
 	b.resource.ExtraDetails = &v
+	b.fieldsSet["extraDetails"] = true
 	return b
 }
 
 // WithLocation adds an item to the location field.
 func (b *HealthcareServiceBuilder) WithLocation(v dt.Reference) *HealthcareServiceBuilder {
 	b.resource.Location = append(b.resource.Location, v)
+	b.fieldsSet["location"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *HealthcareServiceBuilder) WithName(v string) *HealthcareServiceBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithNotAvailable adds an item to the notAvailable field.
 func (b *HealthcareServiceBuilder) WithNotAvailable(v HealthcareServiceNotAvailable) *HealthcareServiceBuilder {
 	b.resource.NotAvailable = append(b.resource.NotAvailable, v)
+	b.fieldsSet["notAvailable"] = true
 	return b
 }
 
 // WithPhoto sets the photo field.
 func (b *HealthcareServiceBuilder) WithPhoto(v dt.Attachment) *HealthcareServiceBuilder {
 	b.resource.Photo = &v
+	b.fieldsSet["photo"] = true
 	return b
 }
 
 // WithProgram adds an item to the program field.
 func (b *HealthcareServiceBuilder) WithProgram(v dt.CodeableConcept) *HealthcareServiceBuilder {
 	b.resource.Program = append(b.resource.Program, v)
+	b.fieldsSet["program"] = true
 	return b
 }
 
 // WithProvidedBy sets the providedBy field.
 func (b *HealthcareServiceBuilder) WithProvidedBy(v dt.Reference) *HealthcareServiceBuilder {
 	b.resource.ProvidedBy = &v
+	b.fieldsSet["providedBy"] = true
 	return b
 }
 
 // WithReferralMethod adds an item to the referralMethod field.
 func (b *HealthcareServiceBuilder) WithReferralMethod(v dt.CodeableConcept) *HealthcareServiceBuilder {
 	b.resource.ReferralMethod = append(b.resource.ReferralMethod, v)
+	b.fieldsSet["referralMethod"] = true
 	return b
 }
 
 // WithServiceProvisionCode adds an item to the serviceProvisionCode field.
 func (b *HealthcareServiceBuilder) WithServiceProvisionCode(v dt.CodeableConcept) *HealthcareServiceBuilder {
 	b.resource.ServiceProvisionCode = append(b.resource.ServiceProvisionCode, v)
+	b.fieldsSet["serviceProvisionCode"] = true
 	return b
 }
 
 // WithSpecialty adds an item to the specialty field.
 func (b *HealthcareServiceBuilder) WithSpecialty(v dt.CodeableConcept) *HealthcareServiceBuilder {
 	b.resource.Specialty = append(b.resource.Specialty, v)
+	b.fieldsSet["specialty"] = true
 	return b
 }
 
 // WithTelecom adds an item to the telecom field.
 func (b *HealthcareServiceBuilder) WithTelecom(v dt.ContactPoint) *HealthcareServiceBuilder {
 	b.resource.Telecom = append(b.resource.Telecom, v)
+	b.fieldsSet["telecom"] = true
 	return b
 }
 
 // WithType adds an item to the type field.
 func (b *HealthcareServiceBuilder) WithType(v dt.CodeableConcept) *HealthcareServiceBuilder {
 	b.resource.Type = append(b.resource.Type, v)
+	b.fieldsSet["type"] = true
 	return b
 }
 
@@ -312,24 +395,36 @@ func (b *HealthcareServiceBuilder) Build() (*HealthcareService, error) {
 type HealthcareServiceAvailableTime struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// AllDay Is this always available? (hence times are irrelevant) e.g. 24 hour service.
 	AllDay *bool `json:"allDay,omitempty"`
+	// AllDayElement contains element extensions for allDay.
+	AllDayElement *dt.Element `json:"_allDay,omitempty"`
 	// AvailableEndTime The closing time of day. Note: If the AllDay flag is set, then this time is ignored.
 	AvailableEndTime *dt.Time `json:"availableEndTime,omitempty"`
+	// AvailableEndTimeElement contains element extensions for availableEndTime.
+	AvailableEndTimeElement *dt.Element `json:"_availableEndTime,omitempty"`
 	// AvailableStartTime The opening time of day. Note: If the AllDay flag is set, then this time is ignored.
 	AvailableStartTime *dt.Time `json:"availableStartTime,omitempty"`
+	// AvailableStartTimeElement contains element extensions for availableStartTime.
+	AvailableStartTimeElement *dt.Element `json:"_availableStartTime,omitempty"`
 	// DaysOfWeek Indicates which days of the week are available between the start and end Times.
 	DaysOfWeek []HealthcareServiceAvailableTimeDaysOfWeek `json:"daysOfWeek,omitempty"`
+	// DaysOfWeekElement contains element extensions for each daysOfWeek.
+	DaysOfWeekElement []dt.Element `json:"_daysOfWeek,omitempty"`
 }
 
 // HealthcareServiceEligibility The details of a healthcare service available at a location.
 type HealthcareServiceEligibility struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -338,18 +433,24 @@ type HealthcareServiceEligibility struct {
 	Code *dt.CodeableConcept `json:"code,omitempty"`
 	// Comment Describes the eligibility conditions for the service.
 	Comment *dt.Markdown `json:"comment,omitempty"`
+	// CommentElement contains element extensions for comment.
+	CommentElement *dt.Element `json:"_comment,omitempty"`
 }
 
 // HealthcareServiceNotAvailable The details of a healthcare service available at a location.
 type HealthcareServiceNotAvailable struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description The reason that can be presented to the user as to why this time is not available.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// During Service is not available (seasonally or for a public holiday) from this date.
 	During *dt.Period `json:"during,omitempty"`
 }

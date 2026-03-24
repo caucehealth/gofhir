@@ -18,12 +18,18 @@ type Schedule struct {
 	ResourceType string `json:"resourceType"` // Always "Schedule"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,10 +42,14 @@ type Schedule struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Active Whether this schedule record is in active use or should not be used (such as was entered in error).
 	Active *bool `json:"active,omitempty"`
+	// ActiveElement contains element extensions for active.
+	ActiveElement *dt.Element `json:"_active,omitempty"`
 	// Actor Slots that reference this schedule resource provide the availability details to these referenced resource(s).
 	Actor []dt.Reference `json:"actor,omitempty"`
 	// Comment Comments on the availability to describe any extended information. Such as custom constraints on the slots that may be associated.
 	Comment *string `json:"comment,omitempty"`
+	// CommentElement contains element extensions for comment.
+	CommentElement *dt.Element `json:"_comment,omitempty"`
 	// PlanningHorizon The period of time that the slots that reference this Schedule resource cover (even if none exist). These  cover the amount of time that an organization's planning horizon; the interval for which t...
 	PlanningHorizon *dt.Period `json:"planningHorizon,omitempty"`
 	// ServiceCategory A broad categorization of the service that is to be performed during this appointment.
@@ -48,13 +58,29 @@ type Schedule struct {
 	ServiceType []dt.CodeableConcept `json:"serviceType,omitempty"`
 	// Specialty The specialty of a practitioner that would be required to perform the service requested in this appointment.
 	Specialty []dt.CodeableConcept `json:"specialty,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Schedule.
 func (r Schedule) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Schedule"
 	type Alias Schedule
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Schedule.
@@ -65,112 +91,145 @@ func (r *Schedule) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Schedule(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_active", "_actor", "_comment", "_contained", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_modifierExtension", "_planningHorizon", "_serviceCategory", "_serviceType", "_specialty", "_text", "active", "actor", "comment", "contained", "extension", "id", "identifier", "implicitRules", "language", "meta", "modifierExtension", "planningHorizon", "resourceType", "serviceCategory", "serviceType", "specialty", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ScheduleBuilder provides a fluent API for constructing Schedule resources.
 type ScheduleBuilder struct {
-	resource Schedule
+	resource  Schedule
+	fieldsSet map[string]bool
 }
 
 // NewSchedule creates a new ScheduleBuilder for building a Schedule resource.
 func NewSchedule() *ScheduleBuilder {
-	return &ScheduleBuilder{resource: Schedule{ResourceType: "Schedule"}}
+	return &ScheduleBuilder{resource: Schedule{ResourceType: "Schedule"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ScheduleBuilder) WithId(v dt.ID) *ScheduleBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ScheduleBuilder) WithMeta(v dt.Meta) *ScheduleBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ScheduleBuilder) WithImplicitRules(v dt.URI) *ScheduleBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ScheduleBuilder) WithLanguage(v dt.Code) *ScheduleBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ScheduleBuilder) WithText(v dt.Narrative) *ScheduleBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ScheduleBuilder) WithContained(v json.RawMessage) *ScheduleBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ScheduleBuilder) WithExtension(v dt.Extension) *ScheduleBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ScheduleBuilder) WithModifierExtension(v dt.Extension) *ScheduleBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ScheduleBuilder) WithIdentifier(v dt.Identifier) *ScheduleBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithActive sets the active field.
 func (b *ScheduleBuilder) WithActive(v bool) *ScheduleBuilder {
 	b.resource.Active = &v
+	b.fieldsSet["active"] = true
 	return b
 }
 
 // WithActor adds an item to the actor field.
 func (b *ScheduleBuilder) WithActor(v dt.Reference) *ScheduleBuilder {
 	b.resource.Actor = append(b.resource.Actor, v)
+	b.fieldsSet["actor"] = true
 	return b
 }
 
 // WithComment sets the comment field.
 func (b *ScheduleBuilder) WithComment(v string) *ScheduleBuilder {
 	b.resource.Comment = &v
+	b.fieldsSet["comment"] = true
 	return b
 }
 
 // WithPlanningHorizon sets the planningHorizon field.
 func (b *ScheduleBuilder) WithPlanningHorizon(v dt.Period) *ScheduleBuilder {
 	b.resource.PlanningHorizon = &v
+	b.fieldsSet["planningHorizon"] = true
 	return b
 }
 
 // WithServiceCategory adds an item to the serviceCategory field.
 func (b *ScheduleBuilder) WithServiceCategory(v dt.CodeableConcept) *ScheduleBuilder {
 	b.resource.ServiceCategory = append(b.resource.ServiceCategory, v)
+	b.fieldsSet["serviceCategory"] = true
 	return b
 }
 
 // WithServiceType adds an item to the serviceType field.
 func (b *ScheduleBuilder) WithServiceType(v dt.CodeableConcept) *ScheduleBuilder {
 	b.resource.ServiceType = append(b.resource.ServiceType, v)
+	b.fieldsSet["serviceType"] = true
 	return b
 }
 
 // WithSpecialty adds an item to the specialty field.
 func (b *ScheduleBuilder) WithSpecialty(v dt.CodeableConcept) *ScheduleBuilder {
 	b.resource.Specialty = append(b.resource.Specialty, v)
+	b.fieldsSet["specialty"] = true
 	return b
 }
 
@@ -178,7 +237,7 @@ func (b *ScheduleBuilder) WithSpecialty(v dt.CodeableConcept) *ScheduleBuilder {
 // field (cardinality 1..1) is not set.
 func (b *ScheduleBuilder) Build() (*Schedule, error) {
 	var missing []string
-	if len(b.resource.Actor) == 0 {
+	if !b.fieldsSet["actor"] {
 		missing = append(missing, "actor")
 	}
 	if len(missing) > 0 {

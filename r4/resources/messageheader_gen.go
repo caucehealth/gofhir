@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type MessageHeader struct {
 	ResourceType string `json:"resourceType"` // Always "MessageHeader"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,6 +42,8 @@ type MessageHeader struct {
 	Author *dt.Reference `json:"author,omitempty"`
 	// Definition Permanent link to the MessageDefinition for this message.
 	Definition *dt.Canonical `json:"definition,omitempty"`
+	// DefinitionElement contains element extensions for definition.
+	DefinitionElement *dt.Element `json:"_definition,omitempty"`
 	// Destination The destination application which the message is intended for.
 	Destination []MessageHeaderDestination `json:"destination,omitempty"`
 	// Enterer The person or device that performed the data entry leading to this message. When there is more than one candidate, pick the most proximal to the message. Can provide other enterers in extensions.
@@ -43,6 +52,8 @@ type MessageHeader struct {
 	EventCoding *dt.Coding `json:"eventCoding,omitempty"`
 	// EventUri Code that identifies the event this message represents and connects it with its definition. Events defined as part of the FHIR specification have the system value "http://terminology.hl7.org/CodeSy...
 	EventUri *string `json:"eventUri,omitempty"`
+	// EventUriElement contains element extensions for eventUri.
+	EventUriElement *dt.Element `json:"_eventUri,omitempty"`
 	// Focus The actual data of the message - a reference to the root/focus class of the event.
 	Focus []dt.Reference `json:"focus,omitempty"`
 	// Reason Coded indication of the cause for the event - indicates  a reason for the occurrence of the event that is a focus of this message.
@@ -55,13 +66,29 @@ type MessageHeader struct {
 	Sender *dt.Reference `json:"sender,omitempty"`
 	// Source The source application from which this message originated.
 	Source MessageHeaderSource `json:"source"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for MessageHeader.
 func (r MessageHeader) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "MessageHeader"
 	type Alias MessageHeader
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for MessageHeader.
@@ -72,142 +99,186 @@ func (r *MessageHeader) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = MessageHeader(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_author", "_contained", "_definition", "_destination", "_enterer", "_eventCoding", "_eventUri", "_extension", "_focus", "_id", "_implicitRules", "_language", "_meta", "_modifierExtension", "_reason", "_response", "_responsible", "_sender", "_source", "_text", "author", "contained", "definition", "destination", "enterer", "eventCoding", "eventUri", "extension", "focus", "id", "implicitRules", "language", "meta", "modifierExtension", "reason", "resourceType", "response", "responsible", "sender", "source", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // MessageHeaderBuilder provides a fluent API for constructing MessageHeader resources.
 type MessageHeaderBuilder struct {
-	resource MessageHeader
+	resource  MessageHeader
+	fieldsSet map[string]bool
 }
 
 // NewMessageHeader creates a new MessageHeaderBuilder for building a MessageHeader resource.
 func NewMessageHeader() *MessageHeaderBuilder {
-	return &MessageHeaderBuilder{resource: MessageHeader{ResourceType: "MessageHeader"}}
+	return &MessageHeaderBuilder{resource: MessageHeader{ResourceType: "MessageHeader"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *MessageHeaderBuilder) WithId(v dt.ID) *MessageHeaderBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *MessageHeaderBuilder) WithMeta(v dt.Meta) *MessageHeaderBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *MessageHeaderBuilder) WithImplicitRules(v dt.URI) *MessageHeaderBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *MessageHeaderBuilder) WithLanguage(v dt.Code) *MessageHeaderBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *MessageHeaderBuilder) WithText(v dt.Narrative) *MessageHeaderBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *MessageHeaderBuilder) WithContained(v json.RawMessage) *MessageHeaderBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *MessageHeaderBuilder) WithExtension(v dt.Extension) *MessageHeaderBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *MessageHeaderBuilder) WithModifierExtension(v dt.Extension) *MessageHeaderBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithAuthor sets the author field.
 func (b *MessageHeaderBuilder) WithAuthor(v dt.Reference) *MessageHeaderBuilder {
 	b.resource.Author = &v
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithDefinition sets the definition field.
 func (b *MessageHeaderBuilder) WithDefinition(v dt.Canonical) *MessageHeaderBuilder {
 	b.resource.Definition = &v
+	b.fieldsSet["definition"] = true
 	return b
 }
 
 // WithDestination adds an item to the destination field.
 func (b *MessageHeaderBuilder) WithDestination(v MessageHeaderDestination) *MessageHeaderBuilder {
 	b.resource.Destination = append(b.resource.Destination, v)
+	b.fieldsSet["destination"] = true
 	return b
 }
 
 // WithEnterer sets the enterer field.
 func (b *MessageHeaderBuilder) WithEnterer(v dt.Reference) *MessageHeaderBuilder {
 	b.resource.Enterer = &v
+	b.fieldsSet["enterer"] = true
 	return b
 }
 
 // WithEventCoding sets the eventCoding field.
 func (b *MessageHeaderBuilder) WithEventCoding(v dt.Coding) *MessageHeaderBuilder {
 	b.resource.EventCoding = &v
+	b.fieldsSet["eventCoding"] = true
 	return b
 }
 
 // WithEventUri sets the eventUri field.
 func (b *MessageHeaderBuilder) WithEventUri(v string) *MessageHeaderBuilder {
 	b.resource.EventUri = &v
+	b.fieldsSet["eventUri"] = true
 	return b
 }
 
 // WithFocus adds an item to the focus field.
 func (b *MessageHeaderBuilder) WithFocus(v dt.Reference) *MessageHeaderBuilder {
 	b.resource.Focus = append(b.resource.Focus, v)
+	b.fieldsSet["focus"] = true
 	return b
 }
 
 // WithReason sets the reason field.
 func (b *MessageHeaderBuilder) WithReason(v dt.CodeableConcept) *MessageHeaderBuilder {
 	b.resource.Reason = &v
+	b.fieldsSet["reason"] = true
 	return b
 }
 
 // WithResponse sets the response field.
 func (b *MessageHeaderBuilder) WithResponse(v MessageHeaderResponse) *MessageHeaderBuilder {
 	b.resource.Response = &v
+	b.fieldsSet["response"] = true
 	return b
 }
 
 // WithResponsible sets the responsible field.
 func (b *MessageHeaderBuilder) WithResponsible(v dt.Reference) *MessageHeaderBuilder {
 	b.resource.Responsible = &v
+	b.fieldsSet["responsible"] = true
 	return b
 }
 
 // WithSender sets the sender field.
 func (b *MessageHeaderBuilder) WithSender(v dt.Reference) *MessageHeaderBuilder {
 	b.resource.Sender = &v
+	b.fieldsSet["sender"] = true
 	return b
 }
 
 // WithSource sets the source field.
 func (b *MessageHeaderBuilder) WithSource(v MessageHeaderSource) *MessageHeaderBuilder {
 	b.resource.Source = v
+	b.fieldsSet["source"] = true
 	return b
 }
 
 // Build returns the constructed MessageHeader. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *MessageHeaderBuilder) Build() (*MessageHeader, error) {
+	var missing []string
+	if !b.fieldsSet["source"] {
+		missing = append(missing, "source")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("MessageHeader: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -216,14 +287,20 @@ func (b *MessageHeaderBuilder) Build() (*MessageHeader, error) {
 type MessageHeaderDestination struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Endpoint Indicates where the message should be routed to.
 	Endpoint *dt.URL `json:"endpoint,omitempty"`
+	// EndpointElement contains element extensions for endpoint.
+	EndpointElement *dt.Element `json:"_endpoint,omitempty"`
 	// Name Human-readable name for the target system.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Receiver Allows data conveyed by a message to be addressed to a particular person or department when routing to a specific application isn't sufficient.
 	Receiver *dt.Reference `json:"receiver,omitempty"`
 	// Target Identifies the target end system in situations where the initial message transmission is to an intermediary system.
@@ -234,14 +311,20 @@ type MessageHeaderDestination struct {
 type MessageHeaderResponse struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Identifier The MessageHeader.id of the message to which this message is a response.
 	Identifier *dt.ID `json:"identifier,omitempty"`
+	// IdentifierElement contains element extensions for identifier.
+	IdentifierElement *dt.Element `json:"_identifier,omitempty"`
 	// Code Code that identifies the type of response to the message - whether it was successful or not, and whether it should be resent or not.
 	Code *MessageHeaderResponseCode `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Details Full details of any issues found in the message.
 	Details *dt.Reference `json:"details,omitempty"`
 }
@@ -250,6 +333,8 @@ type MessageHeaderResponse struct {
 type MessageHeaderSource struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -258,10 +343,18 @@ type MessageHeaderSource struct {
 	Contact *dt.ContactPoint `json:"contact,omitempty"`
 	// Endpoint Identifies the routing target to send acknowledgements to.
 	Endpoint *dt.URL `json:"endpoint,omitempty"`
+	// EndpointElement contains element extensions for endpoint.
+	EndpointElement *dt.Element `json:"_endpoint,omitempty"`
 	// Name Human-readable name for the source system.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Software May include configuration or other information useful in debugging.
 	Software *string `json:"software,omitempty"`
+	// SoftwareElement contains element extensions for software.
+	SoftwareElement *dt.Element `json:"_software,omitempty"`
 	// Version Can convey versions of multiple systems in situations where a message passes through multiple hands.
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
 }

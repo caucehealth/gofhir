@@ -18,12 +18,18 @@ type DeviceRequest struct {
 	ResourceType string `json:"resourceType"` // Always "DeviceRequest"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,8 +42,12 @@ type DeviceRequest struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the request.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// AuthoredOn When the request transitioned to being actionable.
 	AuthoredOn *dt.DateTime `json:"authoredOn,omitempty"`
+	// AuthoredOnElement contains element extensions for authoredOn.
+	AuthoredOnElement *dt.Element `json:"_authoredOn,omitempty"`
 	// BasedOn Plan/proposal/order fulfilled by this request.
 	BasedOn []dt.Reference `json:"basedOn,omitempty"`
 	// CodeCodeableConcept The details of the device to be used.
@@ -50,12 +60,18 @@ type DeviceRequest struct {
 	GroupIdentifier *dt.Identifier `json:"groupIdentifier,omitempty"`
 	// InstantiatesCanonical The URL pointing to a FHIR-defined protocol, guideline, orderset or other definition that is adhered to in whole or in part by this DeviceRequest.
 	InstantiatesCanonical []dt.Canonical `json:"instantiatesCanonical,omitempty"`
+	// InstantiatesCanonicalElement contains element extensions for each instantiatesCanonical.
+	InstantiatesCanonicalElement []dt.Element `json:"_instantiatesCanonical,omitempty"`
 	// InstantiatesUri The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this DeviceRequest.
 	InstantiatesUri []dt.URI `json:"instantiatesUri,omitempty"`
+	// InstantiatesUriElement contains element extensions for each instantiatesUri.
+	InstantiatesUriElement []dt.Element `json:"_instantiatesUri,omitempty"`
 	// Insurance Insurance plans, coverage extensions, pre-authorizations and/or pre-determinations that may be required for delivering the requested service.
 	Insurance []dt.Reference `json:"insurance,omitempty"`
 	// Intent Whether the request is a proposal, plan, an original order or a reflex order.
 	Intent *dt.Code `json:"intent,omitempty"`
+	// IntentElement contains element extensions for intent.
+	IntentElement *dt.Element `json:"_intent,omitempty"`
 	// Note Details about this request that were not represented at all or sufficiently in one of the attributes provided in a class. These may include for example a comment, an instruction, or a note associat...
 	Note []dt.Annotation `json:"note,omitempty"`
 	// Occurrence The timing schedule for the use of the device. The Schedule data type allows many different expressions, for example. "Every 8 hours"; "Three times a day"; "1/2 an hour before breakfast for 10 days...
@@ -70,6 +86,8 @@ type DeviceRequest struct {
 	PriorRequest []dt.Reference `json:"priorRequest,omitempty"`
 	// Priority Indicates how quickly the {{title}} should be addressed with respect to other requests.
 	Priority *dt.Code `json:"priority,omitempty"`
+	// PriorityElement contains element extensions for priority.
+	PriorityElement *dt.Element `json:"_priority,omitempty"`
 	// ReasonCode Reason or justification for the use of this device.
 	ReasonCode []dt.CodeableConcept `json:"reasonCode,omitempty"`
 	// ReasonReference Reason or justification for the use of this device.
@@ -82,6 +100,8 @@ type DeviceRequest struct {
 	Subject dt.Reference `json:"subject"`
 	// SupportingInfo Additional clinical information about the patient that may influence the request fulfilment.  For example, this may include where on the subject's body the device will be used (i.e. the target site).
 	SupportingInfo []dt.Reference `json:"supportingInfo,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for DeviceRequest.
@@ -92,7 +112,6 @@ func (r DeviceRequest) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -109,6 +128,9 @@ func (r DeviceRequest) MarshalJSON() ([]byte, error) {
 		for k, v := range vm {
 			m[k] = v
 		}
+	}
+	for k, v := range r.Extra {
+		m[k] = v
 	}
 	return json.Marshal(m)
 }
@@ -129,142 +151,180 @@ func (r *DeviceRequest) UnmarshalJSON(data []byte) error {
 	if occurrenceVal.DateTime != nil || occurrenceVal.Period != nil || occurrenceVal.Timing != nil {
 		r.Occurrence = &occurrenceVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_authoredOn", "_basedOn", "_codeCodeableConcept", "_codeReference", "_contained", "_encounter", "_extension", "_groupIdentifier", "_id", "_identifier", "_implicitRules", "_instantiatesCanonical", "_instantiatesUri", "_insurance", "_intent", "_language", "_meta", "_modifierExtension", "_note", "_occurrenceDateTime", "_occurrencePeriod", "_occurrenceTiming", "_parameter", "_performer", "_performerType", "_priorRequest", "_priority", "_reasonCode", "_reasonReference", "_relevantHistory", "_requester", "_status", "_subject", "_supportingInfo", "_text", "authoredOn", "basedOn", "codeCodeableConcept", "codeReference", "contained", "encounter", "extension", "groupIdentifier", "id", "identifier", "implicitRules", "instantiatesCanonical", "instantiatesUri", "insurance", "intent", "language", "meta", "modifierExtension", "note", "occurrenceDateTime", "occurrencePeriod", "occurrenceTiming", "parameter", "performer", "performerType", "priorRequest", "priority", "reasonCode", "reasonReference", "relevantHistory", "requester", "resourceType", "status", "subject", "supportingInfo", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // DeviceRequestBuilder provides a fluent API for constructing DeviceRequest resources.
 type DeviceRequestBuilder struct {
-	resource DeviceRequest
+	resource  DeviceRequest
+	fieldsSet map[string]bool
 }
 
 // NewDeviceRequest creates a new DeviceRequestBuilder for building a DeviceRequest resource.
 func NewDeviceRequest() *DeviceRequestBuilder {
-	return &DeviceRequestBuilder{resource: DeviceRequest{ResourceType: "DeviceRequest"}}
+	return &DeviceRequestBuilder{resource: DeviceRequest{ResourceType: "DeviceRequest"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *DeviceRequestBuilder) WithId(v dt.ID) *DeviceRequestBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *DeviceRequestBuilder) WithMeta(v dt.Meta) *DeviceRequestBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *DeviceRequestBuilder) WithImplicitRules(v dt.URI) *DeviceRequestBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *DeviceRequestBuilder) WithLanguage(v dt.Code) *DeviceRequestBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *DeviceRequestBuilder) WithText(v dt.Narrative) *DeviceRequestBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *DeviceRequestBuilder) WithContained(v json.RawMessage) *DeviceRequestBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *DeviceRequestBuilder) WithExtension(v dt.Extension) *DeviceRequestBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *DeviceRequestBuilder) WithModifierExtension(v dt.Extension) *DeviceRequestBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *DeviceRequestBuilder) WithIdentifier(v dt.Identifier) *DeviceRequestBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *DeviceRequestBuilder) WithStatus(v dt.Code) *DeviceRequestBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAuthoredOn sets the authoredOn field.
 func (b *DeviceRequestBuilder) WithAuthoredOn(v dt.DateTime) *DeviceRequestBuilder {
 	b.resource.AuthoredOn = &v
+	b.fieldsSet["authoredOn"] = true
 	return b
 }
 
 // WithBasedOn adds an item to the basedOn field.
 func (b *DeviceRequestBuilder) WithBasedOn(v dt.Reference) *DeviceRequestBuilder {
 	b.resource.BasedOn = append(b.resource.BasedOn, v)
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithCodeCodeableConcept sets the codeCodeableConcept field.
 func (b *DeviceRequestBuilder) WithCodeCodeableConcept(v dt.CodeableConcept) *DeviceRequestBuilder {
 	b.resource.CodeCodeableConcept = &v
+	b.fieldsSet["codeCodeableConcept"] = true
 	return b
 }
 
 // WithCodeReference sets the codeReference field.
 func (b *DeviceRequestBuilder) WithCodeReference(v dt.Reference) *DeviceRequestBuilder {
 	b.resource.CodeReference = &v
+	b.fieldsSet["codeReference"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *DeviceRequestBuilder) WithEncounter(v dt.Reference) *DeviceRequestBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithGroupIdentifier sets the groupIdentifier field.
 func (b *DeviceRequestBuilder) WithGroupIdentifier(v dt.Identifier) *DeviceRequestBuilder {
 	b.resource.GroupIdentifier = &v
+	b.fieldsSet["groupIdentifier"] = true
 	return b
 }
 
 // WithInstantiatesCanonical adds an item to the instantiatesCanonical field.
 func (b *DeviceRequestBuilder) WithInstantiatesCanonical(v dt.Canonical) *DeviceRequestBuilder {
 	b.resource.InstantiatesCanonical = append(b.resource.InstantiatesCanonical, v)
+	b.fieldsSet["instantiatesCanonical"] = true
 	return b
 }
 
 // WithInstantiatesUri adds an item to the instantiatesUri field.
 func (b *DeviceRequestBuilder) WithInstantiatesUri(v dt.URI) *DeviceRequestBuilder {
 	b.resource.InstantiatesUri = append(b.resource.InstantiatesUri, v)
+	b.fieldsSet["instantiatesUri"] = true
 	return b
 }
 
 // WithInsurance adds an item to the insurance field.
 func (b *DeviceRequestBuilder) WithInsurance(v dt.Reference) *DeviceRequestBuilder {
 	b.resource.Insurance = append(b.resource.Insurance, v)
+	b.fieldsSet["insurance"] = true
 	return b
 }
 
 // WithIntent sets the intent field.
 func (b *DeviceRequestBuilder) WithIntent(v dt.Code) *DeviceRequestBuilder {
 	b.resource.Intent = &v
+	b.fieldsSet["intent"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *DeviceRequestBuilder) WithNote(v dt.Annotation) *DeviceRequestBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
@@ -274,6 +334,7 @@ func (b *DeviceRequestBuilder) WithOccurrenceDateTime(v string) *DeviceRequestBu
 		b.resource.Occurrence = &DeviceRequestOccurrence{}
 	}
 	b.resource.Occurrence.DateTime = &v
+	b.fieldsSet["occurrence"] = true
 	return b
 }
 
@@ -283,6 +344,7 @@ func (b *DeviceRequestBuilder) WithOccurrencePeriod(v dt.Period) *DeviceRequestB
 		b.resource.Occurrence = &DeviceRequestOccurrence{}
 	}
 	b.resource.Occurrence.Period = &v
+	b.fieldsSet["occurrence"] = true
 	return b
 }
 
@@ -292,78 +354,97 @@ func (b *DeviceRequestBuilder) WithOccurrenceTiming(v dt.Timing) *DeviceRequestB
 		b.resource.Occurrence = &DeviceRequestOccurrence{}
 	}
 	b.resource.Occurrence.Timing = &v
+	b.fieldsSet["occurrence"] = true
 	return b
 }
 
 // WithParameter adds an item to the parameter field.
 func (b *DeviceRequestBuilder) WithParameter(v DeviceRequestParameter) *DeviceRequestBuilder {
 	b.resource.Parameter = append(b.resource.Parameter, v)
+	b.fieldsSet["parameter"] = true
 	return b
 }
 
 // WithPerformer sets the performer field.
 func (b *DeviceRequestBuilder) WithPerformer(v dt.Reference) *DeviceRequestBuilder {
 	b.resource.Performer = &v
+	b.fieldsSet["performer"] = true
 	return b
 }
 
 // WithPerformerType sets the performerType field.
 func (b *DeviceRequestBuilder) WithPerformerType(v dt.CodeableConcept) *DeviceRequestBuilder {
 	b.resource.PerformerType = &v
+	b.fieldsSet["performerType"] = true
 	return b
 }
 
 // WithPriorRequest adds an item to the priorRequest field.
 func (b *DeviceRequestBuilder) WithPriorRequest(v dt.Reference) *DeviceRequestBuilder {
 	b.resource.PriorRequest = append(b.resource.PriorRequest, v)
+	b.fieldsSet["priorRequest"] = true
 	return b
 }
 
 // WithPriority sets the priority field.
 func (b *DeviceRequestBuilder) WithPriority(v dt.Code) *DeviceRequestBuilder {
 	b.resource.Priority = &v
+	b.fieldsSet["priority"] = true
 	return b
 }
 
 // WithReasonCode adds an item to the reasonCode field.
 func (b *DeviceRequestBuilder) WithReasonCode(v dt.CodeableConcept) *DeviceRequestBuilder {
 	b.resource.ReasonCode = append(b.resource.ReasonCode, v)
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithReasonReference adds an item to the reasonReference field.
 func (b *DeviceRequestBuilder) WithReasonReference(v dt.Reference) *DeviceRequestBuilder {
 	b.resource.ReasonReference = append(b.resource.ReasonReference, v)
+	b.fieldsSet["reasonReference"] = true
 	return b
 }
 
 // WithRelevantHistory adds an item to the relevantHistory field.
 func (b *DeviceRequestBuilder) WithRelevantHistory(v dt.Reference) *DeviceRequestBuilder {
 	b.resource.RelevantHistory = append(b.resource.RelevantHistory, v)
+	b.fieldsSet["relevantHistory"] = true
 	return b
 }
 
 // WithRequester sets the requester field.
 func (b *DeviceRequestBuilder) WithRequester(v dt.Reference) *DeviceRequestBuilder {
 	b.resource.Requester = &v
+	b.fieldsSet["requester"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *DeviceRequestBuilder) WithSubject(v dt.Reference) *DeviceRequestBuilder {
 	b.resource.Subject = v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithSupportingInfo adds an item to the supportingInfo field.
 func (b *DeviceRequestBuilder) WithSupportingInfo(v dt.Reference) *DeviceRequestBuilder {
 	b.resource.SupportingInfo = append(b.resource.SupportingInfo, v)
+	b.fieldsSet["supportingInfo"] = true
 	return b
 }
 
 // Build returns the constructed DeviceRequest. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *DeviceRequestBuilder) Build() (*DeviceRequest, error) {
+	var missing []string
+	if !b.fieldsSet["subject"] {
+		missing = append(missing, "subject")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("DeviceRequest: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -372,6 +453,8 @@ func (b *DeviceRequestBuilder) Build() (*DeviceRequest, error) {
 type DeviceRequestParameter struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

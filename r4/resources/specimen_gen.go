@@ -17,12 +17,18 @@ type Specimen struct {
 	ResourceType string `json:"resourceType"` // Always "Specimen"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,6 +41,8 @@ type Specimen struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The availability of the specimen.
 	Status *SpecimenStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// AccessionIdentifier The identifier assigned by the lab when accessioning specimen(s). This is not necessarily the same as the specimen identifier, depending on local lab procedures.
 	AccessionIdentifier *dt.Identifier `json:"accessionIdentifier,omitempty"`
 	// Collection Details concerning the specimen collection.
@@ -51,19 +59,37 @@ type Specimen struct {
 	Processing []SpecimenProcessing `json:"processing,omitempty"`
 	// ReceivedTime Time when specimen was received for processing or testing.
 	ReceivedTime *dt.DateTime `json:"receivedTime,omitempty"`
+	// ReceivedTimeElement contains element extensions for receivedTime.
+	ReceivedTimeElement *dt.Element `json:"_receivedTime,omitempty"`
 	// Request Details concerning a service request that required a specimen to be collected.
 	Request []dt.Reference `json:"request,omitempty"`
 	// Subject Where the specimen came from. This may be from patient(s), from a location (e.g., the source of an environmental sample), or a sampling of a substance or a device.
 	Subject *dt.Reference `json:"subject,omitempty"`
 	// Type The kind of material that forms the specimen.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Specimen.
 func (r Specimen) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Specimen"
 	type Alias Specimen
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Specimen.
@@ -74,142 +100,180 @@ func (r *Specimen) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Specimen(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_accessionIdentifier", "_collection", "_condition", "_contained", "_container", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_modifierExtension", "_note", "_parent", "_processing", "_receivedTime", "_request", "_status", "_subject", "_text", "_type", "accessionIdentifier", "collection", "condition", "contained", "container", "extension", "id", "identifier", "implicitRules", "language", "meta", "modifierExtension", "note", "parent", "processing", "receivedTime", "request", "resourceType", "status", "subject", "text", "type":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // SpecimenBuilder provides a fluent API for constructing Specimen resources.
 type SpecimenBuilder struct {
-	resource Specimen
+	resource  Specimen
+	fieldsSet map[string]bool
 }
 
 // NewSpecimen creates a new SpecimenBuilder for building a Specimen resource.
 func NewSpecimen() *SpecimenBuilder {
-	return &SpecimenBuilder{resource: Specimen{ResourceType: "Specimen"}}
+	return &SpecimenBuilder{resource: Specimen{ResourceType: "Specimen"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *SpecimenBuilder) WithId(v dt.ID) *SpecimenBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *SpecimenBuilder) WithMeta(v dt.Meta) *SpecimenBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *SpecimenBuilder) WithImplicitRules(v dt.URI) *SpecimenBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *SpecimenBuilder) WithLanguage(v dt.Code) *SpecimenBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *SpecimenBuilder) WithText(v dt.Narrative) *SpecimenBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *SpecimenBuilder) WithContained(v json.RawMessage) *SpecimenBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *SpecimenBuilder) WithExtension(v dt.Extension) *SpecimenBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *SpecimenBuilder) WithModifierExtension(v dt.Extension) *SpecimenBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *SpecimenBuilder) WithIdentifier(v dt.Identifier) *SpecimenBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *SpecimenBuilder) WithStatus(v SpecimenStatus) *SpecimenBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAccessionIdentifier sets the accessionIdentifier field.
 func (b *SpecimenBuilder) WithAccessionIdentifier(v dt.Identifier) *SpecimenBuilder {
 	b.resource.AccessionIdentifier = &v
+	b.fieldsSet["accessionIdentifier"] = true
 	return b
 }
 
 // WithCollection sets the collection field.
 func (b *SpecimenBuilder) WithCollection(v SpecimenCollection) *SpecimenBuilder {
 	b.resource.Collection = &v
+	b.fieldsSet["collection"] = true
 	return b
 }
 
 // WithCondition adds an item to the condition field.
 func (b *SpecimenBuilder) WithCondition(v dt.CodeableConcept) *SpecimenBuilder {
 	b.resource.Condition = append(b.resource.Condition, v)
+	b.fieldsSet["condition"] = true
 	return b
 }
 
 // WithContainer adds an item to the container field.
 func (b *SpecimenBuilder) WithContainer(v SpecimenContainer) *SpecimenBuilder {
 	b.resource.Container = append(b.resource.Container, v)
+	b.fieldsSet["container"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *SpecimenBuilder) WithNote(v dt.Annotation) *SpecimenBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithParent adds an item to the parent field.
 func (b *SpecimenBuilder) WithParent(v dt.Reference) *SpecimenBuilder {
 	b.resource.Parent = append(b.resource.Parent, v)
+	b.fieldsSet["parent"] = true
 	return b
 }
 
 // WithProcessing adds an item to the processing field.
 func (b *SpecimenBuilder) WithProcessing(v SpecimenProcessing) *SpecimenBuilder {
 	b.resource.Processing = append(b.resource.Processing, v)
+	b.fieldsSet["processing"] = true
 	return b
 }
 
 // WithReceivedTime sets the receivedTime field.
 func (b *SpecimenBuilder) WithReceivedTime(v dt.DateTime) *SpecimenBuilder {
 	b.resource.ReceivedTime = &v
+	b.fieldsSet["receivedTime"] = true
 	return b
 }
 
 // WithRequest adds an item to the request field.
 func (b *SpecimenBuilder) WithRequest(v dt.Reference) *SpecimenBuilder {
 	b.resource.Request = append(b.resource.Request, v)
+	b.fieldsSet["request"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *SpecimenBuilder) WithSubject(v dt.Reference) *SpecimenBuilder {
 	b.resource.Subject = &v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *SpecimenBuilder) WithType(v dt.CodeableConcept) *SpecimenBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
@@ -224,6 +288,8 @@ func (b *SpecimenBuilder) Build() (*Specimen, error) {
 type SpecimenCollection struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -232,6 +298,8 @@ type SpecimenCollection struct {
 	BodySite *dt.CodeableConcept `json:"bodySite,omitempty"`
 	// CollectedDateTime Time when specimen was collected from subject - the physiologically relevant time.
 	CollectedDateTime *string `json:"collectedDateTime,omitempty"`
+	// CollectedDateTimeElement contains element extensions for collectedDateTime.
+	CollectedDateTimeElement *dt.Element `json:"_collectedDateTime,omitempty"`
 	// CollectedPeriod Time when specimen was collected from subject - the physiologically relevant time.
 	CollectedPeriod *dt.Period `json:"collectedPeriod,omitempty"`
 	// Collector Person who collected the specimen.
@@ -252,6 +320,8 @@ type SpecimenCollection struct {
 type SpecimenContainer struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -266,6 +336,8 @@ type SpecimenContainer struct {
 	Capacity *dt.Quantity `json:"capacity,omitempty"`
 	// Description Textual description of the container.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// SpecimenQuantity The quantity of specimen in the container; may be volume, dimensions, or other appropriate measurements, depending on the specimen type.
 	SpecimenQuantity *dt.Quantity `json:"specimenQuantity,omitempty"`
 	// Type The type of container associated with the specimen (e.g. slide, aliquot, etc.).
@@ -276,6 +348,8 @@ type SpecimenContainer struct {
 type SpecimenProcessing struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -284,10 +358,14 @@ type SpecimenProcessing struct {
 	Additive []dt.Reference `json:"additive,omitempty"`
 	// Description Textual description of procedure.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Procedure A coded value specifying the procedure used to process the specimen.
 	Procedure *dt.CodeableConcept `json:"procedure,omitempty"`
 	// TimeDateTime A record of the time or period when the specimen processing occurred.  For example the time of sample fixation or the period of time the sample was in formalin.
 	TimeDateTime *string `json:"timeDateTime,omitempty"`
+	// TimeDateTimeElement contains element extensions for timeDateTime.
+	TimeDateTimeElement *dt.Element `json:"_timeDateTime,omitempty"`
 	// TimePeriod A record of the time or period when the specimen processing occurred.  For example the time of sample fixation or the period of time the sample was in formalin.
 	TimePeriod *dt.Period `json:"timePeriod,omitempty"`
 }

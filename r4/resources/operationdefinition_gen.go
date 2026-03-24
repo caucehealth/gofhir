@@ -17,12 +17,18 @@ type OperationDefinition struct {
 	ResourceType string `json:"resourceType"` // Always "OperationDefinition"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -33,63 +39,121 @@ type OperationDefinition struct {
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The status of this operation definition. Enables tracking the life-cycle of the content.
 	Status *OperationDefinitionStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// AffectsState Whether the operation affects state. Side effects such as producing audit trail entries do not count as 'affecting  state'.
 	AffectsState *bool `json:"affectsState,omitempty"`
+	// AffectsStateElement contains element extensions for affectsState.
+	AffectsStateElement *dt.Element `json:"_affectsState,omitempty"`
 	// Base Indicates that this operation definition is a constraining profile on the base.
 	Base *dt.Canonical `json:"base,omitempty"`
+	// BaseElement contains element extensions for base.
+	BaseElement *dt.Element `json:"_base,omitempty"`
 	// Code The name used to invoke the operation.
 	Code *dt.Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Comment Additional information about how to use this operation or named query.
 	Comment *dt.Markdown `json:"comment,omitempty"`
+	// CommentElement contains element extensions for comment.
+	CommentElement *dt.Element `json:"_comment,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Date The date  (and optionally time) when the operation definition was published. The date must change when the business version changes and it must change if the status code changes. In addition, it sh...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description A free text natural language description of the operation definition from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Experimental A Boolean value to indicate that this operation definition is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// InputProfile Additional validation information for the in parameters - a single profile that covers all the parameters. The profile is a constraint on the parameters resource as a whole.
 	InputProfile *dt.Canonical `json:"inputProfile,omitempty"`
+	// InputProfileElement contains element extensions for inputProfile.
+	InputProfileElement *dt.Element `json:"_inputProfile,omitempty"`
 	// Instance Indicates whether this operation can be invoked on a particular instance of one of the given types.
 	Instance *bool `json:"instance,omitempty"`
+	// InstanceElement contains element extensions for instance.
+	InstanceElement *dt.Element `json:"_instance,omitempty"`
 	// Jurisdiction A legal or geographic region in which the operation definition is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Kind Whether this is an operation or a named query.
 	Kind *OperationDefinitionKind `json:"kind,omitempty"`
+	// KindElement contains element extensions for kind.
+	KindElement *dt.Element `json:"_kind,omitempty"`
 	// Name A natural language name identifying the operation definition. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// OutputProfile Additional validation information for the out parameters - a single profile that covers all the parameters. The profile is a constraint on the parameters resource.
 	OutputProfile *dt.Canonical `json:"outputProfile,omitempty"`
+	// OutputProfileElement contains element extensions for outputProfile.
+	OutputProfileElement *dt.Element `json:"_outputProfile,omitempty"`
 	// Overload Defines an appropriate combination of parameters to use when invoking this operation, to help code generators when generating overloaded parameter sets for this operation.
 	Overload []OperationDefinitionOverload `json:"overload,omitempty"`
 	// Parameter The parameters for the operation/query.
 	Parameter []OperationDefinitionParameter `json:"parameter,omitempty"`
 	// Publisher The name of the organization or individual that published the operation definition.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Purpose Explanation of why this operation definition is needed and why it has been designed as it has.
 	Purpose *dt.Markdown `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for purpose.
+	PurposeElement *dt.Element `json:"_purpose,omitempty"`
 	// Resource The types on which this operation can be executed.
 	Resource []dt.Code `json:"resource,omitempty"`
+	// ResourceElement contains element extensions for each resource.
+	ResourceElement []dt.Element `json:"_resource,omitempty"`
 	// System Indicates whether this operation or named query can be invoked at the system level (e.g. without needing to choose a resource type for the context).
 	System *bool `json:"system,omitempty"`
+	// SystemElement contains element extensions for system.
+	SystemElement *dt.Element `json:"_system,omitempty"`
 	// Title A short, descriptive, user-friendly title for the operation definition.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Type Indicates whether this operation or named query can be invoked at the resource type level for any given resource type level (e.g. without needing to choose a specific resource id for the context).
 	Type *bool `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 	// Url An absolute URI that is used to identify this operation definition when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globa...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the operation definition when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the opera...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for OperationDefinition.
 func (r OperationDefinition) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "OperationDefinition"
 	type Alias OperationDefinition
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for OperationDefinition.
@@ -100,220 +164,271 @@ func (r *OperationDefinition) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = OperationDefinition(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_affectsState", "_base", "_code", "_comment", "_contact", "_contained", "_date", "_description", "_experimental", "_extension", "_id", "_implicitRules", "_inputProfile", "_instance", "_jurisdiction", "_kind", "_language", "_meta", "_modifierExtension", "_name", "_outputProfile", "_overload", "_parameter", "_publisher", "_purpose", "_resource", "_status", "_system", "_text", "_title", "_type", "_url", "_useContext", "_version", "affectsState", "base", "code", "comment", "contact", "contained", "date", "description", "experimental", "extension", "id", "implicitRules", "inputProfile", "instance", "jurisdiction", "kind", "language", "meta", "modifierExtension", "name", "outputProfile", "overload", "parameter", "publisher", "purpose", "resource", "resourceType", "status", "system", "text", "title", "type", "url", "useContext", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // OperationDefinitionBuilder provides a fluent API for constructing OperationDefinition resources.
 type OperationDefinitionBuilder struct {
-	resource OperationDefinition
+	resource  OperationDefinition
+	fieldsSet map[string]bool
 }
 
 // NewOperationDefinition creates a new OperationDefinitionBuilder for building a OperationDefinition resource.
 func NewOperationDefinition() *OperationDefinitionBuilder {
-	return &OperationDefinitionBuilder{resource: OperationDefinition{ResourceType: "OperationDefinition"}}
+	return &OperationDefinitionBuilder{resource: OperationDefinition{ResourceType: "OperationDefinition"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *OperationDefinitionBuilder) WithId(v dt.ID) *OperationDefinitionBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *OperationDefinitionBuilder) WithMeta(v dt.Meta) *OperationDefinitionBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *OperationDefinitionBuilder) WithImplicitRules(v dt.URI) *OperationDefinitionBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *OperationDefinitionBuilder) WithLanguage(v dt.Code) *OperationDefinitionBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *OperationDefinitionBuilder) WithText(v dt.Narrative) *OperationDefinitionBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *OperationDefinitionBuilder) WithContained(v json.RawMessage) *OperationDefinitionBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *OperationDefinitionBuilder) WithExtension(v dt.Extension) *OperationDefinitionBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *OperationDefinitionBuilder) WithModifierExtension(v dt.Extension) *OperationDefinitionBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *OperationDefinitionBuilder) WithStatus(v OperationDefinitionStatus) *OperationDefinitionBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAffectsState sets the affectsState field.
 func (b *OperationDefinitionBuilder) WithAffectsState(v bool) *OperationDefinitionBuilder {
 	b.resource.AffectsState = &v
+	b.fieldsSet["affectsState"] = true
 	return b
 }
 
 // WithBase sets the base field.
 func (b *OperationDefinitionBuilder) WithBase(v dt.Canonical) *OperationDefinitionBuilder {
 	b.resource.Base = &v
+	b.fieldsSet["base"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *OperationDefinitionBuilder) WithCode(v dt.Code) *OperationDefinitionBuilder {
 	b.resource.Code = &v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithComment sets the comment field.
 func (b *OperationDefinitionBuilder) WithComment(v dt.Markdown) *OperationDefinitionBuilder {
 	b.resource.Comment = &v
+	b.fieldsSet["comment"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *OperationDefinitionBuilder) WithContact(v dt.ContactDetail) *OperationDefinitionBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *OperationDefinitionBuilder) WithDate(v dt.DateTime) *OperationDefinitionBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *OperationDefinitionBuilder) WithDescription(v dt.Markdown) *OperationDefinitionBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *OperationDefinitionBuilder) WithExperimental(v bool) *OperationDefinitionBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithInputProfile sets the inputProfile field.
 func (b *OperationDefinitionBuilder) WithInputProfile(v dt.Canonical) *OperationDefinitionBuilder {
 	b.resource.InputProfile = &v
+	b.fieldsSet["inputProfile"] = true
 	return b
 }
 
 // WithInstance sets the instance field.
 func (b *OperationDefinitionBuilder) WithInstance(v bool) *OperationDefinitionBuilder {
 	b.resource.Instance = &v
+	b.fieldsSet["instance"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *OperationDefinitionBuilder) WithJurisdiction(v dt.CodeableConcept) *OperationDefinitionBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithKind sets the kind field.
 func (b *OperationDefinitionBuilder) WithKind(v OperationDefinitionKind) *OperationDefinitionBuilder {
 	b.resource.Kind = &v
+	b.fieldsSet["kind"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *OperationDefinitionBuilder) WithName(v string) *OperationDefinitionBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithOutputProfile sets the outputProfile field.
 func (b *OperationDefinitionBuilder) WithOutputProfile(v dt.Canonical) *OperationDefinitionBuilder {
 	b.resource.OutputProfile = &v
+	b.fieldsSet["outputProfile"] = true
 	return b
 }
 
 // WithOverload adds an item to the overload field.
 func (b *OperationDefinitionBuilder) WithOverload(v OperationDefinitionOverload) *OperationDefinitionBuilder {
 	b.resource.Overload = append(b.resource.Overload, v)
+	b.fieldsSet["overload"] = true
 	return b
 }
 
 // WithParameter adds an item to the parameter field.
 func (b *OperationDefinitionBuilder) WithParameter(v OperationDefinitionParameter) *OperationDefinitionBuilder {
 	b.resource.Parameter = append(b.resource.Parameter, v)
+	b.fieldsSet["parameter"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *OperationDefinitionBuilder) WithPublisher(v string) *OperationDefinitionBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithPurpose sets the purpose field.
 func (b *OperationDefinitionBuilder) WithPurpose(v dt.Markdown) *OperationDefinitionBuilder {
 	b.resource.Purpose = &v
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
 // WithResource adds an item to the resource field.
 func (b *OperationDefinitionBuilder) WithResource(v dt.Code) *OperationDefinitionBuilder {
 	b.resource.Resource = append(b.resource.Resource, v)
+	b.fieldsSet["resource"] = true
 	return b
 }
 
 // WithSystem sets the system field.
 func (b *OperationDefinitionBuilder) WithSystem(v bool) *OperationDefinitionBuilder {
 	b.resource.System = &v
+	b.fieldsSet["system"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *OperationDefinitionBuilder) WithTitle(v string) *OperationDefinitionBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *OperationDefinitionBuilder) WithType(v bool) *OperationDefinitionBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *OperationDefinitionBuilder) WithUrl(v dt.URI) *OperationDefinitionBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *OperationDefinitionBuilder) WithUseContext(v dt.UsageContext) *OperationDefinitionBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *OperationDefinitionBuilder) WithVersion(v string) *OperationDefinitionBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -328,34 +443,48 @@ func (b *OperationDefinitionBuilder) Build() (*OperationDefinition, error) {
 type OperationDefinitionBinding struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Strength Indicates the degree of conformance expectations associated with this binding - that is, the degree to which the provided value set must be adhered to in the instances.
 	Strength *OperationDefinitionBindingStrength `json:"strength,omitempty"`
+	// StrengthElement contains element extensions for strength.
+	StrengthElement *dt.Element `json:"_strength,omitempty"`
 	// ValueSet Points to the value set or external definition (e.g. implicit value set) that identifies the set of codes to be used.
 	ValueSet dt.Canonical `json:"valueSet"`
+	// ValueSetElement contains element extensions for valueSet.
+	ValueSetElement *dt.Element `json:"_valueSet,omitempty"`
 }
 
 // OperationDefinitionOverload A formal computable definition of an operation (on the RESTful interface) or a named query (using the search interaction).
 type OperationDefinitionOverload struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Comment Comments to go on overload.
 	Comment *string `json:"comment,omitempty"`
+	// CommentElement contains element extensions for comment.
+	CommentElement *dt.Element `json:"_comment,omitempty"`
 	// ParameterName Name of parameter to include in overload.
 	ParameterName []string `json:"parameterName,omitempty"`
+	// ParameterNameElement contains element extensions for each parameterName.
+	ParameterNameElement []dt.Element `json:"_parameterName,omitempty"`
 }
 
 // OperationDefinitionParameter A formal computable definition of an operation (on the RESTful interface) or a named query (using the search interaction).
 type OperationDefinitionParameter struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -364,36 +493,58 @@ type OperationDefinitionParameter struct {
 	Binding *OperationDefinitionBinding `json:"binding,omitempty"`
 	// Documentation Describes the meaning or use of this parameter.
 	Documentation *string `json:"documentation,omitempty"`
+	// DocumentationElement contains element extensions for documentation.
+	DocumentationElement *dt.Element `json:"_documentation,omitempty"`
 	// Max The maximum number of times this element is permitted to appear in the request or response.
 	Max *string `json:"max,omitempty"`
+	// MaxElement contains element extensions for max.
+	MaxElement *dt.Element `json:"_max,omitempty"`
 	// Min The minimum number of times this parameter SHALL appear in the request or response.
 	Min *int32 `json:"min,omitempty"`
+	// MinElement contains element extensions for min.
+	MinElement *dt.Element `json:"_min,omitempty"`
 	// Name The name of used to identify the parameter.
 	Name *dt.Code `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Part The parts of a nested Parameter.
 	Part []OperationDefinitionParameter `json:"part,omitempty"`
 	// ReferencedFrom Identifies other resource parameters within the operation invocation that are expected to resolve to this resource.
 	ReferencedFrom []OperationDefinitionReferencedFrom `json:"referencedFrom,omitempty"`
 	// SearchType How the parameter is understood as a search parameter. This is only used if the parameter type is 'string'.
 	SearchType *OperationDefinitionParameterSearchType `json:"searchType,omitempty"`
+	// SearchTypeElement contains element extensions for searchType.
+	SearchTypeElement *dt.Element `json:"_searchType,omitempty"`
 	// TargetProfile Used when the type is "Reference" or "canonical", and identifies a profile structure or implementation Guide that applies to the target of the reference this parameter refers to. If any profiles ar...
 	TargetProfile []dt.Canonical `json:"targetProfile,omitempty"`
+	// TargetProfileElement contains element extensions for each targetProfile.
+	TargetProfileElement []dt.Element `json:"_targetProfile,omitempty"`
 	// Type The type for this parameter.
 	Type *dt.Code `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 	// Use Whether this is an input or an output parameter.
 	Use *OperationDefinitionParameterUse `json:"use,omitempty"`
+	// UseElement contains element extensions for use.
+	UseElement *dt.Element `json:"_use,omitempty"`
 }
 
 // OperationDefinitionReferencedFrom A formal computable definition of an operation (on the RESTful interface) or a named query (using the search interaction).
 type OperationDefinitionReferencedFrom struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Source The name of the parameter or dot-separated path of parameter names pointing to the resource parameter that is expected to contain a reference to this resource.
 	Source *string `json:"source,omitempty"`
+	// SourceElement contains element extensions for source.
+	SourceElement *dt.Element `json:"_source,omitempty"`
 	// SourceId The id of the element in the referencing resource that is expected to resolve to this resource.
 	SourceId *string `json:"sourceId,omitempty"`
+	// SourceIdElement contains element extensions for sourceId.
+	SourceIdElement *dt.Element `json:"_sourceId,omitempty"`
 }

@@ -18,12 +18,18 @@ type Procedure struct {
 	ResourceType string `json:"resourceType"` // Always "Procedure"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type Procedure struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status A code specifying the state of the procedure. Generally, this will be the in-progress or completed state.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Asserter Individual who is making the procedure statement.
 	Asserter *dt.Reference `json:"asserter,omitempty"`
 	// BasedOn A reference to a resource that contains details of the request for this procedure.
@@ -58,8 +66,12 @@ type Procedure struct {
 	FollowUp []dt.CodeableConcept `json:"followUp,omitempty"`
 	// InstantiatesCanonical The URL pointing to a FHIR-defined protocol, guideline, order set or other definition that is adhered to in whole or in part by this Procedure.
 	InstantiatesCanonical []dt.Canonical `json:"instantiatesCanonical,omitempty"`
+	// InstantiatesCanonicalElement contains element extensions for each instantiatesCanonical.
+	InstantiatesCanonicalElement []dt.Element `json:"_instantiatesCanonical,omitempty"`
 	// InstantiatesUri The URL pointing to an externally maintained protocol, guideline, order set or other definition that is adhered to in whole or in part by this Procedure.
 	InstantiatesUri []dt.URI `json:"instantiatesUri,omitempty"`
+	// InstantiatesUriElement contains element extensions for each instantiatesUri.
+	InstantiatesUriElement []dt.Element `json:"_instantiatesUri,omitempty"`
 	// Location The location where the procedure actually happened.  E.g. a newborn at home, a tracheostomy at a restaurant.
 	Location *dt.Reference `json:"location,omitempty"`
 	// Note Any other notes and comments about the procedure.
@@ -72,12 +84,16 @@ type Procedure struct {
 	PerformedAge *dt.Age `json:"performedAge,omitempty"`
 	// PerformedDateTime Estimated or actual date, date-time, period, or age when the procedure was performed.  Allows a period to support complex procedures that span more than one date, and also allows for the length of ...
 	PerformedDateTime *string `json:"performedDateTime,omitempty"`
+	// PerformedDateTimeElement contains element extensions for performedDateTime.
+	PerformedDateTimeElement *dt.Element `json:"_performedDateTime,omitempty"`
 	// PerformedPeriod Estimated or actual date, date-time, period, or age when the procedure was performed.  Allows a period to support complex procedures that span more than one date, and also allows for the length of ...
 	PerformedPeriod *dt.Period `json:"performedPeriod,omitempty"`
 	// PerformedRange Estimated or actual date, date-time, period, or age when the procedure was performed.  Allows a period to support complex procedures that span more than one date, and also allows for the length of ...
 	PerformedRange *dt.Range `json:"performedRange,omitempty"`
 	// PerformedString Estimated or actual date, date-time, period, or age when the procedure was performed.  Allows a period to support complex procedures that span more than one date, and also allows for the length of ...
 	PerformedString *string `json:"performedString,omitempty"`
+	// PerformedStringElement contains element extensions for performedString.
+	PerformedStringElement *dt.Element `json:"_performedString,omitempty"`
 	// Performer Limited to "real" people rather than equipment.
 	Performer []ProcedurePerformer `json:"performer,omitempty"`
 	// ReasonCode The coded reason why the procedure was performed. This may be a coded entity of some type, or may simply be present as text.
@@ -94,6 +110,8 @@ type Procedure struct {
 	Subject dt.Reference `json:"subject"`
 	// Used Identifies coded items that were used as part of the procedure.
 	Used *ProcedureUsed `json:"-"` // polymorphic
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Procedure.
@@ -104,7 +122,6 @@ func (r Procedure) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -121,6 +138,9 @@ func (r Procedure) MarshalJSON() ([]byte, error) {
 		for k, v := range vm {
 			m[k] = v
 		}
+	}
+	for k, v := range r.Extra {
+		m[k] = v
 	}
 	return json.Marshal(m)
 }
@@ -141,244 +161,299 @@ func (r *Procedure) UnmarshalJSON(data []byte) error {
 	if usedVal.Code != nil || usedVal.Reference != nil {
 		r.Used = &usedVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_asserter", "_basedOn", "_bodySite", "_category", "_code", "_complication", "_complicationDetail", "_contained", "_encounter", "_extension", "_focalDevice", "_followUp", "_id", "_identifier", "_implicitRules", "_instantiatesCanonical", "_instantiatesUri", "_language", "_location", "_meta", "_modifierExtension", "_note", "_outcome", "_partOf", "_performedAge", "_performedDateTime", "_performedPeriod", "_performedRange", "_performedString", "_performer", "_reasonCode", "_reasonReference", "_recorder", "_report", "_status", "_statusReason", "_subject", "_text", "_usedCode", "_usedReference", "asserter", "basedOn", "bodySite", "category", "code", "complication", "complicationDetail", "contained", "encounter", "extension", "focalDevice", "followUp", "id", "identifier", "implicitRules", "instantiatesCanonical", "instantiatesUri", "language", "location", "meta", "modifierExtension", "note", "outcome", "partOf", "performedAge", "performedDateTime", "performedPeriod", "performedRange", "performedString", "performer", "reasonCode", "reasonReference", "recorder", "report", "resourceType", "status", "statusReason", "subject", "text", "usedCode", "usedReference":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ProcedureBuilder provides a fluent API for constructing Procedure resources.
 type ProcedureBuilder struct {
-	resource Procedure
+	resource  Procedure
+	fieldsSet map[string]bool
 }
 
 // NewProcedure creates a new ProcedureBuilder for building a Procedure resource.
 func NewProcedure() *ProcedureBuilder {
-	return &ProcedureBuilder{resource: Procedure{ResourceType: "Procedure"}}
+	return &ProcedureBuilder{resource: Procedure{ResourceType: "Procedure"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ProcedureBuilder) WithId(v dt.ID) *ProcedureBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ProcedureBuilder) WithMeta(v dt.Meta) *ProcedureBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ProcedureBuilder) WithImplicitRules(v dt.URI) *ProcedureBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ProcedureBuilder) WithLanguage(v dt.Code) *ProcedureBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ProcedureBuilder) WithText(v dt.Narrative) *ProcedureBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ProcedureBuilder) WithContained(v json.RawMessage) *ProcedureBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ProcedureBuilder) WithExtension(v dt.Extension) *ProcedureBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ProcedureBuilder) WithModifierExtension(v dt.Extension) *ProcedureBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ProcedureBuilder) WithIdentifier(v dt.Identifier) *ProcedureBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ProcedureBuilder) WithStatus(v dt.Code) *ProcedureBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAsserter sets the asserter field.
 func (b *ProcedureBuilder) WithAsserter(v dt.Reference) *ProcedureBuilder {
 	b.resource.Asserter = &v
+	b.fieldsSet["asserter"] = true
 	return b
 }
 
 // WithBasedOn adds an item to the basedOn field.
 func (b *ProcedureBuilder) WithBasedOn(v dt.Reference) *ProcedureBuilder {
 	b.resource.BasedOn = append(b.resource.BasedOn, v)
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithBodySite adds an item to the bodySite field.
 func (b *ProcedureBuilder) WithBodySite(v dt.CodeableConcept) *ProcedureBuilder {
 	b.resource.BodySite = append(b.resource.BodySite, v)
+	b.fieldsSet["bodySite"] = true
 	return b
 }
 
 // WithCategory sets the category field.
 func (b *ProcedureBuilder) WithCategory(v dt.CodeableConcept) *ProcedureBuilder {
 	b.resource.Category = &v
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *ProcedureBuilder) WithCode(v dt.CodeableConcept) *ProcedureBuilder {
 	b.resource.Code = &v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithComplication adds an item to the complication field.
 func (b *ProcedureBuilder) WithComplication(v dt.CodeableConcept) *ProcedureBuilder {
 	b.resource.Complication = append(b.resource.Complication, v)
+	b.fieldsSet["complication"] = true
 	return b
 }
 
 // WithComplicationDetail adds an item to the complicationDetail field.
 func (b *ProcedureBuilder) WithComplicationDetail(v dt.Reference) *ProcedureBuilder {
 	b.resource.ComplicationDetail = append(b.resource.ComplicationDetail, v)
+	b.fieldsSet["complicationDetail"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *ProcedureBuilder) WithEncounter(v dt.Reference) *ProcedureBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithFocalDevice adds an item to the focalDevice field.
 func (b *ProcedureBuilder) WithFocalDevice(v ProcedureFocalDevice) *ProcedureBuilder {
 	b.resource.FocalDevice = append(b.resource.FocalDevice, v)
+	b.fieldsSet["focalDevice"] = true
 	return b
 }
 
 // WithFollowUp adds an item to the followUp field.
 func (b *ProcedureBuilder) WithFollowUp(v dt.CodeableConcept) *ProcedureBuilder {
 	b.resource.FollowUp = append(b.resource.FollowUp, v)
+	b.fieldsSet["followUp"] = true
 	return b
 }
 
 // WithInstantiatesCanonical adds an item to the instantiatesCanonical field.
 func (b *ProcedureBuilder) WithInstantiatesCanonical(v dt.Canonical) *ProcedureBuilder {
 	b.resource.InstantiatesCanonical = append(b.resource.InstantiatesCanonical, v)
+	b.fieldsSet["instantiatesCanonical"] = true
 	return b
 }
 
 // WithInstantiatesUri adds an item to the instantiatesUri field.
 func (b *ProcedureBuilder) WithInstantiatesUri(v dt.URI) *ProcedureBuilder {
 	b.resource.InstantiatesUri = append(b.resource.InstantiatesUri, v)
+	b.fieldsSet["instantiatesUri"] = true
 	return b
 }
 
 // WithLocation sets the location field.
 func (b *ProcedureBuilder) WithLocation(v dt.Reference) *ProcedureBuilder {
 	b.resource.Location = &v
+	b.fieldsSet["location"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *ProcedureBuilder) WithNote(v dt.Annotation) *ProcedureBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithOutcome sets the outcome field.
 func (b *ProcedureBuilder) WithOutcome(v dt.CodeableConcept) *ProcedureBuilder {
 	b.resource.Outcome = &v
+	b.fieldsSet["outcome"] = true
 	return b
 }
 
 // WithPartOf adds an item to the partOf field.
 func (b *ProcedureBuilder) WithPartOf(v dt.Reference) *ProcedureBuilder {
 	b.resource.PartOf = append(b.resource.PartOf, v)
+	b.fieldsSet["partOf"] = true
 	return b
 }
 
 // WithPerformedAge sets the performedAge field.
 func (b *ProcedureBuilder) WithPerformedAge(v dt.Age) *ProcedureBuilder {
 	b.resource.PerformedAge = &v
+	b.fieldsSet["performedAge"] = true
 	return b
 }
 
 // WithPerformedDateTime sets the performedDateTime field.
 func (b *ProcedureBuilder) WithPerformedDateTime(v string) *ProcedureBuilder {
 	b.resource.PerformedDateTime = &v
+	b.fieldsSet["performedDateTime"] = true
 	return b
 }
 
 // WithPerformedPeriod sets the performedPeriod field.
 func (b *ProcedureBuilder) WithPerformedPeriod(v dt.Period) *ProcedureBuilder {
 	b.resource.PerformedPeriod = &v
+	b.fieldsSet["performedPeriod"] = true
 	return b
 }
 
 // WithPerformedRange sets the performedRange field.
 func (b *ProcedureBuilder) WithPerformedRange(v dt.Range) *ProcedureBuilder {
 	b.resource.PerformedRange = &v
+	b.fieldsSet["performedRange"] = true
 	return b
 }
 
 // WithPerformedString sets the performedString field.
 func (b *ProcedureBuilder) WithPerformedString(v string) *ProcedureBuilder {
 	b.resource.PerformedString = &v
+	b.fieldsSet["performedString"] = true
 	return b
 }
 
 // WithPerformer adds an item to the performer field.
 func (b *ProcedureBuilder) WithPerformer(v ProcedurePerformer) *ProcedureBuilder {
 	b.resource.Performer = append(b.resource.Performer, v)
+	b.fieldsSet["performer"] = true
 	return b
 }
 
 // WithReasonCode adds an item to the reasonCode field.
 func (b *ProcedureBuilder) WithReasonCode(v dt.CodeableConcept) *ProcedureBuilder {
 	b.resource.ReasonCode = append(b.resource.ReasonCode, v)
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithReasonReference adds an item to the reasonReference field.
 func (b *ProcedureBuilder) WithReasonReference(v dt.Reference) *ProcedureBuilder {
 	b.resource.ReasonReference = append(b.resource.ReasonReference, v)
+	b.fieldsSet["reasonReference"] = true
 	return b
 }
 
 // WithRecorder sets the recorder field.
 func (b *ProcedureBuilder) WithRecorder(v dt.Reference) *ProcedureBuilder {
 	b.resource.Recorder = &v
+	b.fieldsSet["recorder"] = true
 	return b
 }
 
 // WithReport adds an item to the report field.
 func (b *ProcedureBuilder) WithReport(v dt.Reference) *ProcedureBuilder {
 	b.resource.Report = append(b.resource.Report, v)
+	b.fieldsSet["report"] = true
 	return b
 }
 
 // WithStatusReason sets the statusReason field.
 func (b *ProcedureBuilder) WithStatusReason(v dt.CodeableConcept) *ProcedureBuilder {
 	b.resource.StatusReason = &v
+	b.fieldsSet["statusReason"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *ProcedureBuilder) WithSubject(v dt.Reference) *ProcedureBuilder {
 	b.resource.Subject = v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
@@ -388,6 +463,7 @@ func (b *ProcedureBuilder) WithUsedCode(v []dt.CodeableConcept) *ProcedureBuilde
 		b.resource.Used = &ProcedureUsed{}
 	}
 	b.resource.Used.Code = v
+	b.fieldsSet["used"] = true
 	return b
 }
 
@@ -397,12 +473,20 @@ func (b *ProcedureBuilder) WithUsedReference(v []dt.Reference) *ProcedureBuilder
 		b.resource.Used = &ProcedureUsed{}
 	}
 	b.resource.Used.Reference = v
+	b.fieldsSet["used"] = true
 	return b
 }
 
 // Build returns the constructed Procedure. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *ProcedureBuilder) Build() (*Procedure, error) {
+	var missing []string
+	if !b.fieldsSet["subject"] {
+		missing = append(missing, "subject")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("Procedure: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -411,6 +495,8 @@ func (b *ProcedureBuilder) Build() (*Procedure, error) {
 type ProcedureFocalDevice struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -425,6 +511,8 @@ type ProcedureFocalDevice struct {
 type ProcedurePerformer struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

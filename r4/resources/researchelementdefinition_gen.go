@@ -18,12 +18,18 @@ type ResearchElementDefinition struct {
 	ResourceType string `json:"resourceType"` // Always "ResearchElementDefinition"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,22 +42,34 @@ type ResearchElementDefinition struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this research element definition. Enables tracking the life-cycle of the content.
 	Status *ResearchElementDefinitionStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
+	// ApprovalDateElement contains element extensions for approvalDate.
+	ApprovalDateElement *dt.Element `json:"_approvalDate,omitempty"`
 	// Author An individiual or organization primarily involved in the creation and maintenance of the content.
 	Author []dt.ContactDetail `json:"author,omitempty"`
 	// Characteristic A characteristic that defines the members of the research element. Multiple characteristics are applied with "and" semantics.
 	Characteristic []ResearchElementDefinitionCharacteristic `json:"characteristic,omitempty"`
 	// Comment A human-readable string to clarify or explain concepts about the resource.
 	Comment []string `json:"comment,omitempty"`
+	// CommentElement contains element extensions for each comment.
+	CommentElement []dt.Element `json:"_comment,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the research element definition and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the research element defini...
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date  (and optionally time) when the research element definition was published. The date must change when the business version changes and it must change if the status code changes. In addition...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description A free text natural language description of the research element definition from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Editor An individual or organization primarily responsible for internal coherence of the content.
 	Editor []dt.ContactDetail `json:"editor,omitempty"`
 	// EffectivePeriod The period during which the research element definition content was or is planned to be in active use.
@@ -60,53 +78,97 @@ type ResearchElementDefinition struct {
 	Endorser []dt.ContactDetail `json:"endorser,omitempty"`
 	// Experimental A Boolean value to indicate that this research element definition is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// Jurisdiction A legal or geographic region in which the research element definition is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// LastReviewDate The date on which the resource content was last reviewed. Review happens periodically after approval but does not change the original approval date.
 	LastReviewDate *dt.Date `json:"lastReviewDate,omitempty"`
+	// LastReviewDateElement contains element extensions for lastReviewDate.
+	LastReviewDateElement *dt.Element `json:"_lastReviewDate,omitempty"`
 	// Library A reference to a Library resource containing the formal logic used by the ResearchElementDefinition.
 	Library []dt.Canonical `json:"library,omitempty"`
+	// LibraryElement contains element extensions for each library.
+	LibraryElement []dt.Element `json:"_library,omitempty"`
 	// Name A natural language name identifying the research element definition. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Publisher The name of the organization or individual that published the research element definition.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Purpose Explanation of why this research element definition is needed and why it has been designed as it has.
 	Purpose *dt.Markdown `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for purpose.
+	PurposeElement *dt.Element `json:"_purpose,omitempty"`
 	// RelatedArtifact Related artifacts such as additional documentation, justification, or bibliographic references.
 	RelatedArtifact []dt.RelatedArtifact `json:"relatedArtifact,omitempty"`
 	// Reviewer An individual or organization primarily responsible for review of some aspect of the content.
 	Reviewer []dt.ContactDetail `json:"reviewer,omitempty"`
 	// ShortTitle The short title provides an alternate title for use in informal descriptive contexts where the full, formal title is not necessary.
 	ShortTitle *string `json:"shortTitle,omitempty"`
+	// ShortTitleElement contains element extensions for shortTitle.
+	ShortTitleElement *dt.Element `json:"_shortTitle,omitempty"`
 	// SubjectCodeableConcept The intended subjects for the ResearchElementDefinition. If this element is not provided, a Patient subject is assumed, but the subject of the ResearchElementDefinition can be anything.
 	SubjectCodeableConcept *dt.CodeableConcept `json:"subjectCodeableConcept,omitempty"`
 	// SubjectReference The intended subjects for the ResearchElementDefinition. If this element is not provided, a Patient subject is assumed, but the subject of the ResearchElementDefinition can be anything.
 	SubjectReference *dt.Reference `json:"subjectReference,omitempty"`
 	// Subtitle An explanatory or alternate title for the ResearchElementDefinition giving additional information about its content.
 	Subtitle *string `json:"subtitle,omitempty"`
+	// SubtitleElement contains element extensions for subtitle.
+	SubtitleElement *dt.Element `json:"_subtitle,omitempty"`
 	// Title A short, descriptive, user-friendly title for the research element definition.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Topic Descriptive topics related to the content of the ResearchElementDefinition. Topics provide a high-level categorization grouping types of ResearchElementDefinitions that can be useful for filtering ...
 	Topic []dt.CodeableConcept `json:"topic,omitempty"`
 	// Type The type of research element, a population, an exposure, or an outcome.
 	Type *ResearchElementDefinitionType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 	// Url An absolute URI that is used to identify this research element definition when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD b...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// Usage A detailed description, from a clinical perspective, of how the ResearchElementDefinition is used.
 	Usage *string `json:"usage,omitempty"`
+	// UsageElement contains element extensions for usage.
+	UsageElement *dt.Element `json:"_usage,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// VariableType The type of the outcome (e.g. Dichotomous, Continuous, or Descriptive).
 	VariableType *ResearchElementDefinitionVariableType `json:"variableType,omitempty"`
+	// VariableTypeElement contains element extensions for variableType.
+	VariableTypeElement *dt.Element `json:"_variableType,omitempty"`
 	// Version The identifier that is used to identify this version of the research element definition when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by th...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for ResearchElementDefinition.
 func (r ResearchElementDefinition) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "ResearchElementDefinition"
 	type Alias ResearchElementDefinition
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ResearchElementDefinition.
@@ -117,268 +179,327 @@ func (r *ResearchElementDefinition) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ResearchElementDefinition(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_approvalDate", "_author", "_characteristic", "_comment", "_contact", "_contained", "_copyright", "_date", "_description", "_editor", "_effectivePeriod", "_endorser", "_experimental", "_extension", "_id", "_identifier", "_implicitRules", "_jurisdiction", "_language", "_lastReviewDate", "_library", "_meta", "_modifierExtension", "_name", "_publisher", "_purpose", "_relatedArtifact", "_reviewer", "_shortTitle", "_status", "_subjectCodeableConcept", "_subjectReference", "_subtitle", "_text", "_title", "_topic", "_type", "_url", "_usage", "_useContext", "_variableType", "_version", "approvalDate", "author", "characteristic", "comment", "contact", "contained", "copyright", "date", "description", "editor", "effectivePeriod", "endorser", "experimental", "extension", "id", "identifier", "implicitRules", "jurisdiction", "language", "lastReviewDate", "library", "meta", "modifierExtension", "name", "publisher", "purpose", "relatedArtifact", "resourceType", "reviewer", "shortTitle", "status", "subjectCodeableConcept", "subjectReference", "subtitle", "text", "title", "topic", "type", "url", "usage", "useContext", "variableType", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ResearchElementDefinitionBuilder provides a fluent API for constructing ResearchElementDefinition resources.
 type ResearchElementDefinitionBuilder struct {
-	resource ResearchElementDefinition
+	resource  ResearchElementDefinition
+	fieldsSet map[string]bool
 }
 
 // NewResearchElementDefinition creates a new ResearchElementDefinitionBuilder for building a ResearchElementDefinition resource.
 func NewResearchElementDefinition() *ResearchElementDefinitionBuilder {
-	return &ResearchElementDefinitionBuilder{resource: ResearchElementDefinition{ResourceType: "ResearchElementDefinition"}}
+	return &ResearchElementDefinitionBuilder{resource: ResearchElementDefinition{ResourceType: "ResearchElementDefinition"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ResearchElementDefinitionBuilder) WithId(v dt.ID) *ResearchElementDefinitionBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ResearchElementDefinitionBuilder) WithMeta(v dt.Meta) *ResearchElementDefinitionBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ResearchElementDefinitionBuilder) WithImplicitRules(v dt.URI) *ResearchElementDefinitionBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ResearchElementDefinitionBuilder) WithLanguage(v dt.Code) *ResearchElementDefinitionBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ResearchElementDefinitionBuilder) WithText(v dt.Narrative) *ResearchElementDefinitionBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ResearchElementDefinitionBuilder) WithContained(v json.RawMessage) *ResearchElementDefinitionBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ResearchElementDefinitionBuilder) WithExtension(v dt.Extension) *ResearchElementDefinitionBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ResearchElementDefinitionBuilder) WithModifierExtension(v dt.Extension) *ResearchElementDefinitionBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ResearchElementDefinitionBuilder) WithIdentifier(v dt.Identifier) *ResearchElementDefinitionBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ResearchElementDefinitionBuilder) WithStatus(v ResearchElementDefinitionStatus) *ResearchElementDefinitionBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithApprovalDate sets the approvalDate field.
 func (b *ResearchElementDefinitionBuilder) WithApprovalDate(v dt.Date) *ResearchElementDefinitionBuilder {
 	b.resource.ApprovalDate = &v
+	b.fieldsSet["approvalDate"] = true
 	return b
 }
 
 // WithAuthor adds an item to the author field.
 func (b *ResearchElementDefinitionBuilder) WithAuthor(v dt.ContactDetail) *ResearchElementDefinitionBuilder {
 	b.resource.Author = append(b.resource.Author, v)
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithCharacteristic adds an item to the characteristic field.
 func (b *ResearchElementDefinitionBuilder) WithCharacteristic(v ResearchElementDefinitionCharacteristic) *ResearchElementDefinitionBuilder {
 	b.resource.Characteristic = append(b.resource.Characteristic, v)
+	b.fieldsSet["characteristic"] = true
 	return b
 }
 
 // WithComment adds an item to the comment field.
 func (b *ResearchElementDefinitionBuilder) WithComment(v string) *ResearchElementDefinitionBuilder {
 	b.resource.Comment = append(b.resource.Comment, v)
+	b.fieldsSet["comment"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *ResearchElementDefinitionBuilder) WithContact(v dt.ContactDetail) *ResearchElementDefinitionBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *ResearchElementDefinitionBuilder) WithCopyright(v dt.Markdown) *ResearchElementDefinitionBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *ResearchElementDefinitionBuilder) WithDate(v dt.DateTime) *ResearchElementDefinitionBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *ResearchElementDefinitionBuilder) WithDescription(v dt.Markdown) *ResearchElementDefinitionBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithEditor adds an item to the editor field.
 func (b *ResearchElementDefinitionBuilder) WithEditor(v dt.ContactDetail) *ResearchElementDefinitionBuilder {
 	b.resource.Editor = append(b.resource.Editor, v)
+	b.fieldsSet["editor"] = true
 	return b
 }
 
 // WithEffectivePeriod sets the effectivePeriod field.
 func (b *ResearchElementDefinitionBuilder) WithEffectivePeriod(v dt.Period) *ResearchElementDefinitionBuilder {
 	b.resource.EffectivePeriod = &v
+	b.fieldsSet["effectivePeriod"] = true
 	return b
 }
 
 // WithEndorser adds an item to the endorser field.
 func (b *ResearchElementDefinitionBuilder) WithEndorser(v dt.ContactDetail) *ResearchElementDefinitionBuilder {
 	b.resource.Endorser = append(b.resource.Endorser, v)
+	b.fieldsSet["endorser"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *ResearchElementDefinitionBuilder) WithExperimental(v bool) *ResearchElementDefinitionBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *ResearchElementDefinitionBuilder) WithJurisdiction(v dt.CodeableConcept) *ResearchElementDefinitionBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithLastReviewDate sets the lastReviewDate field.
 func (b *ResearchElementDefinitionBuilder) WithLastReviewDate(v dt.Date) *ResearchElementDefinitionBuilder {
 	b.resource.LastReviewDate = &v
+	b.fieldsSet["lastReviewDate"] = true
 	return b
 }
 
 // WithLibrary adds an item to the library field.
 func (b *ResearchElementDefinitionBuilder) WithLibrary(v dt.Canonical) *ResearchElementDefinitionBuilder {
 	b.resource.Library = append(b.resource.Library, v)
+	b.fieldsSet["library"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *ResearchElementDefinitionBuilder) WithName(v string) *ResearchElementDefinitionBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *ResearchElementDefinitionBuilder) WithPublisher(v string) *ResearchElementDefinitionBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithPurpose sets the purpose field.
 func (b *ResearchElementDefinitionBuilder) WithPurpose(v dt.Markdown) *ResearchElementDefinitionBuilder {
 	b.resource.Purpose = &v
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
 // WithRelatedArtifact adds an item to the relatedArtifact field.
 func (b *ResearchElementDefinitionBuilder) WithRelatedArtifact(v dt.RelatedArtifact) *ResearchElementDefinitionBuilder {
 	b.resource.RelatedArtifact = append(b.resource.RelatedArtifact, v)
+	b.fieldsSet["relatedArtifact"] = true
 	return b
 }
 
 // WithReviewer adds an item to the reviewer field.
 func (b *ResearchElementDefinitionBuilder) WithReviewer(v dt.ContactDetail) *ResearchElementDefinitionBuilder {
 	b.resource.Reviewer = append(b.resource.Reviewer, v)
+	b.fieldsSet["reviewer"] = true
 	return b
 }
 
 // WithShortTitle sets the shortTitle field.
 func (b *ResearchElementDefinitionBuilder) WithShortTitle(v string) *ResearchElementDefinitionBuilder {
 	b.resource.ShortTitle = &v
+	b.fieldsSet["shortTitle"] = true
 	return b
 }
 
 // WithSubjectCodeableConcept sets the subjectCodeableConcept field.
 func (b *ResearchElementDefinitionBuilder) WithSubjectCodeableConcept(v dt.CodeableConcept) *ResearchElementDefinitionBuilder {
 	b.resource.SubjectCodeableConcept = &v
+	b.fieldsSet["subjectCodeableConcept"] = true
 	return b
 }
 
 // WithSubjectReference sets the subjectReference field.
 func (b *ResearchElementDefinitionBuilder) WithSubjectReference(v dt.Reference) *ResearchElementDefinitionBuilder {
 	b.resource.SubjectReference = &v
+	b.fieldsSet["subjectReference"] = true
 	return b
 }
 
 // WithSubtitle sets the subtitle field.
 func (b *ResearchElementDefinitionBuilder) WithSubtitle(v string) *ResearchElementDefinitionBuilder {
 	b.resource.Subtitle = &v
+	b.fieldsSet["subtitle"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *ResearchElementDefinitionBuilder) WithTitle(v string) *ResearchElementDefinitionBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithTopic adds an item to the topic field.
 func (b *ResearchElementDefinitionBuilder) WithTopic(v dt.CodeableConcept) *ResearchElementDefinitionBuilder {
 	b.resource.Topic = append(b.resource.Topic, v)
+	b.fieldsSet["topic"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *ResearchElementDefinitionBuilder) WithType(v ResearchElementDefinitionType) *ResearchElementDefinitionBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *ResearchElementDefinitionBuilder) WithUrl(v dt.URI) *ResearchElementDefinitionBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUsage sets the usage field.
 func (b *ResearchElementDefinitionBuilder) WithUsage(v string) *ResearchElementDefinitionBuilder {
 	b.resource.Usage = &v
+	b.fieldsSet["usage"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *ResearchElementDefinitionBuilder) WithUseContext(v dt.UsageContext) *ResearchElementDefinitionBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVariableType sets the variableType field.
 func (b *ResearchElementDefinitionBuilder) WithVariableType(v ResearchElementDefinitionVariableType) *ResearchElementDefinitionBuilder {
 	b.resource.VariableType = &v
+	b.fieldsSet["variableType"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *ResearchElementDefinitionBuilder) WithVersion(v string) *ResearchElementDefinitionBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -386,7 +507,7 @@ func (b *ResearchElementDefinitionBuilder) WithVersion(v string) *ResearchElemen
 // field (cardinality 1..1) is not set.
 func (b *ResearchElementDefinitionBuilder) Build() (*ResearchElementDefinition, error) {
 	var missing []string
-	if len(b.resource.Characteristic) == 0 {
+	if !b.fieldsSet["characteristic"] {
 		missing = append(missing, "characteristic")
 	}
 	if len(missing) > 0 {
@@ -400,6 +521,8 @@ func (b *ResearchElementDefinitionBuilder) Build() (*ResearchElementDefinition, 
 type ResearchElementDefinitionCharacteristic struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -408,14 +531,22 @@ type ResearchElementDefinitionCharacteristic struct {
 	Definition *ResearchElementDefinitionCharacteristicDefinition `json:"-"` // polymorphic
 	// Exclude When true, members with this characteristic are excluded from the element.
 	Exclude *bool `json:"exclude,omitempty"`
+	// ExcludeElement contains element extensions for exclude.
+	ExcludeElement *dt.Element `json:"_exclude,omitempty"`
 	// ParticipantEffectiveDateTime Indicates what effective period the study covers.
 	ParticipantEffectiveDateTime *string `json:"participantEffectiveDateTime,omitempty"`
+	// ParticipantEffectiveDateTimeElement contains element extensions for participantEffectiveDateTime.
+	ParticipantEffectiveDateTimeElement *dt.Element `json:"_participantEffectiveDateTime,omitempty"`
 	// ParticipantEffectiveDescription A narrative description of the time period the study covers.
 	ParticipantEffectiveDescription *string `json:"participantEffectiveDescription,omitempty"`
+	// ParticipantEffectiveDescriptionElement contains element extensions for participantEffectiveDescription.
+	ParticipantEffectiveDescriptionElement *dt.Element `json:"_participantEffectiveDescription,omitempty"`
 	// ParticipantEffectiveDuration Indicates what effective period the study covers.
 	ParticipantEffectiveDuration *dt.Duration `json:"participantEffectiveDuration,omitempty"`
 	// ParticipantEffectiveGroupMeasure Indicates how elements are aggregated within the study effective period.
 	ParticipantEffectiveGroupMeasure *ResearchElementDefinitionCharacteristicParticipantEffectiveGroupMeasure `json:"participantEffectiveGroupMeasure,omitempty"`
+	// ParticipantEffectiveGroupMeasureElement contains element extensions for participantEffectiveGroupMeasure.
+	ParticipantEffectiveGroupMeasureElement *dt.Element `json:"_participantEffectiveGroupMeasure,omitempty"`
 	// ParticipantEffectivePeriod Indicates what effective period the study covers.
 	ParticipantEffectivePeriod *dt.Period `json:"participantEffectivePeriod,omitempty"`
 	// ParticipantEffectiveTimeFromStart Indicates duration from the participant's study entry.
@@ -424,12 +555,18 @@ type ResearchElementDefinitionCharacteristic struct {
 	ParticipantEffectiveTiming *dt.Timing `json:"participantEffectiveTiming,omitempty"`
 	// StudyEffectiveDateTime Indicates what effective period the study covers.
 	StudyEffectiveDateTime *string `json:"studyEffectiveDateTime,omitempty"`
+	// StudyEffectiveDateTimeElement contains element extensions for studyEffectiveDateTime.
+	StudyEffectiveDateTimeElement *dt.Element `json:"_studyEffectiveDateTime,omitempty"`
 	// StudyEffectiveDescription A narrative description of the time period the study covers.
 	StudyEffectiveDescription *string `json:"studyEffectiveDescription,omitempty"`
+	// StudyEffectiveDescriptionElement contains element extensions for studyEffectiveDescription.
+	StudyEffectiveDescriptionElement *dt.Element `json:"_studyEffectiveDescription,omitempty"`
 	// StudyEffectiveDuration Indicates what effective period the study covers.
 	StudyEffectiveDuration *dt.Duration `json:"studyEffectiveDuration,omitempty"`
 	// StudyEffectiveGroupMeasure Indicates how elements are aggregated within the study effective period.
 	StudyEffectiveGroupMeasure *ResearchElementDefinitionCharacteristicStudyEffectiveGroupMeasure `json:"studyEffectiveGroupMeasure,omitempty"`
+	// StudyEffectiveGroupMeasureElement contains element extensions for studyEffectiveGroupMeasure.
+	StudyEffectiveGroupMeasureElement *dt.Element `json:"_studyEffectiveGroupMeasure,omitempty"`
 	// StudyEffectivePeriod Indicates what effective period the study covers.
 	StudyEffectivePeriod *dt.Period `json:"studyEffectivePeriod,omitempty"`
 	// StudyEffectiveTimeFromStart Indicates duration from the study initiation.

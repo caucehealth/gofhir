@@ -17,25 +17,51 @@ type Binary struct {
 	ResourceType string `json:"resourceType"` // Always "Binary"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// ContentType MimeType of the binary content represented as a standard MimeType (BCP 13).
 	ContentType *dt.Code `json:"contentType,omitempty"`
+	// ContentTypeElement contains element extensions for contentType.
+	ContentTypeElement *dt.Element `json:"_contentType,omitempty"`
 	// Data The actual content, base64 encoded.
 	Data []byte `json:"data,omitempty"`
+	// DataElement contains element extensions for data.
+	DataElement *dt.Element `json:"_data,omitempty"`
 	// SecurityContext This element identifies another resource that can be used as a proxy of the security sensitivity to use when deciding and enforcing access control rules for the Binary resource. Given that the Bina...
 	SecurityContext *dt.Reference `json:"securityContext,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Binary.
 func (r Binary) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Binary"
 	type Alias Binary
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Binary.
@@ -46,58 +72,82 @@ func (r *Binary) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Binary(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contentType", "_data", "_id", "_implicitRules", "_language", "_meta", "_securityContext", "contentType", "data", "id", "implicitRules", "language", "meta", "resourceType", "securityContext":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // BinaryBuilder provides a fluent API for constructing Binary resources.
 type BinaryBuilder struct {
-	resource Binary
+	resource  Binary
+	fieldsSet map[string]bool
 }
 
 // NewBinary creates a new BinaryBuilder for building a Binary resource.
 func NewBinary() *BinaryBuilder {
-	return &BinaryBuilder{resource: Binary{ResourceType: "Binary"}}
+	return &BinaryBuilder{resource: Binary{ResourceType: "Binary"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *BinaryBuilder) WithId(v dt.ID) *BinaryBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *BinaryBuilder) WithMeta(v dt.Meta) *BinaryBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *BinaryBuilder) WithImplicitRules(v dt.URI) *BinaryBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *BinaryBuilder) WithLanguage(v dt.Code) *BinaryBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithContentType sets the contentType field.
 func (b *BinaryBuilder) WithContentType(v dt.Code) *BinaryBuilder {
 	b.resource.ContentType = &v
+	b.fieldsSet["contentType"] = true
 	return b
 }
 
 // WithData sets the data field.
 func (b *BinaryBuilder) WithData(v []byte) *BinaryBuilder {
 	b.resource.Data = v
+	b.fieldsSet["data"] = true
 	return b
 }
 
 // WithSecurityContext sets the securityContext field.
 func (b *BinaryBuilder) WithSecurityContext(v dt.Reference) *BinaryBuilder {
 	b.resource.SecurityContext = &v
+	b.fieldsSet["securityContext"] = true
 	return b
 }
 

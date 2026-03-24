@@ -18,12 +18,18 @@ type ClaimResponse struct {
 	ResourceType string `json:"resourceType"` // Always "ClaimResponse"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type ClaimResponse struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the resource instance.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// AddItem The first-tier service adjudications for payor added product or service lines.
 	AddItem []ClaimResponseAddItem `json:"addItem,omitempty"`
 	// Adjudication The adjudication results which are presented at the header level rather than at the line-item or add-item levels.
@@ -44,8 +52,12 @@ type ClaimResponse struct {
 	CommunicationRequest []dt.Reference `json:"communicationRequest,omitempty"`
 	// Created The date this resource was created.
 	Created *dt.DateTime `json:"created,omitempty"`
+	// CreatedElement contains element extensions for created.
+	CreatedElement *dt.Element `json:"_created,omitempty"`
 	// Disposition A human readable description of the status of the adjudication.
 	Disposition *string `json:"disposition,omitempty"`
+	// DispositionElement contains element extensions for disposition.
+	DispositionElement *dt.Element `json:"_disposition,omitempty"`
 	// Error Errors encountered during the processing of the adjudication.
 	Error []ClaimResponseError `json:"error,omitempty"`
 	// Form The actual form, by reference or inclusion, for printing the content or an EOB.
@@ -62,6 +74,8 @@ type ClaimResponse struct {
 	Item []ClaimResponseItem `json:"item,omitempty"`
 	// Outcome The outcome of the claim, predetermination, or preauthorization processing.
 	Outcome *dt.Code `json:"outcome,omitempty"`
+	// OutcomeElement contains element extensions for outcome.
+	OutcomeElement *dt.Element `json:"_outcome,omitempty"`
 	// Patient The party to whom the professional services and/or products have been supplied or are being considered and for whom actual for facast reimbursement is sought.
 	Patient dt.Reference `json:"patient"`
 	// PayeeType Type of Party to be reimbursed: subscriber, provider, other.
@@ -72,6 +86,8 @@ type ClaimResponse struct {
 	PreAuthPeriod *dt.Period `json:"preAuthPeriod,omitempty"`
 	// PreAuthRef Reference from the Insurer which is used in later communications which refers to this adjudication.
 	PreAuthRef *string `json:"preAuthRef,omitempty"`
+	// PreAuthRefElement contains element extensions for preAuthRef.
+	PreAuthRefElement *dt.Element `json:"_preAuthRef,omitempty"`
 	// ProcessNote A note that describes or explains adjudication results in a human readable form.
 	ProcessNote []ClaimResponseProcessNote `json:"processNote,omitempty"`
 	// Request Original request resource reference.
@@ -86,13 +102,31 @@ type ClaimResponse struct {
 	Type dt.CodeableConcept `json:"type"`
 	// Use A code to indicate whether the nature of the request is: to request adjudication of products and services previously rendered; or requesting authorization and adjudication for provision in the futu...
 	Use *dt.Code `json:"use,omitempty"`
+	// UseElement contains element extensions for use.
+	UseElement *dt.Element `json:"_use,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for ClaimResponse.
 func (r ClaimResponse) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "ClaimResponse"
 	type Alias ClaimResponse
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ClaimResponse.
@@ -103,232 +137,297 @@ func (r *ClaimResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ClaimResponse(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_addItem", "_adjudication", "_communicationRequest", "_contained", "_created", "_disposition", "_error", "_extension", "_form", "_formCode", "_fundsReserve", "_id", "_identifier", "_implicitRules", "_insurance", "_insurer", "_item", "_language", "_meta", "_modifierExtension", "_outcome", "_patient", "_payeeType", "_payment", "_preAuthPeriod", "_preAuthRef", "_processNote", "_request", "_requestor", "_status", "_subType", "_text", "_total", "_type", "_use", "addItem", "adjudication", "communicationRequest", "contained", "created", "disposition", "error", "extension", "form", "formCode", "fundsReserve", "id", "identifier", "implicitRules", "insurance", "insurer", "item", "language", "meta", "modifierExtension", "outcome", "patient", "payeeType", "payment", "preAuthPeriod", "preAuthRef", "processNote", "request", "requestor", "resourceType", "status", "subType", "text", "total", "type", "use":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ClaimResponseBuilder provides a fluent API for constructing ClaimResponse resources.
 type ClaimResponseBuilder struct {
-	resource ClaimResponse
+	resource  ClaimResponse
+	fieldsSet map[string]bool
 }
 
 // NewClaimResponse creates a new ClaimResponseBuilder for building a ClaimResponse resource.
 func NewClaimResponse() *ClaimResponseBuilder {
-	return &ClaimResponseBuilder{resource: ClaimResponse{ResourceType: "ClaimResponse"}}
+	return &ClaimResponseBuilder{resource: ClaimResponse{ResourceType: "ClaimResponse"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ClaimResponseBuilder) WithId(v dt.ID) *ClaimResponseBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ClaimResponseBuilder) WithMeta(v dt.Meta) *ClaimResponseBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ClaimResponseBuilder) WithImplicitRules(v dt.URI) *ClaimResponseBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ClaimResponseBuilder) WithLanguage(v dt.Code) *ClaimResponseBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ClaimResponseBuilder) WithText(v dt.Narrative) *ClaimResponseBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ClaimResponseBuilder) WithContained(v json.RawMessage) *ClaimResponseBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ClaimResponseBuilder) WithExtension(v dt.Extension) *ClaimResponseBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ClaimResponseBuilder) WithModifierExtension(v dt.Extension) *ClaimResponseBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ClaimResponseBuilder) WithIdentifier(v dt.Identifier) *ClaimResponseBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ClaimResponseBuilder) WithStatus(v dt.Code) *ClaimResponseBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAddItem adds an item to the addItem field.
 func (b *ClaimResponseBuilder) WithAddItem(v ClaimResponseAddItem) *ClaimResponseBuilder {
 	b.resource.AddItem = append(b.resource.AddItem, v)
+	b.fieldsSet["addItem"] = true
 	return b
 }
 
 // WithAdjudication adds an item to the adjudication field.
 func (b *ClaimResponseBuilder) WithAdjudication(v ClaimResponseAdjudication) *ClaimResponseBuilder {
 	b.resource.Adjudication = append(b.resource.Adjudication, v)
+	b.fieldsSet["adjudication"] = true
 	return b
 }
 
 // WithCommunicationRequest adds an item to the communicationRequest field.
 func (b *ClaimResponseBuilder) WithCommunicationRequest(v dt.Reference) *ClaimResponseBuilder {
 	b.resource.CommunicationRequest = append(b.resource.CommunicationRequest, v)
+	b.fieldsSet["communicationRequest"] = true
 	return b
 }
 
 // WithCreated sets the created field.
 func (b *ClaimResponseBuilder) WithCreated(v dt.DateTime) *ClaimResponseBuilder {
 	b.resource.Created = &v
+	b.fieldsSet["created"] = true
 	return b
 }
 
 // WithDisposition sets the disposition field.
 func (b *ClaimResponseBuilder) WithDisposition(v string) *ClaimResponseBuilder {
 	b.resource.Disposition = &v
+	b.fieldsSet["disposition"] = true
 	return b
 }
 
 // WithError adds an item to the error field.
 func (b *ClaimResponseBuilder) WithError(v ClaimResponseError) *ClaimResponseBuilder {
 	b.resource.Error = append(b.resource.Error, v)
+	b.fieldsSet["error"] = true
 	return b
 }
 
 // WithForm sets the form field.
 func (b *ClaimResponseBuilder) WithForm(v dt.Attachment) *ClaimResponseBuilder {
 	b.resource.Form = &v
+	b.fieldsSet["form"] = true
 	return b
 }
 
 // WithFormCode sets the formCode field.
 func (b *ClaimResponseBuilder) WithFormCode(v dt.CodeableConcept) *ClaimResponseBuilder {
 	b.resource.FormCode = &v
+	b.fieldsSet["formCode"] = true
 	return b
 }
 
 // WithFundsReserve sets the fundsReserve field.
 func (b *ClaimResponseBuilder) WithFundsReserve(v dt.CodeableConcept) *ClaimResponseBuilder {
 	b.resource.FundsReserve = &v
+	b.fieldsSet["fundsReserve"] = true
 	return b
 }
 
 // WithInsurance adds an item to the insurance field.
 func (b *ClaimResponseBuilder) WithInsurance(v ClaimResponseInsurance) *ClaimResponseBuilder {
 	b.resource.Insurance = append(b.resource.Insurance, v)
+	b.fieldsSet["insurance"] = true
 	return b
 }
 
 // WithInsurer sets the insurer field.
 func (b *ClaimResponseBuilder) WithInsurer(v dt.Reference) *ClaimResponseBuilder {
 	b.resource.Insurer = v
+	b.fieldsSet["insurer"] = true
 	return b
 }
 
 // WithItem adds an item to the item field.
 func (b *ClaimResponseBuilder) WithItem(v ClaimResponseItem) *ClaimResponseBuilder {
 	b.resource.Item = append(b.resource.Item, v)
+	b.fieldsSet["item"] = true
 	return b
 }
 
 // WithOutcome sets the outcome field.
 func (b *ClaimResponseBuilder) WithOutcome(v dt.Code) *ClaimResponseBuilder {
 	b.resource.Outcome = &v
+	b.fieldsSet["outcome"] = true
 	return b
 }
 
 // WithPatient sets the patient field.
 func (b *ClaimResponseBuilder) WithPatient(v dt.Reference) *ClaimResponseBuilder {
 	b.resource.Patient = v
+	b.fieldsSet["patient"] = true
 	return b
 }
 
 // WithPayeeType sets the payeeType field.
 func (b *ClaimResponseBuilder) WithPayeeType(v dt.CodeableConcept) *ClaimResponseBuilder {
 	b.resource.PayeeType = &v
+	b.fieldsSet["payeeType"] = true
 	return b
 }
 
 // WithPayment sets the payment field.
 func (b *ClaimResponseBuilder) WithPayment(v ClaimResponsePayment) *ClaimResponseBuilder {
 	b.resource.Payment = &v
+	b.fieldsSet["payment"] = true
 	return b
 }
 
 // WithPreAuthPeriod sets the preAuthPeriod field.
 func (b *ClaimResponseBuilder) WithPreAuthPeriod(v dt.Period) *ClaimResponseBuilder {
 	b.resource.PreAuthPeriod = &v
+	b.fieldsSet["preAuthPeriod"] = true
 	return b
 }
 
 // WithPreAuthRef sets the preAuthRef field.
 func (b *ClaimResponseBuilder) WithPreAuthRef(v string) *ClaimResponseBuilder {
 	b.resource.PreAuthRef = &v
+	b.fieldsSet["preAuthRef"] = true
 	return b
 }
 
 // WithProcessNote adds an item to the processNote field.
 func (b *ClaimResponseBuilder) WithProcessNote(v ClaimResponseProcessNote) *ClaimResponseBuilder {
 	b.resource.ProcessNote = append(b.resource.ProcessNote, v)
+	b.fieldsSet["processNote"] = true
 	return b
 }
 
 // WithRequest sets the request field.
 func (b *ClaimResponseBuilder) WithRequest(v dt.Reference) *ClaimResponseBuilder {
 	b.resource.Request = &v
+	b.fieldsSet["request"] = true
 	return b
 }
 
 // WithRequestor sets the requestor field.
 func (b *ClaimResponseBuilder) WithRequestor(v dt.Reference) *ClaimResponseBuilder {
 	b.resource.Requestor = &v
+	b.fieldsSet["requestor"] = true
 	return b
 }
 
 // WithSubType sets the subType field.
 func (b *ClaimResponseBuilder) WithSubType(v dt.CodeableConcept) *ClaimResponseBuilder {
 	b.resource.SubType = &v
+	b.fieldsSet["subType"] = true
 	return b
 }
 
 // WithTotal adds an item to the total field.
 func (b *ClaimResponseBuilder) WithTotal(v ClaimResponseTotal) *ClaimResponseBuilder {
 	b.resource.Total = append(b.resource.Total, v)
+	b.fieldsSet["total"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *ClaimResponseBuilder) WithType(v dt.CodeableConcept) *ClaimResponseBuilder {
 	b.resource.Type = v
+	b.fieldsSet["type"] = true
 	return b
 }
 
 // WithUse sets the use field.
 func (b *ClaimResponseBuilder) WithUse(v dt.Code) *ClaimResponseBuilder {
 	b.resource.Use = &v
+	b.fieldsSet["use"] = true
 	return b
 }
 
 // Build returns the constructed ClaimResponse. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *ClaimResponseBuilder) Build() (*ClaimResponse, error) {
+	var missing []string
+	if !b.fieldsSet["insurer"] {
+		missing = append(missing, "insurer")
+	}
+	if !b.fieldsSet["patient"] {
+		missing = append(missing, "patient")
+	}
+	if !b.fieldsSet["type"] {
+		missing = append(missing, "type")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("ClaimResponse: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -337,6 +436,8 @@ func (b *ClaimResponseBuilder) Build() (*ClaimResponse, error) {
 type ClaimResponseAddItem struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -349,10 +450,16 @@ type ClaimResponseAddItem struct {
 	Detail []ClaimResponseDetail1 `json:"detail,omitempty"`
 	// DetailSequence The sequence number of the details within the claim item which this line is intended to replace.
 	DetailSequence []uint32 `json:"detailSequence,omitempty"`
+	// DetailSequenceElement contains element extensions for each detailSequence.
+	DetailSequenceElement []dt.Element `json:"_detailSequence,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
 	Factor *float64 `json:"factor,omitempty"`
+	// FactorElement contains element extensions for factor.
+	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// ItemSequence Claim items which this service line is intended to replace.
 	ItemSequence []uint32 `json:"itemSequence,omitempty"`
+	// ItemSequenceElement contains element extensions for each itemSequence.
+	ItemSequenceElement []dt.Element `json:"_itemSequence,omitempty"`
 	// Location Where the product or service was provided.
 	Location *ClaimResponseAddItemLocation `json:"-"` // polymorphic
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
@@ -361,6 +468,8 @@ type ClaimResponseAddItem struct {
 	Net *dt.Money `json:"net,omitempty"`
 	// NoteNumber The numbers associated with notes below which apply to the adjudication of this item.
 	NoteNumber []uint32 `json:"noteNumber,omitempty"`
+	// NoteNumberElement contains element extensions for each noteNumber.
+	NoteNumberElement []dt.Element `json:"_noteNumber,omitempty"`
 	// ProductOrService When the value is a group code then this item collects a set of related claim details, otherwise this contains the product, service, drug or other billing code for the item.
 	ProductOrService dt.CodeableConcept `json:"productOrService"`
 	// ProgramCode Identifies the program under which this may be recovered.
@@ -375,6 +484,8 @@ type ClaimResponseAddItem struct {
 	SubSite []dt.CodeableConcept `json:"subSite,omitempty"`
 	// SubdetailSequence The sequence number of the sub-details within the details within the claim item which this line is intended to replace.
 	SubdetailSequence []uint32 `json:"subdetailSequence,omitempty"`
+	// SubdetailSequenceElement contains element extensions for each subdetailSequence.
+	SubdetailSequenceElement []dt.Element `json:"_subdetailSequence,omitempty"`
 	// UnitPrice If the item is not a group then this is the fee for the product or service, otherwise this is the total of the fees for the details of the group.
 	UnitPrice *dt.Money `json:"unitPrice,omitempty"`
 }
@@ -390,8 +501,8 @@ func (r ClaimResponseAddItem) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Serviced != nil {
-		vData, err := json.Marshal(r.Serviced)
+	if r.Location != nil {
+		vData, err := json.Marshal(r.Location)
 		if err != nil {
 			return nil, err
 		}
@@ -403,8 +514,8 @@ func (r ClaimResponseAddItem) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Location != nil {
-		vData, err := json.Marshal(r.Location)
+	if r.Serviced != nil {
+		vData, err := json.Marshal(r.Serviced)
 		if err != nil {
 			return nil, err
 		}
@@ -440,6 +551,47 @@ func (r *ClaimResponseAddItem) UnmarshalJSON(data []byte) error {
 	}
 	if servicedVal.Date != nil || servicedVal.Period != nil {
 		r.Serviced = &servicedVal
+	}
+	return nil
+}
+
+// ClaimResponseAddItemServiced represents a polymorphic choice type in FHIR.
+type ClaimResponseAddItemServiced struct {
+	Date   *string    `json:"servicedDate,omitempty"`   // The date or dates when the service or product was supplied, performed or completed.
+	Period *dt.Period `json:"servicedPeriod,omitempty"` // The date or dates when the service or product was supplied, performed or completed.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ClaimResponseAddItemServiced.
+func (v ClaimResponseAddItemServiced) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Date != nil {
+		m["servicedDate"] = v.Date
+	}
+	if v.Period != nil {
+		m["servicedPeriod"] = v.Period
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ClaimResponseAddItemServiced.
+func (v *ClaimResponseAddItemServiced) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["servicedDate"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling servicedDate: %w", err)
+		}
+		v.Date = &val
+	}
+	if d, ok := raw["servicedPeriod"]; ok {
+		var val dt.Period
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling servicedPeriod: %w", err)
+		}
+		v.Period = &val
 	}
 	return nil
 }
@@ -496,51 +648,12 @@ func (v *ClaimResponseAddItemLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// ClaimResponseAddItemServiced represents a polymorphic choice type in FHIR.
-type ClaimResponseAddItemServiced struct {
-	Date   *string    `json:"servicedDate,omitempty"`   // The date or dates when the service or product was supplied, performed or completed.
-	Period *dt.Period `json:"servicedPeriod,omitempty"` // The date or dates when the service or product was supplied, performed or completed.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ClaimResponseAddItemServiced.
-func (v ClaimResponseAddItemServiced) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Date != nil {
-		m["servicedDate"] = v.Date
-	}
-	if v.Period != nil {
-		m["servicedPeriod"] = v.Period
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ClaimResponseAddItemServiced.
-func (v *ClaimResponseAddItemServiced) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["servicedDate"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling servicedDate: %w", err)
-		}
-		v.Date = &val
-	}
-	if d, ok := raw["servicedPeriod"]; ok {
-		var val dt.Period
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling servicedPeriod: %w", err)
-		}
-		v.Period = &val
-	}
-	return nil
-}
-
 // ClaimResponseAdjudication This resource provides the adjudication details from the processing of a Claim resource.
 type ClaimResponseAdjudication struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -553,12 +666,16 @@ type ClaimResponseAdjudication struct {
 	Reason *dt.CodeableConcept `json:"reason,omitempty"`
 	// Value A non-monetary value associated with the category. Mutually exclusive to the amount element above.
 	Value *float64 `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *dt.Element `json:"_value,omitempty"`
 }
 
 // ClaimResponseDetail This resource provides the adjudication details from the processing of a Claim resource.
 type ClaimResponseDetail struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -567,8 +684,12 @@ type ClaimResponseDetail struct {
 	Adjudication []ClaimResponseAdjudication `json:"adjudication,omitempty"`
 	// DetailSequence A number to uniquely reference the claim detail entry.
 	DetailSequence *uint32 `json:"detailSequence,omitempty"`
+	// DetailSequenceElement contains element extensions for detailSequence.
+	DetailSequenceElement *dt.Element `json:"_detailSequence,omitempty"`
 	// NoteNumber The numbers associated with notes below which apply to the adjudication of this item.
 	NoteNumber []uint32 `json:"noteNumber,omitempty"`
+	// NoteNumberElement contains element extensions for each noteNumber.
+	NoteNumberElement []dt.Element `json:"_noteNumber,omitempty"`
 	// SubDetail A sub-detail adjudication of a simple product or service.
 	SubDetail []ClaimResponseSubDetail `json:"subDetail,omitempty"`
 }
@@ -577,6 +698,8 @@ type ClaimResponseDetail struct {
 type ClaimResponseDetail1 struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -585,12 +708,16 @@ type ClaimResponseDetail1 struct {
 	Adjudication []ClaimResponseAdjudication `json:"adjudication,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
 	Factor *float64 `json:"factor,omitempty"`
+	// FactorElement contains element extensions for factor.
+	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
 	Modifier []dt.CodeableConcept `json:"modifier,omitempty"`
 	// Net The quantity times the unit price for an additional service or product or charge.
 	Net *dt.Money `json:"net,omitempty"`
 	// NoteNumber The numbers associated with notes below which apply to the adjudication of this item.
 	NoteNumber []uint32 `json:"noteNumber,omitempty"`
+	// NoteNumberElement contains element extensions for each noteNumber.
+	NoteNumberElement []dt.Element `json:"_noteNumber,omitempty"`
 	// ProductOrService When the value is a group code then this item collects a set of related claim details, otherwise this contains the product, service, drug or other billing code for the item.
 	ProductOrService dt.CodeableConcept `json:"productOrService"`
 	// Quantity The number of repetitions of a service or product.
@@ -605,6 +732,8 @@ type ClaimResponseDetail1 struct {
 type ClaimResponseError struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -613,36 +742,52 @@ type ClaimResponseError struct {
 	Code dt.CodeableConcept `json:"code"`
 	// DetailSequence The sequence number of the detail within the line item submitted which contains the error. This value is omitted when the error occurs outside of the item structure.
 	DetailSequence *uint32 `json:"detailSequence,omitempty"`
+	// DetailSequenceElement contains element extensions for detailSequence.
+	DetailSequenceElement *dt.Element `json:"_detailSequence,omitempty"`
 	// ItemSequence The sequence number of the line item submitted which contains the error. This value is omitted when the error occurs outside of the item structure.
 	ItemSequence *uint32 `json:"itemSequence,omitempty"`
+	// ItemSequenceElement contains element extensions for itemSequence.
+	ItemSequenceElement *dt.Element `json:"_itemSequence,omitempty"`
 	// SubDetailSequence The sequence number of the sub-detail within the detail within the line item submitted which contains the error. This value is omitted when the error occurs outside of the item structure.
 	SubDetailSequence *uint32 `json:"subDetailSequence,omitempty"`
+	// SubDetailSequenceElement contains element extensions for subDetailSequence.
+	SubDetailSequenceElement *dt.Element `json:"_subDetailSequence,omitempty"`
 }
 
 // ClaimResponseInsurance This resource provides the adjudication details from the processing of a Claim resource.
 type ClaimResponseInsurance struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// BusinessArrangement A business agreement number established between the provider and the insurer for special business processing purposes.
 	BusinessArrangement *string `json:"businessArrangement,omitempty"`
+	// BusinessArrangementElement contains element extensions for businessArrangement.
+	BusinessArrangementElement *dt.Element `json:"_businessArrangement,omitempty"`
 	// ClaimResponse The result of the adjudication of the line items for the Coverage specified in this insurance.
 	ClaimResponse *dt.Reference `json:"claimResponse,omitempty"`
 	// Coverage Reference to the insurance card level information contained in the Coverage resource. The coverage issuing insurer will use these details to locate the patient's actual coverage within the insurer'...
 	Coverage dt.Reference `json:"coverage"`
 	// Focal A flag to indicate that this Coverage is to be used for adjudication of this claim when set to true.
 	Focal *bool `json:"focal,omitempty"`
+	// FocalElement contains element extensions for focal.
+	FocalElement *dt.Element `json:"_focal,omitempty"`
 	// Sequence A number to uniquely identify insurance entries and provide a sequence of coverages to convey coordination of benefit order.
 	Sequence *uint32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 }
 
 // ClaimResponseItem This resource provides the adjudication details from the processing of a Claim resource.
 type ClaimResponseItem struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -653,14 +798,20 @@ type ClaimResponseItem struct {
 	Detail []ClaimResponseDetail `json:"detail,omitempty"`
 	// ItemSequence A number to uniquely reference the claim item entries.
 	ItemSequence *uint32 `json:"itemSequence,omitempty"`
+	// ItemSequenceElement contains element extensions for itemSequence.
+	ItemSequenceElement *dt.Element `json:"_itemSequence,omitempty"`
 	// NoteNumber The numbers associated with notes below which apply to the adjudication of this item.
 	NoteNumber []uint32 `json:"noteNumber,omitempty"`
+	// NoteNumberElement contains element extensions for each noteNumber.
+	NoteNumberElement []dt.Element `json:"_noteNumber,omitempty"`
 }
 
 // ClaimResponsePayment This resource provides the adjudication details from the processing of a Claim resource.
 type ClaimResponsePayment struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -675,6 +826,8 @@ type ClaimResponsePayment struct {
 	Amount dt.Money `json:"amount"`
 	// Date Estimated date the payment will be issued or the actual issue date of payment.
 	Date *dt.Date `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Type Whether this represents partial or complete payment of the benefits payable.
 	Type dt.CodeableConcept `json:"type"`
 }
@@ -683,24 +836,34 @@ type ClaimResponsePayment struct {
 type ClaimResponseProcessNote struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Language A code to define the language used in the text of the note.
 	Language *dt.CodeableConcept `json:"language,omitempty"`
 	// Text The explanation or description associated with the processing.
 	Text *string `json:"text,omitempty"`
+	// TextElement contains element extensions for text.
+	TextElement *dt.Element `json:"_text,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Number A number to uniquely identify a note entry.
 	Number *uint32 `json:"number,omitempty"`
+	// NumberElement contains element extensions for number.
+	NumberElement *dt.Element `json:"_number,omitempty"`
 	// Type The business purpose of the note text.
 	Type *ClaimResponseProcessNoteType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }
 
 // ClaimResponseSubDetail This resource provides the adjudication details from the processing of a Claim resource.
 type ClaimResponseSubDetail struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -709,14 +872,20 @@ type ClaimResponseSubDetail struct {
 	Adjudication []ClaimResponseAdjudication `json:"adjudication,omitempty"`
 	// NoteNumber The numbers associated with notes below which apply to the adjudication of this item.
 	NoteNumber []uint32 `json:"noteNumber,omitempty"`
+	// NoteNumberElement contains element extensions for each noteNumber.
+	NoteNumberElement []dt.Element `json:"_noteNumber,omitempty"`
 	// SubDetailSequence A number to uniquely reference the claim sub-detail entry.
 	SubDetailSequence *uint32 `json:"subDetailSequence,omitempty"`
+	// SubDetailSequenceElement contains element extensions for subDetailSequence.
+	SubDetailSequenceElement *dt.Element `json:"_subDetailSequence,omitempty"`
 }
 
 // ClaimResponseSubDetail1 This resource provides the adjudication details from the processing of a Claim resource.
 type ClaimResponseSubDetail1 struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -725,12 +894,16 @@ type ClaimResponseSubDetail1 struct {
 	Adjudication []ClaimResponseAdjudication `json:"adjudication,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
 	Factor *float64 `json:"factor,omitempty"`
+	// FactorElement contains element extensions for factor.
+	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
 	Modifier []dt.CodeableConcept `json:"modifier,omitempty"`
 	// Net The quantity times the unit price for an additional service or product or charge.
 	Net *dt.Money `json:"net,omitempty"`
 	// NoteNumber The numbers associated with notes below which apply to the adjudication of this item.
 	NoteNumber []uint32 `json:"noteNumber,omitempty"`
+	// NoteNumberElement contains element extensions for each noteNumber.
+	NoteNumberElement []dt.Element `json:"_noteNumber,omitempty"`
 	// ProductOrService When the value is a group code then this item collects a set of related claim details, otherwise this contains the product, service, drug or other billing code for the item.
 	ProductOrService dt.CodeableConcept `json:"productOrService"`
 	// Quantity The number of repetitions of a service or product.
@@ -743,6 +916,8 @@ type ClaimResponseSubDetail1 struct {
 type ClaimResponseTotal struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

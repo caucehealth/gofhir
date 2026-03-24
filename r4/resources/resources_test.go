@@ -27,35 +27,13 @@ func loadTestData(t *testing.T, filename string) []byte {
 }
 
 // normalizeJSON re-marshals JSON to canonical form for comparison.
-// Strips underscore-prefixed element extension keys (e.g. _birthDate)
-// since our library doesn't support them yet.
 func normalizeJSON(t *testing.T, data []byte) map[string]any {
 	t.Helper()
 	var m map[string]any
 	if err := json.Unmarshal(data, &m); err != nil {
 		t.Fatalf("normalizeJSON: %v", err)
 	}
-	stripUnderscoreKeys(m)
 	return m
-}
-
-func stripUnderscoreKeys(m map[string]any) {
-	for k, v := range m {
-		if strings.HasPrefix(k, "_") {
-			delete(m, k)
-			continue
-		}
-		switch val := v.(type) {
-		case map[string]any:
-			stripUnderscoreKeys(val)
-		case []any:
-			for _, item := range val {
-				if sub, ok := item.(map[string]any); ok {
-					stripUnderscoreKeys(sub)
-				}
-			}
-		}
-	}
 }
 
 // assertJSONRoundTrip verifies unmarshal→marshal→unmarshal produces equivalent JSON.
@@ -685,6 +663,48 @@ func TestEmptyStringFieldOmitted(t *testing.T) {
 // Negative / malformed input tests
 // ============================================================================
 
+func TestUnknownFieldsPreserved(t *testing.T) {
+	input := `{
+		"resourceType": "Patient",
+		"id": "test",
+		"gender": "male",
+		"customField": "hello",
+		"anotherUnknown": {"nested": true}
+	}`
+
+	var patient resources.Patient
+	if err := json.Unmarshal([]byte(input), &patient); err != nil {
+		t.Fatal(err)
+	}
+
+	// Known fields parsed normally
+	if patient.Gender == nil || string(*patient.Gender) != "male" {
+		t.Error("gender should be male")
+	}
+
+	// Unknown fields captured in Extra
+	if len(patient.Extra) != 2 {
+		t.Fatalf("expected 2 extra fields, got %d: %v", len(patient.Extra), patient.Extra)
+	}
+	if string(patient.Extra["customField"]) != `"hello"` {
+		t.Errorf("customField should be \"hello\", got %s", patient.Extra["customField"])
+	}
+
+	// Round-trip preserves unknown fields
+	out, err := json.Marshal(&patient)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var m map[string]json.RawMessage
+	json.Unmarshal(out, &m)
+	if _, ok := m["customField"]; !ok {
+		t.Error("customField should survive round-trip")
+	}
+	if _, ok := m["anotherUnknown"]; !ok {
+		t.Error("anotherUnknown should survive round-trip")
+	}
+}
+
 func TestInvalidJSON(t *testing.T) {
 	var p resources.Patient
 	err := json.Unmarshal([]byte(`{not valid json}`), &p)
@@ -814,6 +834,45 @@ func TestObservationBuilderWithEnum(t *testing.T) {
 	}
 }
 
+func TestBuildFailsOnMissingRequired(t *testing.T) {
+	// Observation requires "code" (1..1)
+	_, err := resources.NewObservation().
+		WithStatus(resources.ObservationStatusFinal).
+		Build()
+	if err == nil {
+		t.Error("Observation.Build() should fail when 'code' is not set")
+	}
+	if err != nil && !strings.Contains(err.Error(), "code") {
+		t.Errorf("error should mention 'code', got: %v", err)
+	}
+
+	// Setting code should make it pass
+	_, err = resources.NewObservation().
+		WithStatus(resources.ObservationStatusFinal).
+		WithCode("http://loinc.org", "1234-5", "Test").
+		Build()
+	if err != nil {
+		t.Errorf("should succeed with code set: %v", err)
+	}
+
+	// Condition requires "subject" (1..1)
+	_, err = resources.NewCondition().
+		WithCode("http://snomed.info/sct", "386661006", "Fever").
+		Build()
+	if err == nil {
+		t.Error("Condition.Build() should fail when 'subject' is not set")
+	}
+
+	// Setting subject should make it pass
+	_, err = resources.NewCondition().
+		WithCode("http://snomed.info/sct", "386661006", "Fever").
+		WithSubject("Patient/1").
+		Build()
+	if err != nil {
+		t.Errorf("should succeed with subject set: %v", err)
+	}
+}
+
 func TestMedicationRequestBuilderWithCode(t *testing.T) {
 	mr, err := resources.NewMedicationRequest().
 		WithStatus(dt.Code("active")).
@@ -890,5 +949,144 @@ func TestMedicationRequestBackboneElements(t *testing.T) {
 	dosage := mr.DosageInstruction[0]
 	if dosage.Text == nil {
 		t.Error("dosage.text should be present")
+	}
+}
+
+// ============================================================================
+// Element extension tests (_field companions)
+// ============================================================================
+
+func TestElementExtensionRoundTrip(t *testing.T) {
+	// _birthDate carries an extension on the birthDate primitive
+	input := `{
+		"resourceType": "Patient",
+		"id": "elem-ext-test",
+		"birthDate": "1974-12-25",
+		"_birthDate": {
+			"extension": [{
+				"url": "http://hl7.org/fhir/StructureDefinition/patient-birthTime",
+				"valueDateTime": "1974-12-25T14:35:45-05:00"
+			}]
+		}
+	}`
+
+	var patient resources.Patient
+	if err := json.Unmarshal([]byte(input), &patient); err != nil {
+		t.Fatal(err)
+	}
+
+	// Verify the value parsed
+	if patient.BirthDate == nil || string(*patient.BirthDate) != "1974-12-25" {
+		t.Error("birthDate value should be 1974-12-25")
+	}
+
+	// Verify the element extension parsed
+	if patient.BirthDateElement == nil {
+		t.Fatal("_birthDate element should be present")
+	}
+	if len(patient.BirthDateElement.Extension) != 1 {
+		t.Fatalf("_birthDate should have 1 extension, got %d", len(patient.BirthDateElement.Extension))
+	}
+	ext := patient.BirthDateElement.Extension[0]
+	if string(ext.Url) != "http://hl7.org/fhir/StructureDefinition/patient-birthTime" {
+		t.Error("extension URL mismatch")
+	}
+	if ext.ValueDateTime == nil || string(*ext.ValueDateTime) != "1974-12-25T14:35:45-05:00" {
+		t.Error("extension valueDateTime mismatch")
+	}
+
+	// Round-trip
+	out, err := json.Marshal(&patient)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Verify _birthDate is in the output JSON
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(out, &m); err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := m["_birthDate"]; !ok {
+		t.Error("_birthDate should be present in marshaled JSON")
+	}
+	if _, ok := m["birthDate"]; !ok {
+		t.Error("birthDate should be present in marshaled JSON")
+	}
+
+	// Re-parse and verify extension survived
+	var reparsed resources.Patient
+	if err := json.Unmarshal(out, &reparsed); err != nil {
+		t.Fatal(err)
+	}
+	if reparsed.BirthDateElement == nil || len(reparsed.BirthDateElement.Extension) != 1 {
+		t.Error("_birthDate extension should survive round-trip")
+	}
+}
+
+func TestElementExtensionWithId(t *testing.T) {
+	input := `{
+		"resourceType": "Patient",
+		"gender": "male",
+		"_gender": {
+			"id": "gender-element-1",
+			"extension": [{
+				"url": "http://example.org/original-coding",
+				"valueCode": "M"
+			}]
+		}
+	}`
+
+	var patient resources.Patient
+	if err := json.Unmarshal([]byte(input), &patient); err != nil {
+		t.Fatal(err)
+	}
+
+	if patient.GenderElement == nil {
+		t.Fatal("_gender element should be present")
+	}
+	if patient.GenderElement.Id == nil || *patient.GenderElement.Id != "gender-element-1" {
+		t.Error("element id should be gender-element-1")
+	}
+	if len(patient.GenderElement.Extension) != 1 {
+		t.Fatal("should have 1 extension")
+	}
+
+	// Round-trip
+	out, _ := json.Marshal(&patient)
+	var reparsed resources.Patient
+	json.Unmarshal(out, &reparsed)
+	if reparsed.GenderElement == nil || reparsed.GenderElement.Id == nil || *reparsed.GenderElement.Id != "gender-element-1" {
+		t.Error("element id should survive round-trip")
+	}
+}
+
+func TestHL7PatientElementExtensions(t *testing.T) {
+	// The official HL7 patient example has _birthDate — verify it round-trips
+	// WITHOUT stripping underscore keys
+	data := loadTestData(t, "patient-example.json")
+
+	var patient resources.Patient
+	if err := json.Unmarshal(data, &patient); err != nil {
+		t.Fatal(err)
+	}
+
+	// Verify _birthDate was parsed
+	if patient.BirthDateElement == nil {
+		t.Fatal("_birthDate from HL7 example should be parsed")
+	}
+	if len(patient.BirthDateElement.Extension) == 0 {
+		t.Fatal("_birthDate should have extensions")
+	}
+
+	// Marshal and verify _birthDate is in output
+	out, err := json.Marshal(&patient)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var m map[string]json.RawMessage
+	json.Unmarshal(out, &m)
+	if _, ok := m["_birthDate"]; !ok {
+		t.Error("_birthDate should be present in marshaled output of HL7 example")
 	}
 }

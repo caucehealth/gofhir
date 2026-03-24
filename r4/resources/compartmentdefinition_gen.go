@@ -17,12 +17,18 @@ type CompartmentDefinition struct {
 	ResourceType string `json:"resourceType"` // Always "CompartmentDefinition"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -33,39 +39,77 @@ type CompartmentDefinition struct {
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The status of this compartment definition. Enables tracking the life-cycle of the content.
 	Status *CompartmentDefinitionStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Code Which compartment this definition describes.
 	Code *CompartmentDefinitionCode `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Date The date  (and optionally time) when the compartment definition was published. The date must change when the business version changes and it must change if the status code changes. In addition, it ...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description A free text natural language description of the compartment definition from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Experimental A Boolean value to indicate that this compartment definition is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// Name A natural language name identifying the compartment definition. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Publisher The name of the organization or individual that published the compartment definition.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Purpose Explanation of why this compartment definition is needed and why it has been designed as it has.
 	Purpose *dt.Markdown `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for purpose.
+	PurposeElement *dt.Element `json:"_purpose,omitempty"`
 	// Resource Information about how a resource is related to the compartment.
 	Resource []CompartmentDefinitionResource `json:"resource,omitempty"`
 	// Search Whether the search syntax is supported,.
 	Search *bool `json:"search,omitempty"`
+	// SearchElement contains element extensions for search.
+	SearchElement *dt.Element `json:"_search,omitempty"`
 	// Url An absolute URI that is used to identify this compartment definition when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be glo...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the compartment definition when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the com...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for CompartmentDefinition.
 func (r CompartmentDefinition) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "CompartmentDefinition"
 	type Alias CompartmentDefinition
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for CompartmentDefinition.
@@ -76,148 +120,187 @@ func (r *CompartmentDefinition) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = CompartmentDefinition(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_code", "_contact", "_contained", "_date", "_description", "_experimental", "_extension", "_id", "_implicitRules", "_language", "_meta", "_modifierExtension", "_name", "_publisher", "_purpose", "_resource", "_search", "_status", "_text", "_url", "_useContext", "_version", "code", "contact", "contained", "date", "description", "experimental", "extension", "id", "implicitRules", "language", "meta", "modifierExtension", "name", "publisher", "purpose", "resource", "resourceType", "search", "status", "text", "url", "useContext", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // CompartmentDefinitionBuilder provides a fluent API for constructing CompartmentDefinition resources.
 type CompartmentDefinitionBuilder struct {
-	resource CompartmentDefinition
+	resource  CompartmentDefinition
+	fieldsSet map[string]bool
 }
 
 // NewCompartmentDefinition creates a new CompartmentDefinitionBuilder for building a CompartmentDefinition resource.
 func NewCompartmentDefinition() *CompartmentDefinitionBuilder {
-	return &CompartmentDefinitionBuilder{resource: CompartmentDefinition{ResourceType: "CompartmentDefinition"}}
+	return &CompartmentDefinitionBuilder{resource: CompartmentDefinition{ResourceType: "CompartmentDefinition"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *CompartmentDefinitionBuilder) WithId(v dt.ID) *CompartmentDefinitionBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *CompartmentDefinitionBuilder) WithMeta(v dt.Meta) *CompartmentDefinitionBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *CompartmentDefinitionBuilder) WithImplicitRules(v dt.URI) *CompartmentDefinitionBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *CompartmentDefinitionBuilder) WithLanguage(v dt.Code) *CompartmentDefinitionBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *CompartmentDefinitionBuilder) WithText(v dt.Narrative) *CompartmentDefinitionBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *CompartmentDefinitionBuilder) WithContained(v json.RawMessage) *CompartmentDefinitionBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *CompartmentDefinitionBuilder) WithExtension(v dt.Extension) *CompartmentDefinitionBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *CompartmentDefinitionBuilder) WithModifierExtension(v dt.Extension) *CompartmentDefinitionBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *CompartmentDefinitionBuilder) WithStatus(v CompartmentDefinitionStatus) *CompartmentDefinitionBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *CompartmentDefinitionBuilder) WithCode(v CompartmentDefinitionCode) *CompartmentDefinitionBuilder {
 	b.resource.Code = &v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *CompartmentDefinitionBuilder) WithContact(v dt.ContactDetail) *CompartmentDefinitionBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *CompartmentDefinitionBuilder) WithDate(v dt.DateTime) *CompartmentDefinitionBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *CompartmentDefinitionBuilder) WithDescription(v dt.Markdown) *CompartmentDefinitionBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *CompartmentDefinitionBuilder) WithExperimental(v bool) *CompartmentDefinitionBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *CompartmentDefinitionBuilder) WithName(v string) *CompartmentDefinitionBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *CompartmentDefinitionBuilder) WithPublisher(v string) *CompartmentDefinitionBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithPurpose sets the purpose field.
 func (b *CompartmentDefinitionBuilder) WithPurpose(v dt.Markdown) *CompartmentDefinitionBuilder {
 	b.resource.Purpose = &v
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
 // WithResource adds an item to the resource field.
 func (b *CompartmentDefinitionBuilder) WithResource(v CompartmentDefinitionResource) *CompartmentDefinitionBuilder {
 	b.resource.Resource = append(b.resource.Resource, v)
+	b.fieldsSet["resource"] = true
 	return b
 }
 
 // WithSearch sets the search field.
 func (b *CompartmentDefinitionBuilder) WithSearch(v bool) *CompartmentDefinitionBuilder {
 	b.resource.Search = &v
+	b.fieldsSet["search"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *CompartmentDefinitionBuilder) WithUrl(v dt.URI) *CompartmentDefinitionBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *CompartmentDefinitionBuilder) WithUseContext(v dt.UsageContext) *CompartmentDefinitionBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *CompartmentDefinitionBuilder) WithVersion(v string) *CompartmentDefinitionBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -232,14 +315,22 @@ func (b *CompartmentDefinitionBuilder) Build() (*CompartmentDefinition, error) {
 type CompartmentDefinitionResource struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code The name of a resource supported by the server.
 	Code *dt.Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Documentation Additional documentation about the resource and compartment.
 	Documentation *string `json:"documentation,omitempty"`
+	// DocumentationElement contains element extensions for documentation.
+	DocumentationElement *dt.Element `json:"_documentation,omitempty"`
 	// Param The name of a search parameter that represents the link to the compartment. More than one may be listed because a resource may be linked to a compartment in more than one way,.
 	Param []string `json:"param,omitempty"`
+	// ParamElement contains element extensions for each param.
+	ParamElement []dt.Element `json:"_param,omitempty"`
 }

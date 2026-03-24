@@ -18,12 +18,18 @@ type Task struct {
 	ResourceType string `json:"resourceType"` // Always "Task"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,8 +42,12 @@ type Task struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The current status of the task.
 	Status *TaskStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// AuthoredOn The date and time this task was created.
 	AuthoredOn *dt.DateTime `json:"authoredOn,omitempty"`
+	// AuthoredOnElement contains element extensions for authoredOn.
+	AuthoredOnElement *dt.Element `json:"_authoredOn,omitempty"`
 	// BasedOn BasedOn refers to a higher-level authorization that triggered the creation of the task.  It references a "request" resource such as a ServiceRequest, MedicationRequest, ServiceRequest, CarePlan, et...
 	BasedOn []dt.Reference `json:"basedOn,omitempty"`
 	// BusinessStatus Contains business-specific nuances of the business state.
@@ -46,6 +56,8 @@ type Task struct {
 	Code *dt.CodeableConcept `json:"code,omitempty"`
 	// Description A free-text description of what is to be performed.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Encounter The healthcare event  (e.g. a patient and healthcare provider interaction) during which this task was created.
 	Encounter *dt.Reference `json:"encounter,omitempty"`
 	// ExecutionPeriod Identifies the time action was first taken against the task (start) and/or the time final action was taken against the task prior to marking it as completed (end).
@@ -60,14 +72,22 @@ type Task struct {
 	Input []TaskInput `json:"input,omitempty"`
 	// InstantiatesCanonical The URL pointing to a *FHIR*-defined protocol, guideline, orderset or other definition that is adhered to in whole or in part by this Task.
 	InstantiatesCanonical *dt.Canonical `json:"instantiatesCanonical,omitempty"`
+	// InstantiatesCanonicalElement contains element extensions for instantiatesCanonical.
+	InstantiatesCanonicalElement *dt.Element `json:"_instantiatesCanonical,omitempty"`
 	// InstantiatesUri The URL pointing to an *externally* maintained  protocol, guideline, orderset or other definition that is adhered to in whole or in part by this Task.
 	InstantiatesUri *dt.URI `json:"instantiatesUri,omitempty"`
+	// InstantiatesUriElement contains element extensions for instantiatesUri.
+	InstantiatesUriElement *dt.Element `json:"_instantiatesUri,omitempty"`
 	// Insurance Insurance plans, coverage extensions, pre-authorizations and/or pre-determinations that may be relevant to the Task.
 	Insurance []dt.Reference `json:"insurance,omitempty"`
 	// Intent Indicates the "level" of actionability associated with the Task, i.e. i+R[9]Cs this a proposed task, a planned task, an actionable task, etc.
 	Intent *TaskIntent `json:"intent,omitempty"`
+	// IntentElement contains element extensions for intent.
+	IntentElement *dt.Element `json:"_intent,omitempty"`
 	// LastModified The date and time of last modification to this task.
 	LastModified *dt.DateTime `json:"lastModified,omitempty"`
+	// LastModifiedElement contains element extensions for lastModified.
+	LastModifiedElement *dt.Element `json:"_lastModified,omitempty"`
 	// Location Principal physical location where the this task is performed.
 	Location *dt.Reference `json:"location,omitempty"`
 	// Note Free-text information captured about the task as it progresses.
@@ -82,6 +102,8 @@ type Task struct {
 	PerformerType []dt.CodeableConcept `json:"performerType,omitempty"`
 	// Priority Indicates how quickly the Task should be addressed with respect to other requests.
 	Priority *dt.Code `json:"priority,omitempty"`
+	// PriorityElement contains element extensions for priority.
+	PriorityElement *dt.Element `json:"_priority,omitempty"`
 	// ReasonCode A description or code indicating why this task needs to be performed.
 	ReasonCode *dt.CodeableConcept `json:"reasonCode,omitempty"`
 	// ReasonReference A resource reference indicating why this task needs to be performed.
@@ -94,13 +116,29 @@ type Task struct {
 	Restriction *TaskRestriction `json:"restriction,omitempty"`
 	// StatusReason An explanation as to why this task is held, failed, was refused, etc.
 	StatusReason *dt.CodeableConcept `json:"statusReason,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Task.
 func (r Task) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Task"
 	type Alias Task
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Task.
@@ -111,250 +149,306 @@ func (r *Task) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Task(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_authoredOn", "_basedOn", "_businessStatus", "_code", "_contained", "_description", "_encounter", "_executionPeriod", "_extension", "_focus", "_for", "_groupIdentifier", "_id", "_identifier", "_implicitRules", "_input", "_instantiatesCanonical", "_instantiatesUri", "_insurance", "_intent", "_language", "_lastModified", "_location", "_meta", "_modifierExtension", "_note", "_output", "_owner", "_partOf", "_performerType", "_priority", "_reasonCode", "_reasonReference", "_relevantHistory", "_requester", "_restriction", "_status", "_statusReason", "_text", "authoredOn", "basedOn", "businessStatus", "code", "contained", "description", "encounter", "executionPeriod", "extension", "focus", "for", "groupIdentifier", "id", "identifier", "implicitRules", "input", "instantiatesCanonical", "instantiatesUri", "insurance", "intent", "language", "lastModified", "location", "meta", "modifierExtension", "note", "output", "owner", "partOf", "performerType", "priority", "reasonCode", "reasonReference", "relevantHistory", "requester", "resourceType", "restriction", "status", "statusReason", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // TaskBuilder provides a fluent API for constructing Task resources.
 type TaskBuilder struct {
-	resource Task
+	resource  Task
+	fieldsSet map[string]bool
 }
 
 // NewTask creates a new TaskBuilder for building a Task resource.
 func NewTask() *TaskBuilder {
-	return &TaskBuilder{resource: Task{ResourceType: "Task"}}
+	return &TaskBuilder{resource: Task{ResourceType: "Task"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *TaskBuilder) WithId(v dt.ID) *TaskBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *TaskBuilder) WithMeta(v dt.Meta) *TaskBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *TaskBuilder) WithImplicitRules(v dt.URI) *TaskBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *TaskBuilder) WithLanguage(v dt.Code) *TaskBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *TaskBuilder) WithText(v dt.Narrative) *TaskBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *TaskBuilder) WithContained(v json.RawMessage) *TaskBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *TaskBuilder) WithExtension(v dt.Extension) *TaskBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *TaskBuilder) WithModifierExtension(v dt.Extension) *TaskBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *TaskBuilder) WithIdentifier(v dt.Identifier) *TaskBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *TaskBuilder) WithStatus(v TaskStatus) *TaskBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAuthoredOn sets the authoredOn field.
 func (b *TaskBuilder) WithAuthoredOn(v dt.DateTime) *TaskBuilder {
 	b.resource.AuthoredOn = &v
+	b.fieldsSet["authoredOn"] = true
 	return b
 }
 
 // WithBasedOn adds an item to the basedOn field.
 func (b *TaskBuilder) WithBasedOn(v dt.Reference) *TaskBuilder {
 	b.resource.BasedOn = append(b.resource.BasedOn, v)
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithBusinessStatus sets the businessStatus field.
 func (b *TaskBuilder) WithBusinessStatus(v dt.CodeableConcept) *TaskBuilder {
 	b.resource.BusinessStatus = &v
+	b.fieldsSet["businessStatus"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *TaskBuilder) WithCode(v dt.CodeableConcept) *TaskBuilder {
 	b.resource.Code = &v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *TaskBuilder) WithDescription(v string) *TaskBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *TaskBuilder) WithEncounter(v dt.Reference) *TaskBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithExecutionPeriod sets the executionPeriod field.
 func (b *TaskBuilder) WithExecutionPeriod(v dt.Period) *TaskBuilder {
 	b.resource.ExecutionPeriod = &v
+	b.fieldsSet["executionPeriod"] = true
 	return b
 }
 
 // WithFocus sets the focus field.
 func (b *TaskBuilder) WithFocus(v dt.Reference) *TaskBuilder {
 	b.resource.Focus = &v
+	b.fieldsSet["focus"] = true
 	return b
 }
 
 // WithFor sets the for field.
 func (b *TaskBuilder) WithFor(v dt.Reference) *TaskBuilder {
 	b.resource.For = &v
+	b.fieldsSet["for"] = true
 	return b
 }
 
 // WithGroupIdentifier sets the groupIdentifier field.
 func (b *TaskBuilder) WithGroupIdentifier(v dt.Identifier) *TaskBuilder {
 	b.resource.GroupIdentifier = &v
+	b.fieldsSet["groupIdentifier"] = true
 	return b
 }
 
 // WithInput adds an item to the input field.
 func (b *TaskBuilder) WithInput(v TaskInput) *TaskBuilder {
 	b.resource.Input = append(b.resource.Input, v)
+	b.fieldsSet["input"] = true
 	return b
 }
 
 // WithInstantiatesCanonical sets the instantiatesCanonical field.
 func (b *TaskBuilder) WithInstantiatesCanonical(v dt.Canonical) *TaskBuilder {
 	b.resource.InstantiatesCanonical = &v
+	b.fieldsSet["instantiatesCanonical"] = true
 	return b
 }
 
 // WithInstantiatesUri sets the instantiatesUri field.
 func (b *TaskBuilder) WithInstantiatesUri(v dt.URI) *TaskBuilder {
 	b.resource.InstantiatesUri = &v
+	b.fieldsSet["instantiatesUri"] = true
 	return b
 }
 
 // WithInsurance adds an item to the insurance field.
 func (b *TaskBuilder) WithInsurance(v dt.Reference) *TaskBuilder {
 	b.resource.Insurance = append(b.resource.Insurance, v)
+	b.fieldsSet["insurance"] = true
 	return b
 }
 
 // WithIntent sets the intent field.
 func (b *TaskBuilder) WithIntent(v TaskIntent) *TaskBuilder {
 	b.resource.Intent = &v
+	b.fieldsSet["intent"] = true
 	return b
 }
 
 // WithLastModified sets the lastModified field.
 func (b *TaskBuilder) WithLastModified(v dt.DateTime) *TaskBuilder {
 	b.resource.LastModified = &v
+	b.fieldsSet["lastModified"] = true
 	return b
 }
 
 // WithLocation sets the location field.
 func (b *TaskBuilder) WithLocation(v dt.Reference) *TaskBuilder {
 	b.resource.Location = &v
+	b.fieldsSet["location"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *TaskBuilder) WithNote(v dt.Annotation) *TaskBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithOutput adds an item to the output field.
 func (b *TaskBuilder) WithOutput(v TaskOutput) *TaskBuilder {
 	b.resource.Output = append(b.resource.Output, v)
+	b.fieldsSet["output"] = true
 	return b
 }
 
 // WithOwner sets the owner field.
 func (b *TaskBuilder) WithOwner(v dt.Reference) *TaskBuilder {
 	b.resource.Owner = &v
+	b.fieldsSet["owner"] = true
 	return b
 }
 
 // WithPartOf adds an item to the partOf field.
 func (b *TaskBuilder) WithPartOf(v dt.Reference) *TaskBuilder {
 	b.resource.PartOf = append(b.resource.PartOf, v)
+	b.fieldsSet["partOf"] = true
 	return b
 }
 
 // WithPerformerType adds an item to the performerType field.
 func (b *TaskBuilder) WithPerformerType(v dt.CodeableConcept) *TaskBuilder {
 	b.resource.PerformerType = append(b.resource.PerformerType, v)
+	b.fieldsSet["performerType"] = true
 	return b
 }
 
 // WithPriority sets the priority field.
 func (b *TaskBuilder) WithPriority(v dt.Code) *TaskBuilder {
 	b.resource.Priority = &v
+	b.fieldsSet["priority"] = true
 	return b
 }
 
 // WithReasonCode sets the reasonCode field.
 func (b *TaskBuilder) WithReasonCode(v dt.CodeableConcept) *TaskBuilder {
 	b.resource.ReasonCode = &v
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithReasonReference sets the reasonReference field.
 func (b *TaskBuilder) WithReasonReference(v dt.Reference) *TaskBuilder {
 	b.resource.ReasonReference = &v
+	b.fieldsSet["reasonReference"] = true
 	return b
 }
 
 // WithRelevantHistory adds an item to the relevantHistory field.
 func (b *TaskBuilder) WithRelevantHistory(v dt.Reference) *TaskBuilder {
 	b.resource.RelevantHistory = append(b.resource.RelevantHistory, v)
+	b.fieldsSet["relevantHistory"] = true
 	return b
 }
 
 // WithRequester sets the requester field.
 func (b *TaskBuilder) WithRequester(v dt.Reference) *TaskBuilder {
 	b.resource.Requester = &v
+	b.fieldsSet["requester"] = true
 	return b
 }
 
 // WithRestriction sets the restriction field.
 func (b *TaskBuilder) WithRestriction(v TaskRestriction) *TaskBuilder {
 	b.resource.Restriction = &v
+	b.fieldsSet["restriction"] = true
 	return b
 }
 
 // WithStatusReason sets the statusReason field.
 func (b *TaskBuilder) WithStatusReason(v dt.CodeableConcept) *TaskBuilder {
 	b.resource.StatusReason = &v
+	b.fieldsSet["statusReason"] = true
 	return b
 }
 
@@ -369,6 +463,8 @@ func (b *TaskBuilder) Build() (*Task, error) {
 type TaskInput struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -997,6 +1093,8 @@ func (v *TaskInputValue) UnmarshalJSON(data []byte) error {
 type TaskOutput struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1625,6 +1723,8 @@ func (v *TaskOutputValue) UnmarshalJSON(data []byte) error {
 type TaskRestriction struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1635,4 +1735,6 @@ type TaskRestriction struct {
 	Recipient []dt.Reference `json:"recipient,omitempty"`
 	// Repetitions Indicates the number of times the requested action should occur.
 	Repetitions *uint32 `json:"repetitions,omitempty"`
+	// RepetitionsElement contains element extensions for repetitions.
+	RepetitionsElement *dt.Element `json:"_repetitions,omitempty"`
 }

@@ -18,12 +18,18 @@ type ExplanationOfBenefit struct {
 	ResourceType string `json:"resourceType"` // Always "ExplanationOfBenefit"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type ExplanationOfBenefit struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the resource instance.
 	Status *ExplanationOfBenefitStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Accident Details of a accident which resulted in injuries which required the products and services listed in the claim.
 	Accident *ExplanationOfBenefitAccident `json:"accident,omitempty"`
 	// AddItem The first-tier service adjudications for payor added product or service lines.
@@ -56,10 +64,14 @@ type ExplanationOfBenefit struct {
 	ClaimResponse *dt.Reference `json:"claimResponse,omitempty"`
 	// Created The date this resource was created.
 	Created *dt.DateTime `json:"created,omitempty"`
+	// CreatedElement contains element extensions for created.
+	CreatedElement *dt.Element `json:"_created,omitempty"`
 	// Diagnosis Information about diagnoses relevant to the claim items.
 	Diagnosis []ExplanationOfBenefitDiagnosis `json:"diagnosis,omitempty"`
 	// Disposition A human readable description of the status of the adjudication.
 	Disposition *string `json:"disposition,omitempty"`
+	// DispositionElement contains element extensions for disposition.
+	DispositionElement *dt.Element `json:"_disposition,omitempty"`
 	// Enterer Individual who created the claim, predetermination or preauthorization.
 	Enterer *dt.Reference `json:"enterer,omitempty"`
 	// Facility Facility where the services were provided.
@@ -82,6 +94,8 @@ type ExplanationOfBenefit struct {
 	OriginalPrescription *dt.Reference `json:"originalPrescription,omitempty"`
 	// Outcome The outcome of the claim, predetermination, or preauthorization processing.
 	Outcome *dt.Code `json:"outcome,omitempty"`
+	// OutcomeElement contains element extensions for outcome.
+	OutcomeElement *dt.Element `json:"_outcome,omitempty"`
 	// Patient The party to whom the professional services and/or products have been supplied or are being considered and for whom actual for forecast reimbursement is sought.
 	Patient dt.Reference `json:"patient"`
 	// Payee The party to be reimbursed for cost of the products and services according to the terms of the policy.
@@ -90,10 +104,14 @@ type ExplanationOfBenefit struct {
 	Payment *ExplanationOfBenefitPayment `json:"payment,omitempty"`
 	// PreAuthRef Reference from the Insurer which is used in later communications which refers to this adjudication.
 	PreAuthRef []string `json:"preAuthRef,omitempty"`
+	// PreAuthRefElement contains element extensions for each preAuthRef.
+	PreAuthRefElement []dt.Element `json:"_preAuthRef,omitempty"`
 	// PreAuthRefPeriod The timeframe during which the supplied preauthorization reference may be quoted on claims to obtain the adjudication as provided.
 	PreAuthRefPeriod []dt.Period `json:"preAuthRefPeriod,omitempty"`
 	// Precedence This indicates the relative order of a series of EOBs related to different coverages for the same suite of services.
 	Precedence *uint32 `json:"precedence,omitempty"`
+	// PrecedenceElement contains element extensions for precedence.
+	PrecedenceElement *dt.Element `json:"_precedence,omitempty"`
 	// Prescription Prescription to support the dispensing of pharmacy, device or vision products.
 	Prescription *dt.Reference `json:"prescription,omitempty"`
 	// Priority The provider-required urgency of processing the request. Typical values include: stat, routine deferred.
@@ -118,13 +136,31 @@ type ExplanationOfBenefit struct {
 	Type dt.CodeableConcept `json:"type"`
 	// Use A code to indicate whether the nature of the request is: to request adjudication of products and services previously rendered; or requesting authorization and adjudication for provision in the futu...
 	Use *dt.Code `json:"use,omitempty"`
+	// UseElement contains element extensions for use.
+	UseElement *dt.Element `json:"_use,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for ExplanationOfBenefit.
 func (r ExplanationOfBenefit) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "ExplanationOfBenefit"
 	type Alias ExplanationOfBenefit
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ExplanationOfBenefit.
@@ -135,322 +171,390 @@ func (r *ExplanationOfBenefit) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ExplanationOfBenefit(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_accident", "_addItem", "_adjudication", "_benefitBalance", "_benefitPeriod", "_billablePeriod", "_careTeam", "_claim", "_claimResponse", "_contained", "_created", "_diagnosis", "_disposition", "_enterer", "_extension", "_facility", "_form", "_formCode", "_fundsReserve", "_fundsReserveRequested", "_id", "_identifier", "_implicitRules", "_insurance", "_insurer", "_item", "_language", "_meta", "_modifierExtension", "_originalPrescription", "_outcome", "_patient", "_payee", "_payment", "_preAuthRef", "_preAuthRefPeriod", "_precedence", "_prescription", "_priority", "_procedure", "_processNote", "_provider", "_referral", "_related", "_status", "_subType", "_supportingInfo", "_text", "_total", "_type", "_use", "accident", "addItem", "adjudication", "benefitBalance", "benefitPeriod", "billablePeriod", "careTeam", "claim", "claimResponse", "contained", "created", "diagnosis", "disposition", "enterer", "extension", "facility", "form", "formCode", "fundsReserve", "fundsReserveRequested", "id", "identifier", "implicitRules", "insurance", "insurer", "item", "language", "meta", "modifierExtension", "originalPrescription", "outcome", "patient", "payee", "payment", "preAuthRef", "preAuthRefPeriod", "precedence", "prescription", "priority", "procedure", "processNote", "provider", "referral", "related", "resourceType", "status", "subType", "supportingInfo", "text", "total", "type", "use":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ExplanationOfBenefitBuilder provides a fluent API for constructing ExplanationOfBenefit resources.
 type ExplanationOfBenefitBuilder struct {
-	resource ExplanationOfBenefit
+	resource  ExplanationOfBenefit
+	fieldsSet map[string]bool
 }
 
 // NewExplanationOfBenefit creates a new ExplanationOfBenefitBuilder for building a ExplanationOfBenefit resource.
 func NewExplanationOfBenefit() *ExplanationOfBenefitBuilder {
-	return &ExplanationOfBenefitBuilder{resource: ExplanationOfBenefit{ResourceType: "ExplanationOfBenefit"}}
+	return &ExplanationOfBenefitBuilder{resource: ExplanationOfBenefit{ResourceType: "ExplanationOfBenefit"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ExplanationOfBenefitBuilder) WithId(v dt.ID) *ExplanationOfBenefitBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ExplanationOfBenefitBuilder) WithMeta(v dt.Meta) *ExplanationOfBenefitBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ExplanationOfBenefitBuilder) WithImplicitRules(v dt.URI) *ExplanationOfBenefitBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ExplanationOfBenefitBuilder) WithLanguage(v dt.Code) *ExplanationOfBenefitBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ExplanationOfBenefitBuilder) WithText(v dt.Narrative) *ExplanationOfBenefitBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ExplanationOfBenefitBuilder) WithContained(v json.RawMessage) *ExplanationOfBenefitBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ExplanationOfBenefitBuilder) WithExtension(v dt.Extension) *ExplanationOfBenefitBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ExplanationOfBenefitBuilder) WithModifierExtension(v dt.Extension) *ExplanationOfBenefitBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ExplanationOfBenefitBuilder) WithIdentifier(v dt.Identifier) *ExplanationOfBenefitBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ExplanationOfBenefitBuilder) WithStatus(v ExplanationOfBenefitStatus) *ExplanationOfBenefitBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAccident sets the accident field.
 func (b *ExplanationOfBenefitBuilder) WithAccident(v ExplanationOfBenefitAccident) *ExplanationOfBenefitBuilder {
 	b.resource.Accident = &v
+	b.fieldsSet["accident"] = true
 	return b
 }
 
 // WithAddItem adds an item to the addItem field.
 func (b *ExplanationOfBenefitBuilder) WithAddItem(v ExplanationOfBenefitAddItem) *ExplanationOfBenefitBuilder {
 	b.resource.AddItem = append(b.resource.AddItem, v)
+	b.fieldsSet["addItem"] = true
 	return b
 }
 
 // WithAdjudication adds an item to the adjudication field.
 func (b *ExplanationOfBenefitBuilder) WithAdjudication(v ExplanationOfBenefitAdjudication) *ExplanationOfBenefitBuilder {
 	b.resource.Adjudication = append(b.resource.Adjudication, v)
+	b.fieldsSet["adjudication"] = true
 	return b
 }
 
 // WithBenefitBalance adds an item to the benefitBalance field.
 func (b *ExplanationOfBenefitBuilder) WithBenefitBalance(v ExplanationOfBenefitBenefitBalance) *ExplanationOfBenefitBuilder {
 	b.resource.BenefitBalance = append(b.resource.BenefitBalance, v)
+	b.fieldsSet["benefitBalance"] = true
 	return b
 }
 
 // WithBenefitPeriod sets the benefitPeriod field.
 func (b *ExplanationOfBenefitBuilder) WithBenefitPeriod(v dt.Period) *ExplanationOfBenefitBuilder {
 	b.resource.BenefitPeriod = &v
+	b.fieldsSet["benefitPeriod"] = true
 	return b
 }
 
 // WithBillablePeriod sets the billablePeriod field.
 func (b *ExplanationOfBenefitBuilder) WithBillablePeriod(v dt.Period) *ExplanationOfBenefitBuilder {
 	b.resource.BillablePeriod = &v
+	b.fieldsSet["billablePeriod"] = true
 	return b
 }
 
 // WithCareTeam adds an item to the careTeam field.
 func (b *ExplanationOfBenefitBuilder) WithCareTeam(v ExplanationOfBenefitCareTeam) *ExplanationOfBenefitBuilder {
 	b.resource.CareTeam = append(b.resource.CareTeam, v)
+	b.fieldsSet["careTeam"] = true
 	return b
 }
 
 // WithClaim sets the claim field.
 func (b *ExplanationOfBenefitBuilder) WithClaim(v dt.Reference) *ExplanationOfBenefitBuilder {
 	b.resource.Claim = &v
+	b.fieldsSet["claim"] = true
 	return b
 }
 
 // WithClaimResponse sets the claimResponse field.
 func (b *ExplanationOfBenefitBuilder) WithClaimResponse(v dt.Reference) *ExplanationOfBenefitBuilder {
 	b.resource.ClaimResponse = &v
+	b.fieldsSet["claimResponse"] = true
 	return b
 }
 
 // WithCreated sets the created field.
 func (b *ExplanationOfBenefitBuilder) WithCreated(v dt.DateTime) *ExplanationOfBenefitBuilder {
 	b.resource.Created = &v
+	b.fieldsSet["created"] = true
 	return b
 }
 
 // WithDiagnosis adds an item to the diagnosis field.
 func (b *ExplanationOfBenefitBuilder) WithDiagnosis(v ExplanationOfBenefitDiagnosis) *ExplanationOfBenefitBuilder {
 	b.resource.Diagnosis = append(b.resource.Diagnosis, v)
+	b.fieldsSet["diagnosis"] = true
 	return b
 }
 
 // WithDisposition sets the disposition field.
 func (b *ExplanationOfBenefitBuilder) WithDisposition(v string) *ExplanationOfBenefitBuilder {
 	b.resource.Disposition = &v
+	b.fieldsSet["disposition"] = true
 	return b
 }
 
 // WithEnterer sets the enterer field.
 func (b *ExplanationOfBenefitBuilder) WithEnterer(v dt.Reference) *ExplanationOfBenefitBuilder {
 	b.resource.Enterer = &v
+	b.fieldsSet["enterer"] = true
 	return b
 }
 
 // WithFacility sets the facility field.
 func (b *ExplanationOfBenefitBuilder) WithFacility(v dt.Reference) *ExplanationOfBenefitBuilder {
 	b.resource.Facility = &v
+	b.fieldsSet["facility"] = true
 	return b
 }
 
 // WithForm sets the form field.
 func (b *ExplanationOfBenefitBuilder) WithForm(v dt.Attachment) *ExplanationOfBenefitBuilder {
 	b.resource.Form = &v
+	b.fieldsSet["form"] = true
 	return b
 }
 
 // WithFormCode sets the formCode field.
 func (b *ExplanationOfBenefitBuilder) WithFormCode(v dt.CodeableConcept) *ExplanationOfBenefitBuilder {
 	b.resource.FormCode = &v
+	b.fieldsSet["formCode"] = true
 	return b
 }
 
 // WithFundsReserve sets the fundsReserve field.
 func (b *ExplanationOfBenefitBuilder) WithFundsReserve(v dt.CodeableConcept) *ExplanationOfBenefitBuilder {
 	b.resource.FundsReserve = &v
+	b.fieldsSet["fundsReserve"] = true
 	return b
 }
 
 // WithFundsReserveRequested sets the fundsReserveRequested field.
 func (b *ExplanationOfBenefitBuilder) WithFundsReserveRequested(v dt.CodeableConcept) *ExplanationOfBenefitBuilder {
 	b.resource.FundsReserveRequested = &v
+	b.fieldsSet["fundsReserveRequested"] = true
 	return b
 }
 
 // WithInsurance adds an item to the insurance field.
 func (b *ExplanationOfBenefitBuilder) WithInsurance(v ExplanationOfBenefitInsurance) *ExplanationOfBenefitBuilder {
 	b.resource.Insurance = append(b.resource.Insurance, v)
+	b.fieldsSet["insurance"] = true
 	return b
 }
 
 // WithInsurer sets the insurer field.
 func (b *ExplanationOfBenefitBuilder) WithInsurer(v dt.Reference) *ExplanationOfBenefitBuilder {
 	b.resource.Insurer = v
+	b.fieldsSet["insurer"] = true
 	return b
 }
 
 // WithItem adds an item to the item field.
 func (b *ExplanationOfBenefitBuilder) WithItem(v ExplanationOfBenefitItem) *ExplanationOfBenefitBuilder {
 	b.resource.Item = append(b.resource.Item, v)
+	b.fieldsSet["item"] = true
 	return b
 }
 
 // WithOriginalPrescription sets the originalPrescription field.
 func (b *ExplanationOfBenefitBuilder) WithOriginalPrescription(v dt.Reference) *ExplanationOfBenefitBuilder {
 	b.resource.OriginalPrescription = &v
+	b.fieldsSet["originalPrescription"] = true
 	return b
 }
 
 // WithOutcome sets the outcome field.
 func (b *ExplanationOfBenefitBuilder) WithOutcome(v dt.Code) *ExplanationOfBenefitBuilder {
 	b.resource.Outcome = &v
+	b.fieldsSet["outcome"] = true
 	return b
 }
 
 // WithPatient sets the patient field.
 func (b *ExplanationOfBenefitBuilder) WithPatient(v dt.Reference) *ExplanationOfBenefitBuilder {
 	b.resource.Patient = v
+	b.fieldsSet["patient"] = true
 	return b
 }
 
 // WithPayee sets the payee field.
 func (b *ExplanationOfBenefitBuilder) WithPayee(v ExplanationOfBenefitPayee) *ExplanationOfBenefitBuilder {
 	b.resource.Payee = &v
+	b.fieldsSet["payee"] = true
 	return b
 }
 
 // WithPayment sets the payment field.
 func (b *ExplanationOfBenefitBuilder) WithPayment(v ExplanationOfBenefitPayment) *ExplanationOfBenefitBuilder {
 	b.resource.Payment = &v
+	b.fieldsSet["payment"] = true
 	return b
 }
 
 // WithPreAuthRef adds an item to the preAuthRef field.
 func (b *ExplanationOfBenefitBuilder) WithPreAuthRef(v string) *ExplanationOfBenefitBuilder {
 	b.resource.PreAuthRef = append(b.resource.PreAuthRef, v)
+	b.fieldsSet["preAuthRef"] = true
 	return b
 }
 
 // WithPreAuthRefPeriod adds an item to the preAuthRefPeriod field.
 func (b *ExplanationOfBenefitBuilder) WithPreAuthRefPeriod(v dt.Period) *ExplanationOfBenefitBuilder {
 	b.resource.PreAuthRefPeriod = append(b.resource.PreAuthRefPeriod, v)
+	b.fieldsSet["preAuthRefPeriod"] = true
 	return b
 }
 
 // WithPrecedence sets the precedence field.
 func (b *ExplanationOfBenefitBuilder) WithPrecedence(v uint32) *ExplanationOfBenefitBuilder {
 	b.resource.Precedence = &v
+	b.fieldsSet["precedence"] = true
 	return b
 }
 
 // WithPrescription sets the prescription field.
 func (b *ExplanationOfBenefitBuilder) WithPrescription(v dt.Reference) *ExplanationOfBenefitBuilder {
 	b.resource.Prescription = &v
+	b.fieldsSet["prescription"] = true
 	return b
 }
 
 // WithPriority sets the priority field.
 func (b *ExplanationOfBenefitBuilder) WithPriority(v dt.CodeableConcept) *ExplanationOfBenefitBuilder {
 	b.resource.Priority = &v
+	b.fieldsSet["priority"] = true
 	return b
 }
 
 // WithProcedure adds an item to the procedure field.
 func (b *ExplanationOfBenefitBuilder) WithProcedure(v ExplanationOfBenefitProcedure) *ExplanationOfBenefitBuilder {
 	b.resource.Procedure = append(b.resource.Procedure, v)
+	b.fieldsSet["procedure"] = true
 	return b
 }
 
 // WithProcessNote adds an item to the processNote field.
 func (b *ExplanationOfBenefitBuilder) WithProcessNote(v ExplanationOfBenefitProcessNote) *ExplanationOfBenefitBuilder {
 	b.resource.ProcessNote = append(b.resource.ProcessNote, v)
+	b.fieldsSet["processNote"] = true
 	return b
 }
 
 // WithProvider sets the provider field.
 func (b *ExplanationOfBenefitBuilder) WithProvider(v dt.Reference) *ExplanationOfBenefitBuilder {
 	b.resource.Provider = v
+	b.fieldsSet["provider"] = true
 	return b
 }
 
 // WithReferral sets the referral field.
 func (b *ExplanationOfBenefitBuilder) WithReferral(v dt.Reference) *ExplanationOfBenefitBuilder {
 	b.resource.Referral = &v
+	b.fieldsSet["referral"] = true
 	return b
 }
 
 // WithRelated adds an item to the related field.
 func (b *ExplanationOfBenefitBuilder) WithRelated(v ExplanationOfBenefitRelated) *ExplanationOfBenefitBuilder {
 	b.resource.Related = append(b.resource.Related, v)
+	b.fieldsSet["related"] = true
 	return b
 }
 
 // WithSubType sets the subType field.
 func (b *ExplanationOfBenefitBuilder) WithSubType(v dt.CodeableConcept) *ExplanationOfBenefitBuilder {
 	b.resource.SubType = &v
+	b.fieldsSet["subType"] = true
 	return b
 }
 
 // WithSupportingInfo adds an item to the supportingInfo field.
 func (b *ExplanationOfBenefitBuilder) WithSupportingInfo(v ExplanationOfBenefitSupportingInfo) *ExplanationOfBenefitBuilder {
 	b.resource.SupportingInfo = append(b.resource.SupportingInfo, v)
+	b.fieldsSet["supportingInfo"] = true
 	return b
 }
 
 // WithTotal adds an item to the total field.
 func (b *ExplanationOfBenefitBuilder) WithTotal(v ExplanationOfBenefitTotal) *ExplanationOfBenefitBuilder {
 	b.resource.Total = append(b.resource.Total, v)
+	b.fieldsSet["total"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *ExplanationOfBenefitBuilder) WithType(v dt.CodeableConcept) *ExplanationOfBenefitBuilder {
 	b.resource.Type = v
+	b.fieldsSet["type"] = true
 	return b
 }
 
 // WithUse sets the use field.
 func (b *ExplanationOfBenefitBuilder) WithUse(v dt.Code) *ExplanationOfBenefitBuilder {
 	b.resource.Use = &v
+	b.fieldsSet["use"] = true
 	return b
 }
 
@@ -458,8 +562,20 @@ func (b *ExplanationOfBenefitBuilder) WithUse(v dt.Code) *ExplanationOfBenefitBu
 // field (cardinality 1..1) is not set.
 func (b *ExplanationOfBenefitBuilder) Build() (*ExplanationOfBenefit, error) {
 	var missing []string
-	if len(b.resource.Insurance) == 0 {
+	if !b.fieldsSet["insurance"] {
 		missing = append(missing, "insurance")
+	}
+	if !b.fieldsSet["insurer"] {
+		missing = append(missing, "insurer")
+	}
+	if !b.fieldsSet["patient"] {
+		missing = append(missing, "patient")
+	}
+	if !b.fieldsSet["provider"] {
+		missing = append(missing, "provider")
+	}
+	if !b.fieldsSet["type"] {
+		missing = append(missing, "type")
 	}
 	if len(missing) > 0 {
 		return nil, fmt.Errorf("ExplanationOfBenefit: required fields missing: %v", missing)
@@ -472,12 +588,16 @@ func (b *ExplanationOfBenefitBuilder) Build() (*ExplanationOfBenefit, error) {
 type ExplanationOfBenefitAccident struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Date Date of an accident event  related to the products and services contained in the claim.
 	Date *dt.Date `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Location The physical location of the accident event.
 	Location *ExplanationOfBenefitAccidentLocation `json:"-"` // polymorphic
 	// Type The type or context of the accident event for the purposes of selection of potential insurance coverages and determination of coordination between insurers.
@@ -574,6 +694,8 @@ func (v *ExplanationOfBenefitAccidentLocation) UnmarshalJSON(data []byte) error 
 type ExplanationOfBenefitAddItem struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -586,10 +708,16 @@ type ExplanationOfBenefitAddItem struct {
 	Detail []ExplanationOfBenefitDetail1 `json:"detail,omitempty"`
 	// DetailSequence The sequence number of the details within the claim item which this line is intended to replace.
 	DetailSequence []uint32 `json:"detailSequence,omitempty"`
+	// DetailSequenceElement contains element extensions for each detailSequence.
+	DetailSequenceElement []dt.Element `json:"_detailSequence,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
 	Factor *float64 `json:"factor,omitempty"`
+	// FactorElement contains element extensions for factor.
+	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// ItemSequence Claim items which this service line is intended to replace.
 	ItemSequence []uint32 `json:"itemSequence,omitempty"`
+	// ItemSequenceElement contains element extensions for each itemSequence.
+	ItemSequenceElement []dt.Element `json:"_itemSequence,omitempty"`
 	// Location Where the product or service was provided.
 	Location *ExplanationOfBenefitAddItemLocation `json:"-"` // polymorphic
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
@@ -598,6 +726,8 @@ type ExplanationOfBenefitAddItem struct {
 	Net *dt.Money `json:"net,omitempty"`
 	// NoteNumber The numbers associated with notes below which apply to the adjudication of this item.
 	NoteNumber []uint32 `json:"noteNumber,omitempty"`
+	// NoteNumberElement contains element extensions for each noteNumber.
+	NoteNumberElement []dt.Element `json:"_noteNumber,omitempty"`
 	// ProductOrService When the value is a group code then this item collects a set of related claim details, otherwise this contains the product, service, drug or other billing code for the item.
 	ProductOrService dt.CodeableConcept `json:"productOrService"`
 	// ProgramCode Identifies the program under which this may be recovered.
@@ -610,6 +740,8 @@ type ExplanationOfBenefitAddItem struct {
 	Serviced *ExplanationOfBenefitAddItemServiced `json:"-"` // polymorphic
 	// SubDetailSequence The sequence number of the sub-details woithin the details within the claim item which this line is intended to replace.
 	SubDetailSequence []uint32 `json:"subDetailSequence,omitempty"`
+	// SubDetailSequenceElement contains element extensions for each subDetailSequence.
+	SubDetailSequenceElement []dt.Element `json:"_subDetailSequence,omitempty"`
 	// SubSite A region or surface of the bodySite, e.g. limb region or tooth surface(s).
 	SubSite []dt.CodeableConcept `json:"subSite,omitempty"`
 	// UnitPrice If the item is not a group then this is the fee for the product or service, otherwise this is the total of the fees for the details of the group.
@@ -664,19 +796,19 @@ func (r *ExplanationOfBenefitAddItem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ExplanationOfBenefitAddItem(alias)
-	var servicedVal ExplanationOfBenefitAddItemServiced
-	if err := servicedVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if servicedVal.Date != nil || servicedVal.Period != nil {
-		r.Serviced = &servicedVal
-	}
 	var locationVal ExplanationOfBenefitAddItemLocation
 	if err := locationVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if locationVal.Address != nil || locationVal.CodeableConcept != nil || locationVal.Reference != nil {
 		r.Location = &locationVal
+	}
+	var servicedVal ExplanationOfBenefitAddItemServiced
+	if err := servicedVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if servicedVal.Date != nil || servicedVal.Period != nil {
+		r.Serviced = &servicedVal
 	}
 	return nil
 }
@@ -778,6 +910,8 @@ func (v *ExplanationOfBenefitAddItemLocation) UnmarshalJSON(data []byte) error {
 type ExplanationOfBenefitAdjudication struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -790,12 +924,16 @@ type ExplanationOfBenefitAdjudication struct {
 	Reason *dt.CodeableConcept `json:"reason,omitempty"`
 	// Value A non-monetary value associated with the category. Mutually exclusive to the amount element above.
 	Value *float64 `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *dt.Element `json:"_value,omitempty"`
 }
 
 // ExplanationOfBenefitBenefitBalance This resource provides: the claim details; adjudication details from the processing of a Claim; and optionally account balance information, for informing the subscriber of the benefits provided.
 type ExplanationOfBenefitBenefitBalance struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -804,12 +942,18 @@ type ExplanationOfBenefitBenefitBalance struct {
 	Category dt.CodeableConcept `json:"category"`
 	// Description A richer description of the benefit or services covered.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Excluded True if the indicated class of service is excluded from the plan, missing or False indicates the product or service is included in the coverage.
 	Excluded *bool `json:"excluded,omitempty"`
+	// ExcludedElement contains element extensions for excluded.
+	ExcludedElement *dt.Element `json:"_excluded,omitempty"`
 	// Financial Benefits Used to date.
 	Financial []ExplanationOfBenefitFinancial `json:"financial,omitempty"`
 	// Name A short name or tag for the benefit.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Network Is a flag to indicate whether the benefits refer to in-network providers or out-of-network providers.
 	Network *dt.CodeableConcept `json:"network,omitempty"`
 	// Term The term or period of the values such as 'maximum lifetime benefit' or 'maximum annual visits'.
@@ -822,6 +966,8 @@ type ExplanationOfBenefitBenefitBalance struct {
 type ExplanationOfBenefitCareTeam struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -832,16 +978,22 @@ type ExplanationOfBenefitCareTeam struct {
 	Qualification *dt.CodeableConcept `json:"qualification,omitempty"`
 	// Responsible The party who is billing and/or responsible for the claimed products or services.
 	Responsible *bool `json:"responsible,omitempty"`
+	// ResponsibleElement contains element extensions for responsible.
+	ResponsibleElement *dt.Element `json:"_responsible,omitempty"`
 	// Role The lead, assisting or supervising practitioner and their discipline if a multidisciplinary team.
 	Role *dt.CodeableConcept `json:"role,omitempty"`
 	// Sequence A number to uniquely identify care team entries.
 	Sequence *uint32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 }
 
 // ExplanationOfBenefitDetail This resource provides: the claim details; adjudication details from the processing of a Claim; and optionally account balance information, for informing the subscriber of the benefits provided.
 type ExplanationOfBenefitDetail struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -852,12 +1004,16 @@ type ExplanationOfBenefitDetail struct {
 	Category *dt.CodeableConcept `json:"category,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
 	Factor *float64 `json:"factor,omitempty"`
+	// FactorElement contains element extensions for factor.
+	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
 	Modifier []dt.CodeableConcept `json:"modifier,omitempty"`
 	// Net The quantity times the unit price for an additional service or product or charge.
 	Net *dt.Money `json:"net,omitempty"`
 	// NoteNumber The numbers associated with notes below which apply to the adjudication of this item.
 	NoteNumber []uint32 `json:"noteNumber,omitempty"`
+	// NoteNumberElement contains element extensions for each noteNumber.
+	NoteNumberElement []dt.Element `json:"_noteNumber,omitempty"`
 	// ProductOrService When the value is a group code then this item collects a set of related claim details, otherwise this contains the product, service, drug or other billing code for the item.
 	ProductOrService dt.CodeableConcept `json:"productOrService"`
 	// ProgramCode Identifies the program under which this may be recovered.
@@ -868,6 +1024,8 @@ type ExplanationOfBenefitDetail struct {
 	Revenue *dt.CodeableConcept `json:"revenue,omitempty"`
 	// Sequence A claim detail line. Either a simple (a product or service) or a 'group' of sub-details which are simple items.
 	Sequence *uint32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 	// SubDetail Third-tier of goods and services.
 	SubDetail []ExplanationOfBenefitSubDetail `json:"subDetail,omitempty"`
 	// Udi Unique Device Identifiers associated with this line item.
@@ -880,6 +1038,8 @@ type ExplanationOfBenefitDetail struct {
 type ExplanationOfBenefitDetail1 struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -888,12 +1048,16 @@ type ExplanationOfBenefitDetail1 struct {
 	Adjudication []ExplanationOfBenefitAdjudication `json:"adjudication,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
 	Factor *float64 `json:"factor,omitempty"`
+	// FactorElement contains element extensions for factor.
+	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
 	Modifier []dt.CodeableConcept `json:"modifier,omitempty"`
 	// Net The quantity times the unit price for an additional service or product or charge.
 	Net *dt.Money `json:"net,omitempty"`
 	// NoteNumber The numbers associated with notes below which apply to the adjudication of this item.
 	NoteNumber []uint32 `json:"noteNumber,omitempty"`
+	// NoteNumberElement contains element extensions for each noteNumber.
+	NoteNumberElement []dt.Element `json:"_noteNumber,omitempty"`
 	// ProductOrService When the value is a group code then this item collects a set of related claim details, otherwise this contains the product, service, drug or other billing code for the item.
 	ProductOrService dt.CodeableConcept `json:"productOrService"`
 	// Quantity The number of repetitions of a service or product.
@@ -908,6 +1072,8 @@ type ExplanationOfBenefitDetail1 struct {
 type ExplanationOfBenefitDiagnosis struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -920,6 +1086,8 @@ type ExplanationOfBenefitDiagnosis struct {
 	PackageCode *dt.CodeableConcept `json:"packageCode,omitempty"`
 	// Sequence A number to uniquely identify diagnosis entries.
 	Sequence *uint32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 	// Type When the condition was observed or the relative ranking.
 	Type []dt.CodeableConcept `json:"type,omitempty"`
 }
@@ -1014,6 +1182,8 @@ func (v *ExplanationOfBenefitDiagnosisDiagnosis) UnmarshalJSON(data []byte) erro
 type ExplanationOfBenefitFinancial struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1074,19 +1244,19 @@ func (r *ExplanationOfBenefitFinancial) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ExplanationOfBenefitFinancial(alias)
-	var usedVal ExplanationOfBenefitFinancialUsed
-	if err := usedVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if usedVal.Money != nil || usedVal.UnsignedInt != nil {
-		r.Used = &usedVal
-	}
 	var allowedVal ExplanationOfBenefitFinancialAllowed
 	if err := allowedVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if allowedVal.Money != nil || allowedVal.String != nil || allowedVal.UnsignedInt != nil {
 		r.Allowed = &allowedVal
+	}
+	var usedVal ExplanationOfBenefitFinancialUsed
+	if err := usedVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if usedVal.Money != nil || usedVal.UnsignedInt != nil {
+		r.Used = &usedVal
 	}
 	return nil
 }
@@ -1188,6 +1358,8 @@ func (v *ExplanationOfBenefitFinancialUsed) UnmarshalJSON(data []byte) error {
 type ExplanationOfBenefitInsurance struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1196,14 +1368,20 @@ type ExplanationOfBenefitInsurance struct {
 	Coverage dt.Reference `json:"coverage"`
 	// Focal A flag to indicate that this Coverage is to be used for adjudication of this claim when set to true.
 	Focal *bool `json:"focal,omitempty"`
+	// FocalElement contains element extensions for focal.
+	FocalElement *dt.Element `json:"_focal,omitempty"`
 	// PreAuthRef Reference numbers previously provided by the insurer to the provider to be quoted on subsequent claims containing services or products related to the prior authorization.
 	PreAuthRef []string `json:"preAuthRef,omitempty"`
+	// PreAuthRefElement contains element extensions for each preAuthRef.
+	PreAuthRefElement []dt.Element `json:"_preAuthRef,omitempty"`
 }
 
 // ExplanationOfBenefitItem This resource provides: the claim details; adjudication details from the processing of a Claim; and optionally account balance information, for informing the subscriber of the benefits provided.
 type ExplanationOfBenefitItem struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1214,18 +1392,26 @@ type ExplanationOfBenefitItem struct {
 	BodySite *dt.CodeableConcept `json:"bodySite,omitempty"`
 	// CareTeamSequence Care team members related to this service or product.
 	CareTeamSequence []uint32 `json:"careTeamSequence,omitempty"`
+	// CareTeamSequenceElement contains element extensions for each careTeamSequence.
+	CareTeamSequenceElement []dt.Element `json:"_careTeamSequence,omitempty"`
 	// Category Code to identify the general type of benefits under which products and services are provided.
 	Category *dt.CodeableConcept `json:"category,omitempty"`
 	// Detail Second-tier of goods and services.
 	Detail []ExplanationOfBenefitDetail `json:"detail,omitempty"`
 	// DiagnosisSequence Diagnoses applicable for this service or product.
 	DiagnosisSequence []uint32 `json:"diagnosisSequence,omitempty"`
+	// DiagnosisSequenceElement contains element extensions for each diagnosisSequence.
+	DiagnosisSequenceElement []dt.Element `json:"_diagnosisSequence,omitempty"`
 	// Encounter A billed item may include goods or services provided in multiple encounters.
 	Encounter []dt.Reference `json:"encounter,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
 	Factor *float64 `json:"factor,omitempty"`
+	// FactorElement contains element extensions for factor.
+	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// InformationSequence Exceptions, special conditions and supporting information applicable for this service or product.
 	InformationSequence []uint32 `json:"informationSequence,omitempty"`
+	// InformationSequenceElement contains element extensions for each informationSequence.
+	InformationSequenceElement []dt.Element `json:"_informationSequence,omitempty"`
 	// Location Where the product or service was provided.
 	Location *ExplanationOfBenefitItemLocation `json:"-"` // polymorphic
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
@@ -1234,8 +1420,12 @@ type ExplanationOfBenefitItem struct {
 	Net *dt.Money `json:"net,omitempty"`
 	// NoteNumber The numbers associated with notes below which apply to the adjudication of this item.
 	NoteNumber []uint32 `json:"noteNumber,omitempty"`
+	// NoteNumberElement contains element extensions for each noteNumber.
+	NoteNumberElement []dt.Element `json:"_noteNumber,omitempty"`
 	// ProcedureSequence Procedures applicable for this service or product.
 	ProcedureSequence []uint32 `json:"procedureSequence,omitempty"`
+	// ProcedureSequenceElement contains element extensions for each procedureSequence.
+	ProcedureSequenceElement []dt.Element `json:"_procedureSequence,omitempty"`
 	// ProductOrService When the value is a group code then this item collects a set of related claim details, otherwise this contains the product, service, drug or other billing code for the item.
 	ProductOrService dt.CodeableConcept `json:"productOrService"`
 	// ProgramCode Identifies the program under which this may be recovered.
@@ -1246,6 +1436,8 @@ type ExplanationOfBenefitItem struct {
 	Revenue *dt.CodeableConcept `json:"revenue,omitempty"`
 	// Sequence A number to uniquely identify item entries.
 	Sequence *uint32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 	// Serviced The date or dates when the service or product was supplied, performed or completed.
 	Serviced *ExplanationOfBenefitItemServiced `json:"-"` // polymorphic
 	// SubSite A region or surface of the bodySite, e.g. limb region or tooth surface(s).
@@ -1267,8 +1459,8 @@ func (r ExplanationOfBenefitItem) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Serviced != nil {
-		vData, err := json.Marshal(r.Serviced)
+	if r.Location != nil {
+		vData, err := json.Marshal(r.Location)
 		if err != nil {
 			return nil, err
 		}
@@ -1280,8 +1472,8 @@ func (r ExplanationOfBenefitItem) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Location != nil {
-		vData, err := json.Marshal(r.Location)
+	if r.Serviced != nil {
+		vData, err := json.Marshal(r.Serviced)
 		if err != nil {
 			return nil, err
 		}
@@ -1418,6 +1610,8 @@ func (v *ExplanationOfBenefitItemLocation) UnmarshalJSON(data []byte) error {
 type ExplanationOfBenefitPayee struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1432,6 +1626,8 @@ type ExplanationOfBenefitPayee struct {
 type ExplanationOfBenefitPayment struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1446,6 +1642,8 @@ type ExplanationOfBenefitPayment struct {
 	Amount *dt.Money `json:"amount,omitempty"`
 	// Date Estimated date the payment will be issued or the actual issue date of payment.
 	Date *dt.Date `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Type Whether this represents partial or complete payment of the benefits payable.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 }
@@ -1454,16 +1652,22 @@ type ExplanationOfBenefitPayment struct {
 type ExplanationOfBenefitProcedure struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Date Date and optionally time the procedure was performed.
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Procedure The code or reference to a Procedure resource which identifies the clinical intervention performed.
 	Procedure *ExplanationOfBenefitProcedureProcedure `json:"-"` // polymorphic
 	// Sequence A number to uniquely identify procedure entries.
 	Sequence *uint32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 	// Type When the condition was observed or the relative ranking.
 	Type []dt.CodeableConcept `json:"type,omitempty"`
 	// Udi Unique Device Identifiers associated with this line item.
@@ -1560,24 +1764,34 @@ func (v *ExplanationOfBenefitProcedureProcedure) UnmarshalJSON(data []byte) erro
 type ExplanationOfBenefitProcessNote struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Language A code to define the language used in the text of the note.
 	Language *dt.CodeableConcept `json:"language,omitempty"`
 	// Text The explanation or description associated with the processing.
 	Text *string `json:"text,omitempty"`
+	// TextElement contains element extensions for text.
+	TextElement *dt.Element `json:"_text,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Number A number to uniquely identify a note entry.
 	Number *uint32 `json:"number,omitempty"`
+	// NumberElement contains element extensions for number.
+	NumberElement *dt.Element `json:"_number,omitempty"`
 	// Type The business purpose of the note text.
 	Type *ExplanationOfBenefitProcessNoteType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }
 
 // ExplanationOfBenefitRelated This resource provides: the claim details; adjudication details from the processing of a Claim; and optionally account balance information, for informing the subscriber of the benefits provided.
 type ExplanationOfBenefitRelated struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1594,6 +1808,8 @@ type ExplanationOfBenefitRelated struct {
 type ExplanationOfBenefitSubDetail struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1604,12 +1820,16 @@ type ExplanationOfBenefitSubDetail struct {
 	Category *dt.CodeableConcept `json:"category,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
 	Factor *float64 `json:"factor,omitempty"`
+	// FactorElement contains element extensions for factor.
+	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
 	Modifier []dt.CodeableConcept `json:"modifier,omitempty"`
 	// Net The quantity times the unit price for an additional service or product or charge.
 	Net *dt.Money `json:"net,omitempty"`
 	// NoteNumber The numbers associated with notes below which apply to the adjudication of this item.
 	NoteNumber []uint32 `json:"noteNumber,omitempty"`
+	// NoteNumberElement contains element extensions for each noteNumber.
+	NoteNumberElement []dt.Element `json:"_noteNumber,omitempty"`
 	// ProductOrService When the value is a group code then this item collects a set of related claim details, otherwise this contains the product, service, drug or other billing code for the item.
 	ProductOrService dt.CodeableConcept `json:"productOrService"`
 	// ProgramCode Identifies the program under which this may be recovered.
@@ -1620,6 +1840,8 @@ type ExplanationOfBenefitSubDetail struct {
 	Revenue *dt.CodeableConcept `json:"revenue,omitempty"`
 	// Sequence A claim detail line. Either a simple (a product or service) or a 'group' of sub-details which are simple items.
 	Sequence *uint32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 	// Udi Unique Device Identifiers associated with this line item.
 	Udi []dt.Reference `json:"udi,omitempty"`
 	// UnitPrice If the item is not a group then this is the fee for the product or service, otherwise this is the total of the fees for the details of the group.
@@ -1630,6 +1852,8 @@ type ExplanationOfBenefitSubDetail struct {
 type ExplanationOfBenefitSubDetail1 struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1638,12 +1862,16 @@ type ExplanationOfBenefitSubDetail1 struct {
 	Adjudication []ExplanationOfBenefitAdjudication `json:"adjudication,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
 	Factor *float64 `json:"factor,omitempty"`
+	// FactorElement contains element extensions for factor.
+	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
 	Modifier []dt.CodeableConcept `json:"modifier,omitempty"`
 	// Net The quantity times the unit price for an additional service or product or charge.
 	Net *dt.Money `json:"net,omitempty"`
 	// NoteNumber The numbers associated with notes below which apply to the adjudication of this item.
 	NoteNumber []uint32 `json:"noteNumber,omitempty"`
+	// NoteNumberElement contains element extensions for each noteNumber.
+	NoteNumberElement []dt.Element `json:"_noteNumber,omitempty"`
 	// ProductOrService When the value is a group code then this item collects a set of related claim details, otherwise this contains the product, service, drug or other billing code for the item.
 	ProductOrService dt.CodeableConcept `json:"productOrService"`
 	// Quantity The number of repetitions of a service or product.
@@ -1656,6 +1884,8 @@ type ExplanationOfBenefitSubDetail1 struct {
 type ExplanationOfBenefitSupportingInfo struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1668,6 +1898,8 @@ type ExplanationOfBenefitSupportingInfo struct {
 	Reason *dt.Coding `json:"reason,omitempty"`
 	// Sequence A number to uniquely identify supporting information entries.
 	Sequence *uint32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 	// Timing The date when or period to which this information refers.
 	Timing *ExplanationOfBenefitSupportingInfoTiming `json:"-"` // polymorphic
 	// Value Additional data or information such as resources, documents, images etc. including references to the data or the actual inclusion of the data.
@@ -1858,6 +2090,8 @@ func (v *ExplanationOfBenefitSupportingInfoValue) UnmarshalJSON(data []byte) err
 type ExplanationOfBenefitTotal struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

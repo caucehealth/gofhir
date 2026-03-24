@@ -18,12 +18,18 @@ type PlanDefinition struct {
 	ResourceType string `json:"resourceType"` // Always "PlanDefinition"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,20 +42,30 @@ type PlanDefinition struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this plan definition. Enables tracking the life-cycle of the content.
 	Status *PlanDefinitionStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Action An action or group of actions to be taken as part of the plan.
 	Action []PlanDefinitionAction `json:"action,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
+	// ApprovalDateElement contains element extensions for approvalDate.
+	ApprovalDateElement *dt.Element `json:"_approvalDate,omitempty"`
 	// Author An individiual or organization primarily involved in the creation and maintenance of the content.
 	Author []dt.ContactDetail `json:"author,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the plan definition and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the plan definition.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date  (and optionally time) when the plan definition was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should ...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description A free text natural language description of the plan definition from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Editor An individual or organization primarily responsible for internal coherence of the content.
 	Editor []dt.ContactDetail `json:"editor,omitempty"`
 	// EffectivePeriod The period during which the plan definition content was or is planned to be in active use.
@@ -58,20 +74,32 @@ type PlanDefinition struct {
 	Endorser []dt.ContactDetail `json:"endorser,omitempty"`
 	// Experimental A Boolean value to indicate that this plan definition is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// Goal Goals that describe what the activities within the plan are intended to achieve. For example, weight loss, restoring an activity of daily living, obtaining herd immunity via immunization, meeting a...
 	Goal []PlanDefinitionGoal `json:"goal,omitempty"`
 	// Jurisdiction A legal or geographic region in which the plan definition is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// LastReviewDate The date on which the resource content was last reviewed. Review happens periodically after approval but does not change the original approval date.
 	LastReviewDate *dt.Date `json:"lastReviewDate,omitempty"`
+	// LastReviewDateElement contains element extensions for lastReviewDate.
+	LastReviewDateElement *dt.Element `json:"_lastReviewDate,omitempty"`
 	// Library A reference to a Library resource containing any formal logic used by the plan definition.
 	Library []dt.Canonical `json:"library,omitempty"`
+	// LibraryElement contains element extensions for each library.
+	LibraryElement []dt.Element `json:"_library,omitempty"`
 	// Name A natural language name identifying the plan definition. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Publisher The name of the organization or individual that published the plan definition.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Purpose Explanation of why this plan definition is needed and why it has been designed as it has.
 	Purpose *dt.Markdown `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for purpose.
+	PurposeElement *dt.Element `json:"_purpose,omitempty"`
 	// RelatedArtifact Related artifacts such as additional documentation, justification, or bibliographic references.
 	RelatedArtifact []dt.RelatedArtifact `json:"relatedArtifact,omitempty"`
 	// Reviewer An individual or organization primarily responsible for review of some aspect of the content.
@@ -82,27 +110,53 @@ type PlanDefinition struct {
 	SubjectReference *dt.Reference `json:"subjectReference,omitempty"`
 	// Subtitle An explanatory or alternate title for the plan definition giving additional information about its content.
 	Subtitle *string `json:"subtitle,omitempty"`
+	// SubtitleElement contains element extensions for subtitle.
+	SubtitleElement *dt.Element `json:"_subtitle,omitempty"`
 	// Title A short, descriptive, user-friendly title for the plan definition.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Topic Descriptive topics related to the content of the plan definition. Topics provide a high-level categorization of the definition that can be useful for filtering and searching.
 	Topic []dt.CodeableConcept `json:"topic,omitempty"`
 	// Type A high-level category for the plan definition that distinguishes the kinds of systems that would be interested in the plan definition.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 	// Url An absolute URI that is used to identify this plan definition when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally u...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// Usage A detailed description of how the plan definition is used from a clinical perspective.
 	Usage *string `json:"usage,omitempty"`
+	// UsageElement contains element extensions for usage.
+	UsageElement *dt.Element `json:"_usage,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the plan definition when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the plan defin...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for PlanDefinition.
 func (r PlanDefinition) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "PlanDefinition"
 	type Alias PlanDefinition
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for PlanDefinition.
@@ -113,256 +167,313 @@ func (r *PlanDefinition) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = PlanDefinition(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_action", "_approvalDate", "_author", "_contact", "_contained", "_copyright", "_date", "_description", "_editor", "_effectivePeriod", "_endorser", "_experimental", "_extension", "_goal", "_id", "_identifier", "_implicitRules", "_jurisdiction", "_language", "_lastReviewDate", "_library", "_meta", "_modifierExtension", "_name", "_publisher", "_purpose", "_relatedArtifact", "_reviewer", "_status", "_subjectCodeableConcept", "_subjectReference", "_subtitle", "_text", "_title", "_topic", "_type", "_url", "_usage", "_useContext", "_version", "action", "approvalDate", "author", "contact", "contained", "copyright", "date", "description", "editor", "effectivePeriod", "endorser", "experimental", "extension", "goal", "id", "identifier", "implicitRules", "jurisdiction", "language", "lastReviewDate", "library", "meta", "modifierExtension", "name", "publisher", "purpose", "relatedArtifact", "resourceType", "reviewer", "status", "subjectCodeableConcept", "subjectReference", "subtitle", "text", "title", "topic", "type", "url", "usage", "useContext", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // PlanDefinitionBuilder provides a fluent API for constructing PlanDefinition resources.
 type PlanDefinitionBuilder struct {
-	resource PlanDefinition
+	resource  PlanDefinition
+	fieldsSet map[string]bool
 }
 
 // NewPlanDefinition creates a new PlanDefinitionBuilder for building a PlanDefinition resource.
 func NewPlanDefinition() *PlanDefinitionBuilder {
-	return &PlanDefinitionBuilder{resource: PlanDefinition{ResourceType: "PlanDefinition"}}
+	return &PlanDefinitionBuilder{resource: PlanDefinition{ResourceType: "PlanDefinition"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *PlanDefinitionBuilder) WithId(v dt.ID) *PlanDefinitionBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *PlanDefinitionBuilder) WithMeta(v dt.Meta) *PlanDefinitionBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *PlanDefinitionBuilder) WithImplicitRules(v dt.URI) *PlanDefinitionBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *PlanDefinitionBuilder) WithLanguage(v dt.Code) *PlanDefinitionBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *PlanDefinitionBuilder) WithText(v dt.Narrative) *PlanDefinitionBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *PlanDefinitionBuilder) WithContained(v json.RawMessage) *PlanDefinitionBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *PlanDefinitionBuilder) WithExtension(v dt.Extension) *PlanDefinitionBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *PlanDefinitionBuilder) WithModifierExtension(v dt.Extension) *PlanDefinitionBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *PlanDefinitionBuilder) WithIdentifier(v dt.Identifier) *PlanDefinitionBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *PlanDefinitionBuilder) WithStatus(v PlanDefinitionStatus) *PlanDefinitionBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAction adds an item to the action field.
 func (b *PlanDefinitionBuilder) WithAction(v PlanDefinitionAction) *PlanDefinitionBuilder {
 	b.resource.Action = append(b.resource.Action, v)
+	b.fieldsSet["action"] = true
 	return b
 }
 
 // WithApprovalDate sets the approvalDate field.
 func (b *PlanDefinitionBuilder) WithApprovalDate(v dt.Date) *PlanDefinitionBuilder {
 	b.resource.ApprovalDate = &v
+	b.fieldsSet["approvalDate"] = true
 	return b
 }
 
 // WithAuthor adds an item to the author field.
 func (b *PlanDefinitionBuilder) WithAuthor(v dt.ContactDetail) *PlanDefinitionBuilder {
 	b.resource.Author = append(b.resource.Author, v)
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *PlanDefinitionBuilder) WithContact(v dt.ContactDetail) *PlanDefinitionBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *PlanDefinitionBuilder) WithCopyright(v dt.Markdown) *PlanDefinitionBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *PlanDefinitionBuilder) WithDate(v dt.DateTime) *PlanDefinitionBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *PlanDefinitionBuilder) WithDescription(v dt.Markdown) *PlanDefinitionBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithEditor adds an item to the editor field.
 func (b *PlanDefinitionBuilder) WithEditor(v dt.ContactDetail) *PlanDefinitionBuilder {
 	b.resource.Editor = append(b.resource.Editor, v)
+	b.fieldsSet["editor"] = true
 	return b
 }
 
 // WithEffectivePeriod sets the effectivePeriod field.
 func (b *PlanDefinitionBuilder) WithEffectivePeriod(v dt.Period) *PlanDefinitionBuilder {
 	b.resource.EffectivePeriod = &v
+	b.fieldsSet["effectivePeriod"] = true
 	return b
 }
 
 // WithEndorser adds an item to the endorser field.
 func (b *PlanDefinitionBuilder) WithEndorser(v dt.ContactDetail) *PlanDefinitionBuilder {
 	b.resource.Endorser = append(b.resource.Endorser, v)
+	b.fieldsSet["endorser"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *PlanDefinitionBuilder) WithExperimental(v bool) *PlanDefinitionBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithGoal adds an item to the goal field.
 func (b *PlanDefinitionBuilder) WithGoal(v PlanDefinitionGoal) *PlanDefinitionBuilder {
 	b.resource.Goal = append(b.resource.Goal, v)
+	b.fieldsSet["goal"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *PlanDefinitionBuilder) WithJurisdiction(v dt.CodeableConcept) *PlanDefinitionBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithLastReviewDate sets the lastReviewDate field.
 func (b *PlanDefinitionBuilder) WithLastReviewDate(v dt.Date) *PlanDefinitionBuilder {
 	b.resource.LastReviewDate = &v
+	b.fieldsSet["lastReviewDate"] = true
 	return b
 }
 
 // WithLibrary adds an item to the library field.
 func (b *PlanDefinitionBuilder) WithLibrary(v dt.Canonical) *PlanDefinitionBuilder {
 	b.resource.Library = append(b.resource.Library, v)
+	b.fieldsSet["library"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *PlanDefinitionBuilder) WithName(v string) *PlanDefinitionBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *PlanDefinitionBuilder) WithPublisher(v string) *PlanDefinitionBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithPurpose sets the purpose field.
 func (b *PlanDefinitionBuilder) WithPurpose(v dt.Markdown) *PlanDefinitionBuilder {
 	b.resource.Purpose = &v
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
 // WithRelatedArtifact adds an item to the relatedArtifact field.
 func (b *PlanDefinitionBuilder) WithRelatedArtifact(v dt.RelatedArtifact) *PlanDefinitionBuilder {
 	b.resource.RelatedArtifact = append(b.resource.RelatedArtifact, v)
+	b.fieldsSet["relatedArtifact"] = true
 	return b
 }
 
 // WithReviewer adds an item to the reviewer field.
 func (b *PlanDefinitionBuilder) WithReviewer(v dt.ContactDetail) *PlanDefinitionBuilder {
 	b.resource.Reviewer = append(b.resource.Reviewer, v)
+	b.fieldsSet["reviewer"] = true
 	return b
 }
 
 // WithSubjectCodeableConcept sets the subjectCodeableConcept field.
 func (b *PlanDefinitionBuilder) WithSubjectCodeableConcept(v dt.CodeableConcept) *PlanDefinitionBuilder {
 	b.resource.SubjectCodeableConcept = &v
+	b.fieldsSet["subjectCodeableConcept"] = true
 	return b
 }
 
 // WithSubjectReference sets the subjectReference field.
 func (b *PlanDefinitionBuilder) WithSubjectReference(v dt.Reference) *PlanDefinitionBuilder {
 	b.resource.SubjectReference = &v
+	b.fieldsSet["subjectReference"] = true
 	return b
 }
 
 // WithSubtitle sets the subtitle field.
 func (b *PlanDefinitionBuilder) WithSubtitle(v string) *PlanDefinitionBuilder {
 	b.resource.Subtitle = &v
+	b.fieldsSet["subtitle"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *PlanDefinitionBuilder) WithTitle(v string) *PlanDefinitionBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithTopic adds an item to the topic field.
 func (b *PlanDefinitionBuilder) WithTopic(v dt.CodeableConcept) *PlanDefinitionBuilder {
 	b.resource.Topic = append(b.resource.Topic, v)
+	b.fieldsSet["topic"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *PlanDefinitionBuilder) WithType(v dt.CodeableConcept) *PlanDefinitionBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *PlanDefinitionBuilder) WithUrl(v dt.URI) *PlanDefinitionBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUsage sets the usage field.
 func (b *PlanDefinitionBuilder) WithUsage(v string) *PlanDefinitionBuilder {
 	b.resource.Usage = &v
+	b.fieldsSet["usage"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *PlanDefinitionBuilder) WithUseContext(v dt.UsageContext) *PlanDefinitionBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *PlanDefinitionBuilder) WithVersion(v string) *PlanDefinitionBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -377,6 +488,8 @@ func (b *PlanDefinitionBuilder) Build() (*PlanDefinition, error) {
 type PlanDefinitionAction struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -385,6 +498,8 @@ type PlanDefinitionAction struct {
 	Action []PlanDefinitionAction `json:"action,omitempty"`
 	// CardinalityBehavior Defines whether the action can be selected multiple times.
 	CardinalityBehavior *PlanDefinitionActionCardinalityBehavior `json:"cardinalityBehavior,omitempty"`
+	// CardinalityBehaviorElement contains element extensions for cardinalityBehavior.
+	CardinalityBehaviorElement *dt.Element `json:"_cardinalityBehavior,omitempty"`
 	// Code A code that provides meaning for the action or action group. For example, a section may have a LOINC code for the section of a documentation template.
 	Code []dt.CodeableConcept `json:"code,omitempty"`
 	// Condition An expression that describes applicability criteria or start/stop conditions for the action.
@@ -393,14 +508,20 @@ type PlanDefinitionAction struct {
 	Definition *PlanDefinitionActionDefinition `json:"-"` // polymorphic
 	// Description A brief description of the action used to provide a summary to display to the user.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Documentation Didactic or other informational resources associated with the action that can be provided to the CDS recipient. Information resources can include inline text commentary and links to web resources.
 	Documentation []dt.RelatedArtifact `json:"documentation,omitempty"`
 	// DynamicValue Customizations that should be applied to the statically defined resource. For example, if the dosage of a medication must be computed based on the patient's weight, a customization would be used to...
 	DynamicValue []PlanDefinitionDynamicValue `json:"dynamicValue,omitempty"`
 	// GoalId Identifies goals that this action supports. The reference must be to a goal element defined within this plan definition.
 	GoalId []dt.ID `json:"goalId,omitempty"`
+	// GoalIdElement contains element extensions for each goalId.
+	GoalIdElement []dt.Element `json:"_goalId,omitempty"`
 	// GroupingBehavior Defines the grouping behavior for the action and its children.
 	GroupingBehavior *PlanDefinitionActionGroupingBehavior `json:"groupingBehavior,omitempty"`
+	// GroupingBehaviorElement contains element extensions for groupingBehavior.
+	GroupingBehaviorElement *dt.Element `json:"_groupingBehavior,omitempty"`
 	// Input Defines input data requirements for the action.
 	Input []dt.DataRequirement `json:"input,omitempty"`
 	// Output Defines the outputs of the action, if any.
@@ -409,30 +530,46 @@ type PlanDefinitionAction struct {
 	Participant []PlanDefinitionParticipant `json:"participant,omitempty"`
 	// PrecheckBehavior Defines whether the action should usually be preselected.
 	PrecheckBehavior *PlanDefinitionActionPrecheckBehavior `json:"precheckBehavior,omitempty"`
+	// PrecheckBehaviorElement contains element extensions for precheckBehavior.
+	PrecheckBehaviorElement *dt.Element `json:"_precheckBehavior,omitempty"`
 	// Prefix A user-visible prefix for the action.
 	Prefix *string `json:"prefix,omitempty"`
+	// PrefixElement contains element extensions for prefix.
+	PrefixElement *dt.Element `json:"_prefix,omitempty"`
 	// Priority Indicates how quickly the action should be addressed with respect to other actions.
 	Priority *dt.Code `json:"priority,omitempty"`
+	// PriorityElement contains element extensions for priority.
+	PriorityElement *dt.Element `json:"_priority,omitempty"`
 	// Reason A description of why this action is necessary or appropriate.
 	Reason []dt.CodeableConcept `json:"reason,omitempty"`
 	// RelatedAction A relationship to another action such as "before" or "30-60 minutes after start of".
 	RelatedAction []PlanDefinitionRelatedAction `json:"relatedAction,omitempty"`
 	// RequiredBehavior Defines the required behavior for the action.
 	RequiredBehavior *PlanDefinitionActionRequiredBehavior `json:"requiredBehavior,omitempty"`
+	// RequiredBehaviorElement contains element extensions for requiredBehavior.
+	RequiredBehaviorElement *dt.Element `json:"_requiredBehavior,omitempty"`
 	// SelectionBehavior Defines the selection behavior for the action and its children.
 	SelectionBehavior *PlanDefinitionActionSelectionBehavior `json:"selectionBehavior,omitempty"`
+	// SelectionBehaviorElement contains element extensions for selectionBehavior.
+	SelectionBehaviorElement *dt.Element `json:"_selectionBehavior,omitempty"`
 	// SubjectCodeableConcept A code or group definition that describes the intended subject of the action and its children, if any.
 	SubjectCodeableConcept *dt.CodeableConcept `json:"subjectCodeableConcept,omitempty"`
 	// SubjectReference A code or group definition that describes the intended subject of the action and its children, if any.
 	SubjectReference *dt.Reference `json:"subjectReference,omitempty"`
 	// TextEquivalent A text equivalent of the action to be performed. This provides a human-interpretable description of the action when the definition is consumed by a system that might not be capable of interpreting ...
 	TextEquivalent *string `json:"textEquivalent,omitempty"`
+	// TextEquivalentElement contains element extensions for textEquivalent.
+	TextEquivalentElement *dt.Element `json:"_textEquivalent,omitempty"`
 	// Timing An optional value describing when the action should be performed.
 	Timing *PlanDefinitionActionTiming `json:"-"` // polymorphic
 	// Title The title of the action displayed to a user.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Transform A reference to a StructureMap resource that defines a transform that can be executed to produce the intent resource using the ActivityDefinition instance as the input.
 	Transform *dt.Canonical `json:"transform,omitempty"`
+	// TransformElement contains element extensions for transform.
+	TransformElement *dt.Element `json:"_transform,omitempty"`
 	// Trigger A description of when the action should be triggered.
 	Trigger []dt.TriggerDefinition `json:"trigger,omitempty"`
 	// Type The type of action to perform (create, update, remove).
@@ -634,6 +771,8 @@ func (v *PlanDefinitionActionTiming) UnmarshalJSON(data []byte) error {
 type PlanDefinitionCondition struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -642,12 +781,16 @@ type PlanDefinitionCondition struct {
 	Expression *dt.Expression `json:"expression,omitempty"`
 	// Kind The kind of condition.
 	Kind *PlanDefinitionConditionKind `json:"kind,omitempty"`
+	// KindElement contains element extensions for kind.
+	KindElement *dt.Element `json:"_kind,omitempty"`
 }
 
 // PlanDefinitionDynamicValue This resource allows for the definition of various types of plans as a sharable, consumable, and executable artifact. The resource is general enough to support the description of a broad range of c...
 type PlanDefinitionDynamicValue struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -656,12 +799,16 @@ type PlanDefinitionDynamicValue struct {
 	Expression *dt.Expression `json:"expression,omitempty"`
 	// Path The path to the element to be customized. This is the path on the resource that will hold the result of the calculation defined by the expression. The specified path SHALL be a FHIRPath resolveable...
 	Path *string `json:"path,omitempty"`
+	// PathElement contains element extensions for path.
+	PathElement *dt.Element `json:"_path,omitempty"`
 }
 
 // PlanDefinitionGoal This resource allows for the definition of various types of plans as a sharable, consumable, and executable artifact. The resource is general enough to support the description of a broad range of c...
 type PlanDefinitionGoal struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -686,6 +833,8 @@ type PlanDefinitionGoal struct {
 type PlanDefinitionParticipant struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -694,30 +843,40 @@ type PlanDefinitionParticipant struct {
 	Role *dt.CodeableConcept `json:"role,omitempty"`
 	// Type The type of participant in the action.
 	Type *PlanDefinitionParticipantType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }
 
 // PlanDefinitionRelatedAction This resource allows for the definition of various types of plans as a sharable, consumable, and executable artifact. The resource is general enough to support the description of a broad range of c...
 type PlanDefinitionRelatedAction struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// ActionId The element id of the related action.
 	ActionId *dt.ID `json:"actionId,omitempty"`
+	// ActionIdElement contains element extensions for actionId.
+	ActionIdElement *dt.Element `json:"_actionId,omitempty"`
 	// OffsetDuration A duration or range of durations to apply to the relationship. For example, 30-60 minutes before.
 	OffsetDuration *dt.Duration `json:"offsetDuration,omitempty"`
 	// OffsetRange A duration or range of durations to apply to the relationship. For example, 30-60 minutes before.
 	OffsetRange *dt.Range `json:"offsetRange,omitempty"`
 	// Relationship The relationship of this action to the related action.
 	Relationship *PlanDefinitionRelatedActionRelationship `json:"relationship,omitempty"`
+	// RelationshipElement contains element extensions for relationship.
+	RelationshipElement *dt.Element `json:"_relationship,omitempty"`
 }
 
 // PlanDefinitionTarget This resource allows for the definition of various types of plans as a sharable, consumable, and executable artifact. The resource is general enough to support the description of a broad range of c...
 type PlanDefinitionTarget struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

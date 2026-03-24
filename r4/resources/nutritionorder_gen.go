@@ -18,12 +18,18 @@ type NutritionOrder struct {
 	ResourceType string `json:"resourceType"` // Always "NutritionOrder"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,10 +42,14 @@ type NutritionOrder struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The workflow status of the nutrition order/request.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// AllergyIntolerance A link to a record of allergies or intolerances  which should be included in the nutrition order.
 	AllergyIntolerance []dt.Reference `json:"allergyIntolerance,omitempty"`
 	// DateTime The date and time that this nutrition order was requested.
 	DateTime *dt.DateTime `json:"dateTime,omitempty"`
+	// DateTimeElement contains element extensions for dateTime.
+	DateTimeElement *dt.Element `json:"_dateTime,omitempty"`
 	// Encounter An encounter that provides additional information about the healthcare context in which this request is made.
 	Encounter *dt.Reference `json:"encounter,omitempty"`
 	// EnteralFormula Feeding provided through the gastrointestinal tract via a tube, catheter, or stoma that delivers nutrition distal to the oral cavity.
@@ -50,12 +60,20 @@ type NutritionOrder struct {
 	FoodPreferenceModifier []dt.CodeableConcept `json:"foodPreferenceModifier,omitempty"`
 	// Instantiates The URL pointing to a protocol, guideline, orderset or other definition that is adhered to in whole or in part by this NutritionOrder.
 	Instantiates []dt.URI `json:"instantiates,omitempty"`
+	// InstantiatesElement contains element extensions for each instantiates.
+	InstantiatesElement []dt.Element `json:"_instantiates,omitempty"`
 	// InstantiatesCanonical The URL pointing to a FHIR-defined protocol, guideline, orderset or other definition that is adhered to in whole or in part by this NutritionOrder.
 	InstantiatesCanonical []dt.Canonical `json:"instantiatesCanonical,omitempty"`
+	// InstantiatesCanonicalElement contains element extensions for each instantiatesCanonical.
+	InstantiatesCanonicalElement []dt.Element `json:"_instantiatesCanonical,omitempty"`
 	// InstantiatesUri The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this NutritionOrder.
 	InstantiatesUri []dt.URI `json:"instantiatesUri,omitempty"`
+	// InstantiatesUriElement contains element extensions for each instantiatesUri.
+	InstantiatesUriElement []dt.Element `json:"_instantiatesUri,omitempty"`
 	// Intent Indicates the level of authority/intentionality associated with the NutrionOrder and where the request fits into the workflow chain.
 	Intent *dt.Code `json:"intent,omitempty"`
+	// IntentElement contains element extensions for intent.
+	IntentElement *dt.Element `json:"_intent,omitempty"`
 	// Note Comments made about the {{title}} by the requester, performer, subject or other participants.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// OralDiet Diet given orally in contrast to enteral (tube) feeding.
@@ -66,13 +84,29 @@ type NutritionOrder struct {
 	Patient dt.Reference `json:"patient"`
 	// Supplement Oral nutritional products given in order to add further nutritional value to the patient's diet.
 	Supplement []NutritionOrderSupplement `json:"supplement,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for NutritionOrder.
 func (r NutritionOrder) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "NutritionOrder"
 	type Alias NutritionOrder
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for NutritionOrder.
@@ -83,172 +117,221 @@ func (r *NutritionOrder) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = NutritionOrder(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_allergyIntolerance", "_contained", "_dateTime", "_encounter", "_enteralFormula", "_excludeFoodModifier", "_extension", "_foodPreferenceModifier", "_id", "_identifier", "_implicitRules", "_instantiates", "_instantiatesCanonical", "_instantiatesUri", "_intent", "_language", "_meta", "_modifierExtension", "_note", "_oralDiet", "_orderer", "_patient", "_status", "_supplement", "_text", "allergyIntolerance", "contained", "dateTime", "encounter", "enteralFormula", "excludeFoodModifier", "extension", "foodPreferenceModifier", "id", "identifier", "implicitRules", "instantiates", "instantiatesCanonical", "instantiatesUri", "intent", "language", "meta", "modifierExtension", "note", "oralDiet", "orderer", "patient", "resourceType", "status", "supplement", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // NutritionOrderBuilder provides a fluent API for constructing NutritionOrder resources.
 type NutritionOrderBuilder struct {
-	resource NutritionOrder
+	resource  NutritionOrder
+	fieldsSet map[string]bool
 }
 
 // NewNutritionOrder creates a new NutritionOrderBuilder for building a NutritionOrder resource.
 func NewNutritionOrder() *NutritionOrderBuilder {
-	return &NutritionOrderBuilder{resource: NutritionOrder{ResourceType: "NutritionOrder"}}
+	return &NutritionOrderBuilder{resource: NutritionOrder{ResourceType: "NutritionOrder"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *NutritionOrderBuilder) WithId(v dt.ID) *NutritionOrderBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *NutritionOrderBuilder) WithMeta(v dt.Meta) *NutritionOrderBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *NutritionOrderBuilder) WithImplicitRules(v dt.URI) *NutritionOrderBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *NutritionOrderBuilder) WithLanguage(v dt.Code) *NutritionOrderBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *NutritionOrderBuilder) WithText(v dt.Narrative) *NutritionOrderBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *NutritionOrderBuilder) WithContained(v json.RawMessage) *NutritionOrderBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *NutritionOrderBuilder) WithExtension(v dt.Extension) *NutritionOrderBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *NutritionOrderBuilder) WithModifierExtension(v dt.Extension) *NutritionOrderBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *NutritionOrderBuilder) WithIdentifier(v dt.Identifier) *NutritionOrderBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *NutritionOrderBuilder) WithStatus(v dt.Code) *NutritionOrderBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAllergyIntolerance adds an item to the allergyIntolerance field.
 func (b *NutritionOrderBuilder) WithAllergyIntolerance(v dt.Reference) *NutritionOrderBuilder {
 	b.resource.AllergyIntolerance = append(b.resource.AllergyIntolerance, v)
+	b.fieldsSet["allergyIntolerance"] = true
 	return b
 }
 
 // WithDateTime sets the dateTime field.
 func (b *NutritionOrderBuilder) WithDateTime(v dt.DateTime) *NutritionOrderBuilder {
 	b.resource.DateTime = &v
+	b.fieldsSet["dateTime"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *NutritionOrderBuilder) WithEncounter(v dt.Reference) *NutritionOrderBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithEnteralFormula sets the enteralFormula field.
 func (b *NutritionOrderBuilder) WithEnteralFormula(v NutritionOrderEnteralFormula) *NutritionOrderBuilder {
 	b.resource.EnteralFormula = &v
+	b.fieldsSet["enteralFormula"] = true
 	return b
 }
 
 // WithExcludeFoodModifier adds an item to the excludeFoodModifier field.
 func (b *NutritionOrderBuilder) WithExcludeFoodModifier(v dt.CodeableConcept) *NutritionOrderBuilder {
 	b.resource.ExcludeFoodModifier = append(b.resource.ExcludeFoodModifier, v)
+	b.fieldsSet["excludeFoodModifier"] = true
 	return b
 }
 
 // WithFoodPreferenceModifier adds an item to the foodPreferenceModifier field.
 func (b *NutritionOrderBuilder) WithFoodPreferenceModifier(v dt.CodeableConcept) *NutritionOrderBuilder {
 	b.resource.FoodPreferenceModifier = append(b.resource.FoodPreferenceModifier, v)
+	b.fieldsSet["foodPreferenceModifier"] = true
 	return b
 }
 
 // WithInstantiates adds an item to the instantiates field.
 func (b *NutritionOrderBuilder) WithInstantiates(v dt.URI) *NutritionOrderBuilder {
 	b.resource.Instantiates = append(b.resource.Instantiates, v)
+	b.fieldsSet["instantiates"] = true
 	return b
 }
 
 // WithInstantiatesCanonical adds an item to the instantiatesCanonical field.
 func (b *NutritionOrderBuilder) WithInstantiatesCanonical(v dt.Canonical) *NutritionOrderBuilder {
 	b.resource.InstantiatesCanonical = append(b.resource.InstantiatesCanonical, v)
+	b.fieldsSet["instantiatesCanonical"] = true
 	return b
 }
 
 // WithInstantiatesUri adds an item to the instantiatesUri field.
 func (b *NutritionOrderBuilder) WithInstantiatesUri(v dt.URI) *NutritionOrderBuilder {
 	b.resource.InstantiatesUri = append(b.resource.InstantiatesUri, v)
+	b.fieldsSet["instantiatesUri"] = true
 	return b
 }
 
 // WithIntent sets the intent field.
 func (b *NutritionOrderBuilder) WithIntent(v dt.Code) *NutritionOrderBuilder {
 	b.resource.Intent = &v
+	b.fieldsSet["intent"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *NutritionOrderBuilder) WithNote(v dt.Annotation) *NutritionOrderBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithOralDiet sets the oralDiet field.
 func (b *NutritionOrderBuilder) WithOralDiet(v NutritionOrderOralDiet) *NutritionOrderBuilder {
 	b.resource.OralDiet = &v
+	b.fieldsSet["oralDiet"] = true
 	return b
 }
 
 // WithOrderer sets the orderer field.
 func (b *NutritionOrderBuilder) WithOrderer(v dt.Reference) *NutritionOrderBuilder {
 	b.resource.Orderer = &v
+	b.fieldsSet["orderer"] = true
 	return b
 }
 
 // WithPatient sets the patient field.
 func (b *NutritionOrderBuilder) WithPatient(v dt.Reference) *NutritionOrderBuilder {
 	b.resource.Patient = v
+	b.fieldsSet["patient"] = true
 	return b
 }
 
 // WithSupplement adds an item to the supplement field.
 func (b *NutritionOrderBuilder) WithSupplement(v NutritionOrderSupplement) *NutritionOrderBuilder {
 	b.resource.Supplement = append(b.resource.Supplement, v)
+	b.fieldsSet["supplement"] = true
 	return b
 }
 
 // Build returns the constructed NutritionOrder. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *NutritionOrderBuilder) Build() (*NutritionOrder, error) {
+	var missing []string
+	if !b.fieldsSet["patient"] {
+		missing = append(missing, "patient")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("NutritionOrder: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -257,6 +340,8 @@ func (b *NutritionOrderBuilder) Build() (*NutritionOrder, error) {
 type NutritionOrderAdministration struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -359,20 +444,28 @@ func (v *NutritionOrderAdministrationRate) UnmarshalJSON(data []byte) error {
 type NutritionOrderEnteralFormula struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// AdditiveProductName The product or brand name of the type of modular component to be added to the formula.
 	AdditiveProductName *string `json:"additiveProductName,omitempty"`
+	// AdditiveProductNameElement contains element extensions for additiveProductName.
+	AdditiveProductNameElement *dt.Element `json:"_additiveProductName,omitempty"`
 	// AdditiveType Indicates the type of modular component such as protein, carbohydrate, fat or fiber to be provided in addition to or mixed with the base formula.
 	AdditiveType *dt.CodeableConcept `json:"additiveType,omitempty"`
 	// Administration Formula administration instructions as structured data.  This repeating structure allows for changing the administration rate or volume over time for both bolus and continuous feeding.  An example ...
 	Administration []NutritionOrderAdministration `json:"administration,omitempty"`
 	// AdministrationInstruction Free text formula administration, feeding instructions or additional instructions or information.
 	AdministrationInstruction *string `json:"administrationInstruction,omitempty"`
+	// AdministrationInstructionElement contains element extensions for administrationInstruction.
+	AdministrationInstructionElement *dt.Element `json:"_administrationInstruction,omitempty"`
 	// BaseFormulaProductName The product or brand name of the enteral or infant formula product such as "ACME Adult Standard Formula".
 	BaseFormulaProductName *string `json:"baseFormulaProductName,omitempty"`
+	// BaseFormulaProductNameElement contains element extensions for baseFormulaProductName.
+	BaseFormulaProductNameElement *dt.Element `json:"_baseFormulaProductName,omitempty"`
 	// BaseFormulaType The type of enteral or infant formula such as an adult standard formula with fiber or a soy-based infant formula.
 	BaseFormulaType *dt.CodeableConcept `json:"baseFormulaType,omitempty"`
 	// CaloricDensity The amount of energy (calories) that the formula should provide per specified volume, typically per mL or fluid oz.  For example, an infant may require a formula that provides 24 calories per fluid...
@@ -387,6 +480,8 @@ type NutritionOrderEnteralFormula struct {
 type NutritionOrderNutrient struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -401,6 +496,8 @@ type NutritionOrderNutrient struct {
 type NutritionOrderOralDiet struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -409,6 +506,8 @@ type NutritionOrderOralDiet struct {
 	FluidConsistencyType []dt.CodeableConcept `json:"fluidConsistencyType,omitempty"`
 	// Instruction Free text or additional instructions or information pertaining to the oral diet.
 	Instruction *string `json:"instruction,omitempty"`
+	// InstructionElement contains element extensions for instruction.
+	InstructionElement *dt.Element `json:"_instruction,omitempty"`
 	// Nutrient Class that defines the quantity and type of nutrient modifications (for example carbohydrate, fiber or sodium) required for the oral diet.
 	Nutrient []NutritionOrderNutrient `json:"nutrient,omitempty"`
 	// Schedule The time period and frequency at which the diet should be given.  The diet should be given for the combination of all schedules if more than one schedule is present.
@@ -423,14 +522,20 @@ type NutritionOrderOralDiet struct {
 type NutritionOrderSupplement struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Instruction Free text or additional instructions or information pertaining to the oral supplement.
 	Instruction *string `json:"instruction,omitempty"`
+	// InstructionElement contains element extensions for instruction.
+	InstructionElement *dt.Element `json:"_instruction,omitempty"`
 	// ProductName The product or brand name of the nutritional supplement such as "Acme Protein Shake".
 	ProductName *string `json:"productName,omitempty"`
+	// ProductNameElement contains element extensions for productName.
+	ProductNameElement *dt.Element `json:"_productName,omitempty"`
 	// Quantity The amount of the nutritional supplement to be given.
 	Quantity *dt.Quantity `json:"quantity,omitempty"`
 	// Schedule The time period and frequency at which the supplement(s) should be given.  The supplement should be given for the combination of all schedules if more than one schedule is present.
@@ -443,6 +548,8 @@ type NutritionOrderSupplement struct {
 type NutritionOrderTexture struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

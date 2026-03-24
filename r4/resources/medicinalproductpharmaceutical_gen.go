@@ -18,12 +18,18 @@ type MedicinalProductPharmaceutical struct {
 	ResourceType string `json:"resourceType"` // Always "MedicinalProductPharmaceutical"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -46,13 +52,29 @@ type MedicinalProductPharmaceutical struct {
 	RouteOfAdministration []MedicinalProductPharmaceuticalRouteOfAdministration `json:"routeOfAdministration,omitempty"`
 	// UnitOfPresentation Todo.
 	UnitOfPresentation *dt.CodeableConcept `json:"unitOfPresentation,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for MedicinalProductPharmaceutical.
 func (r MedicinalProductPharmaceutical) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "MedicinalProductPharmaceutical"
 	type Alias MedicinalProductPharmaceutical
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for MedicinalProductPharmaceutical.
@@ -63,106 +85,138 @@ func (r *MedicinalProductPharmaceutical) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = MedicinalProductPharmaceutical(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_administrableDoseForm", "_characteristics", "_contained", "_device", "_extension", "_id", "_identifier", "_implicitRules", "_ingredient", "_language", "_meta", "_modifierExtension", "_routeOfAdministration", "_text", "_unitOfPresentation", "administrableDoseForm", "characteristics", "contained", "device", "extension", "id", "identifier", "implicitRules", "ingredient", "language", "meta", "modifierExtension", "resourceType", "routeOfAdministration", "text", "unitOfPresentation":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // MedicinalProductPharmaceuticalBuilder provides a fluent API for constructing MedicinalProductPharmaceutical resources.
 type MedicinalProductPharmaceuticalBuilder struct {
-	resource MedicinalProductPharmaceutical
+	resource  MedicinalProductPharmaceutical
+	fieldsSet map[string]bool
 }
 
 // NewMedicinalProductPharmaceutical creates a new MedicinalProductPharmaceuticalBuilder for building a MedicinalProductPharmaceutical resource.
 func NewMedicinalProductPharmaceutical() *MedicinalProductPharmaceuticalBuilder {
-	return &MedicinalProductPharmaceuticalBuilder{resource: MedicinalProductPharmaceutical{ResourceType: "MedicinalProductPharmaceutical"}}
+	return &MedicinalProductPharmaceuticalBuilder{resource: MedicinalProductPharmaceutical{ResourceType: "MedicinalProductPharmaceutical"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *MedicinalProductPharmaceuticalBuilder) WithId(v dt.ID) *MedicinalProductPharmaceuticalBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *MedicinalProductPharmaceuticalBuilder) WithMeta(v dt.Meta) *MedicinalProductPharmaceuticalBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *MedicinalProductPharmaceuticalBuilder) WithImplicitRules(v dt.URI) *MedicinalProductPharmaceuticalBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *MedicinalProductPharmaceuticalBuilder) WithLanguage(v dt.Code) *MedicinalProductPharmaceuticalBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *MedicinalProductPharmaceuticalBuilder) WithText(v dt.Narrative) *MedicinalProductPharmaceuticalBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *MedicinalProductPharmaceuticalBuilder) WithContained(v json.RawMessage) *MedicinalProductPharmaceuticalBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *MedicinalProductPharmaceuticalBuilder) WithExtension(v dt.Extension) *MedicinalProductPharmaceuticalBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *MedicinalProductPharmaceuticalBuilder) WithModifierExtension(v dt.Extension) *MedicinalProductPharmaceuticalBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *MedicinalProductPharmaceuticalBuilder) WithIdentifier(v dt.Identifier) *MedicinalProductPharmaceuticalBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithAdministrableDoseForm sets the administrableDoseForm field.
 func (b *MedicinalProductPharmaceuticalBuilder) WithAdministrableDoseForm(v dt.CodeableConcept) *MedicinalProductPharmaceuticalBuilder {
 	b.resource.AdministrableDoseForm = v
+	b.fieldsSet["administrableDoseForm"] = true
 	return b
 }
 
 // WithCharacteristics adds an item to the characteristics field.
 func (b *MedicinalProductPharmaceuticalBuilder) WithCharacteristics(v MedicinalProductPharmaceuticalCharacteristics) *MedicinalProductPharmaceuticalBuilder {
 	b.resource.Characteristics = append(b.resource.Characteristics, v)
+	b.fieldsSet["characteristics"] = true
 	return b
 }
 
 // WithDevice adds an item to the device field.
 func (b *MedicinalProductPharmaceuticalBuilder) WithDevice(v dt.Reference) *MedicinalProductPharmaceuticalBuilder {
 	b.resource.Device = append(b.resource.Device, v)
+	b.fieldsSet["device"] = true
 	return b
 }
 
 // WithIngredient adds an item to the ingredient field.
 func (b *MedicinalProductPharmaceuticalBuilder) WithIngredient(v dt.Reference) *MedicinalProductPharmaceuticalBuilder {
 	b.resource.Ingredient = append(b.resource.Ingredient, v)
+	b.fieldsSet["ingredient"] = true
 	return b
 }
 
 // WithRouteOfAdministration adds an item to the routeOfAdministration field.
 func (b *MedicinalProductPharmaceuticalBuilder) WithRouteOfAdministration(v MedicinalProductPharmaceuticalRouteOfAdministration) *MedicinalProductPharmaceuticalBuilder {
 	b.resource.RouteOfAdministration = append(b.resource.RouteOfAdministration, v)
+	b.fieldsSet["routeOfAdministration"] = true
 	return b
 }
 
 // WithUnitOfPresentation sets the unitOfPresentation field.
 func (b *MedicinalProductPharmaceuticalBuilder) WithUnitOfPresentation(v dt.CodeableConcept) *MedicinalProductPharmaceuticalBuilder {
 	b.resource.UnitOfPresentation = &v
+	b.fieldsSet["unitOfPresentation"] = true
 	return b
 }
 
@@ -170,7 +224,10 @@ func (b *MedicinalProductPharmaceuticalBuilder) WithUnitOfPresentation(v dt.Code
 // field (cardinality 1..1) is not set.
 func (b *MedicinalProductPharmaceuticalBuilder) Build() (*MedicinalProductPharmaceutical, error) {
 	var missing []string
-	if len(b.resource.RouteOfAdministration) == 0 {
+	if !b.fieldsSet["administrableDoseForm"] {
+		missing = append(missing, "administrableDoseForm")
+	}
+	if !b.fieldsSet["routeOfAdministration"] {
 		missing = append(missing, "routeOfAdministration")
 	}
 	if len(missing) > 0 {
@@ -184,6 +241,8 @@ func (b *MedicinalProductPharmaceuticalBuilder) Build() (*MedicinalProductPharma
 type MedicinalProductPharmaceuticalCharacteristics struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -198,6 +257,8 @@ type MedicinalProductPharmaceuticalCharacteristics struct {
 type MedicinalProductPharmaceuticalRouteOfAdministration struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -222,6 +283,8 @@ type MedicinalProductPharmaceuticalRouteOfAdministration struct {
 type MedicinalProductPharmaceuticalTargetSpecies struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -236,12 +299,16 @@ type MedicinalProductPharmaceuticalTargetSpecies struct {
 type MedicinalProductPharmaceuticalWithdrawalPeriod struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// SupportingInformation Extra information about the withdrawal period.
 	SupportingInformation *string `json:"supportingInformation,omitempty"`
+	// SupportingInformationElement contains element extensions for supportingInformation.
+	SupportingInformationElement *dt.Element `json:"_supportingInformation,omitempty"`
 	// Tissue Coded expression for the type of tissue for which the withdrawal period applues, e.g. meat, milk.
 	Tissue dt.CodeableConcept `json:"tissue"`
 	// Value A value for the time.

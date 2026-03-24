@@ -18,12 +18,18 @@ type ImmunizationEvaluation struct {
 	ResourceType string `json:"resourceType"` // Always "ImmunizationEvaluation"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,12 +42,18 @@ type ImmunizationEvaluation struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Indicates the current status of the evaluation of the vaccination administration event.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Authority Indicates the authority who published the protocol (e.g. ACIP).
 	Authority *dt.Reference `json:"authority,omitempty"`
 	// Date The date the evaluation of the vaccine administration event was performed.
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description Additional information about the evaluation.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Dose Nominal position in a series.
 	Dose *ImmunizationEvaluationDose `json:"-"` // polymorphic
 	// ImmunizationEvent The vaccine administration event being evaluated.
@@ -50,12 +62,20 @@ type ImmunizationEvaluation struct {
 	Patient dt.Reference `json:"patient"`
 	// Series One possible path to achieve presumed immunity against a disease - within the context of an authority.
 	Series *string `json:"series,omitempty"`
+	// SeriesElement contains element extensions for series.
+	SeriesElement *dt.Element `json:"_series,omitempty"`
 	// SeriesDosesPositiveInt The recommended number of doses to achieve immunity.
 	SeriesDosesPositiveInt *float64 `json:"seriesDosesPositiveInt,omitempty"`
+	// SeriesDosesPositiveIntElement contains element extensions for seriesDosesPositiveInt.
+	SeriesDosesPositiveIntElement *dt.Element `json:"_seriesDosesPositiveInt,omitempty"`
 	// SeriesDosesString The recommended number of doses to achieve immunity.
 	SeriesDosesString *string `json:"seriesDosesString,omitempty"`
+	// SeriesDosesStringElement contains element extensions for seriesDosesString.
+	SeriesDosesStringElement *dt.Element `json:"_seriesDosesString,omitempty"`
 	// TargetDisease The vaccine preventable disease the dose is being evaluated against.
 	TargetDisease dt.CodeableConcept `json:"targetDisease"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for ImmunizationEvaluation.
@@ -66,7 +86,6 @@ func (r ImmunizationEvaluation) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -83,6 +102,9 @@ func (r ImmunizationEvaluation) MarshalJSON() ([]byte, error) {
 		for k, v := range vm {
 			m[k] = v
 		}
+	}
+	for k, v := range r.Extra {
+		m[k] = v
 	}
 	return json.Marshal(m)
 }
@@ -103,94 +125,124 @@ func (r *ImmunizationEvaluation) UnmarshalJSON(data []byte) error {
 	if doseVal.NumberPositiveInt != nil || doseVal.NumberString != nil || doseVal.Status != nil || doseVal.StatusReason != nil {
 		r.Dose = &doseVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_authority", "_contained", "_date", "_description", "_doseNumberPositiveInt", "_doseNumberString", "_doseStatus", "_doseStatusReason", "_extension", "_id", "_identifier", "_immunizationEvent", "_implicitRules", "_language", "_meta", "_modifierExtension", "_patient", "_series", "_seriesDosesPositiveInt", "_seriesDosesString", "_status", "_targetDisease", "_text", "authority", "contained", "date", "description", "doseNumberPositiveInt", "doseNumberString", "doseStatus", "doseStatusReason", "extension", "id", "identifier", "immunizationEvent", "implicitRules", "language", "meta", "modifierExtension", "patient", "resourceType", "series", "seriesDosesPositiveInt", "seriesDosesString", "status", "targetDisease", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ImmunizationEvaluationBuilder provides a fluent API for constructing ImmunizationEvaluation resources.
 type ImmunizationEvaluationBuilder struct {
-	resource ImmunizationEvaluation
+	resource  ImmunizationEvaluation
+	fieldsSet map[string]bool
 }
 
 // NewImmunizationEvaluation creates a new ImmunizationEvaluationBuilder for building a ImmunizationEvaluation resource.
 func NewImmunizationEvaluation() *ImmunizationEvaluationBuilder {
-	return &ImmunizationEvaluationBuilder{resource: ImmunizationEvaluation{ResourceType: "ImmunizationEvaluation"}}
+	return &ImmunizationEvaluationBuilder{resource: ImmunizationEvaluation{ResourceType: "ImmunizationEvaluation"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ImmunizationEvaluationBuilder) WithId(v dt.ID) *ImmunizationEvaluationBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ImmunizationEvaluationBuilder) WithMeta(v dt.Meta) *ImmunizationEvaluationBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ImmunizationEvaluationBuilder) WithImplicitRules(v dt.URI) *ImmunizationEvaluationBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ImmunizationEvaluationBuilder) WithLanguage(v dt.Code) *ImmunizationEvaluationBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ImmunizationEvaluationBuilder) WithText(v dt.Narrative) *ImmunizationEvaluationBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ImmunizationEvaluationBuilder) WithContained(v json.RawMessage) *ImmunizationEvaluationBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ImmunizationEvaluationBuilder) WithExtension(v dt.Extension) *ImmunizationEvaluationBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ImmunizationEvaluationBuilder) WithModifierExtension(v dt.Extension) *ImmunizationEvaluationBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ImmunizationEvaluationBuilder) WithIdentifier(v dt.Identifier) *ImmunizationEvaluationBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ImmunizationEvaluationBuilder) WithStatus(v dt.Code) *ImmunizationEvaluationBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAuthority sets the authority field.
 func (b *ImmunizationEvaluationBuilder) WithAuthority(v dt.Reference) *ImmunizationEvaluationBuilder {
 	b.resource.Authority = &v
+	b.fieldsSet["authority"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *ImmunizationEvaluationBuilder) WithDate(v dt.DateTime) *ImmunizationEvaluationBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *ImmunizationEvaluationBuilder) WithDescription(v string) *ImmunizationEvaluationBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
@@ -200,6 +252,7 @@ func (b *ImmunizationEvaluationBuilder) WithDoseNumberPositiveInt(v float64) *Im
 		b.resource.Dose = &ImmunizationEvaluationDose{}
 	}
 	b.resource.Dose.NumberPositiveInt = &v
+	b.fieldsSet["dose"] = true
 	return b
 }
 
@@ -209,6 +262,7 @@ func (b *ImmunizationEvaluationBuilder) WithDoseNumberString(v string) *Immuniza
 		b.resource.Dose = &ImmunizationEvaluationDose{}
 	}
 	b.resource.Dose.NumberString = &v
+	b.fieldsSet["dose"] = true
 	return b
 }
 
@@ -218,6 +272,7 @@ func (b *ImmunizationEvaluationBuilder) WithDoseStatus(v dt.CodeableConcept) *Im
 		b.resource.Dose = &ImmunizationEvaluationDose{}
 	}
 	b.resource.Dose.Status = &v
+	b.fieldsSet["dose"] = true
 	return b
 }
 
@@ -227,48 +282,71 @@ func (b *ImmunizationEvaluationBuilder) WithDoseStatusReason(v []dt.CodeableConc
 		b.resource.Dose = &ImmunizationEvaluationDose{}
 	}
 	b.resource.Dose.StatusReason = v
+	b.fieldsSet["dose"] = true
 	return b
 }
 
 // WithImmunizationEvent sets the immunizationEvent field.
 func (b *ImmunizationEvaluationBuilder) WithImmunizationEvent(v dt.Reference) *ImmunizationEvaluationBuilder {
 	b.resource.ImmunizationEvent = v
+	b.fieldsSet["immunizationEvent"] = true
 	return b
 }
 
 // WithPatient sets the patient field.
 func (b *ImmunizationEvaluationBuilder) WithPatient(v dt.Reference) *ImmunizationEvaluationBuilder {
 	b.resource.Patient = v
+	b.fieldsSet["patient"] = true
 	return b
 }
 
 // WithSeries sets the series field.
 func (b *ImmunizationEvaluationBuilder) WithSeries(v string) *ImmunizationEvaluationBuilder {
 	b.resource.Series = &v
+	b.fieldsSet["series"] = true
 	return b
 }
 
 // WithSeriesDosesPositiveInt sets the seriesDosesPositiveInt field.
 func (b *ImmunizationEvaluationBuilder) WithSeriesDosesPositiveInt(v float64) *ImmunizationEvaluationBuilder {
 	b.resource.SeriesDosesPositiveInt = &v
+	b.fieldsSet["seriesDosesPositiveInt"] = true
 	return b
 }
 
 // WithSeriesDosesString sets the seriesDosesString field.
 func (b *ImmunizationEvaluationBuilder) WithSeriesDosesString(v string) *ImmunizationEvaluationBuilder {
 	b.resource.SeriesDosesString = &v
+	b.fieldsSet["seriesDosesString"] = true
 	return b
 }
 
 // WithTargetDisease sets the targetDisease field.
 func (b *ImmunizationEvaluationBuilder) WithTargetDisease(v dt.CodeableConcept) *ImmunizationEvaluationBuilder {
 	b.resource.TargetDisease = v
+	b.fieldsSet["targetDisease"] = true
 	return b
 }
 
 // Build returns the constructed ImmunizationEvaluation. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *ImmunizationEvaluationBuilder) Build() (*ImmunizationEvaluation, error) {
+	var missing []string
+	if !b.fieldsSet["doseStatus"] {
+		missing = append(missing, "doseStatus")
+	}
+	if !b.fieldsSet["immunizationEvent"] {
+		missing = append(missing, "immunizationEvent")
+	}
+	if !b.fieldsSet["patient"] {
+		missing = append(missing, "patient")
+	}
+	if !b.fieldsSet["targetDisease"] {
+		missing = append(missing, "targetDisease")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("ImmunizationEvaluation: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }

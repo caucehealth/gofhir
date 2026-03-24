@@ -18,12 +18,18 @@ type ImplementationGuide struct {
 	ResourceType string `json:"resourceType"` // Always "ImplementationGuide"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -34,51 +40,93 @@ type ImplementationGuide struct {
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The status of this implementation guide. Enables tracking the life-cycle of the content.
 	Status *ImplementationGuideStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the implementation guide and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the implementation guide.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date  (and optionally time) when the implementation guide was published. The date must change when the business version changes and it must change if the status code changes. In addition, it sh...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Definition The information needed by an IG publisher tool to publish the whole implementation guide.
 	Definition *ImplementationGuideDefinition `json:"definition,omitempty"`
 	// DependsOn Another implementation guide that this implementation depends on. Typically, an implementation guide uses value sets, profiles etc.defined in other implementation guides.
 	DependsOn []ImplementationGuideDependsOn `json:"dependsOn,omitempty"`
 	// Description A free text natural language description of the implementation guide from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Experimental A Boolean value to indicate that this implementation guide is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// FhirVersion The version(s) of the FHIR specification that this ImplementationGuide targets - e.g. describes how to use. The value of this element is the formal version of the specification, without the revisio...
 	FhirVersion []ImplementationGuideFhirVersion `json:"fhirVersion,omitempty"`
+	// FhirVersionElement contains element extensions for each fhirVersion.
+	FhirVersionElement []dt.Element `json:"_fhirVersion,omitempty"`
 	// Global A set of profiles that all resources covered by this implementation guide must conform to.
 	Global []ImplementationGuideGlobal `json:"global,omitempty"`
 	// Jurisdiction A legal or geographic region in which the implementation guide is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// License The license that applies to this Implementation Guide, using an SPDX license code, or 'not-open-source'.
 	License *ImplementationGuideLicense `json:"license,omitempty"`
+	// LicenseElement contains element extensions for license.
+	LicenseElement *dt.Element `json:"_license,omitempty"`
 	// Manifest Information about an assembled implementation guide, created by the publication tooling.
 	Manifest *ImplementationGuideManifest `json:"manifest,omitempty"`
 	// Name A natural language name identifying the implementation guide. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// PackageId The NPM package name for this Implementation Guide, used in the NPM package distribution, which is the primary mechanism by which FHIR based tooling manages IG dependencies. This value must be glob...
 	PackageId *dt.ID `json:"packageId,omitempty"`
+	// PackageIdElement contains element extensions for packageId.
+	PackageIdElement *dt.Element `json:"_packageId,omitempty"`
 	// Publisher The name of the organization or individual that published the implementation guide.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Title A short, descriptive, user-friendly title for the implementation guide.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Url An absolute URI that is used to identify this implementation guide when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globa...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the implementation guide when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the imple...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for ImplementationGuide.
 func (r ImplementationGuide) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "ImplementationGuide"
 	type Alias ImplementationGuide
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ImplementationGuide.
@@ -89,184 +137,229 @@ func (r *ImplementationGuide) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ImplementationGuide(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contact", "_contained", "_copyright", "_date", "_definition", "_dependsOn", "_description", "_experimental", "_extension", "_fhirVersion", "_global", "_id", "_implicitRules", "_jurisdiction", "_language", "_license", "_manifest", "_meta", "_modifierExtension", "_name", "_packageId", "_publisher", "_status", "_text", "_title", "_url", "_useContext", "_version", "contact", "contained", "copyright", "date", "definition", "dependsOn", "description", "experimental", "extension", "fhirVersion", "global", "id", "implicitRules", "jurisdiction", "language", "license", "manifest", "meta", "modifierExtension", "name", "packageId", "publisher", "resourceType", "status", "text", "title", "url", "useContext", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ImplementationGuideBuilder provides a fluent API for constructing ImplementationGuide resources.
 type ImplementationGuideBuilder struct {
-	resource ImplementationGuide
+	resource  ImplementationGuide
+	fieldsSet map[string]bool
 }
 
 // NewImplementationGuide creates a new ImplementationGuideBuilder for building a ImplementationGuide resource.
 func NewImplementationGuide() *ImplementationGuideBuilder {
-	return &ImplementationGuideBuilder{resource: ImplementationGuide{ResourceType: "ImplementationGuide"}}
+	return &ImplementationGuideBuilder{resource: ImplementationGuide{ResourceType: "ImplementationGuide"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ImplementationGuideBuilder) WithId(v dt.ID) *ImplementationGuideBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ImplementationGuideBuilder) WithMeta(v dt.Meta) *ImplementationGuideBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ImplementationGuideBuilder) WithImplicitRules(v dt.URI) *ImplementationGuideBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ImplementationGuideBuilder) WithLanguage(v dt.Code) *ImplementationGuideBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ImplementationGuideBuilder) WithText(v dt.Narrative) *ImplementationGuideBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ImplementationGuideBuilder) WithContained(v json.RawMessage) *ImplementationGuideBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ImplementationGuideBuilder) WithExtension(v dt.Extension) *ImplementationGuideBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ImplementationGuideBuilder) WithModifierExtension(v dt.Extension) *ImplementationGuideBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ImplementationGuideBuilder) WithStatus(v ImplementationGuideStatus) *ImplementationGuideBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *ImplementationGuideBuilder) WithContact(v dt.ContactDetail) *ImplementationGuideBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *ImplementationGuideBuilder) WithCopyright(v dt.Markdown) *ImplementationGuideBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *ImplementationGuideBuilder) WithDate(v dt.DateTime) *ImplementationGuideBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDefinition sets the definition field.
 func (b *ImplementationGuideBuilder) WithDefinition(v ImplementationGuideDefinition) *ImplementationGuideBuilder {
 	b.resource.Definition = &v
+	b.fieldsSet["definition"] = true
 	return b
 }
 
 // WithDependsOn adds an item to the dependsOn field.
 func (b *ImplementationGuideBuilder) WithDependsOn(v ImplementationGuideDependsOn) *ImplementationGuideBuilder {
 	b.resource.DependsOn = append(b.resource.DependsOn, v)
+	b.fieldsSet["dependsOn"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *ImplementationGuideBuilder) WithDescription(v dt.Markdown) *ImplementationGuideBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *ImplementationGuideBuilder) WithExperimental(v bool) *ImplementationGuideBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithFhirVersion adds an item to the fhirVersion field.
 func (b *ImplementationGuideBuilder) WithFhirVersion(v ImplementationGuideFhirVersion) *ImplementationGuideBuilder {
 	b.resource.FhirVersion = append(b.resource.FhirVersion, v)
+	b.fieldsSet["fhirVersion"] = true
 	return b
 }
 
 // WithGlobal adds an item to the global field.
 func (b *ImplementationGuideBuilder) WithGlobal(v ImplementationGuideGlobal) *ImplementationGuideBuilder {
 	b.resource.Global = append(b.resource.Global, v)
+	b.fieldsSet["global"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *ImplementationGuideBuilder) WithJurisdiction(v dt.CodeableConcept) *ImplementationGuideBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithLicense sets the license field.
 func (b *ImplementationGuideBuilder) WithLicense(v ImplementationGuideLicense) *ImplementationGuideBuilder {
 	b.resource.License = &v
+	b.fieldsSet["license"] = true
 	return b
 }
 
 // WithManifest sets the manifest field.
 func (b *ImplementationGuideBuilder) WithManifest(v ImplementationGuideManifest) *ImplementationGuideBuilder {
 	b.resource.Manifest = &v
+	b.fieldsSet["manifest"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *ImplementationGuideBuilder) WithName(v string) *ImplementationGuideBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithPackageId sets the packageId field.
 func (b *ImplementationGuideBuilder) WithPackageId(v dt.ID) *ImplementationGuideBuilder {
 	b.resource.PackageId = &v
+	b.fieldsSet["packageId"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *ImplementationGuideBuilder) WithPublisher(v string) *ImplementationGuideBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *ImplementationGuideBuilder) WithTitle(v string) *ImplementationGuideBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *ImplementationGuideBuilder) WithUrl(v dt.URI) *ImplementationGuideBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *ImplementationGuideBuilder) WithUseContext(v dt.UsageContext) *ImplementationGuideBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *ImplementationGuideBuilder) WithVersion(v string) *ImplementationGuideBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -281,6 +374,8 @@ func (b *ImplementationGuideBuilder) Build() (*ImplementationGuide, error) {
 type ImplementationGuideDefinition struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -301,62 +396,90 @@ type ImplementationGuideDefinition struct {
 type ImplementationGuideDependsOn struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// PackageId The NPM package name for the Implementation Guide that this IG depends on.
 	PackageId *dt.ID `json:"packageId,omitempty"`
+	// PackageIdElement contains element extensions for packageId.
+	PackageIdElement *dt.Element `json:"_packageId,omitempty"`
 	// Uri A canonical reference to the Implementation guide for the dependency.
 	Uri dt.Canonical `json:"uri"`
+	// UriElement contains element extensions for uri.
+	UriElement *dt.Element `json:"_uri,omitempty"`
 	// Version The version of the IG that is depended on, when the correct version is required to understand the IG correctly.
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
 }
 
 // ImplementationGuideGlobal A set of rules of how a particular interoperability or standards problem is solved - typically through the use of FHIR resources. This resource is used to gather all the parts of an implementation ...
 type ImplementationGuideGlobal struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Profile A reference to the profile that all instances must conform to.
 	Profile dt.Canonical `json:"profile"`
+	// ProfileElement contains element extensions for profile.
+	ProfileElement *dt.Element `json:"_profile,omitempty"`
 	// Type The type of resource that all instances must conform to.
 	Type *dt.Code `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }
 
 // ImplementationGuideGrouping A set of rules of how a particular interoperability or standards problem is solved - typically through the use of FHIR resources. This resource is used to gather all the parts of an implementation ...
 type ImplementationGuideGrouping struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description Human readable text describing the package.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Name The human-readable title to display for the package of resources when rendering the implementation guide.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 }
 
 // ImplementationGuideManifest A set of rules of how a particular interoperability or standards problem is solved - typically through the use of FHIR resources. This resource is used to gather all the parts of an implementation ...
 type ImplementationGuideManifest struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Image Indicates a relative path to an image that exists within the IG.
 	Image []string `json:"image,omitempty"`
+	// ImageElement contains element extensions for each image.
+	ImageElement []dt.Element `json:"_image,omitempty"`
 	// Other Indicates the relative path of an additional non-page, non-image file that is part of the IG - e.g. zip, jar and similar files that could be the target of a hyperlink in a derived IG.
 	Other []string `json:"other,omitempty"`
+	// OtherElement contains element extensions for each other.
+	OtherElement []dt.Element `json:"_other,omitempty"`
 	// Page Information about a page within the IG.
 	Page []ImplementationGuidePage1 `json:"page,omitempty"`
 	// Rendering A pointer to official web page, PDF or other rendering of the implementation guide.
 	Rendering *dt.URL `json:"rendering,omitempty"`
+	// RenderingElement contains element extensions for rendering.
+	RenderingElement *dt.Element `json:"_rendering,omitempty"`
 	// Resource A resource that is part of the implementation guide. Conformance resources (value set, structure definition, capability statements etc.) are obvious candidates for inclusion, but any kind of resour...
 	Resource []ImplementationGuideResource1 `json:"resource,omitempty"`
 }
@@ -365,70 +488,102 @@ type ImplementationGuideManifest struct {
 type ImplementationGuidePage struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Generation A code that indicates how the page is generated.
 	Generation *ImplementationGuidePageGeneration `json:"generation,omitempty"`
+	// GenerationElement contains element extensions for generation.
+	GenerationElement *dt.Element `json:"_generation,omitempty"`
 	// NameReference The source address for the page.
 	NameReference *dt.Reference `json:"nameReference,omitempty"`
 	// NameUrl The source address for the page.
 	NameUrl *string `json:"nameUrl,omitempty"`
+	// NameUrlElement contains element extensions for nameUrl.
+	NameUrlElement *dt.Element `json:"_nameUrl,omitempty"`
 	// Page Nested Pages/Sections under this page.
 	Page []ImplementationGuidePage `json:"page,omitempty"`
 	// Title A short title used to represent this page in navigational structures such as table of contents, bread crumbs, etc.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 }
 
 // ImplementationGuidePage1 A set of rules of how a particular interoperability or standards problem is solved - typically through the use of FHIR resources. This resource is used to gather all the parts of an implementation ...
 type ImplementationGuidePage1 struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Anchor The name of an anchor available on the page.
 	Anchor []string `json:"anchor,omitempty"`
+	// AnchorElement contains element extensions for each anchor.
+	AnchorElement []dt.Element `json:"_anchor,omitempty"`
 	// Name Relative path to the page.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Title Label for the page intended for human display.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 }
 
 // ImplementationGuideParameter A set of rules of how a particular interoperability or standards problem is solved - typically through the use of FHIR resources. This resource is used to gather all the parts of an implementation ...
 type ImplementationGuideParameter struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code apply | path-resource | path-pages | path-tx-cache | expansion-parameter | rule-broken-links | generate-xml | generate-json | generate-turtle | html-template.
 	Code *ImplementationGuideParameterCode `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Value Value for named type.
 	Value *string `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *dt.Element `json:"_value,omitempty"`
 }
 
 // ImplementationGuideResource A set of rules of how a particular interoperability or standards problem is solved - typically through the use of FHIR resources. This resource is used to gather all the parts of an implementation ...
 type ImplementationGuideResource struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description A description of the reason that a resource has been included in the implementation guide.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Example If true or a reference, indicates the resource is an example instance.  If a reference is present, indicates that the example is an example of the specified profile.
 	Example *ImplementationGuideResourceExample `json:"-"` // polymorphic
 	// FhirVersion Indicates the FHIR Version(s) this artifact is intended to apply to. If no versions are specified, the resource is assumed to apply to all the versions stated in ImplementationGuide.fhirVersion.
 	FhirVersion []ImplementationGuideResourceFhirVersion `json:"fhirVersion,omitempty"`
+	// FhirVersionElement contains element extensions for each fhirVersion.
+	FhirVersionElement []dt.Element `json:"_fhirVersion,omitempty"`
 	// GroupingId Reference to the id of the grouping this resource appears in.
 	GroupingId *dt.ID `json:"groupingId,omitempty"`
+	// GroupingIdElement contains element extensions for groupingId.
+	GroupingIdElement *dt.Element `json:"_groupingId,omitempty"`
 	// Name A human assigned name for the resource. All resources SHOULD have a name, but the name may be extracted from the resource (e.g. ValueSet.name).
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Reference Where this resource is found.
 	Reference dt.Reference `json:"reference"`
 }
@@ -523,6 +678,8 @@ func (v *ImplementationGuideResourceExample) UnmarshalJSON(data []byte) error {
 type ImplementationGuideResource1 struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -533,6 +690,8 @@ type ImplementationGuideResource1 struct {
 	Reference dt.Reference `json:"reference"`
 	// RelativePath The relative path for primary page for this resource within the IG.
 	RelativePath *dt.URL `json:"relativePath,omitempty"`
+	// RelativePathElement contains element extensions for relativePath.
+	RelativePathElement *dt.Element `json:"_relativePath,omitempty"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for ImplementationGuideResource1.
@@ -625,14 +784,22 @@ func (v *ImplementationGuideResource1Example) UnmarshalJSON(data []byte) error {
 type ImplementationGuideTemplate struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code Type of template specified.
 	Code *dt.Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Scope The scope in which the template applies.
 	Scope *string `json:"scope,omitempty"`
+	// ScopeElement contains element extensions for scope.
+	ScopeElement *dt.Element `json:"_scope,omitempty"`
 	// Source The source location for the template.
 	Source *string `json:"source,omitempty"`
+	// SourceElement contains element extensions for source.
+	SourceElement *dt.Element `json:"_source,omitempty"`
 }

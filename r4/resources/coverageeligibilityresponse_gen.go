@@ -18,12 +18,18 @@ type CoverageEligibilityResponse struct {
 	ResourceType string `json:"resourceType"` // Always "CoverageEligibilityResponse"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,10 +42,16 @@ type CoverageEligibilityResponse struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the resource instance.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Created The date this resource was created.
 	Created *dt.DateTime `json:"created,omitempty"`
+	// CreatedElement contains element extensions for created.
+	CreatedElement *dt.Element `json:"_created,omitempty"`
 	// Disposition A human readable description of the status of the adjudication.
 	Disposition *string `json:"disposition,omitempty"`
+	// DispositionElement contains element extensions for disposition.
+	DispositionElement *dt.Element `json:"_disposition,omitempty"`
 	// Error Errors encountered during the processing of the request.
 	Error []CoverageEligibilityResponseError `json:"error,omitempty"`
 	// Form A code for the form to be used for printing the content.
@@ -50,18 +62,26 @@ type CoverageEligibilityResponse struct {
 	Insurer dt.Reference `json:"insurer"`
 	// Outcome The outcome of the request processing.
 	Outcome *CoverageEligibilityResponseOutcome `json:"outcome,omitempty"`
+	// OutcomeElement contains element extensions for outcome.
+	OutcomeElement *dt.Element `json:"_outcome,omitempty"`
 	// Patient The party who is the beneficiary of the supplied coverage and for whom eligibility is sought.
 	Patient dt.Reference `json:"patient"`
 	// PreAuthRef A reference from the Insurer to which these services pertain to be used on further communication and as proof that the request occurred.
 	PreAuthRef *string `json:"preAuthRef,omitempty"`
+	// PreAuthRefElement contains element extensions for preAuthRef.
+	PreAuthRefElement *dt.Element `json:"_preAuthRef,omitempty"`
 	// Purpose Code to specify whether requesting: prior authorization requirements for some service categories or billing codes; benefits for coverages specified or discovered; discovery and return of coverages ...
 	Purpose []CoverageEligibilityResponsePurpose `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for each purpose.
+	PurposeElement []dt.Element `json:"_purpose,omitempty"`
 	// Request Reference to the original request resource.
 	Request dt.Reference `json:"request"`
 	// Requestor The provider which is responsible for the request.
 	Requestor *dt.Reference `json:"requestor,omitempty"`
 	// Serviced The date or dates when the enclosed suite of services were performed or completed.
 	Serviced *CoverageEligibilityResponseServiced `json:"-"` // polymorphic
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for CoverageEligibilityResponse.
@@ -72,7 +92,6 @@ func (r CoverageEligibilityResponse) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -89,6 +108,9 @@ func (r CoverageEligibilityResponse) MarshalJSON() ([]byte, error) {
 		for k, v := range vm {
 			m[k] = v
 		}
+	}
+	for k, v := range r.Extra {
+		m[k] = v
 	}
 	return json.Marshal(m)
 }
@@ -109,148 +131,187 @@ func (r *CoverageEligibilityResponse) UnmarshalJSON(data []byte) error {
 	if servicedVal.Date != nil || servicedVal.Period != nil {
 		r.Serviced = &servicedVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contained", "_created", "_disposition", "_error", "_extension", "_form", "_id", "_identifier", "_implicitRules", "_insurance", "_insurer", "_language", "_meta", "_modifierExtension", "_outcome", "_patient", "_preAuthRef", "_purpose", "_request", "_requestor", "_servicedDate", "_servicedPeriod", "_status", "_text", "contained", "created", "disposition", "error", "extension", "form", "id", "identifier", "implicitRules", "insurance", "insurer", "language", "meta", "modifierExtension", "outcome", "patient", "preAuthRef", "purpose", "request", "requestor", "resourceType", "servicedDate", "servicedPeriod", "status", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // CoverageEligibilityResponseBuilder provides a fluent API for constructing CoverageEligibilityResponse resources.
 type CoverageEligibilityResponseBuilder struct {
-	resource CoverageEligibilityResponse
+	resource  CoverageEligibilityResponse
+	fieldsSet map[string]bool
 }
 
 // NewCoverageEligibilityResponse creates a new CoverageEligibilityResponseBuilder for building a CoverageEligibilityResponse resource.
 func NewCoverageEligibilityResponse() *CoverageEligibilityResponseBuilder {
-	return &CoverageEligibilityResponseBuilder{resource: CoverageEligibilityResponse{ResourceType: "CoverageEligibilityResponse"}}
+	return &CoverageEligibilityResponseBuilder{resource: CoverageEligibilityResponse{ResourceType: "CoverageEligibilityResponse"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *CoverageEligibilityResponseBuilder) WithId(v dt.ID) *CoverageEligibilityResponseBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *CoverageEligibilityResponseBuilder) WithMeta(v dt.Meta) *CoverageEligibilityResponseBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *CoverageEligibilityResponseBuilder) WithImplicitRules(v dt.URI) *CoverageEligibilityResponseBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *CoverageEligibilityResponseBuilder) WithLanguage(v dt.Code) *CoverageEligibilityResponseBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *CoverageEligibilityResponseBuilder) WithText(v dt.Narrative) *CoverageEligibilityResponseBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *CoverageEligibilityResponseBuilder) WithContained(v json.RawMessage) *CoverageEligibilityResponseBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *CoverageEligibilityResponseBuilder) WithExtension(v dt.Extension) *CoverageEligibilityResponseBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *CoverageEligibilityResponseBuilder) WithModifierExtension(v dt.Extension) *CoverageEligibilityResponseBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *CoverageEligibilityResponseBuilder) WithIdentifier(v dt.Identifier) *CoverageEligibilityResponseBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *CoverageEligibilityResponseBuilder) WithStatus(v dt.Code) *CoverageEligibilityResponseBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithCreated sets the created field.
 func (b *CoverageEligibilityResponseBuilder) WithCreated(v dt.DateTime) *CoverageEligibilityResponseBuilder {
 	b.resource.Created = &v
+	b.fieldsSet["created"] = true
 	return b
 }
 
 // WithDisposition sets the disposition field.
 func (b *CoverageEligibilityResponseBuilder) WithDisposition(v string) *CoverageEligibilityResponseBuilder {
 	b.resource.Disposition = &v
+	b.fieldsSet["disposition"] = true
 	return b
 }
 
 // WithError adds an item to the error field.
 func (b *CoverageEligibilityResponseBuilder) WithError(v CoverageEligibilityResponseError) *CoverageEligibilityResponseBuilder {
 	b.resource.Error = append(b.resource.Error, v)
+	b.fieldsSet["error"] = true
 	return b
 }
 
 // WithForm sets the form field.
 func (b *CoverageEligibilityResponseBuilder) WithForm(v dt.CodeableConcept) *CoverageEligibilityResponseBuilder {
 	b.resource.Form = &v
+	b.fieldsSet["form"] = true
 	return b
 }
 
 // WithInsurance adds an item to the insurance field.
 func (b *CoverageEligibilityResponseBuilder) WithInsurance(v CoverageEligibilityResponseInsurance) *CoverageEligibilityResponseBuilder {
 	b.resource.Insurance = append(b.resource.Insurance, v)
+	b.fieldsSet["insurance"] = true
 	return b
 }
 
 // WithInsurer sets the insurer field.
 func (b *CoverageEligibilityResponseBuilder) WithInsurer(v dt.Reference) *CoverageEligibilityResponseBuilder {
 	b.resource.Insurer = v
+	b.fieldsSet["insurer"] = true
 	return b
 }
 
 // WithOutcome sets the outcome field.
 func (b *CoverageEligibilityResponseBuilder) WithOutcome(v CoverageEligibilityResponseOutcome) *CoverageEligibilityResponseBuilder {
 	b.resource.Outcome = &v
+	b.fieldsSet["outcome"] = true
 	return b
 }
 
 // WithPatient sets the patient field.
 func (b *CoverageEligibilityResponseBuilder) WithPatient(v dt.Reference) *CoverageEligibilityResponseBuilder {
 	b.resource.Patient = v
+	b.fieldsSet["patient"] = true
 	return b
 }
 
 // WithPreAuthRef sets the preAuthRef field.
 func (b *CoverageEligibilityResponseBuilder) WithPreAuthRef(v string) *CoverageEligibilityResponseBuilder {
 	b.resource.PreAuthRef = &v
+	b.fieldsSet["preAuthRef"] = true
 	return b
 }
 
 // WithPurpose adds an item to the purpose field.
 func (b *CoverageEligibilityResponseBuilder) WithPurpose(v CoverageEligibilityResponsePurpose) *CoverageEligibilityResponseBuilder {
 	b.resource.Purpose = append(b.resource.Purpose, v)
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
 // WithRequest sets the request field.
 func (b *CoverageEligibilityResponseBuilder) WithRequest(v dt.Reference) *CoverageEligibilityResponseBuilder {
 	b.resource.Request = v
+	b.fieldsSet["request"] = true
 	return b
 }
 
 // WithRequestor sets the requestor field.
 func (b *CoverageEligibilityResponseBuilder) WithRequestor(v dt.Reference) *CoverageEligibilityResponseBuilder {
 	b.resource.Requestor = &v
+	b.fieldsSet["requestor"] = true
 	return b
 }
 
@@ -260,6 +321,7 @@ func (b *CoverageEligibilityResponseBuilder) WithServicedDate(v string) *Coverag
 		b.resource.Serviced = &CoverageEligibilityResponseServiced{}
 	}
 	b.resource.Serviced.Date = &v
+	b.fieldsSet["serviced"] = true
 	return b
 }
 
@@ -269,12 +331,26 @@ func (b *CoverageEligibilityResponseBuilder) WithServicedPeriod(v dt.Period) *Co
 		b.resource.Serviced = &CoverageEligibilityResponseServiced{}
 	}
 	b.resource.Serviced.Period = &v
+	b.fieldsSet["serviced"] = true
 	return b
 }
 
 // Build returns the constructed CoverageEligibilityResponse. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *CoverageEligibilityResponseBuilder) Build() (*CoverageEligibilityResponse, error) {
+	var missing []string
+	if !b.fieldsSet["insurer"] {
+		missing = append(missing, "insurer")
+	}
+	if !b.fieldsSet["patient"] {
+		missing = append(missing, "patient")
+	}
+	if !b.fieldsSet["request"] {
+		missing = append(missing, "request")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("CoverageEligibilityResponse: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -283,6 +359,8 @@ func (b *CoverageEligibilityResponseBuilder) Build() (*CoverageEligibilityRespon
 type CoverageEligibilityResponseBenefit struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -306,8 +384,8 @@ func (r CoverageEligibilityResponseBenefit) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Allowed != nil {
-		vData, err := json.Marshal(r.Allowed)
+	if r.Used != nil {
+		vData, err := json.Marshal(r.Used)
 		if err != nil {
 			return nil, err
 		}
@@ -319,8 +397,8 @@ func (r CoverageEligibilityResponseBenefit) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Used != nil {
-		vData, err := json.Marshal(r.Used)
+	if r.Allowed != nil {
+		vData, err := json.Marshal(r.Allowed)
 		if err != nil {
 			return nil, err
 		}
@@ -468,6 +546,8 @@ func (v *CoverageEligibilityResponseBenefitUsed) UnmarshalJSON(data []byte) erro
 type CoverageEligibilityResponseError struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -480,6 +560,8 @@ type CoverageEligibilityResponseError struct {
 type CoverageEligibilityResponseInsurance struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -490,6 +572,8 @@ type CoverageEligibilityResponseInsurance struct {
 	Coverage dt.Reference `json:"coverage"`
 	// Inforce Flag indicating if the coverage provided is inforce currently if no service date(s) specified or for the whole duration of the service dates.
 	Inforce *bool `json:"inforce,omitempty"`
+	// InforceElement contains element extensions for inforce.
+	InforceElement *dt.Element `json:"_inforce,omitempty"`
 	// Item Benefits and optionally current balances, and authorization details by category or service.
 	Item []CoverageEligibilityResponseItem `json:"item,omitempty"`
 }
@@ -498,28 +582,40 @@ type CoverageEligibilityResponseInsurance struct {
 type CoverageEligibilityResponseItem struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// AuthorizationRequired A boolean flag indicating whether a preauthorization is required prior to actual service delivery.
 	AuthorizationRequired *bool `json:"authorizationRequired,omitempty"`
+	// AuthorizationRequiredElement contains element extensions for authorizationRequired.
+	AuthorizationRequiredElement *dt.Element `json:"_authorizationRequired,omitempty"`
 	// AuthorizationSupporting Codes or comments regarding information or actions associated with the preauthorization.
 	AuthorizationSupporting []dt.CodeableConcept `json:"authorizationSupporting,omitempty"`
 	// AuthorizationUrl A web location for obtaining requirements or descriptive information regarding the preauthorization.
 	AuthorizationUrl *dt.URI `json:"authorizationUrl,omitempty"`
+	// AuthorizationUrlElement contains element extensions for authorizationUrl.
+	AuthorizationUrlElement *dt.Element `json:"_authorizationUrl,omitempty"`
 	// Benefit Benefits used to date.
 	Benefit []CoverageEligibilityResponseBenefit `json:"benefit,omitempty"`
 	// Category Code to identify the general type of benefits under which products and services are provided.
 	Category *dt.CodeableConcept `json:"category,omitempty"`
 	// Description A richer description of the benefit or services covered.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Excluded True if the indicated class of service is excluded from the plan, missing or False indicates the product or service is included in the coverage.
 	Excluded *bool `json:"excluded,omitempty"`
+	// ExcludedElement contains element extensions for excluded.
+	ExcludedElement *dt.Element `json:"_excluded,omitempty"`
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
 	Modifier []dt.CodeableConcept `json:"modifier,omitempty"`
 	// Name A short name or tag for the benefit.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Network Is a flag to indicate whether the benefits refer to in-network providers or out-of-network providers.
 	Network *dt.CodeableConcept `json:"network,omitempty"`
 	// ProductOrService This contains the product, service, drug or other billing code for the item.

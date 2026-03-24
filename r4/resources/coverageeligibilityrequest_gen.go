@@ -18,12 +18,18 @@ type CoverageEligibilityRequest struct {
 	ResourceType string `json:"resourceType"` // Always "CoverageEligibilityRequest"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,8 +42,12 @@ type CoverageEligibilityRequest struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the resource instance.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Created The date when this resource was created.
 	Created *dt.DateTime `json:"created,omitempty"`
+	// CreatedElement contains element extensions for created.
+	CreatedElement *dt.Element `json:"_created,omitempty"`
 	// Enterer Person who created the request.
 	Enterer *dt.Reference `json:"enterer,omitempty"`
 	// Facility Facility where the services are intended to be provided.
@@ -56,10 +66,14 @@ type CoverageEligibilityRequest struct {
 	Provider *dt.Reference `json:"provider,omitempty"`
 	// Purpose Code to specify whether requesting: prior authorization requirements for some service categories or billing codes; benefits for coverages specified or discovered; discovery and return of coverages ...
 	Purpose []CoverageEligibilityRequestPurpose `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for each purpose.
+	PurposeElement []dt.Element `json:"_purpose,omitempty"`
 	// Serviced The date or dates when the enclosed suite of services were performed or completed.
 	Serviced *CoverageEligibilityRequestServiced `json:"-"` // polymorphic
 	// SupportingInfo Additional information codes regarding exceptions, special considerations, the condition, situation, prior or concurrent issues.
 	SupportingInfo []CoverageEligibilityRequestSupportingInfo `json:"supportingInfo,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for CoverageEligibilityRequest.
@@ -70,7 +84,6 @@ func (r CoverageEligibilityRequest) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -87,6 +100,9 @@ func (r CoverageEligibilityRequest) MarshalJSON() ([]byte, error) {
 		for k, v := range vm {
 			m[k] = v
 		}
+	}
+	for k, v := range r.Extra {
+		m[k] = v
 	}
 	return json.Marshal(m)
 }
@@ -107,136 +123,173 @@ func (r *CoverageEligibilityRequest) UnmarshalJSON(data []byte) error {
 	if servicedVal.Date != nil || servicedVal.Period != nil {
 		r.Serviced = &servicedVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contained", "_created", "_enterer", "_extension", "_facility", "_id", "_identifier", "_implicitRules", "_insurance", "_insurer", "_item", "_language", "_meta", "_modifierExtension", "_patient", "_priority", "_provider", "_purpose", "_servicedDate", "_servicedPeriod", "_status", "_supportingInfo", "_text", "contained", "created", "enterer", "extension", "facility", "id", "identifier", "implicitRules", "insurance", "insurer", "item", "language", "meta", "modifierExtension", "patient", "priority", "provider", "purpose", "resourceType", "servicedDate", "servicedPeriod", "status", "supportingInfo", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // CoverageEligibilityRequestBuilder provides a fluent API for constructing CoverageEligibilityRequest resources.
 type CoverageEligibilityRequestBuilder struct {
-	resource CoverageEligibilityRequest
+	resource  CoverageEligibilityRequest
+	fieldsSet map[string]bool
 }
 
 // NewCoverageEligibilityRequest creates a new CoverageEligibilityRequestBuilder for building a CoverageEligibilityRequest resource.
 func NewCoverageEligibilityRequest() *CoverageEligibilityRequestBuilder {
-	return &CoverageEligibilityRequestBuilder{resource: CoverageEligibilityRequest{ResourceType: "CoverageEligibilityRequest"}}
+	return &CoverageEligibilityRequestBuilder{resource: CoverageEligibilityRequest{ResourceType: "CoverageEligibilityRequest"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *CoverageEligibilityRequestBuilder) WithId(v dt.ID) *CoverageEligibilityRequestBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *CoverageEligibilityRequestBuilder) WithMeta(v dt.Meta) *CoverageEligibilityRequestBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *CoverageEligibilityRequestBuilder) WithImplicitRules(v dt.URI) *CoverageEligibilityRequestBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *CoverageEligibilityRequestBuilder) WithLanguage(v dt.Code) *CoverageEligibilityRequestBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *CoverageEligibilityRequestBuilder) WithText(v dt.Narrative) *CoverageEligibilityRequestBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *CoverageEligibilityRequestBuilder) WithContained(v json.RawMessage) *CoverageEligibilityRequestBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *CoverageEligibilityRequestBuilder) WithExtension(v dt.Extension) *CoverageEligibilityRequestBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *CoverageEligibilityRequestBuilder) WithModifierExtension(v dt.Extension) *CoverageEligibilityRequestBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *CoverageEligibilityRequestBuilder) WithIdentifier(v dt.Identifier) *CoverageEligibilityRequestBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *CoverageEligibilityRequestBuilder) WithStatus(v dt.Code) *CoverageEligibilityRequestBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithCreated sets the created field.
 func (b *CoverageEligibilityRequestBuilder) WithCreated(v dt.DateTime) *CoverageEligibilityRequestBuilder {
 	b.resource.Created = &v
+	b.fieldsSet["created"] = true
 	return b
 }
 
 // WithEnterer sets the enterer field.
 func (b *CoverageEligibilityRequestBuilder) WithEnterer(v dt.Reference) *CoverageEligibilityRequestBuilder {
 	b.resource.Enterer = &v
+	b.fieldsSet["enterer"] = true
 	return b
 }
 
 // WithFacility sets the facility field.
 func (b *CoverageEligibilityRequestBuilder) WithFacility(v dt.Reference) *CoverageEligibilityRequestBuilder {
 	b.resource.Facility = &v
+	b.fieldsSet["facility"] = true
 	return b
 }
 
 // WithInsurance adds an item to the insurance field.
 func (b *CoverageEligibilityRequestBuilder) WithInsurance(v CoverageEligibilityRequestInsurance) *CoverageEligibilityRequestBuilder {
 	b.resource.Insurance = append(b.resource.Insurance, v)
+	b.fieldsSet["insurance"] = true
 	return b
 }
 
 // WithInsurer sets the insurer field.
 func (b *CoverageEligibilityRequestBuilder) WithInsurer(v dt.Reference) *CoverageEligibilityRequestBuilder {
 	b.resource.Insurer = v
+	b.fieldsSet["insurer"] = true
 	return b
 }
 
 // WithItem adds an item to the item field.
 func (b *CoverageEligibilityRequestBuilder) WithItem(v CoverageEligibilityRequestItem) *CoverageEligibilityRequestBuilder {
 	b.resource.Item = append(b.resource.Item, v)
+	b.fieldsSet["item"] = true
 	return b
 }
 
 // WithPatient sets the patient field.
 func (b *CoverageEligibilityRequestBuilder) WithPatient(v dt.Reference) *CoverageEligibilityRequestBuilder {
 	b.resource.Patient = v
+	b.fieldsSet["patient"] = true
 	return b
 }
 
 // WithPriority sets the priority field.
 func (b *CoverageEligibilityRequestBuilder) WithPriority(v dt.CodeableConcept) *CoverageEligibilityRequestBuilder {
 	b.resource.Priority = &v
+	b.fieldsSet["priority"] = true
 	return b
 }
 
 // WithProvider sets the provider field.
 func (b *CoverageEligibilityRequestBuilder) WithProvider(v dt.Reference) *CoverageEligibilityRequestBuilder {
 	b.resource.Provider = &v
+	b.fieldsSet["provider"] = true
 	return b
 }
 
 // WithPurpose adds an item to the purpose field.
 func (b *CoverageEligibilityRequestBuilder) WithPurpose(v CoverageEligibilityRequestPurpose) *CoverageEligibilityRequestBuilder {
 	b.resource.Purpose = append(b.resource.Purpose, v)
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
@@ -246,6 +299,7 @@ func (b *CoverageEligibilityRequestBuilder) WithServicedDate(v string) *Coverage
 		b.resource.Serviced = &CoverageEligibilityRequestServiced{}
 	}
 	b.resource.Serviced.Date = &v
+	b.fieldsSet["serviced"] = true
 	return b
 }
 
@@ -255,18 +309,30 @@ func (b *CoverageEligibilityRequestBuilder) WithServicedPeriod(v dt.Period) *Cov
 		b.resource.Serviced = &CoverageEligibilityRequestServiced{}
 	}
 	b.resource.Serviced.Period = &v
+	b.fieldsSet["serviced"] = true
 	return b
 }
 
 // WithSupportingInfo adds an item to the supportingInfo field.
 func (b *CoverageEligibilityRequestBuilder) WithSupportingInfo(v CoverageEligibilityRequestSupportingInfo) *CoverageEligibilityRequestBuilder {
 	b.resource.SupportingInfo = append(b.resource.SupportingInfo, v)
+	b.fieldsSet["supportingInfo"] = true
 	return b
 }
 
 // Build returns the constructed CoverageEligibilityRequest. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *CoverageEligibilityRequestBuilder) Build() (*CoverageEligibilityRequest, error) {
+	var missing []string
+	if !b.fieldsSet["insurer"] {
+		missing = append(missing, "insurer")
+	}
+	if !b.fieldsSet["patient"] {
+		missing = append(missing, "patient")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("CoverageEligibilityRequest: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -275,6 +341,8 @@ func (b *CoverageEligibilityRequestBuilder) Build() (*CoverageEligibilityRequest
 type CoverageEligibilityRequestDiagnosis struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -373,22 +441,30 @@ func (v *CoverageEligibilityRequestDiagnosisDiagnosis) UnmarshalJSON(data []byte
 type CoverageEligibilityRequestInsurance struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// BusinessArrangement A business agreement number established between the provider and the insurer for special business processing purposes.
 	BusinessArrangement *string `json:"businessArrangement,omitempty"`
+	// BusinessArrangementElement contains element extensions for businessArrangement.
+	BusinessArrangementElement *dt.Element `json:"_businessArrangement,omitempty"`
 	// Coverage Reference to the insurance card level information contained in the Coverage resource. The coverage issuing insurer will use these details to locate the patient's actual coverage within the insurer'...
 	Coverage dt.Reference `json:"coverage"`
 	// Focal A flag to indicate that this Coverage is to be used for evaluation of this request when set to true.
 	Focal *bool `json:"focal,omitempty"`
+	// FocalElement contains element extensions for focal.
+	FocalElement *dt.Element `json:"_focal,omitempty"`
 }
 
 // CoverageEligibilityRequestItem The CoverageEligibilityRequest provides patient and insurance coverage information to an insurer for them to respond, in the form of an CoverageEligibilityResponse, with information regarding wheth...
 type CoverageEligibilityRequestItem struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -411,6 +487,8 @@ type CoverageEligibilityRequestItem struct {
 	Quantity *dt.Quantity `json:"quantity,omitempty"`
 	// SupportingInfoSequence Exceptions, special conditions and supporting information applicable for this service or product line.
 	SupportingInfoSequence []uint32 `json:"supportingInfoSequence,omitempty"`
+	// SupportingInfoSequenceElement contains element extensions for each supportingInfoSequence.
+	SupportingInfoSequenceElement []dt.Element `json:"_supportingInfoSequence,omitempty"`
 	// UnitPrice The amount charged to the patient by the provider for a single unit.
 	UnitPrice *dt.Money `json:"unitPrice,omitempty"`
 }
@@ -419,16 +497,22 @@ type CoverageEligibilityRequestItem struct {
 type CoverageEligibilityRequestSupportingInfo struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// AppliesToAll The supporting materials are applicable for all detail items, product/servce categories and specific billing codes.
 	AppliesToAll *bool `json:"appliesToAll,omitempty"`
+	// AppliesToAllElement contains element extensions for appliesToAll.
+	AppliesToAllElement *dt.Element `json:"_appliesToAll,omitempty"`
 	// Information Additional data or information such as resources, documents, images etc. including references to the data or the actual inclusion of the data.
 	Information dt.Reference `json:"information"`
 	// Sequence A number to uniquely identify supporting information entries.
 	Sequence *uint32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 }
 
 // CoverageEligibilityRequestServiced represents a polymorphic choice type in FHIR.

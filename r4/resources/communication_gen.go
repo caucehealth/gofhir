@@ -17,12 +17,18 @@ type Communication struct {
 	ResourceType string `json:"resourceType"` // Always "Communication"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,6 +41,8 @@ type Communication struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the transmission.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// About Other resources that pertain to this communication and to which this communication should be associated.
 	About []dt.Reference `json:"about,omitempty"`
 	// BasedOn An order, proposal or plan fulfilled in whole or in part by this Communication.
@@ -47,8 +55,12 @@ type Communication struct {
 	InResponseTo []dt.Reference `json:"inResponseTo,omitempty"`
 	// InstantiatesCanonical The URL pointing to a FHIR-defined protocol, guideline, orderset or other definition that is adhered to in whole or in part by this Communication.
 	InstantiatesCanonical []dt.Canonical `json:"instantiatesCanonical,omitempty"`
+	// InstantiatesCanonicalElement contains element extensions for each instantiatesCanonical.
+	InstantiatesCanonicalElement []dt.Element `json:"_instantiatesCanonical,omitempty"`
 	// InstantiatesUri The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this Communication.
 	InstantiatesUri []dt.URI `json:"instantiatesUri,omitempty"`
+	// InstantiatesUriElement contains element extensions for each instantiatesUri.
+	InstantiatesUriElement []dt.Element `json:"_instantiatesUri,omitempty"`
 	// Medium A channel that was used for this communication (e.g. email, fax).
 	Medium []dt.CodeableConcept `json:"medium,omitempty"`
 	// Note Additional notes or commentary about the communication by the sender, receiver or other interested parties.
@@ -59,31 +71,53 @@ type Communication struct {
 	Payload []CommunicationPayload `json:"payload,omitempty"`
 	// Priority Characterizes how quickly the planned or in progress communication must be addressed. Includes concepts such as stat, urgent, routine.
 	Priority *dt.Code `json:"priority,omitempty"`
+	// PriorityElement contains element extensions for priority.
+	PriorityElement *dt.Element `json:"_priority,omitempty"`
 	// ReasonCode The reason or justification for the communication.
 	ReasonCode []dt.CodeableConcept `json:"reasonCode,omitempty"`
 	// ReasonReference Indicates another resource whose existence justifies this communication.
 	ReasonReference []dt.Reference `json:"reasonReference,omitempty"`
 	// Received The time when this communication arrived at the destination.
 	Received *dt.DateTime `json:"received,omitempty"`
+	// ReceivedElement contains element extensions for received.
+	ReceivedElement *dt.Element `json:"_received,omitempty"`
 	// Recipient The entity (e.g. person, organization, clinical information system, care team or device) which was the target of the communication. If receipts need to be tracked by an individual, a separate resou...
 	Recipient []dt.Reference `json:"recipient,omitempty"`
 	// Sender The entity (e.g. person, organization, clinical information system, or device) which was the source of the communication.
 	Sender *dt.Reference `json:"sender,omitempty"`
 	// Sent The time when this communication was sent.
 	Sent *dt.DateTime `json:"sent,omitempty"`
+	// SentElement contains element extensions for sent.
+	SentElement *dt.Element `json:"_sent,omitempty"`
 	// StatusReason Captures the reason for the current state of the Communication.
 	StatusReason *dt.CodeableConcept `json:"statusReason,omitempty"`
 	// Subject The patient or group that was the focus of this communication.
 	Subject *dt.Reference `json:"subject,omitempty"`
 	// Topic Description of the purpose/content, similar to a subject line in an email.
 	Topic *dt.CodeableConcept `json:"topic,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Communication.
 func (r Communication) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Communication"
 	type Alias Communication
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Communication.
@@ -94,202 +128,250 @@ func (r *Communication) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Communication(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_about", "_basedOn", "_category", "_contained", "_encounter", "_extension", "_id", "_identifier", "_implicitRules", "_inResponseTo", "_instantiatesCanonical", "_instantiatesUri", "_language", "_medium", "_meta", "_modifierExtension", "_note", "_partOf", "_payload", "_priority", "_reasonCode", "_reasonReference", "_received", "_recipient", "_sender", "_sent", "_status", "_statusReason", "_subject", "_text", "_topic", "about", "basedOn", "category", "contained", "encounter", "extension", "id", "identifier", "implicitRules", "inResponseTo", "instantiatesCanonical", "instantiatesUri", "language", "medium", "meta", "modifierExtension", "note", "partOf", "payload", "priority", "reasonCode", "reasonReference", "received", "recipient", "resourceType", "sender", "sent", "status", "statusReason", "subject", "text", "topic":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // CommunicationBuilder provides a fluent API for constructing Communication resources.
 type CommunicationBuilder struct {
-	resource Communication
+	resource  Communication
+	fieldsSet map[string]bool
 }
 
 // NewCommunication creates a new CommunicationBuilder for building a Communication resource.
 func NewCommunication() *CommunicationBuilder {
-	return &CommunicationBuilder{resource: Communication{ResourceType: "Communication"}}
+	return &CommunicationBuilder{resource: Communication{ResourceType: "Communication"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *CommunicationBuilder) WithId(v dt.ID) *CommunicationBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *CommunicationBuilder) WithMeta(v dt.Meta) *CommunicationBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *CommunicationBuilder) WithImplicitRules(v dt.URI) *CommunicationBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *CommunicationBuilder) WithLanguage(v dt.Code) *CommunicationBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *CommunicationBuilder) WithText(v dt.Narrative) *CommunicationBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *CommunicationBuilder) WithContained(v json.RawMessage) *CommunicationBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *CommunicationBuilder) WithExtension(v dt.Extension) *CommunicationBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *CommunicationBuilder) WithModifierExtension(v dt.Extension) *CommunicationBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *CommunicationBuilder) WithIdentifier(v dt.Identifier) *CommunicationBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *CommunicationBuilder) WithStatus(v dt.Code) *CommunicationBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAbout adds an item to the about field.
 func (b *CommunicationBuilder) WithAbout(v dt.Reference) *CommunicationBuilder {
 	b.resource.About = append(b.resource.About, v)
+	b.fieldsSet["about"] = true
 	return b
 }
 
 // WithBasedOn adds an item to the basedOn field.
 func (b *CommunicationBuilder) WithBasedOn(v dt.Reference) *CommunicationBuilder {
 	b.resource.BasedOn = append(b.resource.BasedOn, v)
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithCategory adds an item to the category field.
 func (b *CommunicationBuilder) WithCategory(v dt.CodeableConcept) *CommunicationBuilder {
 	b.resource.Category = append(b.resource.Category, v)
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *CommunicationBuilder) WithEncounter(v dt.Reference) *CommunicationBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithInResponseTo adds an item to the inResponseTo field.
 func (b *CommunicationBuilder) WithInResponseTo(v dt.Reference) *CommunicationBuilder {
 	b.resource.InResponseTo = append(b.resource.InResponseTo, v)
+	b.fieldsSet["inResponseTo"] = true
 	return b
 }
 
 // WithInstantiatesCanonical adds an item to the instantiatesCanonical field.
 func (b *CommunicationBuilder) WithInstantiatesCanonical(v dt.Canonical) *CommunicationBuilder {
 	b.resource.InstantiatesCanonical = append(b.resource.InstantiatesCanonical, v)
+	b.fieldsSet["instantiatesCanonical"] = true
 	return b
 }
 
 // WithInstantiatesUri adds an item to the instantiatesUri field.
 func (b *CommunicationBuilder) WithInstantiatesUri(v dt.URI) *CommunicationBuilder {
 	b.resource.InstantiatesUri = append(b.resource.InstantiatesUri, v)
+	b.fieldsSet["instantiatesUri"] = true
 	return b
 }
 
 // WithMedium adds an item to the medium field.
 func (b *CommunicationBuilder) WithMedium(v dt.CodeableConcept) *CommunicationBuilder {
 	b.resource.Medium = append(b.resource.Medium, v)
+	b.fieldsSet["medium"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *CommunicationBuilder) WithNote(v dt.Annotation) *CommunicationBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithPartOf adds an item to the partOf field.
 func (b *CommunicationBuilder) WithPartOf(v dt.Reference) *CommunicationBuilder {
 	b.resource.PartOf = append(b.resource.PartOf, v)
+	b.fieldsSet["partOf"] = true
 	return b
 }
 
 // WithPayload adds an item to the payload field.
 func (b *CommunicationBuilder) WithPayload(v CommunicationPayload) *CommunicationBuilder {
 	b.resource.Payload = append(b.resource.Payload, v)
+	b.fieldsSet["payload"] = true
 	return b
 }
 
 // WithPriority sets the priority field.
 func (b *CommunicationBuilder) WithPriority(v dt.Code) *CommunicationBuilder {
 	b.resource.Priority = &v
+	b.fieldsSet["priority"] = true
 	return b
 }
 
 // WithReasonCode adds an item to the reasonCode field.
 func (b *CommunicationBuilder) WithReasonCode(v dt.CodeableConcept) *CommunicationBuilder {
 	b.resource.ReasonCode = append(b.resource.ReasonCode, v)
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithReasonReference adds an item to the reasonReference field.
 func (b *CommunicationBuilder) WithReasonReference(v dt.Reference) *CommunicationBuilder {
 	b.resource.ReasonReference = append(b.resource.ReasonReference, v)
+	b.fieldsSet["reasonReference"] = true
 	return b
 }
 
 // WithReceived sets the received field.
 func (b *CommunicationBuilder) WithReceived(v dt.DateTime) *CommunicationBuilder {
 	b.resource.Received = &v
+	b.fieldsSet["received"] = true
 	return b
 }
 
 // WithRecipient adds an item to the recipient field.
 func (b *CommunicationBuilder) WithRecipient(v dt.Reference) *CommunicationBuilder {
 	b.resource.Recipient = append(b.resource.Recipient, v)
+	b.fieldsSet["recipient"] = true
 	return b
 }
 
 // WithSender sets the sender field.
 func (b *CommunicationBuilder) WithSender(v dt.Reference) *CommunicationBuilder {
 	b.resource.Sender = &v
+	b.fieldsSet["sender"] = true
 	return b
 }
 
 // WithSent sets the sent field.
 func (b *CommunicationBuilder) WithSent(v dt.DateTime) *CommunicationBuilder {
 	b.resource.Sent = &v
+	b.fieldsSet["sent"] = true
 	return b
 }
 
 // WithStatusReason sets the statusReason field.
 func (b *CommunicationBuilder) WithStatusReason(v dt.CodeableConcept) *CommunicationBuilder {
 	b.resource.StatusReason = &v
+	b.fieldsSet["statusReason"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *CommunicationBuilder) WithSubject(v dt.Reference) *CommunicationBuilder {
 	b.resource.Subject = &v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithTopic sets the topic field.
 func (b *CommunicationBuilder) WithTopic(v dt.CodeableConcept) *CommunicationBuilder {
 	b.resource.Topic = &v
+	b.fieldsSet["topic"] = true
 	return b
 }
 
@@ -304,6 +386,8 @@ func (b *CommunicationBuilder) Build() (*Communication, error) {
 type CommunicationPayload struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -314,4 +398,6 @@ type CommunicationPayload struct {
 	ContentReference *dt.Reference `json:"contentReference,omitempty"`
 	// ContentString A communicated content (or for multi-part communications, one portion of the communication).
 	ContentString *string `json:"contentString,omitempty"`
+	// ContentStringElement contains element extensions for contentString.
+	ContentStringElement *dt.Element `json:"_contentString,omitempty"`
 }

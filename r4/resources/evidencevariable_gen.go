@@ -18,12 +18,18 @@ type EvidenceVariable struct {
 	ResourceType string `json:"resourceType"` // Always "EvidenceVariable"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,8 +42,12 @@ type EvidenceVariable struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this evidence variable. Enables tracking the life-cycle of the content.
 	Status *EvidenceVariableStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
+	// ApprovalDateElement contains element extensions for approvalDate.
+	ApprovalDateElement *dt.Element `json:"_approvalDate,omitempty"`
 	// Author An individiual or organization primarily involved in the creation and maintenance of the content.
 	Author []dt.ContactDetail `json:"author,omitempty"`
 	// Characteristic A characteristic that defines the members of the evidence element. Multiple characteristics are applied with "and" semantics.
@@ -46,10 +56,16 @@ type EvidenceVariable struct {
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the evidence variable and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the evidence variable.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date  (and optionally time) when the evidence variable was published. The date must change when the business version changes and it must change if the status code changes. In addition, it shoul...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description A free text natural language description of the evidence variable from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Editor An individual or organization primarily responsible for internal coherence of the content.
 	Editor []dt.ContactDetail `json:"editor,omitempty"`
 	// EffectivePeriod The period during which the evidence variable content was or is planned to be in active use.
@@ -60,39 +76,73 @@ type EvidenceVariable struct {
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// LastReviewDate The date on which the resource content was last reviewed. Review happens periodically after approval but does not change the original approval date.
 	LastReviewDate *dt.Date `json:"lastReviewDate,omitempty"`
+	// LastReviewDateElement contains element extensions for lastReviewDate.
+	LastReviewDateElement *dt.Element `json:"_lastReviewDate,omitempty"`
 	// Name A natural language name identifying the evidence variable. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Note A human-readable string to clarify or explain concepts about the resource.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// Publisher The name of the organization or individual that published the evidence variable.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// RelatedArtifact Related artifacts such as additional documentation, justification, or bibliographic references.
 	RelatedArtifact []dt.RelatedArtifact `json:"relatedArtifact,omitempty"`
 	// Reviewer An individual or organization primarily responsible for review of some aspect of the content.
 	Reviewer []dt.ContactDetail `json:"reviewer,omitempty"`
 	// ShortTitle The short title provides an alternate title for use in informal descriptive contexts where the full, formal title is not necessary.
 	ShortTitle *string `json:"shortTitle,omitempty"`
+	// ShortTitleElement contains element extensions for shortTitle.
+	ShortTitleElement *dt.Element `json:"_shortTitle,omitempty"`
 	// Subtitle An explanatory or alternate title for the EvidenceVariable giving additional information about its content.
 	Subtitle *string `json:"subtitle,omitempty"`
+	// SubtitleElement contains element extensions for subtitle.
+	SubtitleElement *dt.Element `json:"_subtitle,omitempty"`
 	// Title A short, descriptive, user-friendly title for the evidence variable.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Topic Descriptive topics related to the content of the EvidenceVariable. Topics provide a high-level categorization grouping types of EvidenceVariables that can be useful for filtering and searching.
 	Topic []dt.CodeableConcept `json:"topic,omitempty"`
 	// Type The type of evidence element, a population, an exposure, or an outcome.
 	Type *EvidenceVariableType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 	// Url An absolute URI that is used to identify this evidence variable when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the evidence variable when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the evidence...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for EvidenceVariable.
 func (r EvidenceVariable) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "EvidenceVariable"
 	type Alias EvidenceVariable
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for EvidenceVariable.
@@ -103,226 +153,278 @@ func (r *EvidenceVariable) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = EvidenceVariable(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_approvalDate", "_author", "_characteristic", "_contact", "_contained", "_copyright", "_date", "_description", "_editor", "_effectivePeriod", "_endorser", "_extension", "_id", "_identifier", "_implicitRules", "_jurisdiction", "_language", "_lastReviewDate", "_meta", "_modifierExtension", "_name", "_note", "_publisher", "_relatedArtifact", "_reviewer", "_shortTitle", "_status", "_subtitle", "_text", "_title", "_topic", "_type", "_url", "_useContext", "_version", "approvalDate", "author", "characteristic", "contact", "contained", "copyright", "date", "description", "editor", "effectivePeriod", "endorser", "extension", "id", "identifier", "implicitRules", "jurisdiction", "language", "lastReviewDate", "meta", "modifierExtension", "name", "note", "publisher", "relatedArtifact", "resourceType", "reviewer", "shortTitle", "status", "subtitle", "text", "title", "topic", "type", "url", "useContext", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // EvidenceVariableBuilder provides a fluent API for constructing EvidenceVariable resources.
 type EvidenceVariableBuilder struct {
-	resource EvidenceVariable
+	resource  EvidenceVariable
+	fieldsSet map[string]bool
 }
 
 // NewEvidenceVariable creates a new EvidenceVariableBuilder for building a EvidenceVariable resource.
 func NewEvidenceVariable() *EvidenceVariableBuilder {
-	return &EvidenceVariableBuilder{resource: EvidenceVariable{ResourceType: "EvidenceVariable"}}
+	return &EvidenceVariableBuilder{resource: EvidenceVariable{ResourceType: "EvidenceVariable"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *EvidenceVariableBuilder) WithId(v dt.ID) *EvidenceVariableBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *EvidenceVariableBuilder) WithMeta(v dt.Meta) *EvidenceVariableBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *EvidenceVariableBuilder) WithImplicitRules(v dt.URI) *EvidenceVariableBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *EvidenceVariableBuilder) WithLanguage(v dt.Code) *EvidenceVariableBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *EvidenceVariableBuilder) WithText(v dt.Narrative) *EvidenceVariableBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *EvidenceVariableBuilder) WithContained(v json.RawMessage) *EvidenceVariableBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *EvidenceVariableBuilder) WithExtension(v dt.Extension) *EvidenceVariableBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *EvidenceVariableBuilder) WithModifierExtension(v dt.Extension) *EvidenceVariableBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *EvidenceVariableBuilder) WithIdentifier(v dt.Identifier) *EvidenceVariableBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *EvidenceVariableBuilder) WithStatus(v EvidenceVariableStatus) *EvidenceVariableBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithApprovalDate sets the approvalDate field.
 func (b *EvidenceVariableBuilder) WithApprovalDate(v dt.Date) *EvidenceVariableBuilder {
 	b.resource.ApprovalDate = &v
+	b.fieldsSet["approvalDate"] = true
 	return b
 }
 
 // WithAuthor adds an item to the author field.
 func (b *EvidenceVariableBuilder) WithAuthor(v dt.ContactDetail) *EvidenceVariableBuilder {
 	b.resource.Author = append(b.resource.Author, v)
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithCharacteristic adds an item to the characteristic field.
 func (b *EvidenceVariableBuilder) WithCharacteristic(v EvidenceVariableCharacteristic) *EvidenceVariableBuilder {
 	b.resource.Characteristic = append(b.resource.Characteristic, v)
+	b.fieldsSet["characteristic"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *EvidenceVariableBuilder) WithContact(v dt.ContactDetail) *EvidenceVariableBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *EvidenceVariableBuilder) WithCopyright(v dt.Markdown) *EvidenceVariableBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *EvidenceVariableBuilder) WithDate(v dt.DateTime) *EvidenceVariableBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *EvidenceVariableBuilder) WithDescription(v dt.Markdown) *EvidenceVariableBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithEditor adds an item to the editor field.
 func (b *EvidenceVariableBuilder) WithEditor(v dt.ContactDetail) *EvidenceVariableBuilder {
 	b.resource.Editor = append(b.resource.Editor, v)
+	b.fieldsSet["editor"] = true
 	return b
 }
 
 // WithEffectivePeriod sets the effectivePeriod field.
 func (b *EvidenceVariableBuilder) WithEffectivePeriod(v dt.Period) *EvidenceVariableBuilder {
 	b.resource.EffectivePeriod = &v
+	b.fieldsSet["effectivePeriod"] = true
 	return b
 }
 
 // WithEndorser adds an item to the endorser field.
 func (b *EvidenceVariableBuilder) WithEndorser(v dt.ContactDetail) *EvidenceVariableBuilder {
 	b.resource.Endorser = append(b.resource.Endorser, v)
+	b.fieldsSet["endorser"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *EvidenceVariableBuilder) WithJurisdiction(v dt.CodeableConcept) *EvidenceVariableBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithLastReviewDate sets the lastReviewDate field.
 func (b *EvidenceVariableBuilder) WithLastReviewDate(v dt.Date) *EvidenceVariableBuilder {
 	b.resource.LastReviewDate = &v
+	b.fieldsSet["lastReviewDate"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *EvidenceVariableBuilder) WithName(v string) *EvidenceVariableBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *EvidenceVariableBuilder) WithNote(v dt.Annotation) *EvidenceVariableBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *EvidenceVariableBuilder) WithPublisher(v string) *EvidenceVariableBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithRelatedArtifact adds an item to the relatedArtifact field.
 func (b *EvidenceVariableBuilder) WithRelatedArtifact(v dt.RelatedArtifact) *EvidenceVariableBuilder {
 	b.resource.RelatedArtifact = append(b.resource.RelatedArtifact, v)
+	b.fieldsSet["relatedArtifact"] = true
 	return b
 }
 
 // WithReviewer adds an item to the reviewer field.
 func (b *EvidenceVariableBuilder) WithReviewer(v dt.ContactDetail) *EvidenceVariableBuilder {
 	b.resource.Reviewer = append(b.resource.Reviewer, v)
+	b.fieldsSet["reviewer"] = true
 	return b
 }
 
 // WithShortTitle sets the shortTitle field.
 func (b *EvidenceVariableBuilder) WithShortTitle(v string) *EvidenceVariableBuilder {
 	b.resource.ShortTitle = &v
+	b.fieldsSet["shortTitle"] = true
 	return b
 }
 
 // WithSubtitle sets the subtitle field.
 func (b *EvidenceVariableBuilder) WithSubtitle(v string) *EvidenceVariableBuilder {
 	b.resource.Subtitle = &v
+	b.fieldsSet["subtitle"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *EvidenceVariableBuilder) WithTitle(v string) *EvidenceVariableBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithTopic adds an item to the topic field.
 func (b *EvidenceVariableBuilder) WithTopic(v dt.CodeableConcept) *EvidenceVariableBuilder {
 	b.resource.Topic = append(b.resource.Topic, v)
+	b.fieldsSet["topic"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *EvidenceVariableBuilder) WithType(v EvidenceVariableType) *EvidenceVariableBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *EvidenceVariableBuilder) WithUrl(v dt.URI) *EvidenceVariableBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *EvidenceVariableBuilder) WithUseContext(v dt.UsageContext) *EvidenceVariableBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *EvidenceVariableBuilder) WithVersion(v string) *EvidenceVariableBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -330,7 +432,7 @@ func (b *EvidenceVariableBuilder) WithVersion(v string) *EvidenceVariableBuilder
 // field (cardinality 1..1) is not set.
 func (b *EvidenceVariableBuilder) Build() (*EvidenceVariable, error) {
 	var missing []string
-	if len(b.resource.Characteristic) == 0 {
+	if !b.fieldsSet["characteristic"] {
 		missing = append(missing, "characteristic")
 	}
 	if len(missing) > 0 {
@@ -344,6 +446,8 @@ func (b *EvidenceVariableBuilder) Build() (*EvidenceVariable, error) {
 type EvidenceVariableCharacteristic struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -352,12 +456,20 @@ type EvidenceVariableCharacteristic struct {
 	Definition *EvidenceVariableCharacteristicDefinition `json:"-"` // polymorphic
 	// Description A short, natural language description of the characteristic that could be used to communicate the criteria to an end-user.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Exclude When true, members with this characteristic are excluded from the element.
 	Exclude *bool `json:"exclude,omitempty"`
+	// ExcludeElement contains element extensions for exclude.
+	ExcludeElement *dt.Element `json:"_exclude,omitempty"`
 	// GroupMeasure Indicates how elements are aggregated within the study effective period.
 	GroupMeasure *EvidenceVariableCharacteristicGroupMeasure `json:"groupMeasure,omitempty"`
+	// GroupMeasureElement contains element extensions for groupMeasure.
+	GroupMeasureElement *dt.Element `json:"_groupMeasure,omitempty"`
 	// ParticipantEffectiveDateTime Indicates what effective period the study covers.
 	ParticipantEffectiveDateTime *string `json:"participantEffectiveDateTime,omitempty"`
+	// ParticipantEffectiveDateTimeElement contains element extensions for participantEffectiveDateTime.
+	ParticipantEffectiveDateTimeElement *dt.Element `json:"_participantEffectiveDateTime,omitempty"`
 	// ParticipantEffectiveDuration Indicates what effective period the study covers.
 	ParticipantEffectiveDuration *dt.Duration `json:"participantEffectiveDuration,omitempty"`
 	// ParticipantEffectivePeriod Indicates what effective period the study covers.

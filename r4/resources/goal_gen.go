@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type Goal struct {
 	ResourceType string `json:"resourceType"` // Always "Goal"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -45,6 +52,8 @@ type Goal struct {
 	ExpressedBy *dt.Reference `json:"expressedBy,omitempty"`
 	// LifecycleStatus The state of the goal throughout its lifecycle.
 	LifecycleStatus *GoalLifecycleStatus `json:"lifecycleStatus,omitempty"`
+	// LifecycleStatusElement contains element extensions for lifecycleStatus.
+	LifecycleStatusElement *dt.Element `json:"_lifecycleStatus,omitempty"`
 	// Note Any comments related to the goal.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// OutcomeCode Identifies the change (or lack of change) at the point when the status of the goal is assessed.
@@ -57,21 +66,43 @@ type Goal struct {
 	StartCodeableConcept *dt.CodeableConcept `json:"startCodeableConcept,omitempty"`
 	// StartDate The date or event after which the goal should begin being pursued.
 	StartDate *string `json:"startDate,omitempty"`
+	// StartDateElement contains element extensions for startDate.
+	StartDateElement *dt.Element `json:"_startDate,omitempty"`
 	// StatusDate Identifies when the current status.  I.e. When initially created, when achieved, when cancelled, etc.
 	StatusDate *dt.Date `json:"statusDate,omitempty"`
+	// StatusDateElement contains element extensions for statusDate.
+	StatusDateElement *dt.Element `json:"_statusDate,omitempty"`
 	// StatusReason Captures the reason for the current status.
 	StatusReason *string `json:"statusReason,omitempty"`
+	// StatusReasonElement contains element extensions for statusReason.
+	StatusReasonElement *dt.Element `json:"_statusReason,omitempty"`
 	// Subject Identifies the patient, group or organization for whom the goal is being established.
 	Subject dt.Reference `json:"subject"`
 	// Target Indicates what should be done by when.
 	Target []GoalTarget `json:"target,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Goal.
 func (r Goal) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Goal"
 	type Alias Goal
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Goal.
@@ -82,172 +113,224 @@ func (r *Goal) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Goal(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_achievementStatus", "_addresses", "_category", "_contained", "_description", "_expressedBy", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_lifecycleStatus", "_meta", "_modifierExtension", "_note", "_outcomeCode", "_outcomeReference", "_priority", "_startCodeableConcept", "_startDate", "_statusDate", "_statusReason", "_subject", "_target", "_text", "achievementStatus", "addresses", "category", "contained", "description", "expressedBy", "extension", "id", "identifier", "implicitRules", "language", "lifecycleStatus", "meta", "modifierExtension", "note", "outcomeCode", "outcomeReference", "priority", "resourceType", "startCodeableConcept", "startDate", "statusDate", "statusReason", "subject", "target", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // GoalBuilder provides a fluent API for constructing Goal resources.
 type GoalBuilder struct {
-	resource Goal
+	resource  Goal
+	fieldsSet map[string]bool
 }
 
 // NewGoal creates a new GoalBuilder for building a Goal resource.
 func NewGoal() *GoalBuilder {
-	return &GoalBuilder{resource: Goal{ResourceType: "Goal"}}
+	return &GoalBuilder{resource: Goal{ResourceType: "Goal"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *GoalBuilder) WithId(v dt.ID) *GoalBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *GoalBuilder) WithMeta(v dt.Meta) *GoalBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *GoalBuilder) WithImplicitRules(v dt.URI) *GoalBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *GoalBuilder) WithLanguage(v dt.Code) *GoalBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *GoalBuilder) WithText(v dt.Narrative) *GoalBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *GoalBuilder) WithContained(v json.RawMessage) *GoalBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *GoalBuilder) WithExtension(v dt.Extension) *GoalBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *GoalBuilder) WithModifierExtension(v dt.Extension) *GoalBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *GoalBuilder) WithIdentifier(v dt.Identifier) *GoalBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithAchievementStatus sets the achievementStatus field.
 func (b *GoalBuilder) WithAchievementStatus(v dt.CodeableConcept) *GoalBuilder {
 	b.resource.AchievementStatus = &v
+	b.fieldsSet["achievementStatus"] = true
 	return b
 }
 
 // WithAddresses adds an item to the addresses field.
 func (b *GoalBuilder) WithAddresses(v dt.Reference) *GoalBuilder {
 	b.resource.Addresses = append(b.resource.Addresses, v)
+	b.fieldsSet["addresses"] = true
 	return b
 }
 
 // WithCategory adds an item to the category field.
 func (b *GoalBuilder) WithCategory(v dt.CodeableConcept) *GoalBuilder {
 	b.resource.Category = append(b.resource.Category, v)
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *GoalBuilder) WithDescription(v dt.CodeableConcept) *GoalBuilder {
 	b.resource.Description = v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithExpressedBy sets the expressedBy field.
 func (b *GoalBuilder) WithExpressedBy(v dt.Reference) *GoalBuilder {
 	b.resource.ExpressedBy = &v
+	b.fieldsSet["expressedBy"] = true
 	return b
 }
 
 // WithLifecycleStatus sets the lifecycleStatus field.
 func (b *GoalBuilder) WithLifecycleStatus(v GoalLifecycleStatus) *GoalBuilder {
 	b.resource.LifecycleStatus = &v
+	b.fieldsSet["lifecycleStatus"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *GoalBuilder) WithNote(v dt.Annotation) *GoalBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithOutcomeCode adds an item to the outcomeCode field.
 func (b *GoalBuilder) WithOutcomeCode(v dt.CodeableConcept) *GoalBuilder {
 	b.resource.OutcomeCode = append(b.resource.OutcomeCode, v)
+	b.fieldsSet["outcomeCode"] = true
 	return b
 }
 
 // WithOutcomeReference adds an item to the outcomeReference field.
 func (b *GoalBuilder) WithOutcomeReference(v dt.Reference) *GoalBuilder {
 	b.resource.OutcomeReference = append(b.resource.OutcomeReference, v)
+	b.fieldsSet["outcomeReference"] = true
 	return b
 }
 
 // WithPriority sets the priority field.
 func (b *GoalBuilder) WithPriority(v dt.CodeableConcept) *GoalBuilder {
 	b.resource.Priority = &v
+	b.fieldsSet["priority"] = true
 	return b
 }
 
 // WithStartCodeableConcept sets the startCodeableConcept field.
 func (b *GoalBuilder) WithStartCodeableConcept(v dt.CodeableConcept) *GoalBuilder {
 	b.resource.StartCodeableConcept = &v
+	b.fieldsSet["startCodeableConcept"] = true
 	return b
 }
 
 // WithStartDate sets the startDate field.
 func (b *GoalBuilder) WithStartDate(v string) *GoalBuilder {
 	b.resource.StartDate = &v
+	b.fieldsSet["startDate"] = true
 	return b
 }
 
 // WithStatusDate sets the statusDate field.
 func (b *GoalBuilder) WithStatusDate(v dt.Date) *GoalBuilder {
 	b.resource.StatusDate = &v
+	b.fieldsSet["statusDate"] = true
 	return b
 }
 
 // WithStatusReason sets the statusReason field.
 func (b *GoalBuilder) WithStatusReason(v string) *GoalBuilder {
 	b.resource.StatusReason = &v
+	b.fieldsSet["statusReason"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *GoalBuilder) WithSubject(v dt.Reference) *GoalBuilder {
 	b.resource.Subject = v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithTarget adds an item to the target field.
 func (b *GoalBuilder) WithTarget(v GoalTarget) *GoalBuilder {
 	b.resource.Target = append(b.resource.Target, v)
+	b.fieldsSet["target"] = true
 	return b
 }
 
 // Build returns the constructed Goal. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *GoalBuilder) Build() (*Goal, error) {
+	var missing []string
+	if !b.fieldsSet["description"] {
+		missing = append(missing, "description")
+	}
+	if !b.fieldsSet["subject"] {
+		missing = append(missing, "subject")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("Goal: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -256,16 +339,22 @@ func (b *GoalBuilder) Build() (*Goal, error) {
 type GoalTarget struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// DetailBoolean The target value of the focus to be achieved to signify the fulfillment of the goal, e.g. 150 pounds, 7.0%. Either the high or low or both values of the range can be specified. When a low value is ...
 	DetailBoolean *bool `json:"detailBoolean,omitempty"`
+	// DetailBooleanElement contains element extensions for detailBoolean.
+	DetailBooleanElement *dt.Element `json:"_detailBoolean,omitempty"`
 	// DetailCodeableConcept The target value of the focus to be achieved to signify the fulfillment of the goal, e.g. 150 pounds, 7.0%. Either the high or low or both values of the range can be specified. When a low value is ...
 	DetailCodeableConcept *dt.CodeableConcept `json:"detailCodeableConcept,omitempty"`
 	// DetailInteger The target value of the focus to be achieved to signify the fulfillment of the goal, e.g. 150 pounds, 7.0%. Either the high or low or both values of the range can be specified. When a low value is ...
 	DetailInteger *float64 `json:"detailInteger,omitempty"`
+	// DetailIntegerElement contains element extensions for detailInteger.
+	DetailIntegerElement *dt.Element `json:"_detailInteger,omitempty"`
 	// DetailQuantity The target value of the focus to be achieved to signify the fulfillment of the goal, e.g. 150 pounds, 7.0%. Either the high or low or both values of the range can be specified. When a low value is ...
 	DetailQuantity *dt.Quantity `json:"detailQuantity,omitempty"`
 	// DetailRange The target value of the focus to be achieved to signify the fulfillment of the goal, e.g. 150 pounds, 7.0%. Either the high or low or both values of the range can be specified. When a low value is ...
@@ -274,8 +363,12 @@ type GoalTarget struct {
 	DetailRatio *dt.Ratio `json:"detailRatio,omitempty"`
 	// DetailString The target value of the focus to be achieved to signify the fulfillment of the goal, e.g. 150 pounds, 7.0%. Either the high or low or both values of the range can be specified. When a low value is ...
 	DetailString *string `json:"detailString,omitempty"`
+	// DetailStringElement contains element extensions for detailString.
+	DetailStringElement *dt.Element `json:"_detailString,omitempty"`
 	// DueDate Indicates either the date or the duration after start by which the goal should be met.
 	DueDate *string `json:"dueDate,omitempty"`
+	// DueDateElement contains element extensions for dueDate.
+	DueDateElement *dt.Element `json:"_dueDate,omitempty"`
 	// DueDuration Indicates either the date or the duration after start by which the goal should be met.
 	DueDuration *dt.Duration `json:"dueDuration,omitempty"`
 	// Measure The parameter whose value is being tracked, e.g. body weight, blood pressure, or hemoglobin A1c level.

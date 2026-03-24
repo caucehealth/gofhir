@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type RiskEvidenceSynthesis struct {
 	ResourceType string `json:"resourceType"` // Always "RiskEvidenceSynthesis"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,8 +42,12 @@ type RiskEvidenceSynthesis struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this risk evidence synthesis. Enables tracking the life-cycle of the content.
 	Status *RiskEvidenceSynthesisStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
+	// ApprovalDateElement contains element extensions for approvalDate.
+	ApprovalDateElement *dt.Element `json:"_approvalDate,omitempty"`
 	// Author An individiual or organization primarily involved in the creation and maintenance of the content.
 	Author []dt.ContactDetail `json:"author,omitempty"`
 	// Certainty A description of the certainty of the risk estimate.
@@ -45,10 +56,16 @@ type RiskEvidenceSynthesis struct {
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the risk evidence synthesis and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the risk evidence synthesis.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date  (and optionally time) when the risk evidence synthesis was published. The date must change when the business version changes and it must change if the status code changes. In addition, it...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description A free text natural language description of the risk evidence synthesis from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Editor An individual or organization primarily responsible for internal coherence of the content.
 	Editor []dt.ContactDetail `json:"editor,omitempty"`
 	// EffectivePeriod The period during which the risk evidence synthesis content was or is planned to be in active use.
@@ -61,8 +78,12 @@ type RiskEvidenceSynthesis struct {
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// LastReviewDate The date on which the resource content was last reviewed. Review happens periodically after approval but does not change the original approval date.
 	LastReviewDate *dt.Date `json:"lastReviewDate,omitempty"`
+	// LastReviewDateElement contains element extensions for lastReviewDate.
+	LastReviewDateElement *dt.Element `json:"_lastReviewDate,omitempty"`
 	// Name A natural language name identifying the risk evidence synthesis. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Note A human-readable string to clarify or explain concepts about the resource.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// Outcome A reference to a EvidenceVariable resomece that defines the outcome for the research.
@@ -71,6 +92,8 @@ type RiskEvidenceSynthesis struct {
 	Population dt.Reference `json:"population"`
 	// Publisher The name of the organization or individual that published the risk evidence synthesis.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// RelatedArtifact Related artifacts such as additional documentation, justification, or bibliographic references.
 	RelatedArtifact []dt.RelatedArtifact `json:"relatedArtifact,omitempty"`
 	// Reviewer An individual or organization primarily responsible for review of some aspect of the content.
@@ -85,21 +108,43 @@ type RiskEvidenceSynthesis struct {
 	SynthesisType *dt.CodeableConcept `json:"synthesisType,omitempty"`
 	// Title A short, descriptive, user-friendly title for the risk evidence synthesis.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Topic Descriptive topics related to the content of the RiskEvidenceSynthesis. Topics provide a high-level categorization grouping types of EffectEvidenceSynthesiss that can be useful for filtering and se...
 	Topic []dt.CodeableConcept `json:"topic,omitempty"`
 	// Url An absolute URI that is used to identify this risk evidence synthesis when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be gl...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the risk evidence synthesis when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the ri...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for RiskEvidenceSynthesis.
 func (r RiskEvidenceSynthesis) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "RiskEvidenceSynthesis"
 	type Alias RiskEvidenceSynthesis
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for RiskEvidenceSynthesis.
@@ -110,256 +155,322 @@ func (r *RiskEvidenceSynthesis) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = RiskEvidenceSynthesis(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_approvalDate", "_author", "_certainty", "_contact", "_contained", "_copyright", "_date", "_description", "_editor", "_effectivePeriod", "_endorser", "_exposure", "_extension", "_id", "_identifier", "_implicitRules", "_jurisdiction", "_language", "_lastReviewDate", "_meta", "_modifierExtension", "_name", "_note", "_outcome", "_population", "_publisher", "_relatedArtifact", "_reviewer", "_riskEstimate", "_sampleSize", "_status", "_studyType", "_synthesisType", "_text", "_title", "_topic", "_url", "_useContext", "_version", "approvalDate", "author", "certainty", "contact", "contained", "copyright", "date", "description", "editor", "effectivePeriod", "endorser", "exposure", "extension", "id", "identifier", "implicitRules", "jurisdiction", "language", "lastReviewDate", "meta", "modifierExtension", "name", "note", "outcome", "population", "publisher", "relatedArtifact", "resourceType", "reviewer", "riskEstimate", "sampleSize", "status", "studyType", "synthesisType", "text", "title", "topic", "url", "useContext", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // RiskEvidenceSynthesisBuilder provides a fluent API for constructing RiskEvidenceSynthesis resources.
 type RiskEvidenceSynthesisBuilder struct {
-	resource RiskEvidenceSynthesis
+	resource  RiskEvidenceSynthesis
+	fieldsSet map[string]bool
 }
 
 // NewRiskEvidenceSynthesis creates a new RiskEvidenceSynthesisBuilder for building a RiskEvidenceSynthesis resource.
 func NewRiskEvidenceSynthesis() *RiskEvidenceSynthesisBuilder {
-	return &RiskEvidenceSynthesisBuilder{resource: RiskEvidenceSynthesis{ResourceType: "RiskEvidenceSynthesis"}}
+	return &RiskEvidenceSynthesisBuilder{resource: RiskEvidenceSynthesis{ResourceType: "RiskEvidenceSynthesis"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *RiskEvidenceSynthesisBuilder) WithId(v dt.ID) *RiskEvidenceSynthesisBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *RiskEvidenceSynthesisBuilder) WithMeta(v dt.Meta) *RiskEvidenceSynthesisBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *RiskEvidenceSynthesisBuilder) WithImplicitRules(v dt.URI) *RiskEvidenceSynthesisBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *RiskEvidenceSynthesisBuilder) WithLanguage(v dt.Code) *RiskEvidenceSynthesisBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *RiskEvidenceSynthesisBuilder) WithText(v dt.Narrative) *RiskEvidenceSynthesisBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *RiskEvidenceSynthesisBuilder) WithContained(v json.RawMessage) *RiskEvidenceSynthesisBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *RiskEvidenceSynthesisBuilder) WithExtension(v dt.Extension) *RiskEvidenceSynthesisBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *RiskEvidenceSynthesisBuilder) WithModifierExtension(v dt.Extension) *RiskEvidenceSynthesisBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *RiskEvidenceSynthesisBuilder) WithIdentifier(v dt.Identifier) *RiskEvidenceSynthesisBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *RiskEvidenceSynthesisBuilder) WithStatus(v RiskEvidenceSynthesisStatus) *RiskEvidenceSynthesisBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithApprovalDate sets the approvalDate field.
 func (b *RiskEvidenceSynthesisBuilder) WithApprovalDate(v dt.Date) *RiskEvidenceSynthesisBuilder {
 	b.resource.ApprovalDate = &v
+	b.fieldsSet["approvalDate"] = true
 	return b
 }
 
 // WithAuthor adds an item to the author field.
 func (b *RiskEvidenceSynthesisBuilder) WithAuthor(v dt.ContactDetail) *RiskEvidenceSynthesisBuilder {
 	b.resource.Author = append(b.resource.Author, v)
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithCertainty adds an item to the certainty field.
 func (b *RiskEvidenceSynthesisBuilder) WithCertainty(v RiskEvidenceSynthesisCertainty) *RiskEvidenceSynthesisBuilder {
 	b.resource.Certainty = append(b.resource.Certainty, v)
+	b.fieldsSet["certainty"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *RiskEvidenceSynthesisBuilder) WithContact(v dt.ContactDetail) *RiskEvidenceSynthesisBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *RiskEvidenceSynthesisBuilder) WithCopyright(v dt.Markdown) *RiskEvidenceSynthesisBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *RiskEvidenceSynthesisBuilder) WithDate(v dt.DateTime) *RiskEvidenceSynthesisBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *RiskEvidenceSynthesisBuilder) WithDescription(v dt.Markdown) *RiskEvidenceSynthesisBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithEditor adds an item to the editor field.
 func (b *RiskEvidenceSynthesisBuilder) WithEditor(v dt.ContactDetail) *RiskEvidenceSynthesisBuilder {
 	b.resource.Editor = append(b.resource.Editor, v)
+	b.fieldsSet["editor"] = true
 	return b
 }
 
 // WithEffectivePeriod sets the effectivePeriod field.
 func (b *RiskEvidenceSynthesisBuilder) WithEffectivePeriod(v dt.Period) *RiskEvidenceSynthesisBuilder {
 	b.resource.EffectivePeriod = &v
+	b.fieldsSet["effectivePeriod"] = true
 	return b
 }
 
 // WithEndorser adds an item to the endorser field.
 func (b *RiskEvidenceSynthesisBuilder) WithEndorser(v dt.ContactDetail) *RiskEvidenceSynthesisBuilder {
 	b.resource.Endorser = append(b.resource.Endorser, v)
+	b.fieldsSet["endorser"] = true
 	return b
 }
 
 // WithExposure sets the exposure field.
 func (b *RiskEvidenceSynthesisBuilder) WithExposure(v dt.Reference) *RiskEvidenceSynthesisBuilder {
 	b.resource.Exposure = &v
+	b.fieldsSet["exposure"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *RiskEvidenceSynthesisBuilder) WithJurisdiction(v dt.CodeableConcept) *RiskEvidenceSynthesisBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithLastReviewDate sets the lastReviewDate field.
 func (b *RiskEvidenceSynthesisBuilder) WithLastReviewDate(v dt.Date) *RiskEvidenceSynthesisBuilder {
 	b.resource.LastReviewDate = &v
+	b.fieldsSet["lastReviewDate"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *RiskEvidenceSynthesisBuilder) WithName(v string) *RiskEvidenceSynthesisBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *RiskEvidenceSynthesisBuilder) WithNote(v dt.Annotation) *RiskEvidenceSynthesisBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithOutcome sets the outcome field.
 func (b *RiskEvidenceSynthesisBuilder) WithOutcome(v dt.Reference) *RiskEvidenceSynthesisBuilder {
 	b.resource.Outcome = v
+	b.fieldsSet["outcome"] = true
 	return b
 }
 
 // WithPopulation sets the population field.
 func (b *RiskEvidenceSynthesisBuilder) WithPopulation(v dt.Reference) *RiskEvidenceSynthesisBuilder {
 	b.resource.Population = v
+	b.fieldsSet["population"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *RiskEvidenceSynthesisBuilder) WithPublisher(v string) *RiskEvidenceSynthesisBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithRelatedArtifact adds an item to the relatedArtifact field.
 func (b *RiskEvidenceSynthesisBuilder) WithRelatedArtifact(v dt.RelatedArtifact) *RiskEvidenceSynthesisBuilder {
 	b.resource.RelatedArtifact = append(b.resource.RelatedArtifact, v)
+	b.fieldsSet["relatedArtifact"] = true
 	return b
 }
 
 // WithReviewer adds an item to the reviewer field.
 func (b *RiskEvidenceSynthesisBuilder) WithReviewer(v dt.ContactDetail) *RiskEvidenceSynthesisBuilder {
 	b.resource.Reviewer = append(b.resource.Reviewer, v)
+	b.fieldsSet["reviewer"] = true
 	return b
 }
 
 // WithRiskEstimate sets the riskEstimate field.
 func (b *RiskEvidenceSynthesisBuilder) WithRiskEstimate(v RiskEvidenceSynthesisRiskEstimate) *RiskEvidenceSynthesisBuilder {
 	b.resource.RiskEstimate = &v
+	b.fieldsSet["riskEstimate"] = true
 	return b
 }
 
 // WithSampleSize sets the sampleSize field.
 func (b *RiskEvidenceSynthesisBuilder) WithSampleSize(v RiskEvidenceSynthesisSampleSize) *RiskEvidenceSynthesisBuilder {
 	b.resource.SampleSize = &v
+	b.fieldsSet["sampleSize"] = true
 	return b
 }
 
 // WithStudyType sets the studyType field.
 func (b *RiskEvidenceSynthesisBuilder) WithStudyType(v dt.CodeableConcept) *RiskEvidenceSynthesisBuilder {
 	b.resource.StudyType = &v
+	b.fieldsSet["studyType"] = true
 	return b
 }
 
 // WithSynthesisType sets the synthesisType field.
 func (b *RiskEvidenceSynthesisBuilder) WithSynthesisType(v dt.CodeableConcept) *RiskEvidenceSynthesisBuilder {
 	b.resource.SynthesisType = &v
+	b.fieldsSet["synthesisType"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *RiskEvidenceSynthesisBuilder) WithTitle(v string) *RiskEvidenceSynthesisBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithTopic adds an item to the topic field.
 func (b *RiskEvidenceSynthesisBuilder) WithTopic(v dt.CodeableConcept) *RiskEvidenceSynthesisBuilder {
 	b.resource.Topic = append(b.resource.Topic, v)
+	b.fieldsSet["topic"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *RiskEvidenceSynthesisBuilder) WithUrl(v dt.URI) *RiskEvidenceSynthesisBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *RiskEvidenceSynthesisBuilder) WithUseContext(v dt.UsageContext) *RiskEvidenceSynthesisBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *RiskEvidenceSynthesisBuilder) WithVersion(v string) *RiskEvidenceSynthesisBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
 // Build returns the constructed RiskEvidenceSynthesis. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *RiskEvidenceSynthesisBuilder) Build() (*RiskEvidenceSynthesis, error) {
+	var missing []string
+	if !b.fieldsSet["outcome"] {
+		missing = append(missing, "outcome")
+	}
+	if !b.fieldsSet["population"] {
+		missing = append(missing, "population")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("RiskEvidenceSynthesis: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -368,6 +479,8 @@ func (b *RiskEvidenceSynthesisBuilder) Build() (*RiskEvidenceSynthesis, error) {
 type RiskEvidenceSynthesisCertainty struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -384,6 +497,8 @@ type RiskEvidenceSynthesisCertainty struct {
 type RiskEvidenceSynthesisCertaintySubcomponent struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -400,16 +515,24 @@ type RiskEvidenceSynthesisCertaintySubcomponent struct {
 type RiskEvidenceSynthesisPrecisionEstimate struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// From Lower bound of confidence interval.
 	From *float64 `json:"from,omitempty"`
+	// FromElement contains element extensions for from.
+	FromElement *dt.Element `json:"_from,omitempty"`
 	// Level Use 95 for a 95% confidence interval.
 	Level *float64 `json:"level,omitempty"`
+	// LevelElement contains element extensions for level.
+	LevelElement *dt.Element `json:"_level,omitempty"`
 	// To Upper bound of confidence interval.
 	To *float64 `json:"to,omitempty"`
+	// ToElement contains element extensions for to.
+	ToElement *dt.Element `json:"_to,omitempty"`
 	// Type Examples include confidence interval and interquartile range.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 }
@@ -418,16 +541,24 @@ type RiskEvidenceSynthesisPrecisionEstimate struct {
 type RiskEvidenceSynthesisRiskEstimate struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// DenominatorCount The sample size for the group that was measured for this risk estimate.
 	DenominatorCount *int32 `json:"denominatorCount,omitempty"`
+	// DenominatorCountElement contains element extensions for denominatorCount.
+	DenominatorCountElement *dt.Element `json:"_denominatorCount,omitempty"`
 	// Description Human-readable summary of risk estimate.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// NumeratorCount The number of group members with the outcome of interest.
 	NumeratorCount *int32 `json:"numeratorCount,omitempty"`
+	// NumeratorCountElement contains element extensions for numeratorCount.
+	NumeratorCountElement *dt.Element `json:"_numeratorCount,omitempty"`
 	// PrecisionEstimate A description of the precision of the estimate for the effect.
 	PrecisionEstimate []RiskEvidenceSynthesisPrecisionEstimate `json:"precisionEstimate,omitempty"`
 	// Type Examples include proportion and mean.
@@ -436,20 +567,30 @@ type RiskEvidenceSynthesisRiskEstimate struct {
 	UnitOfMeasure *dt.CodeableConcept `json:"unitOfMeasure,omitempty"`
 	// Value The point estimate of the risk estimate.
 	Value *float64 `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *dt.Element `json:"_value,omitempty"`
 }
 
 // RiskEvidenceSynthesisSampleSize The RiskEvidenceSynthesis resource describes the likelihood of an outcome in a population plus exposure state where the risk estimate is derived from a combination of research studies.
 type RiskEvidenceSynthesisSampleSize struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description Human-readable summary of sample size.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// NumberOfParticipants Number of participants included in this evidence synthesis.
 	NumberOfParticipants *int32 `json:"numberOfParticipants,omitempty"`
+	// NumberOfParticipantsElement contains element extensions for numberOfParticipants.
+	NumberOfParticipantsElement *dt.Element `json:"_numberOfParticipants,omitempty"`
 	// NumberOfStudies Number of studies included in this evidence synthesis.
 	NumberOfStudies *int32 `json:"numberOfStudies,omitempty"`
+	// NumberOfStudiesElement contains element extensions for numberOfStudies.
+	NumberOfStudiesElement *dt.Element `json:"_numberOfStudies,omitempty"`
 }

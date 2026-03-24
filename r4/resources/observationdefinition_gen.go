@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type ObservationDefinition struct {
 	ResourceType string `json:"resourceType"` // Always "ObservationDefinition"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -45,25 +52,47 @@ type ObservationDefinition struct {
 	Method *dt.CodeableConcept `json:"method,omitempty"`
 	// MultipleResultsAllowed Multiple results allowed for observations conforming to this ObservationDefinition.
 	MultipleResultsAllowed *bool `json:"multipleResultsAllowed,omitempty"`
+	// MultipleResultsAllowedElement contains element extensions for multipleResultsAllowed.
+	MultipleResultsAllowedElement *dt.Element `json:"_multipleResultsAllowed,omitempty"`
 	// NormalCodedValueSet The set of normal coded results for the observations conforming to this ObservationDefinition.
 	NormalCodedValueSet *dt.Reference `json:"normalCodedValueSet,omitempty"`
 	// PermittedDataType The data types allowed for the value element of the instance observations conforming to this ObservationDefinition.
 	PermittedDataType []ObservationDefinitionPermittedDataType `json:"permittedDataType,omitempty"`
+	// PermittedDataTypeElement contains element extensions for each permittedDataType.
+	PermittedDataTypeElement []dt.Element `json:"_permittedDataType,omitempty"`
 	// PreferredReportName The preferred name to be used when reporting the results of observations conforming to this ObservationDefinition.
 	PreferredReportName *string `json:"preferredReportName,omitempty"`
+	// PreferredReportNameElement contains element extensions for preferredReportName.
+	PreferredReportNameElement *dt.Element `json:"_preferredReportName,omitempty"`
 	// QualifiedInterval Multiple  ranges of results qualified by different contexts for ordinal or continuous observations conforming to this ObservationDefinition.
 	QualifiedInterval []ObservationDefinitionQualifiedInterval `json:"qualifiedInterval,omitempty"`
 	// QuantitativeDetails Characteristics for quantitative results of this observation.
 	QuantitativeDetails *ObservationDefinitionQuantitativeDetails `json:"quantitativeDetails,omitempty"`
 	// ValidCodedValueSet The set of valid coded results for the observations  conforming to this ObservationDefinition.
 	ValidCodedValueSet *dt.Reference `json:"validCodedValueSet,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for ObservationDefinition.
 func (r ObservationDefinition) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "ObservationDefinition"
 	type Alias ObservationDefinition
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ObservationDefinition.
@@ -74,148 +103,193 @@ func (r *ObservationDefinition) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ObservationDefinition(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_abnormalCodedValueSet", "_category", "_code", "_contained", "_criticalCodedValueSet", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_method", "_modifierExtension", "_multipleResultsAllowed", "_normalCodedValueSet", "_permittedDataType", "_preferredReportName", "_qualifiedInterval", "_quantitativeDetails", "_text", "_validCodedValueSet", "abnormalCodedValueSet", "category", "code", "contained", "criticalCodedValueSet", "extension", "id", "identifier", "implicitRules", "language", "meta", "method", "modifierExtension", "multipleResultsAllowed", "normalCodedValueSet", "permittedDataType", "preferredReportName", "qualifiedInterval", "quantitativeDetails", "resourceType", "text", "validCodedValueSet":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ObservationDefinitionBuilder provides a fluent API for constructing ObservationDefinition resources.
 type ObservationDefinitionBuilder struct {
-	resource ObservationDefinition
+	resource  ObservationDefinition
+	fieldsSet map[string]bool
 }
 
 // NewObservationDefinition creates a new ObservationDefinitionBuilder for building a ObservationDefinition resource.
 func NewObservationDefinition() *ObservationDefinitionBuilder {
-	return &ObservationDefinitionBuilder{resource: ObservationDefinition{ResourceType: "ObservationDefinition"}}
+	return &ObservationDefinitionBuilder{resource: ObservationDefinition{ResourceType: "ObservationDefinition"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ObservationDefinitionBuilder) WithId(v dt.ID) *ObservationDefinitionBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ObservationDefinitionBuilder) WithMeta(v dt.Meta) *ObservationDefinitionBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ObservationDefinitionBuilder) WithImplicitRules(v dt.URI) *ObservationDefinitionBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ObservationDefinitionBuilder) WithLanguage(v dt.Code) *ObservationDefinitionBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ObservationDefinitionBuilder) WithText(v dt.Narrative) *ObservationDefinitionBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ObservationDefinitionBuilder) WithContained(v json.RawMessage) *ObservationDefinitionBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ObservationDefinitionBuilder) WithExtension(v dt.Extension) *ObservationDefinitionBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ObservationDefinitionBuilder) WithModifierExtension(v dt.Extension) *ObservationDefinitionBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ObservationDefinitionBuilder) WithIdentifier(v dt.Identifier) *ObservationDefinitionBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithAbnormalCodedValueSet sets the abnormalCodedValueSet field.
 func (b *ObservationDefinitionBuilder) WithAbnormalCodedValueSet(v dt.Reference) *ObservationDefinitionBuilder {
 	b.resource.AbnormalCodedValueSet = &v
+	b.fieldsSet["abnormalCodedValueSet"] = true
 	return b
 }
 
 // WithCategory adds an item to the category field.
 func (b *ObservationDefinitionBuilder) WithCategory(v dt.CodeableConcept) *ObservationDefinitionBuilder {
 	b.resource.Category = append(b.resource.Category, v)
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *ObservationDefinitionBuilder) WithCode(v dt.CodeableConcept) *ObservationDefinitionBuilder {
 	b.resource.Code = v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithCriticalCodedValueSet sets the criticalCodedValueSet field.
 func (b *ObservationDefinitionBuilder) WithCriticalCodedValueSet(v dt.Reference) *ObservationDefinitionBuilder {
 	b.resource.CriticalCodedValueSet = &v
+	b.fieldsSet["criticalCodedValueSet"] = true
 	return b
 }
 
 // WithMethod sets the method field.
 func (b *ObservationDefinitionBuilder) WithMethod(v dt.CodeableConcept) *ObservationDefinitionBuilder {
 	b.resource.Method = &v
+	b.fieldsSet["method"] = true
 	return b
 }
 
 // WithMultipleResultsAllowed sets the multipleResultsAllowed field.
 func (b *ObservationDefinitionBuilder) WithMultipleResultsAllowed(v bool) *ObservationDefinitionBuilder {
 	b.resource.MultipleResultsAllowed = &v
+	b.fieldsSet["multipleResultsAllowed"] = true
 	return b
 }
 
 // WithNormalCodedValueSet sets the normalCodedValueSet field.
 func (b *ObservationDefinitionBuilder) WithNormalCodedValueSet(v dt.Reference) *ObservationDefinitionBuilder {
 	b.resource.NormalCodedValueSet = &v
+	b.fieldsSet["normalCodedValueSet"] = true
 	return b
 }
 
 // WithPermittedDataType adds an item to the permittedDataType field.
 func (b *ObservationDefinitionBuilder) WithPermittedDataType(v ObservationDefinitionPermittedDataType) *ObservationDefinitionBuilder {
 	b.resource.PermittedDataType = append(b.resource.PermittedDataType, v)
+	b.fieldsSet["permittedDataType"] = true
 	return b
 }
 
 // WithPreferredReportName sets the preferredReportName field.
 func (b *ObservationDefinitionBuilder) WithPreferredReportName(v string) *ObservationDefinitionBuilder {
 	b.resource.PreferredReportName = &v
+	b.fieldsSet["preferredReportName"] = true
 	return b
 }
 
 // WithQualifiedInterval adds an item to the qualifiedInterval field.
 func (b *ObservationDefinitionBuilder) WithQualifiedInterval(v ObservationDefinitionQualifiedInterval) *ObservationDefinitionBuilder {
 	b.resource.QualifiedInterval = append(b.resource.QualifiedInterval, v)
+	b.fieldsSet["qualifiedInterval"] = true
 	return b
 }
 
 // WithQuantitativeDetails sets the quantitativeDetails field.
 func (b *ObservationDefinitionBuilder) WithQuantitativeDetails(v ObservationDefinitionQuantitativeDetails) *ObservationDefinitionBuilder {
 	b.resource.QuantitativeDetails = &v
+	b.fieldsSet["quantitativeDetails"] = true
 	return b
 }
 
 // WithValidCodedValueSet sets the validCodedValueSet field.
 func (b *ObservationDefinitionBuilder) WithValidCodedValueSet(v dt.Reference) *ObservationDefinitionBuilder {
 	b.resource.ValidCodedValueSet = &v
+	b.fieldsSet["validCodedValueSet"] = true
 	return b
 }
 
 // Build returns the constructed ObservationDefinition. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *ObservationDefinitionBuilder) Build() (*ObservationDefinition, error) {
+	var missing []string
+	if !b.fieldsSet["code"] {
+		missing = append(missing, "code")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("ObservationDefinition: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -224,6 +298,8 @@ func (b *ObservationDefinitionBuilder) Build() (*ObservationDefinition, error) {
 type ObservationDefinitionQualifiedInterval struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -234,12 +310,18 @@ type ObservationDefinitionQualifiedInterval struct {
 	AppliesTo []dt.CodeableConcept `json:"appliesTo,omitempty"`
 	// Category The category of interval of values for continuous or ordinal observations conforming to this ObservationDefinition.
 	Category *ObservationDefinitionQualifiedIntervalCategory `json:"category,omitempty"`
+	// CategoryElement contains element extensions for category.
+	CategoryElement *dt.Element `json:"_category,omitempty"`
 	// Condition Text based condition for which the reference range is valid.
 	Condition *string `json:"condition,omitempty"`
+	// ConditionElement contains element extensions for condition.
+	ConditionElement *dt.Element `json:"_condition,omitempty"`
 	// Context Codes to indicate the health context the range applies to. For example, the normal or therapeutic range.
 	Context *dt.CodeableConcept `json:"context,omitempty"`
 	// Gender Sex of the population the range applies to.
 	Gender *AdministrativeGender `json:"gender,omitempty"`
+	// GenderElement contains element extensions for gender.
+	GenderElement *dt.Element `json:"_gender,omitempty"`
 	// GestationalAge The gestational age to which this reference range is applicable, in the context of pregnancy.
 	GestationalAge *dt.Range `json:"gestationalAge,omitempty"`
 	// Range The low and high values determining the interval. There may be only one of the two.
@@ -250,16 +332,22 @@ type ObservationDefinitionQualifiedInterval struct {
 type ObservationDefinitionQuantitativeDetails struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// ConversionFactor Factor for converting value expressed with SI unit to value expressed with customary unit.
 	ConversionFactor *float64 `json:"conversionFactor,omitempty"`
+	// ConversionFactorElement contains element extensions for conversionFactor.
+	ConversionFactorElement *dt.Element `json:"_conversionFactor,omitempty"`
 	// CustomaryUnit Customary unit used to report quantitative results of observations conforming to this ObservationDefinition.
 	CustomaryUnit *dt.CodeableConcept `json:"customaryUnit,omitempty"`
 	// DecimalPrecision Number of digits after decimal separator when the results of such observations are of type Quantity.
 	DecimalPrecision *int32 `json:"decimalPrecision,omitempty"`
+	// DecimalPrecisionElement contains element extensions for decimalPrecision.
+	DecimalPrecisionElement *dt.Element `json:"_decimalPrecision,omitempty"`
 	// Unit SI unit used to report quantitative results of observations conforming to this ObservationDefinition.
 	Unit *dt.CodeableConcept `json:"unit,omitempty"`
 }

@@ -18,12 +18,18 @@ type BiologicallyDerivedProduct struct {
 	ResourceType string `json:"resourceType"` // Always "BiologicallyDerivedProduct"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type BiologicallyDerivedProduct struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Whether the product is currently available.
 	Status *BiologicallyDerivedProductStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Collection How this product was collected.
 	Collection *BiologicallyDerivedProductCollection `json:"collection,omitempty"`
 	// Manipulation Any manipulation of product post-collection that is intended to alter the product.  For example a buffy-coat enrichment or CD8 reduction of Peripheral Blood Stem Cells to make it more suitable for ...
@@ -48,10 +56,14 @@ type BiologicallyDerivedProduct struct {
 	Product *BiologicallyDerivedProductProduct `json:"-"` // polymorphic
 	// Quantity Number of discrete units within this product.
 	Quantity *int32 `json:"quantity,omitempty"`
+	// QuantityElement contains element extensions for quantity.
+	QuantityElement *dt.Element `json:"_quantity,omitempty"`
 	// Request Procedure request to obtain this biologically derived product.
 	Request []dt.Reference `json:"request,omitempty"`
 	// Storage Product storage.
 	Storage []BiologicallyDerivedProductStorage `json:"storage,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for BiologicallyDerivedProduct.
@@ -62,7 +74,6 @@ func (r BiologicallyDerivedProduct) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -79,6 +90,9 @@ func (r BiologicallyDerivedProduct) MarshalJSON() ([]byte, error) {
 		for k, v := range vm {
 			m[k] = v
 		}
+	}
+	for k, v := range r.Extra {
+		m[k] = v
 	}
 	return json.Marshal(m)
 }
@@ -99,100 +113,131 @@ func (r *BiologicallyDerivedProduct) UnmarshalJSON(data []byte) error {
 	if productVal.Category != nil || productVal.Code != nil {
 		r.Product = &productVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_collection", "_contained", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_manipulation", "_meta", "_modifierExtension", "_parent", "_processing", "_productCategory", "_productCode", "_quantity", "_request", "_status", "_storage", "_text", "collection", "contained", "extension", "id", "identifier", "implicitRules", "language", "manipulation", "meta", "modifierExtension", "parent", "processing", "productCategory", "productCode", "quantity", "request", "resourceType", "status", "storage", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // BiologicallyDerivedProductBuilder provides a fluent API for constructing BiologicallyDerivedProduct resources.
 type BiologicallyDerivedProductBuilder struct {
-	resource BiologicallyDerivedProduct
+	resource  BiologicallyDerivedProduct
+	fieldsSet map[string]bool
 }
 
 // NewBiologicallyDerivedProduct creates a new BiologicallyDerivedProductBuilder for building a BiologicallyDerivedProduct resource.
 func NewBiologicallyDerivedProduct() *BiologicallyDerivedProductBuilder {
-	return &BiologicallyDerivedProductBuilder{resource: BiologicallyDerivedProduct{ResourceType: "BiologicallyDerivedProduct"}}
+	return &BiologicallyDerivedProductBuilder{resource: BiologicallyDerivedProduct{ResourceType: "BiologicallyDerivedProduct"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *BiologicallyDerivedProductBuilder) WithId(v dt.ID) *BiologicallyDerivedProductBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *BiologicallyDerivedProductBuilder) WithMeta(v dt.Meta) *BiologicallyDerivedProductBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *BiologicallyDerivedProductBuilder) WithImplicitRules(v dt.URI) *BiologicallyDerivedProductBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *BiologicallyDerivedProductBuilder) WithLanguage(v dt.Code) *BiologicallyDerivedProductBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *BiologicallyDerivedProductBuilder) WithText(v dt.Narrative) *BiologicallyDerivedProductBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *BiologicallyDerivedProductBuilder) WithContained(v json.RawMessage) *BiologicallyDerivedProductBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *BiologicallyDerivedProductBuilder) WithExtension(v dt.Extension) *BiologicallyDerivedProductBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *BiologicallyDerivedProductBuilder) WithModifierExtension(v dt.Extension) *BiologicallyDerivedProductBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *BiologicallyDerivedProductBuilder) WithIdentifier(v dt.Identifier) *BiologicallyDerivedProductBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *BiologicallyDerivedProductBuilder) WithStatus(v BiologicallyDerivedProductStatus) *BiologicallyDerivedProductBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithCollection sets the collection field.
 func (b *BiologicallyDerivedProductBuilder) WithCollection(v BiologicallyDerivedProductCollection) *BiologicallyDerivedProductBuilder {
 	b.resource.Collection = &v
+	b.fieldsSet["collection"] = true
 	return b
 }
 
 // WithManipulation sets the manipulation field.
 func (b *BiologicallyDerivedProductBuilder) WithManipulation(v BiologicallyDerivedProductManipulation) *BiologicallyDerivedProductBuilder {
 	b.resource.Manipulation = &v
+	b.fieldsSet["manipulation"] = true
 	return b
 }
 
 // WithParent adds an item to the parent field.
 func (b *BiologicallyDerivedProductBuilder) WithParent(v dt.Reference) *BiologicallyDerivedProductBuilder {
 	b.resource.Parent = append(b.resource.Parent, v)
+	b.fieldsSet["parent"] = true
 	return b
 }
 
 // WithProcessing adds an item to the processing field.
 func (b *BiologicallyDerivedProductBuilder) WithProcessing(v BiologicallyDerivedProductProcessing) *BiologicallyDerivedProductBuilder {
 	b.resource.Processing = append(b.resource.Processing, v)
+	b.fieldsSet["processing"] = true
 	return b
 }
 
@@ -202,6 +247,7 @@ func (b *BiologicallyDerivedProductBuilder) WithProductCategory(v string) *Biolo
 		b.resource.Product = &BiologicallyDerivedProductProduct{}
 	}
 	b.resource.Product.Category = &v
+	b.fieldsSet["product"] = true
 	return b
 }
 
@@ -211,24 +257,28 @@ func (b *BiologicallyDerivedProductBuilder) WithProductCode(v dt.CodeableConcept
 		b.resource.Product = &BiologicallyDerivedProductProduct{}
 	}
 	b.resource.Product.Code = &v
+	b.fieldsSet["product"] = true
 	return b
 }
 
 // WithQuantity sets the quantity field.
 func (b *BiologicallyDerivedProductBuilder) WithQuantity(v int32) *BiologicallyDerivedProductBuilder {
 	b.resource.Quantity = &v
+	b.fieldsSet["quantity"] = true
 	return b
 }
 
 // WithRequest adds an item to the request field.
 func (b *BiologicallyDerivedProductBuilder) WithRequest(v dt.Reference) *BiologicallyDerivedProductBuilder {
 	b.resource.Request = append(b.resource.Request, v)
+	b.fieldsSet["request"] = true
 	return b
 }
 
 // WithStorage adds an item to the storage field.
 func (b *BiologicallyDerivedProductBuilder) WithStorage(v BiologicallyDerivedProductStorage) *BiologicallyDerivedProductBuilder {
 	b.resource.Storage = append(b.resource.Storage, v)
+	b.fieldsSet["storage"] = true
 	return b
 }
 
@@ -243,12 +293,16 @@ func (b *BiologicallyDerivedProductBuilder) Build() (*BiologicallyDerivedProduct
 type BiologicallyDerivedProductCollection struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// CollectedDateTime Time of product collection.
 	CollectedDateTime *string `json:"collectedDateTime,omitempty"`
+	// CollectedDateTimeElement contains element extensions for collectedDateTime.
+	CollectedDateTimeElement *dt.Element `json:"_collectedDateTime,omitempty"`
 	// CollectedPeriod Time of product collection.
 	CollectedPeriod *dt.Period `json:"collectedPeriod,omitempty"`
 	// Collector Healthcare professional who is performing the collection.
@@ -261,14 +315,20 @@ type BiologicallyDerivedProductCollection struct {
 type BiologicallyDerivedProductManipulation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description Description of manipulation.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// TimeDateTime Time of manipulation.
 	TimeDateTime *string `json:"timeDateTime,omitempty"`
+	// TimeDateTimeElement contains element extensions for timeDateTime.
+	TimeDateTimeElement *dt.Element `json:"_timeDateTime,omitempty"`
 	// TimePeriod Time of manipulation.
 	TimePeriod *dt.Period `json:"timePeriod,omitempty"`
 }
@@ -277,6 +337,8 @@ type BiologicallyDerivedProductManipulation struct {
 type BiologicallyDerivedProductProcessing struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -285,10 +347,14 @@ type BiologicallyDerivedProductProcessing struct {
 	Additive *dt.Reference `json:"additive,omitempty"`
 	// Description Description of of processing.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Procedure Procesing code.
 	Procedure *dt.CodeableConcept `json:"procedure,omitempty"`
 	// TimeDateTime Time of processing.
 	TimeDateTime *string `json:"timeDateTime,omitempty"`
+	// TimeDateTimeElement contains element extensions for timeDateTime.
+	TimeDateTimeElement *dt.Element `json:"_timeDateTime,omitempty"`
 	// TimePeriod Time of processing.
 	TimePeriod *dt.Period `json:"timePeriod,omitempty"`
 }
@@ -297,18 +363,26 @@ type BiologicallyDerivedProductProcessing struct {
 type BiologicallyDerivedProductStorage struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description Description of storage.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Duration Storage timeperiod.
 	Duration *dt.Period `json:"duration,omitempty"`
 	// Scale Temperature scale used.
 	Scale *BiologicallyDerivedProductStorageScale `json:"scale,omitempty"`
+	// ScaleElement contains element extensions for scale.
+	ScaleElement *dt.Element `json:"_scale,omitempty"`
 	// Temperature Storage temperature.
 	Temperature *float64 `json:"temperature,omitempty"`
+	// TemperatureElement contains element extensions for temperature.
+	TemperatureElement *dt.Element `json:"_temperature,omitempty"`
 }
 
 // BiologicallyDerivedProductProduct represents a polymorphic choice type in FHIR.

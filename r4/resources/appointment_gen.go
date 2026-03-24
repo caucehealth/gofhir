@@ -18,12 +18,18 @@ type Appointment struct {
 	ResourceType string `json:"resourceType"` // Always "Appointment"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type Appointment struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The overall status of the Appointment. Each of the participants has their own participation status which indicates their involvement in the process, however this status indicates the shared status.
 	Status *AppointmentStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// AppointmentType The style of appointment or patient that has been booked in the slot (not service type).
 	AppointmentType *dt.CodeableConcept `json:"appointmentType,omitempty"`
 	// BasedOn The service request this appointment is allocated to assess (e.g. incoming referral or procedure request).
@@ -44,20 +52,34 @@ type Appointment struct {
 	CancelationReason *dt.CodeableConcept `json:"cancelationReason,omitempty"`
 	// Comment Additional comments about the appointment.
 	Comment *string `json:"comment,omitempty"`
+	// CommentElement contains element extensions for comment.
+	CommentElement *dt.Element `json:"_comment,omitempty"`
 	// Created The date that this appointment was initially created. This could be different to the meta.lastModified value on the initial entry, as this could have been before the resource was created on the FHI...
 	Created *dt.DateTime `json:"created,omitempty"`
+	// CreatedElement contains element extensions for created.
+	CreatedElement *dt.Element `json:"_created,omitempty"`
 	// Description The brief description of the appointment as would be shown on a subject line in a meeting request, or appointment list. Detailed or expanded information should be put in the comment field.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// End Date/Time that the appointment is to conclude.
 	End *dt.Instant `json:"end,omitempty"`
+	// EndElement contains element extensions for end.
+	EndElement *dt.Element `json:"_end,omitempty"`
 	// MinutesDuration Number of minutes that the appointment is to take. This can be less than the duration between the start and end times.  For example, where the actual time of appointment is only an estimate or if a...
 	MinutesDuration *uint32 `json:"minutesDuration,omitempty"`
+	// MinutesDurationElement contains element extensions for minutesDuration.
+	MinutesDurationElement *dt.Element `json:"_minutesDuration,omitempty"`
 	// Participant List of participants involved in the appointment.
 	Participant []AppointmentParticipant `json:"participant,omitempty"`
 	// PatientInstruction While Appointment.comment contains information for internal use, Appointment.patientInstructions is used to capture patient facing information about the Appointment (e.g. please bring your referral...
 	PatientInstruction *string `json:"patientInstruction,omitempty"`
+	// PatientInstructionElement contains element extensions for patientInstruction.
+	PatientInstructionElement *dt.Element `json:"_patientInstruction,omitempty"`
 	// Priority The priority of the appointment. Can be used to make informed decisions if needing to re-prioritize appointments. (The iCal Standard specifies 0 as undefined, 1 as highest, 9 as lowest priority).
 	Priority *uint32 `json:"priority,omitempty"`
+	// PriorityElement contains element extensions for priority.
+	PriorityElement *dt.Element `json:"_priority,omitempty"`
 	// ReasonCode The coded reason that this appointment is being scheduled. This is more clinical than administrative.
 	ReasonCode []dt.CodeableConcept `json:"reasonCode,omitempty"`
 	// ReasonReference Reason the appointment has been scheduled to take place, as specified using information from another resource. When the patient arrives and the encounter begins it may be used as the admission diag...
@@ -74,15 +96,33 @@ type Appointment struct {
 	Specialty []dt.CodeableConcept `json:"specialty,omitempty"`
 	// Start Date/Time that the appointment is to take place.
 	Start *dt.Instant `json:"start,omitempty"`
+	// StartElement contains element extensions for start.
+	StartElement *dt.Element `json:"_start,omitempty"`
 	// SupportingInformation Additional information to support the appointment provided when making the appointment.
 	SupportingInformation []dt.Reference `json:"supportingInformation,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Appointment.
 func (r Appointment) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Appointment"
 	type Alias Appointment
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Appointment.
@@ -93,196 +133,243 @@ func (r *Appointment) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Appointment(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_appointmentType", "_basedOn", "_cancelationReason", "_comment", "_contained", "_created", "_description", "_end", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_minutesDuration", "_modifierExtension", "_participant", "_patientInstruction", "_priority", "_reasonCode", "_reasonReference", "_requestedPeriod", "_serviceCategory", "_serviceType", "_slot", "_specialty", "_start", "_status", "_supportingInformation", "_text", "appointmentType", "basedOn", "cancelationReason", "comment", "contained", "created", "description", "end", "extension", "id", "identifier", "implicitRules", "language", "meta", "minutesDuration", "modifierExtension", "participant", "patientInstruction", "priority", "reasonCode", "reasonReference", "requestedPeriod", "resourceType", "serviceCategory", "serviceType", "slot", "specialty", "start", "status", "supportingInformation", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // AppointmentBuilder provides a fluent API for constructing Appointment resources.
 type AppointmentBuilder struct {
-	resource Appointment
+	resource  Appointment
+	fieldsSet map[string]bool
 }
 
 // NewAppointment creates a new AppointmentBuilder for building a Appointment resource.
 func NewAppointment() *AppointmentBuilder {
-	return &AppointmentBuilder{resource: Appointment{ResourceType: "Appointment"}}
+	return &AppointmentBuilder{resource: Appointment{ResourceType: "Appointment"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *AppointmentBuilder) WithId(v dt.ID) *AppointmentBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *AppointmentBuilder) WithMeta(v dt.Meta) *AppointmentBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *AppointmentBuilder) WithImplicitRules(v dt.URI) *AppointmentBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *AppointmentBuilder) WithLanguage(v dt.Code) *AppointmentBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *AppointmentBuilder) WithText(v dt.Narrative) *AppointmentBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *AppointmentBuilder) WithContained(v json.RawMessage) *AppointmentBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *AppointmentBuilder) WithExtension(v dt.Extension) *AppointmentBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *AppointmentBuilder) WithModifierExtension(v dt.Extension) *AppointmentBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *AppointmentBuilder) WithIdentifier(v dt.Identifier) *AppointmentBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *AppointmentBuilder) WithStatus(v AppointmentStatus) *AppointmentBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAppointmentType sets the appointmentType field.
 func (b *AppointmentBuilder) WithAppointmentType(v dt.CodeableConcept) *AppointmentBuilder {
 	b.resource.AppointmentType = &v
+	b.fieldsSet["appointmentType"] = true
 	return b
 }
 
 // WithBasedOn adds an item to the basedOn field.
 func (b *AppointmentBuilder) WithBasedOn(v dt.Reference) *AppointmentBuilder {
 	b.resource.BasedOn = append(b.resource.BasedOn, v)
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithCancelationReason sets the cancelationReason field.
 func (b *AppointmentBuilder) WithCancelationReason(v dt.CodeableConcept) *AppointmentBuilder {
 	b.resource.CancelationReason = &v
+	b.fieldsSet["cancelationReason"] = true
 	return b
 }
 
 // WithComment sets the comment field.
 func (b *AppointmentBuilder) WithComment(v string) *AppointmentBuilder {
 	b.resource.Comment = &v
+	b.fieldsSet["comment"] = true
 	return b
 }
 
 // WithCreated sets the created field.
 func (b *AppointmentBuilder) WithCreated(v dt.DateTime) *AppointmentBuilder {
 	b.resource.Created = &v
+	b.fieldsSet["created"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *AppointmentBuilder) WithDescription(v string) *AppointmentBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithEnd sets the end field.
 func (b *AppointmentBuilder) WithEnd(v dt.Instant) *AppointmentBuilder {
 	b.resource.End = &v
+	b.fieldsSet["end"] = true
 	return b
 }
 
 // WithMinutesDuration sets the minutesDuration field.
 func (b *AppointmentBuilder) WithMinutesDuration(v uint32) *AppointmentBuilder {
 	b.resource.MinutesDuration = &v
+	b.fieldsSet["minutesDuration"] = true
 	return b
 }
 
 // WithParticipant adds an item to the participant field.
 func (b *AppointmentBuilder) WithParticipant(v AppointmentParticipant) *AppointmentBuilder {
 	b.resource.Participant = append(b.resource.Participant, v)
+	b.fieldsSet["participant"] = true
 	return b
 }
 
 // WithPatientInstruction sets the patientInstruction field.
 func (b *AppointmentBuilder) WithPatientInstruction(v string) *AppointmentBuilder {
 	b.resource.PatientInstruction = &v
+	b.fieldsSet["patientInstruction"] = true
 	return b
 }
 
 // WithPriority sets the priority field.
 func (b *AppointmentBuilder) WithPriority(v uint32) *AppointmentBuilder {
 	b.resource.Priority = &v
+	b.fieldsSet["priority"] = true
 	return b
 }
 
 // WithReasonCode adds an item to the reasonCode field.
 func (b *AppointmentBuilder) WithReasonCode(v dt.CodeableConcept) *AppointmentBuilder {
 	b.resource.ReasonCode = append(b.resource.ReasonCode, v)
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithReasonReference adds an item to the reasonReference field.
 func (b *AppointmentBuilder) WithReasonReference(v dt.Reference) *AppointmentBuilder {
 	b.resource.ReasonReference = append(b.resource.ReasonReference, v)
+	b.fieldsSet["reasonReference"] = true
 	return b
 }
 
 // WithRequestedPeriod adds an item to the requestedPeriod field.
 func (b *AppointmentBuilder) WithRequestedPeriod(v dt.Period) *AppointmentBuilder {
 	b.resource.RequestedPeriod = append(b.resource.RequestedPeriod, v)
+	b.fieldsSet["requestedPeriod"] = true
 	return b
 }
 
 // WithServiceCategory adds an item to the serviceCategory field.
 func (b *AppointmentBuilder) WithServiceCategory(v dt.CodeableConcept) *AppointmentBuilder {
 	b.resource.ServiceCategory = append(b.resource.ServiceCategory, v)
+	b.fieldsSet["serviceCategory"] = true
 	return b
 }
 
 // WithServiceType adds an item to the serviceType field.
 func (b *AppointmentBuilder) WithServiceType(v dt.CodeableConcept) *AppointmentBuilder {
 	b.resource.ServiceType = append(b.resource.ServiceType, v)
+	b.fieldsSet["serviceType"] = true
 	return b
 }
 
 // WithSlot adds an item to the slot field.
 func (b *AppointmentBuilder) WithSlot(v dt.Reference) *AppointmentBuilder {
 	b.resource.Slot = append(b.resource.Slot, v)
+	b.fieldsSet["slot"] = true
 	return b
 }
 
 // WithSpecialty adds an item to the specialty field.
 func (b *AppointmentBuilder) WithSpecialty(v dt.CodeableConcept) *AppointmentBuilder {
 	b.resource.Specialty = append(b.resource.Specialty, v)
+	b.fieldsSet["specialty"] = true
 	return b
 }
 
 // WithStart sets the start field.
 func (b *AppointmentBuilder) WithStart(v dt.Instant) *AppointmentBuilder {
 	b.resource.Start = &v
+	b.fieldsSet["start"] = true
 	return b
 }
 
 // WithSupportingInformation adds an item to the supportingInformation field.
 func (b *AppointmentBuilder) WithSupportingInformation(v dt.Reference) *AppointmentBuilder {
 	b.resource.SupportingInformation = append(b.resource.SupportingInformation, v)
+	b.fieldsSet["supportingInformation"] = true
 	return b
 }
 
@@ -290,7 +377,7 @@ func (b *AppointmentBuilder) WithSupportingInformation(v dt.Reference) *Appointm
 // field (cardinality 1..1) is not set.
 func (b *AppointmentBuilder) Build() (*Appointment, error) {
 	var missing []string
-	if len(b.resource.Participant) == 0 {
+	if !b.fieldsSet["participant"] {
 		missing = append(missing, "participant")
 	}
 	if len(missing) > 0 {
@@ -304,18 +391,24 @@ func (b *AppointmentBuilder) Build() (*Appointment, error) {
 type AppointmentParticipant struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status Participation status of the actor.
 	Status *AppointmentParticipantStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Actor A Person, Location/HealthcareService or Device that is participating in the appointment.
 	Actor *dt.Reference `json:"actor,omitempty"`
 	// Period Participation period of the actor.
 	Period *dt.Period `json:"period,omitempty"`
 	// Required Whether this participant is required to be present at the meeting. This covers a use-case where two doctors need to meet to discuss the results for a specific patient, and the patient is not requir...
 	Required *AppointmentParticipantRequired `json:"required,omitempty"`
+	// RequiredElement contains element extensions for required.
+	RequiredElement *dt.Element `json:"_required,omitempty"`
 	// Type Role of participant in the appointment.
 	Type []dt.CodeableConcept `json:"type,omitempty"`
 }

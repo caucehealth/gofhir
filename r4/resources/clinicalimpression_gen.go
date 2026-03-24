@@ -18,12 +18,18 @@ type ClinicalImpression struct {
 	ResourceType string `json:"resourceType"` // Always "ClinicalImpression"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,14 +42,20 @@ type ClinicalImpression struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Identifies the workflow status of the assessment.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Assessor The clinician performing the assessment.
 	Assessor *dt.Reference `json:"assessor,omitempty"`
 	// Code Categorizes the type of clinical assessment performed.
 	Code *dt.CodeableConcept `json:"code,omitempty"`
 	// Date Indicates when the documentation of the assessment was complete.
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description A summary of the context and/or cause of the assessment - why / where it was performed, and what patient events/status prompted it.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Effective The point in time or period over which the subject was assessed.
 	Effective *ClinicalImpressionEffective `json:"-"` // polymorphic
 	// Encounter The Encounter during which this ClinicalImpression was created or to which the creation of this record is tightly associated.
@@ -64,14 +76,20 @@ type ClinicalImpression struct {
 	PrognosisReference []dt.Reference `json:"prognosisReference,omitempty"`
 	// Protocol Reference to a specific published clinical protocol that was followed during this assessment, and/or that provides evidence in support of the diagnosis.
 	Protocol []dt.URI `json:"protocol,omitempty"`
+	// ProtocolElement contains element extensions for each protocol.
+	ProtocolElement []dt.Element `json:"_protocol,omitempty"`
 	// StatusReason Captures the reason for the current state of the ClinicalImpression.
 	StatusReason *dt.CodeableConcept `json:"statusReason,omitempty"`
 	// Subject The patient or group of individuals assessed as part of this record.
 	Subject dt.Reference `json:"subject"`
 	// Summary A text summary of the investigations and the diagnosis.
 	Summary *string `json:"summary,omitempty"`
+	// SummaryElement contains element extensions for summary.
+	SummaryElement *dt.Element `json:"_summary,omitempty"`
 	// SupportingInfo Information supporting the clinical impression.
 	SupportingInfo []dt.Reference `json:"supportingInfo,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for ClinicalImpression.
@@ -82,7 +100,6 @@ func (r ClinicalImpression) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -99,6 +116,9 @@ func (r ClinicalImpression) MarshalJSON() ([]byte, error) {
 		for k, v := range vm {
 			m[k] = v
 		}
+	}
+	for k, v := range r.Extra {
+		m[k] = v
 	}
 	return json.Marshal(m)
 }
@@ -119,100 +139,131 @@ func (r *ClinicalImpression) UnmarshalJSON(data []byte) error {
 	if effectiveVal.DateTime != nil || effectiveVal.Period != nil {
 		r.Effective = &effectiveVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_assessor", "_code", "_contained", "_date", "_description", "_effectiveDateTime", "_effectivePeriod", "_encounter", "_extension", "_finding", "_id", "_identifier", "_implicitRules", "_investigation", "_language", "_meta", "_modifierExtension", "_note", "_previous", "_problem", "_prognosisCodeableConcept", "_prognosisReference", "_protocol", "_status", "_statusReason", "_subject", "_summary", "_supportingInfo", "_text", "assessor", "code", "contained", "date", "description", "effectiveDateTime", "effectivePeriod", "encounter", "extension", "finding", "id", "identifier", "implicitRules", "investigation", "language", "meta", "modifierExtension", "note", "previous", "problem", "prognosisCodeableConcept", "prognosisReference", "protocol", "resourceType", "status", "statusReason", "subject", "summary", "supportingInfo", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ClinicalImpressionBuilder provides a fluent API for constructing ClinicalImpression resources.
 type ClinicalImpressionBuilder struct {
-	resource ClinicalImpression
+	resource  ClinicalImpression
+	fieldsSet map[string]bool
 }
 
 // NewClinicalImpression creates a new ClinicalImpressionBuilder for building a ClinicalImpression resource.
 func NewClinicalImpression() *ClinicalImpressionBuilder {
-	return &ClinicalImpressionBuilder{resource: ClinicalImpression{ResourceType: "ClinicalImpression"}}
+	return &ClinicalImpressionBuilder{resource: ClinicalImpression{ResourceType: "ClinicalImpression"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ClinicalImpressionBuilder) WithId(v dt.ID) *ClinicalImpressionBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ClinicalImpressionBuilder) WithMeta(v dt.Meta) *ClinicalImpressionBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ClinicalImpressionBuilder) WithImplicitRules(v dt.URI) *ClinicalImpressionBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ClinicalImpressionBuilder) WithLanguage(v dt.Code) *ClinicalImpressionBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ClinicalImpressionBuilder) WithText(v dt.Narrative) *ClinicalImpressionBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ClinicalImpressionBuilder) WithContained(v json.RawMessage) *ClinicalImpressionBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ClinicalImpressionBuilder) WithExtension(v dt.Extension) *ClinicalImpressionBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ClinicalImpressionBuilder) WithModifierExtension(v dt.Extension) *ClinicalImpressionBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ClinicalImpressionBuilder) WithIdentifier(v dt.Identifier) *ClinicalImpressionBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ClinicalImpressionBuilder) WithStatus(v dt.Code) *ClinicalImpressionBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAssessor sets the assessor field.
 func (b *ClinicalImpressionBuilder) WithAssessor(v dt.Reference) *ClinicalImpressionBuilder {
 	b.resource.Assessor = &v
+	b.fieldsSet["assessor"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *ClinicalImpressionBuilder) WithCode(v dt.CodeableConcept) *ClinicalImpressionBuilder {
 	b.resource.Code = &v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *ClinicalImpressionBuilder) WithDate(v dt.DateTime) *ClinicalImpressionBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *ClinicalImpressionBuilder) WithDescription(v string) *ClinicalImpressionBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
@@ -222,6 +273,7 @@ func (b *ClinicalImpressionBuilder) WithEffectiveDateTime(v string) *ClinicalImp
 		b.resource.Effective = &ClinicalImpressionEffective{}
 	}
 	b.resource.Effective.DateTime = &v
+	b.fieldsSet["effective"] = true
 	return b
 }
 
@@ -231,90 +283,111 @@ func (b *ClinicalImpressionBuilder) WithEffectivePeriod(v dt.Period) *ClinicalIm
 		b.resource.Effective = &ClinicalImpressionEffective{}
 	}
 	b.resource.Effective.Period = &v
+	b.fieldsSet["effective"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *ClinicalImpressionBuilder) WithEncounter(v dt.Reference) *ClinicalImpressionBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithFinding adds an item to the finding field.
 func (b *ClinicalImpressionBuilder) WithFinding(v ClinicalImpressionFinding) *ClinicalImpressionBuilder {
 	b.resource.Finding = append(b.resource.Finding, v)
+	b.fieldsSet["finding"] = true
 	return b
 }
 
 // WithInvestigation adds an item to the investigation field.
 func (b *ClinicalImpressionBuilder) WithInvestigation(v ClinicalImpressionInvestigation) *ClinicalImpressionBuilder {
 	b.resource.Investigation = append(b.resource.Investigation, v)
+	b.fieldsSet["investigation"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *ClinicalImpressionBuilder) WithNote(v dt.Annotation) *ClinicalImpressionBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithPrevious sets the previous field.
 func (b *ClinicalImpressionBuilder) WithPrevious(v dt.Reference) *ClinicalImpressionBuilder {
 	b.resource.Previous = &v
+	b.fieldsSet["previous"] = true
 	return b
 }
 
 // WithProblem adds an item to the problem field.
 func (b *ClinicalImpressionBuilder) WithProblem(v dt.Reference) *ClinicalImpressionBuilder {
 	b.resource.Problem = append(b.resource.Problem, v)
+	b.fieldsSet["problem"] = true
 	return b
 }
 
 // WithPrognosisCodeableConcept adds an item to the prognosisCodeableConcept field.
 func (b *ClinicalImpressionBuilder) WithPrognosisCodeableConcept(v dt.CodeableConcept) *ClinicalImpressionBuilder {
 	b.resource.PrognosisCodeableConcept = append(b.resource.PrognosisCodeableConcept, v)
+	b.fieldsSet["prognosisCodeableConcept"] = true
 	return b
 }
 
 // WithPrognosisReference adds an item to the prognosisReference field.
 func (b *ClinicalImpressionBuilder) WithPrognosisReference(v dt.Reference) *ClinicalImpressionBuilder {
 	b.resource.PrognosisReference = append(b.resource.PrognosisReference, v)
+	b.fieldsSet["prognosisReference"] = true
 	return b
 }
 
 // WithProtocol adds an item to the protocol field.
 func (b *ClinicalImpressionBuilder) WithProtocol(v dt.URI) *ClinicalImpressionBuilder {
 	b.resource.Protocol = append(b.resource.Protocol, v)
+	b.fieldsSet["protocol"] = true
 	return b
 }
 
 // WithStatusReason sets the statusReason field.
 func (b *ClinicalImpressionBuilder) WithStatusReason(v dt.CodeableConcept) *ClinicalImpressionBuilder {
 	b.resource.StatusReason = &v
+	b.fieldsSet["statusReason"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *ClinicalImpressionBuilder) WithSubject(v dt.Reference) *ClinicalImpressionBuilder {
 	b.resource.Subject = v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithSummary sets the summary field.
 func (b *ClinicalImpressionBuilder) WithSummary(v string) *ClinicalImpressionBuilder {
 	b.resource.Summary = &v
+	b.fieldsSet["summary"] = true
 	return b
 }
 
 // WithSupportingInfo adds an item to the supportingInfo field.
 func (b *ClinicalImpressionBuilder) WithSupportingInfo(v dt.Reference) *ClinicalImpressionBuilder {
 	b.resource.SupportingInfo = append(b.resource.SupportingInfo, v)
+	b.fieldsSet["supportingInfo"] = true
 	return b
 }
 
 // Build returns the constructed ClinicalImpression. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *ClinicalImpressionBuilder) Build() (*ClinicalImpression, error) {
+	var missing []string
+	if !b.fieldsSet["subject"] {
+		missing = append(missing, "subject")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("ClinicalImpression: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -323,12 +396,16 @@ func (b *ClinicalImpressionBuilder) Build() (*ClinicalImpression, error) {
 type ClinicalImpressionFinding struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Basis Which investigations support finding or diagnosis.
 	Basis *string `json:"basis,omitempty"`
+	// BasisElement contains element extensions for basis.
+	BasisElement *dt.Element `json:"_basis,omitempty"`
 	// Item Specific text or code for finding or diagnosis, which may include ruled-out or resolved conditions.
 	Item *ClinicalImpressionFindingItem `json:"-"` // polymorphic
 }
@@ -423,6 +500,8 @@ func (v *ClinicalImpressionFindingItem) UnmarshalJSON(data []byte) error {
 type ClinicalImpressionInvestigation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

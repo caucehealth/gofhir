@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type AdverseEvent struct {
 	ResourceType string `json:"resourceType"` // Always "AdverseEvent"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,14 +42,20 @@ type AdverseEvent struct {
 	Identifier *dt.Identifier `json:"identifier,omitempty"`
 	// Actuality Whether the event actually happened, or just had the potential to. Note that this is independent of whether anyone was affected or harmed or how severely.
 	Actuality *AdverseEventActuality `json:"actuality,omitempty"`
+	// ActualityElement contains element extensions for actuality.
+	ActualityElement *dt.Element `json:"_actuality,omitempty"`
 	// Category The overall type of event, intended for search and filtering purposes.
 	Category []dt.CodeableConcept `json:"category,omitempty"`
 	// Contributor Parties that may or should contribute or have contributed information to the adverse event, which can consist of one or more activities.  Such information includes information leading to the decisi...
 	Contributor []dt.Reference `json:"contributor,omitempty"`
 	// Date The date (and perhaps time) when the adverse event occurred.
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Detected Estimated or actual date the AdverseEvent began, in the opinion of the reporter.
 	Detected *dt.DateTime `json:"detected,omitempty"`
+	// DetectedElement contains element extensions for detected.
+	DetectedElement *dt.Element `json:"_detected,omitempty"`
 	// Encounter The Encounter during which AdverseEvent was created or to which the creation of this record is tightly associated.
 	Encounter *dt.Reference `json:"encounter,omitempty"`
 	// Event This element defines the specific type of event that occurred or that was prevented from occurring.
@@ -53,6 +66,8 @@ type AdverseEvent struct {
 	Outcome *dt.CodeableConcept `json:"outcome,omitempty"`
 	// RecordedDate The date on which the existence of the AdverseEvent was first recorded.
 	RecordedDate *dt.DateTime `json:"recordedDate,omitempty"`
+	// RecordedDateElement contains element extensions for recordedDate.
+	RecordedDateElement *dt.Element `json:"_recordedDate,omitempty"`
 	// Recorder Information on who recorded the adverse event.  May be the patient or a practitioner.
 	Recorder *dt.Reference `json:"recorder,omitempty"`
 	// ReferenceDocument AdverseEvent.referenceDocument.
@@ -71,13 +86,29 @@ type AdverseEvent struct {
 	SubjectMedicalHistory []dt.Reference `json:"subjectMedicalHistory,omitempty"`
 	// SuspectEntity Describes the entity that is suspected to have caused the adverse event.
 	SuspectEntity []AdverseEventSuspectEntity `json:"suspectEntity,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for AdverseEvent.
 func (r AdverseEvent) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "AdverseEvent"
 	type Alias AdverseEvent
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for AdverseEvent.
@@ -88,190 +119,242 @@ func (r *AdverseEvent) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = AdverseEvent(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_actuality", "_category", "_contained", "_contributor", "_date", "_detected", "_encounter", "_event", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_location", "_meta", "_modifierExtension", "_outcome", "_recordedDate", "_recorder", "_referenceDocument", "_resultingCondition", "_seriousness", "_severity", "_study", "_subject", "_subjectMedicalHistory", "_suspectEntity", "_text", "actuality", "category", "contained", "contributor", "date", "detected", "encounter", "event", "extension", "id", "identifier", "implicitRules", "language", "location", "meta", "modifierExtension", "outcome", "recordedDate", "recorder", "referenceDocument", "resourceType", "resultingCondition", "seriousness", "severity", "study", "subject", "subjectMedicalHistory", "suspectEntity", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // AdverseEventBuilder provides a fluent API for constructing AdverseEvent resources.
 type AdverseEventBuilder struct {
-	resource AdverseEvent
+	resource  AdverseEvent
+	fieldsSet map[string]bool
 }
 
 // NewAdverseEvent creates a new AdverseEventBuilder for building a AdverseEvent resource.
 func NewAdverseEvent() *AdverseEventBuilder {
-	return &AdverseEventBuilder{resource: AdverseEvent{ResourceType: "AdverseEvent"}}
+	return &AdverseEventBuilder{resource: AdverseEvent{ResourceType: "AdverseEvent"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *AdverseEventBuilder) WithId(v dt.ID) *AdverseEventBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *AdverseEventBuilder) WithMeta(v dt.Meta) *AdverseEventBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *AdverseEventBuilder) WithImplicitRules(v dt.URI) *AdverseEventBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *AdverseEventBuilder) WithLanguage(v dt.Code) *AdverseEventBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *AdverseEventBuilder) WithText(v dt.Narrative) *AdverseEventBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *AdverseEventBuilder) WithContained(v json.RawMessage) *AdverseEventBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *AdverseEventBuilder) WithExtension(v dt.Extension) *AdverseEventBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *AdverseEventBuilder) WithModifierExtension(v dt.Extension) *AdverseEventBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier sets the identifier field.
 func (b *AdverseEventBuilder) WithIdentifier(v dt.Identifier) *AdverseEventBuilder {
 	b.resource.Identifier = &v
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithActuality sets the actuality field.
 func (b *AdverseEventBuilder) WithActuality(v AdverseEventActuality) *AdverseEventBuilder {
 	b.resource.Actuality = &v
+	b.fieldsSet["actuality"] = true
 	return b
 }
 
 // WithCategory adds an item to the category field.
 func (b *AdverseEventBuilder) WithCategory(v dt.CodeableConcept) *AdverseEventBuilder {
 	b.resource.Category = append(b.resource.Category, v)
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithContributor adds an item to the contributor field.
 func (b *AdverseEventBuilder) WithContributor(v dt.Reference) *AdverseEventBuilder {
 	b.resource.Contributor = append(b.resource.Contributor, v)
+	b.fieldsSet["contributor"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *AdverseEventBuilder) WithDate(v dt.DateTime) *AdverseEventBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDetected sets the detected field.
 func (b *AdverseEventBuilder) WithDetected(v dt.DateTime) *AdverseEventBuilder {
 	b.resource.Detected = &v
+	b.fieldsSet["detected"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *AdverseEventBuilder) WithEncounter(v dt.Reference) *AdverseEventBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithEvent sets the event field.
 func (b *AdverseEventBuilder) WithEvent(v dt.CodeableConcept) *AdverseEventBuilder {
 	b.resource.Event = &v
+	b.fieldsSet["event"] = true
 	return b
 }
 
 // WithLocation sets the location field.
 func (b *AdverseEventBuilder) WithLocation(v dt.Reference) *AdverseEventBuilder {
 	b.resource.Location = &v
+	b.fieldsSet["location"] = true
 	return b
 }
 
 // WithOutcome sets the outcome field.
 func (b *AdverseEventBuilder) WithOutcome(v dt.CodeableConcept) *AdverseEventBuilder {
 	b.resource.Outcome = &v
+	b.fieldsSet["outcome"] = true
 	return b
 }
 
 // WithRecordedDate sets the recordedDate field.
 func (b *AdverseEventBuilder) WithRecordedDate(v dt.DateTime) *AdverseEventBuilder {
 	b.resource.RecordedDate = &v
+	b.fieldsSet["recordedDate"] = true
 	return b
 }
 
 // WithRecorder sets the recorder field.
 func (b *AdverseEventBuilder) WithRecorder(v dt.Reference) *AdverseEventBuilder {
 	b.resource.Recorder = &v
+	b.fieldsSet["recorder"] = true
 	return b
 }
 
 // WithReferenceDocument adds an item to the referenceDocument field.
 func (b *AdverseEventBuilder) WithReferenceDocument(v dt.Reference) *AdverseEventBuilder {
 	b.resource.ReferenceDocument = append(b.resource.ReferenceDocument, v)
+	b.fieldsSet["referenceDocument"] = true
 	return b
 }
 
 // WithResultingCondition adds an item to the resultingCondition field.
 func (b *AdverseEventBuilder) WithResultingCondition(v dt.Reference) *AdverseEventBuilder {
 	b.resource.ResultingCondition = append(b.resource.ResultingCondition, v)
+	b.fieldsSet["resultingCondition"] = true
 	return b
 }
 
 // WithSeriousness sets the seriousness field.
 func (b *AdverseEventBuilder) WithSeriousness(v dt.CodeableConcept) *AdverseEventBuilder {
 	b.resource.Seriousness = &v
+	b.fieldsSet["seriousness"] = true
 	return b
 }
 
 // WithSeverity sets the severity field.
 func (b *AdverseEventBuilder) WithSeverity(v dt.CodeableConcept) *AdverseEventBuilder {
 	b.resource.Severity = &v
+	b.fieldsSet["severity"] = true
 	return b
 }
 
 // WithStudy adds an item to the study field.
 func (b *AdverseEventBuilder) WithStudy(v dt.Reference) *AdverseEventBuilder {
 	b.resource.Study = append(b.resource.Study, v)
+	b.fieldsSet["study"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *AdverseEventBuilder) WithSubject(v dt.Reference) *AdverseEventBuilder {
 	b.resource.Subject = v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithSubjectMedicalHistory adds an item to the subjectMedicalHistory field.
 func (b *AdverseEventBuilder) WithSubjectMedicalHistory(v dt.Reference) *AdverseEventBuilder {
 	b.resource.SubjectMedicalHistory = append(b.resource.SubjectMedicalHistory, v)
+	b.fieldsSet["subjectMedicalHistory"] = true
 	return b
 }
 
 // WithSuspectEntity adds an item to the suspectEntity field.
 func (b *AdverseEventBuilder) WithSuspectEntity(v AdverseEventSuspectEntity) *AdverseEventBuilder {
 	b.resource.SuspectEntity = append(b.resource.SuspectEntity, v)
+	b.fieldsSet["suspectEntity"] = true
 	return b
 }
 
 // Build returns the constructed AdverseEvent. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *AdverseEventBuilder) Build() (*AdverseEvent, error) {
+	var missing []string
+	if !b.fieldsSet["subject"] {
+		missing = append(missing, "subject")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("AdverseEvent: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -280,6 +363,8 @@ func (b *AdverseEventBuilder) Build() (*AdverseEvent, error) {
 type AdverseEventCausality struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -292,12 +377,16 @@ type AdverseEventCausality struct {
 	Method *dt.CodeableConcept `json:"method,omitempty"`
 	// ProductRelatedness AdverseEvent.suspectEntity.causalityProductRelatedness.
 	ProductRelatedness *string `json:"productRelatedness,omitempty"`
+	// ProductRelatednessElement contains element extensions for productRelatedness.
+	ProductRelatednessElement *dt.Element `json:"_productRelatedness,omitempty"`
 }
 
 // AdverseEventSuspectEntity Actual or  potential/avoided event causing unintended physical injury resulting from or contributed to by medical care, a research study or other healthcare setting factors that requires additional...
 type AdverseEventSuspectEntity struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

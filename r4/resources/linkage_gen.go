@@ -18,12 +18,18 @@ type Linkage struct {
 	ResourceType string `json:"resourceType"` // Always "Linkage"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -34,17 +40,35 @@ type Linkage struct {
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Active Indicates whether the asserted set of linkages are considered to be "in effect".
 	Active *bool `json:"active,omitempty"`
+	// ActiveElement contains element extensions for active.
+	ActiveElement *dt.Element `json:"_active,omitempty"`
 	// Author Identifies the user or organization responsible for asserting the linkages as well as the user or organization who establishes the context in which the nature of each linkage is evaluated.
 	Author *dt.Reference `json:"author,omitempty"`
 	// Item Identifies which record considered as the reference to the same real-world occurrence as well as how the items should be evaluated within the collection of linked items.
 	Item []LinkageItem `json:"item,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Linkage.
 func (r Linkage) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Linkage"
 	type Alias Linkage
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Linkage.
@@ -55,82 +79,110 @@ func (r *Linkage) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Linkage(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_active", "_author", "_contained", "_extension", "_id", "_implicitRules", "_item", "_language", "_meta", "_modifierExtension", "_text", "active", "author", "contained", "extension", "id", "implicitRules", "item", "language", "meta", "modifierExtension", "resourceType", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // LinkageBuilder provides a fluent API for constructing Linkage resources.
 type LinkageBuilder struct {
-	resource Linkage
+	resource  Linkage
+	fieldsSet map[string]bool
 }
 
 // NewLinkage creates a new LinkageBuilder for building a Linkage resource.
 func NewLinkage() *LinkageBuilder {
-	return &LinkageBuilder{resource: Linkage{ResourceType: "Linkage"}}
+	return &LinkageBuilder{resource: Linkage{ResourceType: "Linkage"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *LinkageBuilder) WithId(v dt.ID) *LinkageBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *LinkageBuilder) WithMeta(v dt.Meta) *LinkageBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *LinkageBuilder) WithImplicitRules(v dt.URI) *LinkageBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *LinkageBuilder) WithLanguage(v dt.Code) *LinkageBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *LinkageBuilder) WithText(v dt.Narrative) *LinkageBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *LinkageBuilder) WithContained(v json.RawMessage) *LinkageBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *LinkageBuilder) WithExtension(v dt.Extension) *LinkageBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *LinkageBuilder) WithModifierExtension(v dt.Extension) *LinkageBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithActive sets the active field.
 func (b *LinkageBuilder) WithActive(v bool) *LinkageBuilder {
 	b.resource.Active = &v
+	b.fieldsSet["active"] = true
 	return b
 }
 
 // WithAuthor sets the author field.
 func (b *LinkageBuilder) WithAuthor(v dt.Reference) *LinkageBuilder {
 	b.resource.Author = &v
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithItem adds an item to the item field.
 func (b *LinkageBuilder) WithItem(v LinkageItem) *LinkageBuilder {
 	b.resource.Item = append(b.resource.Item, v)
+	b.fieldsSet["item"] = true
 	return b
 }
 
@@ -138,7 +190,7 @@ func (b *LinkageBuilder) WithItem(v LinkageItem) *LinkageBuilder {
 // field (cardinality 1..1) is not set.
 func (b *LinkageBuilder) Build() (*Linkage, error) {
 	var missing []string
-	if len(b.resource.Item) == 0 {
+	if !b.fieldsSet["item"] {
 		missing = append(missing, "item")
 	}
 	if len(missing) > 0 {
@@ -152,6 +204,8 @@ func (b *LinkageBuilder) Build() (*Linkage, error) {
 type LinkageItem struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -160,4 +214,6 @@ type LinkageItem struct {
 	Resource dt.Reference `json:"resource"`
 	// Type Distinguishes which item is "source of truth" (if any) and which items are no longer considered to be current representations.
 	Type *LinkageItemType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }

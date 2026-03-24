@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type ResearchSubject struct {
 	ResourceType string `json:"resourceType"` // Always "ResearchSubject"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,10 +42,16 @@ type ResearchSubject struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The current state of the subject.
 	Status *ResearchSubjectStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// ActualArm The name of the arm in the study the subject actually followed as part of this study.
 	ActualArm *string `json:"actualArm,omitempty"`
+	// ActualArmElement contains element extensions for actualArm.
+	ActualArmElement *dt.Element `json:"_actualArm,omitempty"`
 	// AssignedArm The name of the arm in the study the subject is expected to follow as part of this study.
 	AssignedArm *string `json:"assignedArm,omitempty"`
+	// AssignedArmElement contains element extensions for assignedArm.
+	AssignedArmElement *dt.Element `json:"_assignedArm,omitempty"`
 	// Consent A record of the patient's informed agreement to participate in the study.
 	Consent *dt.Reference `json:"consent,omitempty"`
 	// Individual The record of the person or animal who is involved in the study.
@@ -47,13 +60,29 @@ type ResearchSubject struct {
 	Period *dt.Period `json:"period,omitempty"`
 	// Study Reference to the study the subject is participating in.
 	Study dt.Reference `json:"study"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for ResearchSubject.
 func (r ResearchSubject) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "ResearchSubject"
 	type Alias ResearchSubject
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ResearchSubject.
@@ -64,118 +93,161 @@ func (r *ResearchSubject) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ResearchSubject(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_actualArm", "_assignedArm", "_consent", "_contained", "_extension", "_id", "_identifier", "_implicitRules", "_individual", "_language", "_meta", "_modifierExtension", "_period", "_status", "_study", "_text", "actualArm", "assignedArm", "consent", "contained", "extension", "id", "identifier", "implicitRules", "individual", "language", "meta", "modifierExtension", "period", "resourceType", "status", "study", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ResearchSubjectBuilder provides a fluent API for constructing ResearchSubject resources.
 type ResearchSubjectBuilder struct {
-	resource ResearchSubject
+	resource  ResearchSubject
+	fieldsSet map[string]bool
 }
 
 // NewResearchSubject creates a new ResearchSubjectBuilder for building a ResearchSubject resource.
 func NewResearchSubject() *ResearchSubjectBuilder {
-	return &ResearchSubjectBuilder{resource: ResearchSubject{ResourceType: "ResearchSubject"}}
+	return &ResearchSubjectBuilder{resource: ResearchSubject{ResourceType: "ResearchSubject"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ResearchSubjectBuilder) WithId(v dt.ID) *ResearchSubjectBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ResearchSubjectBuilder) WithMeta(v dt.Meta) *ResearchSubjectBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ResearchSubjectBuilder) WithImplicitRules(v dt.URI) *ResearchSubjectBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ResearchSubjectBuilder) WithLanguage(v dt.Code) *ResearchSubjectBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ResearchSubjectBuilder) WithText(v dt.Narrative) *ResearchSubjectBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ResearchSubjectBuilder) WithContained(v json.RawMessage) *ResearchSubjectBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ResearchSubjectBuilder) WithExtension(v dt.Extension) *ResearchSubjectBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ResearchSubjectBuilder) WithModifierExtension(v dt.Extension) *ResearchSubjectBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ResearchSubjectBuilder) WithIdentifier(v dt.Identifier) *ResearchSubjectBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ResearchSubjectBuilder) WithStatus(v ResearchSubjectStatus) *ResearchSubjectBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithActualArm sets the actualArm field.
 func (b *ResearchSubjectBuilder) WithActualArm(v string) *ResearchSubjectBuilder {
 	b.resource.ActualArm = &v
+	b.fieldsSet["actualArm"] = true
 	return b
 }
 
 // WithAssignedArm sets the assignedArm field.
 func (b *ResearchSubjectBuilder) WithAssignedArm(v string) *ResearchSubjectBuilder {
 	b.resource.AssignedArm = &v
+	b.fieldsSet["assignedArm"] = true
 	return b
 }
 
 // WithConsent sets the consent field.
 func (b *ResearchSubjectBuilder) WithConsent(v dt.Reference) *ResearchSubjectBuilder {
 	b.resource.Consent = &v
+	b.fieldsSet["consent"] = true
 	return b
 }
 
 // WithIndividual sets the individual field.
 func (b *ResearchSubjectBuilder) WithIndividual(v dt.Reference) *ResearchSubjectBuilder {
 	b.resource.Individual = v
+	b.fieldsSet["individual"] = true
 	return b
 }
 
 // WithPeriod sets the period field.
 func (b *ResearchSubjectBuilder) WithPeriod(v dt.Period) *ResearchSubjectBuilder {
 	b.resource.Period = &v
+	b.fieldsSet["period"] = true
 	return b
 }
 
 // WithStudy sets the study field.
 func (b *ResearchSubjectBuilder) WithStudy(v dt.Reference) *ResearchSubjectBuilder {
 	b.resource.Study = v
+	b.fieldsSet["study"] = true
 	return b
 }
 
 // Build returns the constructed ResearchSubject. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *ResearchSubjectBuilder) Build() (*ResearchSubject, error) {
+	var missing []string
+	if !b.fieldsSet["individual"] {
+		missing = append(missing, "individual")
+	}
+	if !b.fieldsSet["study"] {
+		missing = append(missing, "study")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("ResearchSubject: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }

@@ -17,12 +17,18 @@ type Measure struct {
 	ResourceType string `json:"resourceType"` // Always "Measure"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,26 +41,42 @@ type Measure struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this measure. Enables tracking the life-cycle of the content.
 	Status *MeasureStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
+	// ApprovalDateElement contains element extensions for approvalDate.
+	ApprovalDateElement *dt.Element `json:"_approvalDate,omitempty"`
 	// Author An individiual or organization primarily involved in the creation and maintenance of the content.
 	Author []dt.ContactDetail `json:"author,omitempty"`
 	// ClinicalRecommendationStatement Provides a summary of relevant clinical guidelines or other clinical recommendations supporting the measure.
 	ClinicalRecommendationStatement *dt.Markdown `json:"clinicalRecommendationStatement,omitempty"`
+	// ClinicalRecommendationStatementElement contains element extensions for clinicalRecommendationStatement.
+	ClinicalRecommendationStatementElement *dt.Element `json:"_clinicalRecommendationStatement,omitempty"`
 	// CompositeScoring If this is a composite measure, the scoring method used to combine the component measures to determine the composite score.
 	CompositeScoring *dt.CodeableConcept `json:"compositeScoring,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the measure and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the measure.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date  (and optionally time) when the measure was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change w...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Definition Provides a description of an individual term used within the measure.
 	Definition []dt.Markdown `json:"definition,omitempty"`
+	// DefinitionElement contains element extensions for each definition.
+	DefinitionElement []dt.Element `json:"_definition,omitempty"`
 	// Description A free text natural language description of the measure from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Disclaimer Notices and disclaimers regarding the use of the measure or related to intellectual property (such as code systems) referenced by the measure.
 	Disclaimer *dt.Markdown `json:"disclaimer,omitempty"`
+	// DisclaimerElement contains element extensions for disclaimer.
+	DisclaimerElement *dt.Element `json:"_disclaimer,omitempty"`
 	// Editor An individual or organization primarily responsible for internal coherence of the content.
 	Editor []dt.ContactDetail `json:"editor,omitempty"`
 	// EffectivePeriod The period during which the measure content was or is planned to be in active use.
@@ -63,34 +85,54 @@ type Measure struct {
 	Endorser []dt.ContactDetail `json:"endorser,omitempty"`
 	// Experimental A Boolean value to indicate that this measure is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// Group A group of population criteria for the measure.
 	Group []MeasureGroup `json:"group,omitempty"`
 	// Guidance Additional guidance for the measure including how it can be used in a clinical context, and the intent of the measure.
 	Guidance *dt.Markdown `json:"guidance,omitempty"`
+	// GuidanceElement contains element extensions for guidance.
+	GuidanceElement *dt.Element `json:"_guidance,omitempty"`
 	// ImprovementNotation Information on whether an increase or decrease in score is the preferred result (e.g., a higher score indicates better quality OR a lower score indicates better quality OR quality is within a range).
 	ImprovementNotation *dt.CodeableConcept `json:"improvementNotation,omitempty"`
 	// Jurisdiction A legal or geographic region in which the measure is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// LastReviewDate The date on which the resource content was last reviewed. Review happens periodically after approval but does not change the original approval date.
 	LastReviewDate *dt.Date `json:"lastReviewDate,omitempty"`
+	// LastReviewDateElement contains element extensions for lastReviewDate.
+	LastReviewDateElement *dt.Element `json:"_lastReviewDate,omitempty"`
 	// Library A reference to a Library resource containing the formal logic used by the measure.
 	Library []dt.Canonical `json:"library,omitempty"`
+	// LibraryElement contains element extensions for each library.
+	LibraryElement []dt.Element `json:"_library,omitempty"`
 	// Name A natural language name identifying the measure. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Publisher The name of the organization or individual that published the measure.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Purpose Explanation of why this measure is needed and why it has been designed as it has.
 	Purpose *dt.Markdown `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for purpose.
+	PurposeElement *dt.Element `json:"_purpose,omitempty"`
 	// RateAggregation Describes how to combine the information calculated, based on logic in each of several populations, into one summarized result.
 	RateAggregation *string `json:"rateAggregation,omitempty"`
+	// RateAggregationElement contains element extensions for rateAggregation.
+	RateAggregationElement *dt.Element `json:"_rateAggregation,omitempty"`
 	// Rationale Provides a succinct statement of the need for the measure. Usually includes statements pertaining to importance criterion: impact, gap in care, and evidence.
 	Rationale *dt.Markdown `json:"rationale,omitempty"`
+	// RationaleElement contains element extensions for rationale.
+	RationaleElement *dt.Element `json:"_rationale,omitempty"`
 	// RelatedArtifact Related artifacts such as additional documentation, justification, or bibliographic references.
 	RelatedArtifact []dt.RelatedArtifact `json:"relatedArtifact,omitempty"`
 	// Reviewer An individual or organization primarily responsible for review of some aspect of the content.
 	Reviewer []dt.ContactDetail `json:"reviewer,omitempty"`
 	// RiskAdjustment A description of the risk adjustment factors that may impact the resulting score for the measure and how they may be accounted for when computing and reporting measure results.
 	RiskAdjustment *string `json:"riskAdjustment,omitempty"`
+	// RiskAdjustmentElement contains element extensions for riskAdjustment.
+	RiskAdjustmentElement *dt.Element `json:"_riskAdjustment,omitempty"`
 	// Scoring Indicates how the calculation is performed for the measure, including proportion, ratio, continuous-variable, and cohort. The value set is extensible, allowing additional measure scoring types to b...
 	Scoring *dt.CodeableConcept `json:"scoring,omitempty"`
 	// SubjectCodeableConcept The intended subjects for the measure. If this element is not provided, a Patient subject is assumed, but the subject of the measure can be anything.
@@ -99,29 +141,55 @@ type Measure struct {
 	SubjectReference *dt.Reference `json:"subjectReference,omitempty"`
 	// Subtitle An explanatory or alternate title for the measure giving additional information about its content.
 	Subtitle *string `json:"subtitle,omitempty"`
+	// SubtitleElement contains element extensions for subtitle.
+	SubtitleElement *dt.Element `json:"_subtitle,omitempty"`
 	// SupplementalData The supplemental data criteria for the measure report, specified as either the name of a valid CQL expression within a referenced library, or a valid FHIR Resource Path.
 	SupplementalData []MeasureSupplementalData `json:"supplementalData,omitempty"`
 	// Title A short, descriptive, user-friendly title for the measure.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Topic Descriptive topics related to the content of the measure. Topics provide a high-level categorization grouping types of measures that can be useful for filtering and searching.
 	Topic []dt.CodeableConcept `json:"topic,omitempty"`
 	// Type Indicates whether the measure is used to examine a process, an outcome over time, a patient-reported outcome, or a structure measure such as utilization.
 	Type []dt.CodeableConcept `json:"type,omitempty"`
 	// Url An absolute URI that is used to identify this measure when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique an...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// Usage A detailed description, from a clinical perspective, of how the measure is used.
 	Usage *string `json:"usage,omitempty"`
+	// UsageElement contains element extensions for usage.
+	UsageElement *dt.Element `json:"_usage,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the measure when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the measure author and...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Measure.
 func (r Measure) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Measure"
 	type Alias Measure
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Measure.
@@ -132,316 +200,383 @@ func (r *Measure) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Measure(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_approvalDate", "_author", "_clinicalRecommendationStatement", "_compositeScoring", "_contact", "_contained", "_copyright", "_date", "_definition", "_description", "_disclaimer", "_editor", "_effectivePeriod", "_endorser", "_experimental", "_extension", "_group", "_guidance", "_id", "_identifier", "_implicitRules", "_improvementNotation", "_jurisdiction", "_language", "_lastReviewDate", "_library", "_meta", "_modifierExtension", "_name", "_publisher", "_purpose", "_rateAggregation", "_rationale", "_relatedArtifact", "_reviewer", "_riskAdjustment", "_scoring", "_status", "_subjectCodeableConcept", "_subjectReference", "_subtitle", "_supplementalData", "_text", "_title", "_topic", "_type", "_url", "_usage", "_useContext", "_version", "approvalDate", "author", "clinicalRecommendationStatement", "compositeScoring", "contact", "contained", "copyright", "date", "definition", "description", "disclaimer", "editor", "effectivePeriod", "endorser", "experimental", "extension", "group", "guidance", "id", "identifier", "implicitRules", "improvementNotation", "jurisdiction", "language", "lastReviewDate", "library", "meta", "modifierExtension", "name", "publisher", "purpose", "rateAggregation", "rationale", "relatedArtifact", "resourceType", "reviewer", "riskAdjustment", "scoring", "status", "subjectCodeableConcept", "subjectReference", "subtitle", "supplementalData", "text", "title", "topic", "type", "url", "usage", "useContext", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // MeasureBuilder provides a fluent API for constructing Measure resources.
 type MeasureBuilder struct {
-	resource Measure
+	resource  Measure
+	fieldsSet map[string]bool
 }
 
 // NewMeasure creates a new MeasureBuilder for building a Measure resource.
 func NewMeasure() *MeasureBuilder {
-	return &MeasureBuilder{resource: Measure{ResourceType: "Measure"}}
+	return &MeasureBuilder{resource: Measure{ResourceType: "Measure"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *MeasureBuilder) WithId(v dt.ID) *MeasureBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *MeasureBuilder) WithMeta(v dt.Meta) *MeasureBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *MeasureBuilder) WithImplicitRules(v dt.URI) *MeasureBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *MeasureBuilder) WithLanguage(v dt.Code) *MeasureBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *MeasureBuilder) WithText(v dt.Narrative) *MeasureBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *MeasureBuilder) WithContained(v json.RawMessage) *MeasureBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *MeasureBuilder) WithExtension(v dt.Extension) *MeasureBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *MeasureBuilder) WithModifierExtension(v dt.Extension) *MeasureBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *MeasureBuilder) WithIdentifier(v dt.Identifier) *MeasureBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *MeasureBuilder) WithStatus(v MeasureStatus) *MeasureBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithApprovalDate sets the approvalDate field.
 func (b *MeasureBuilder) WithApprovalDate(v dt.Date) *MeasureBuilder {
 	b.resource.ApprovalDate = &v
+	b.fieldsSet["approvalDate"] = true
 	return b
 }
 
 // WithAuthor adds an item to the author field.
 func (b *MeasureBuilder) WithAuthor(v dt.ContactDetail) *MeasureBuilder {
 	b.resource.Author = append(b.resource.Author, v)
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithClinicalRecommendationStatement sets the clinicalRecommendationStatement field.
 func (b *MeasureBuilder) WithClinicalRecommendationStatement(v dt.Markdown) *MeasureBuilder {
 	b.resource.ClinicalRecommendationStatement = &v
+	b.fieldsSet["clinicalRecommendationStatement"] = true
 	return b
 }
 
 // WithCompositeScoring sets the compositeScoring field.
 func (b *MeasureBuilder) WithCompositeScoring(v dt.CodeableConcept) *MeasureBuilder {
 	b.resource.CompositeScoring = &v
+	b.fieldsSet["compositeScoring"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *MeasureBuilder) WithContact(v dt.ContactDetail) *MeasureBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *MeasureBuilder) WithCopyright(v dt.Markdown) *MeasureBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *MeasureBuilder) WithDate(v dt.DateTime) *MeasureBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDefinition adds an item to the definition field.
 func (b *MeasureBuilder) WithDefinition(v dt.Markdown) *MeasureBuilder {
 	b.resource.Definition = append(b.resource.Definition, v)
+	b.fieldsSet["definition"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *MeasureBuilder) WithDescription(v dt.Markdown) *MeasureBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithDisclaimer sets the disclaimer field.
 func (b *MeasureBuilder) WithDisclaimer(v dt.Markdown) *MeasureBuilder {
 	b.resource.Disclaimer = &v
+	b.fieldsSet["disclaimer"] = true
 	return b
 }
 
 // WithEditor adds an item to the editor field.
 func (b *MeasureBuilder) WithEditor(v dt.ContactDetail) *MeasureBuilder {
 	b.resource.Editor = append(b.resource.Editor, v)
+	b.fieldsSet["editor"] = true
 	return b
 }
 
 // WithEffectivePeriod sets the effectivePeriod field.
 func (b *MeasureBuilder) WithEffectivePeriod(v dt.Period) *MeasureBuilder {
 	b.resource.EffectivePeriod = &v
+	b.fieldsSet["effectivePeriod"] = true
 	return b
 }
 
 // WithEndorser adds an item to the endorser field.
 func (b *MeasureBuilder) WithEndorser(v dt.ContactDetail) *MeasureBuilder {
 	b.resource.Endorser = append(b.resource.Endorser, v)
+	b.fieldsSet["endorser"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *MeasureBuilder) WithExperimental(v bool) *MeasureBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithGroup adds an item to the group field.
 func (b *MeasureBuilder) WithGroup(v MeasureGroup) *MeasureBuilder {
 	b.resource.Group = append(b.resource.Group, v)
+	b.fieldsSet["group"] = true
 	return b
 }
 
 // WithGuidance sets the guidance field.
 func (b *MeasureBuilder) WithGuidance(v dt.Markdown) *MeasureBuilder {
 	b.resource.Guidance = &v
+	b.fieldsSet["guidance"] = true
 	return b
 }
 
 // WithImprovementNotation sets the improvementNotation field.
 func (b *MeasureBuilder) WithImprovementNotation(v dt.CodeableConcept) *MeasureBuilder {
 	b.resource.ImprovementNotation = &v
+	b.fieldsSet["improvementNotation"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *MeasureBuilder) WithJurisdiction(v dt.CodeableConcept) *MeasureBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithLastReviewDate sets the lastReviewDate field.
 func (b *MeasureBuilder) WithLastReviewDate(v dt.Date) *MeasureBuilder {
 	b.resource.LastReviewDate = &v
+	b.fieldsSet["lastReviewDate"] = true
 	return b
 }
 
 // WithLibrary adds an item to the library field.
 func (b *MeasureBuilder) WithLibrary(v dt.Canonical) *MeasureBuilder {
 	b.resource.Library = append(b.resource.Library, v)
+	b.fieldsSet["library"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *MeasureBuilder) WithName(v string) *MeasureBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *MeasureBuilder) WithPublisher(v string) *MeasureBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithPurpose sets the purpose field.
 func (b *MeasureBuilder) WithPurpose(v dt.Markdown) *MeasureBuilder {
 	b.resource.Purpose = &v
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
 // WithRateAggregation sets the rateAggregation field.
 func (b *MeasureBuilder) WithRateAggregation(v string) *MeasureBuilder {
 	b.resource.RateAggregation = &v
+	b.fieldsSet["rateAggregation"] = true
 	return b
 }
 
 // WithRationale sets the rationale field.
 func (b *MeasureBuilder) WithRationale(v dt.Markdown) *MeasureBuilder {
 	b.resource.Rationale = &v
+	b.fieldsSet["rationale"] = true
 	return b
 }
 
 // WithRelatedArtifact adds an item to the relatedArtifact field.
 func (b *MeasureBuilder) WithRelatedArtifact(v dt.RelatedArtifact) *MeasureBuilder {
 	b.resource.RelatedArtifact = append(b.resource.RelatedArtifact, v)
+	b.fieldsSet["relatedArtifact"] = true
 	return b
 }
 
 // WithReviewer adds an item to the reviewer field.
 func (b *MeasureBuilder) WithReviewer(v dt.ContactDetail) *MeasureBuilder {
 	b.resource.Reviewer = append(b.resource.Reviewer, v)
+	b.fieldsSet["reviewer"] = true
 	return b
 }
 
 // WithRiskAdjustment sets the riskAdjustment field.
 func (b *MeasureBuilder) WithRiskAdjustment(v string) *MeasureBuilder {
 	b.resource.RiskAdjustment = &v
+	b.fieldsSet["riskAdjustment"] = true
 	return b
 }
 
 // WithScoring sets the scoring field.
 func (b *MeasureBuilder) WithScoring(v dt.CodeableConcept) *MeasureBuilder {
 	b.resource.Scoring = &v
+	b.fieldsSet["scoring"] = true
 	return b
 }
 
 // WithSubjectCodeableConcept sets the subjectCodeableConcept field.
 func (b *MeasureBuilder) WithSubjectCodeableConcept(v dt.CodeableConcept) *MeasureBuilder {
 	b.resource.SubjectCodeableConcept = &v
+	b.fieldsSet["subjectCodeableConcept"] = true
 	return b
 }
 
 // WithSubjectReference sets the subjectReference field.
 func (b *MeasureBuilder) WithSubjectReference(v dt.Reference) *MeasureBuilder {
 	b.resource.SubjectReference = &v
+	b.fieldsSet["subjectReference"] = true
 	return b
 }
 
 // WithSubtitle sets the subtitle field.
 func (b *MeasureBuilder) WithSubtitle(v string) *MeasureBuilder {
 	b.resource.Subtitle = &v
+	b.fieldsSet["subtitle"] = true
 	return b
 }
 
 // WithSupplementalData adds an item to the supplementalData field.
 func (b *MeasureBuilder) WithSupplementalData(v MeasureSupplementalData) *MeasureBuilder {
 	b.resource.SupplementalData = append(b.resource.SupplementalData, v)
+	b.fieldsSet["supplementalData"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *MeasureBuilder) WithTitle(v string) *MeasureBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithTopic adds an item to the topic field.
 func (b *MeasureBuilder) WithTopic(v dt.CodeableConcept) *MeasureBuilder {
 	b.resource.Topic = append(b.resource.Topic, v)
+	b.fieldsSet["topic"] = true
 	return b
 }
 
 // WithType adds an item to the type field.
 func (b *MeasureBuilder) WithType(v dt.CodeableConcept) *MeasureBuilder {
 	b.resource.Type = append(b.resource.Type, v)
+	b.fieldsSet["type"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *MeasureBuilder) WithUrl(v dt.URI) *MeasureBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUsage sets the usage field.
 func (b *MeasureBuilder) WithUsage(v string) *MeasureBuilder {
 	b.resource.Usage = &v
+	b.fieldsSet["usage"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *MeasureBuilder) WithUseContext(v dt.UsageContext) *MeasureBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *MeasureBuilder) WithVersion(v string) *MeasureBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -456,6 +591,8 @@ func (b *MeasureBuilder) Build() (*Measure, error) {
 type MeasureComponent struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -466,12 +603,16 @@ type MeasureComponent struct {
 	Criteria dt.Expression `json:"criteria"`
 	// Description The human readable description of this stratifier criteria component.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 }
 
 // MeasureGroup The Measure resource provides the definition of a quality measure.
 type MeasureGroup struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -480,6 +621,8 @@ type MeasureGroup struct {
 	Code *dt.CodeableConcept `json:"code,omitempty"`
 	// Description The human readable description of this population group.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Population A population criteria for the measure.
 	Population []MeasurePopulation `json:"population,omitempty"`
 	// Stratifier The stratifier criteria for the measure report, specified as either the name of a valid CQL expression defined within a referenced library or a valid FHIR Resource Path.
@@ -490,6 +633,8 @@ type MeasureGroup struct {
 type MeasurePopulation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -500,12 +645,16 @@ type MeasurePopulation struct {
 	Criteria dt.Expression `json:"criteria"`
 	// Description The human readable description of this population criteria.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 }
 
 // MeasureStratifier The Measure resource provides the definition of a quality measure.
 type MeasureStratifier struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -518,12 +667,16 @@ type MeasureStratifier struct {
 	Criteria *dt.Expression `json:"criteria,omitempty"`
 	// Description The human readable description of this stratifier criteria.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 }
 
 // MeasureSupplementalData The Measure resource provides the definition of a quality measure.
 type MeasureSupplementalData struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -534,6 +687,8 @@ type MeasureSupplementalData struct {
 	Criteria dt.Expression `json:"criteria"`
 	// Description The human readable description of this supplemental data.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Usage An indicator of the intended usage for the supplemental data element. Supplemental data indicates the data is additional information requested to augment the measure information. Risk adjustment fa...
 	Usage []dt.CodeableConcept `json:"usage,omitempty"`
 }

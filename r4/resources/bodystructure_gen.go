@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type BodyStructure struct {
 	ResourceType string `json:"resourceType"` // Always "BodyStructure"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,8 +42,12 @@ type BodyStructure struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Active Whether this body site is in active use.
 	Active *bool `json:"active,omitempty"`
+	// ActiveElement contains element extensions for active.
+	ActiveElement *dt.Element `json:"_active,omitempty"`
 	// Description A summary, characterization or explanation of the body structure.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Image Image or images used to identify a location.
 	Image []dt.Attachment `json:"image,omitempty"`
 	// Location The anatomical location or region of the specimen, lesion, or body structure.
@@ -47,13 +58,29 @@ type BodyStructure struct {
 	Morphology *dt.CodeableConcept `json:"morphology,omitempty"`
 	// Patient The person to which the body site belongs.
 	Patient dt.Reference `json:"patient"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for BodyStructure.
 func (r BodyStructure) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "BodyStructure"
 	type Alias BodyStructure
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for BodyStructure.
@@ -64,118 +91,158 @@ func (r *BodyStructure) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = BodyStructure(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_active", "_contained", "_description", "_extension", "_id", "_identifier", "_image", "_implicitRules", "_language", "_location", "_locationQualifier", "_meta", "_modifierExtension", "_morphology", "_patient", "_text", "active", "contained", "description", "extension", "id", "identifier", "image", "implicitRules", "language", "location", "locationQualifier", "meta", "modifierExtension", "morphology", "patient", "resourceType", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // BodyStructureBuilder provides a fluent API for constructing BodyStructure resources.
 type BodyStructureBuilder struct {
-	resource BodyStructure
+	resource  BodyStructure
+	fieldsSet map[string]bool
 }
 
 // NewBodyStructure creates a new BodyStructureBuilder for building a BodyStructure resource.
 func NewBodyStructure() *BodyStructureBuilder {
-	return &BodyStructureBuilder{resource: BodyStructure{ResourceType: "BodyStructure"}}
+	return &BodyStructureBuilder{resource: BodyStructure{ResourceType: "BodyStructure"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *BodyStructureBuilder) WithId(v dt.ID) *BodyStructureBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *BodyStructureBuilder) WithMeta(v dt.Meta) *BodyStructureBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *BodyStructureBuilder) WithImplicitRules(v dt.URI) *BodyStructureBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *BodyStructureBuilder) WithLanguage(v dt.Code) *BodyStructureBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *BodyStructureBuilder) WithText(v dt.Narrative) *BodyStructureBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *BodyStructureBuilder) WithContained(v json.RawMessage) *BodyStructureBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *BodyStructureBuilder) WithExtension(v dt.Extension) *BodyStructureBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *BodyStructureBuilder) WithModifierExtension(v dt.Extension) *BodyStructureBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *BodyStructureBuilder) WithIdentifier(v dt.Identifier) *BodyStructureBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithActive sets the active field.
 func (b *BodyStructureBuilder) WithActive(v bool) *BodyStructureBuilder {
 	b.resource.Active = &v
+	b.fieldsSet["active"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *BodyStructureBuilder) WithDescription(v string) *BodyStructureBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithImage adds an item to the image field.
 func (b *BodyStructureBuilder) WithImage(v dt.Attachment) *BodyStructureBuilder {
 	b.resource.Image = append(b.resource.Image, v)
+	b.fieldsSet["image"] = true
 	return b
 }
 
 // WithLocation sets the location field.
 func (b *BodyStructureBuilder) WithLocation(v dt.CodeableConcept) *BodyStructureBuilder {
 	b.resource.Location = &v
+	b.fieldsSet["location"] = true
 	return b
 }
 
 // WithLocationQualifier adds an item to the locationQualifier field.
 func (b *BodyStructureBuilder) WithLocationQualifier(v dt.CodeableConcept) *BodyStructureBuilder {
 	b.resource.LocationQualifier = append(b.resource.LocationQualifier, v)
+	b.fieldsSet["locationQualifier"] = true
 	return b
 }
 
 // WithMorphology sets the morphology field.
 func (b *BodyStructureBuilder) WithMorphology(v dt.CodeableConcept) *BodyStructureBuilder {
 	b.resource.Morphology = &v
+	b.fieldsSet["morphology"] = true
 	return b
 }
 
 // WithPatient sets the patient field.
 func (b *BodyStructureBuilder) WithPatient(v dt.Reference) *BodyStructureBuilder {
 	b.resource.Patient = v
+	b.fieldsSet["patient"] = true
 	return b
 }
 
 // Build returns the constructed BodyStructure. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *BodyStructureBuilder) Build() (*BodyStructure, error) {
+	var missing []string
+	if !b.fieldsSet["patient"] {
+		missing = append(missing, "patient")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("BodyStructure: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }

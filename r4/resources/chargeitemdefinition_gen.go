@@ -17,12 +17,18 @@ type ChargeItemDefinition struct {
 	ResourceType string `json:"resourceType"` // Always "ChargeItemDefinition"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,55 +41,99 @@ type ChargeItemDefinition struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The current state of the ChargeItemDefinition.
 	Status *ChargeItemDefinitionStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Applicability Expressions that describe applicability criteria for the billing code.
 	Applicability []ChargeItemDefinitionApplicability `json:"applicability,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
+	// ApprovalDateElement contains element extensions for approvalDate.
+	ApprovalDateElement *dt.Element `json:"_approvalDate,omitempty"`
 	// Code The defined billing details in this resource pertain to the given billing code.
 	Code *dt.CodeableConcept `json:"code,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the charge item definition and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the charge item definition.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date  (and optionally time) when the charge item definition was published. The date must change when the business version changes and it must change if the status code changes. In addition, it ...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// DerivedFromUri The URL pointing to an externally-defined charge item definition that is adhered to in whole or in part by this definition.
 	DerivedFromUri []dt.URI `json:"derivedFromUri,omitempty"`
+	// DerivedFromUriElement contains element extensions for each derivedFromUri.
+	DerivedFromUriElement []dt.Element `json:"_derivedFromUri,omitempty"`
 	// Description A free text natural language description of the charge item definition from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// EffectivePeriod The period during which the charge item definition content was or is planned to be in active use.
 	EffectivePeriod *dt.Period `json:"effectivePeriod,omitempty"`
 	// Experimental A Boolean value to indicate that this charge item definition is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// Instance The defined billing details in this resource pertain to the given product instance(s).
 	Instance []dt.Reference `json:"instance,omitempty"`
 	// Jurisdiction A legal or geographic region in which the charge item definition is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// LastReviewDate The date on which the resource content was last reviewed. Review happens periodically after approval but does not change the original approval date.
 	LastReviewDate *dt.Date `json:"lastReviewDate,omitempty"`
+	// LastReviewDateElement contains element extensions for lastReviewDate.
+	LastReviewDateElement *dt.Element `json:"_lastReviewDate,omitempty"`
 	// PartOf A larger definition of which this particular definition is a component or step.
 	PartOf []dt.Canonical `json:"partOf,omitempty"`
+	// PartOfElement contains element extensions for each partOf.
+	PartOfElement []dt.Element `json:"_partOf,omitempty"`
 	// PropertyGroup Group of properties which are applicable under the same conditions. If no applicability rules are established for the group, then all properties always apply.
 	PropertyGroup []ChargeItemDefinitionPropertyGroup `json:"propertyGroup,omitempty"`
 	// Publisher The name of the organization or individual that published the charge item definition.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Replaces As new versions of a protocol or guideline are defined, allows identification of what versions are replaced by a new instance.
 	Replaces []dt.Canonical `json:"replaces,omitempty"`
+	// ReplacesElement contains element extensions for each replaces.
+	ReplacesElement []dt.Element `json:"_replaces,omitempty"`
 	// Title A short, descriptive, user-friendly title for the charge item definition.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Url An absolute URI that is used to identify this charge item definition when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be glo...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the charge item definition when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the cha...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for ChargeItemDefinition.
 func (r ChargeItemDefinition) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "ChargeItemDefinition"
 	type Alias ChargeItemDefinition
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ChargeItemDefinition.
@@ -94,202 +144,250 @@ func (r *ChargeItemDefinition) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ChargeItemDefinition(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_applicability", "_approvalDate", "_code", "_contact", "_contained", "_copyright", "_date", "_derivedFromUri", "_description", "_effectivePeriod", "_experimental", "_extension", "_id", "_identifier", "_implicitRules", "_instance", "_jurisdiction", "_language", "_lastReviewDate", "_meta", "_modifierExtension", "_partOf", "_propertyGroup", "_publisher", "_replaces", "_status", "_text", "_title", "_url", "_useContext", "_version", "applicability", "approvalDate", "code", "contact", "contained", "copyright", "date", "derivedFromUri", "description", "effectivePeriod", "experimental", "extension", "id", "identifier", "implicitRules", "instance", "jurisdiction", "language", "lastReviewDate", "meta", "modifierExtension", "partOf", "propertyGroup", "publisher", "replaces", "resourceType", "status", "text", "title", "url", "useContext", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ChargeItemDefinitionBuilder provides a fluent API for constructing ChargeItemDefinition resources.
 type ChargeItemDefinitionBuilder struct {
-	resource ChargeItemDefinition
+	resource  ChargeItemDefinition
+	fieldsSet map[string]bool
 }
 
 // NewChargeItemDefinition creates a new ChargeItemDefinitionBuilder for building a ChargeItemDefinition resource.
 func NewChargeItemDefinition() *ChargeItemDefinitionBuilder {
-	return &ChargeItemDefinitionBuilder{resource: ChargeItemDefinition{ResourceType: "ChargeItemDefinition"}}
+	return &ChargeItemDefinitionBuilder{resource: ChargeItemDefinition{ResourceType: "ChargeItemDefinition"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ChargeItemDefinitionBuilder) WithId(v dt.ID) *ChargeItemDefinitionBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ChargeItemDefinitionBuilder) WithMeta(v dt.Meta) *ChargeItemDefinitionBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ChargeItemDefinitionBuilder) WithImplicitRules(v dt.URI) *ChargeItemDefinitionBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ChargeItemDefinitionBuilder) WithLanguage(v dt.Code) *ChargeItemDefinitionBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ChargeItemDefinitionBuilder) WithText(v dt.Narrative) *ChargeItemDefinitionBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ChargeItemDefinitionBuilder) WithContained(v json.RawMessage) *ChargeItemDefinitionBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ChargeItemDefinitionBuilder) WithExtension(v dt.Extension) *ChargeItemDefinitionBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ChargeItemDefinitionBuilder) WithModifierExtension(v dt.Extension) *ChargeItemDefinitionBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ChargeItemDefinitionBuilder) WithIdentifier(v dt.Identifier) *ChargeItemDefinitionBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ChargeItemDefinitionBuilder) WithStatus(v ChargeItemDefinitionStatus) *ChargeItemDefinitionBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithApplicability adds an item to the applicability field.
 func (b *ChargeItemDefinitionBuilder) WithApplicability(v ChargeItemDefinitionApplicability) *ChargeItemDefinitionBuilder {
 	b.resource.Applicability = append(b.resource.Applicability, v)
+	b.fieldsSet["applicability"] = true
 	return b
 }
 
 // WithApprovalDate sets the approvalDate field.
 func (b *ChargeItemDefinitionBuilder) WithApprovalDate(v dt.Date) *ChargeItemDefinitionBuilder {
 	b.resource.ApprovalDate = &v
+	b.fieldsSet["approvalDate"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *ChargeItemDefinitionBuilder) WithCode(v dt.CodeableConcept) *ChargeItemDefinitionBuilder {
 	b.resource.Code = &v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *ChargeItemDefinitionBuilder) WithContact(v dt.ContactDetail) *ChargeItemDefinitionBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *ChargeItemDefinitionBuilder) WithCopyright(v dt.Markdown) *ChargeItemDefinitionBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *ChargeItemDefinitionBuilder) WithDate(v dt.DateTime) *ChargeItemDefinitionBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDerivedFromUri adds an item to the derivedFromUri field.
 func (b *ChargeItemDefinitionBuilder) WithDerivedFromUri(v dt.URI) *ChargeItemDefinitionBuilder {
 	b.resource.DerivedFromUri = append(b.resource.DerivedFromUri, v)
+	b.fieldsSet["derivedFromUri"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *ChargeItemDefinitionBuilder) WithDescription(v dt.Markdown) *ChargeItemDefinitionBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithEffectivePeriod sets the effectivePeriod field.
 func (b *ChargeItemDefinitionBuilder) WithEffectivePeriod(v dt.Period) *ChargeItemDefinitionBuilder {
 	b.resource.EffectivePeriod = &v
+	b.fieldsSet["effectivePeriod"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *ChargeItemDefinitionBuilder) WithExperimental(v bool) *ChargeItemDefinitionBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithInstance adds an item to the instance field.
 func (b *ChargeItemDefinitionBuilder) WithInstance(v dt.Reference) *ChargeItemDefinitionBuilder {
 	b.resource.Instance = append(b.resource.Instance, v)
+	b.fieldsSet["instance"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *ChargeItemDefinitionBuilder) WithJurisdiction(v dt.CodeableConcept) *ChargeItemDefinitionBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithLastReviewDate sets the lastReviewDate field.
 func (b *ChargeItemDefinitionBuilder) WithLastReviewDate(v dt.Date) *ChargeItemDefinitionBuilder {
 	b.resource.LastReviewDate = &v
+	b.fieldsSet["lastReviewDate"] = true
 	return b
 }
 
 // WithPartOf adds an item to the partOf field.
 func (b *ChargeItemDefinitionBuilder) WithPartOf(v dt.Canonical) *ChargeItemDefinitionBuilder {
 	b.resource.PartOf = append(b.resource.PartOf, v)
+	b.fieldsSet["partOf"] = true
 	return b
 }
 
 // WithPropertyGroup adds an item to the propertyGroup field.
 func (b *ChargeItemDefinitionBuilder) WithPropertyGroup(v ChargeItemDefinitionPropertyGroup) *ChargeItemDefinitionBuilder {
 	b.resource.PropertyGroup = append(b.resource.PropertyGroup, v)
+	b.fieldsSet["propertyGroup"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *ChargeItemDefinitionBuilder) WithPublisher(v string) *ChargeItemDefinitionBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithReplaces adds an item to the replaces field.
 func (b *ChargeItemDefinitionBuilder) WithReplaces(v dt.Canonical) *ChargeItemDefinitionBuilder {
 	b.resource.Replaces = append(b.resource.Replaces, v)
+	b.fieldsSet["replaces"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *ChargeItemDefinitionBuilder) WithTitle(v string) *ChargeItemDefinitionBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *ChargeItemDefinitionBuilder) WithUrl(v dt.URI) *ChargeItemDefinitionBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *ChargeItemDefinitionBuilder) WithUseContext(v dt.UsageContext) *ChargeItemDefinitionBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *ChargeItemDefinitionBuilder) WithVersion(v string) *ChargeItemDefinitionBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -304,22 +402,32 @@ func (b *ChargeItemDefinitionBuilder) Build() (*ChargeItemDefinition, error) {
 type ChargeItemDefinitionApplicability struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Language The media type of the language for the expression, e.g. "text/cql" for Clinical Query Language expressions or "text/fhirpath" for FHIRPath expressions.
 	Language *string `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description A brief, natural language description of the condition that effectively communicates the intended semantics.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Expression An expression that returns true or false, indicating whether the condition is satisfied. When using FHIRPath expressions, the %context environment variable must be replaced at runtime with the Char...
 	Expression *string `json:"expression,omitempty"`
+	// ExpressionElement contains element extensions for expression.
+	ExpressionElement *dt.Element `json:"_expression,omitempty"`
 }
 
 // ChargeItemDefinitionPriceComponent The ChargeItemDefinition resource provides the properties that apply to the (billing) codes necessary to calculate costs and prices. The properties may differ largely depending on type and realm, t...
 type ChargeItemDefinitionPriceComponent struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -330,14 +438,20 @@ type ChargeItemDefinitionPriceComponent struct {
 	Code *dt.CodeableConcept `json:"code,omitempty"`
 	// Factor The factor that has been applied on the base price for calculating this component.
 	Factor *float64 `json:"factor,omitempty"`
+	// FactorElement contains element extensions for factor.
+	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// Type This code identifies the type of the component.
 	Type *dt.Code `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }
 
 // ChargeItemDefinitionPropertyGroup The ChargeItemDefinition resource provides the properties that apply to the (billing) codes necessary to calculate costs and prices. The properties may differ largely depending on type and realm, t...
 type ChargeItemDefinitionPropertyGroup struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

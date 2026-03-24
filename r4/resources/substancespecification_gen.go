@@ -17,12 +17,18 @@ type SubstanceSpecification struct {
 	ResourceType string `json:"resourceType"` // Always "SubstanceSpecification"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -39,8 +45,12 @@ type SubstanceSpecification struct {
 	Code []SubstanceSpecificationCode `json:"code,omitempty"`
 	// Comment Textual comment about this record of a substance.
 	Comment *string `json:"comment,omitempty"`
+	// CommentElement contains element extensions for comment.
+	CommentElement *dt.Element `json:"_comment,omitempty"`
 	// Description Textual description of the substance.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Domain If the substance applies to only human or veterinary use.
 	Domain *dt.CodeableConcept `json:"domain,omitempty"`
 	// Moiety Moiety, for structural modifications.
@@ -69,13 +79,29 @@ type SubstanceSpecification struct {
 	Structure *SubstanceSpecificationStructure `json:"structure,omitempty"`
 	// Type High level categorization, e.g. polymer or nucleic acid.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for SubstanceSpecification.
 func (r SubstanceSpecification) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "SubstanceSpecification"
 	type Alias SubstanceSpecification
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for SubstanceSpecification.
@@ -86,178 +112,222 @@ func (r *SubstanceSpecification) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = SubstanceSpecification(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_code", "_comment", "_contained", "_description", "_domain", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_modifierExtension", "_moiety", "_molecularWeight", "_name", "_nucleicAcid", "_polymer", "_property", "_protein", "_referenceInformation", "_relationship", "_source", "_sourceMaterial", "_status", "_structure", "_text", "_type", "code", "comment", "contained", "description", "domain", "extension", "id", "identifier", "implicitRules", "language", "meta", "modifierExtension", "moiety", "molecularWeight", "name", "nucleicAcid", "polymer", "property", "protein", "referenceInformation", "relationship", "resourceType", "source", "sourceMaterial", "status", "structure", "text", "type":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // SubstanceSpecificationBuilder provides a fluent API for constructing SubstanceSpecification resources.
 type SubstanceSpecificationBuilder struct {
-	resource SubstanceSpecification
+	resource  SubstanceSpecification
+	fieldsSet map[string]bool
 }
 
 // NewSubstanceSpecification creates a new SubstanceSpecificationBuilder for building a SubstanceSpecification resource.
 func NewSubstanceSpecification() *SubstanceSpecificationBuilder {
-	return &SubstanceSpecificationBuilder{resource: SubstanceSpecification{ResourceType: "SubstanceSpecification"}}
+	return &SubstanceSpecificationBuilder{resource: SubstanceSpecification{ResourceType: "SubstanceSpecification"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *SubstanceSpecificationBuilder) WithId(v dt.ID) *SubstanceSpecificationBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *SubstanceSpecificationBuilder) WithMeta(v dt.Meta) *SubstanceSpecificationBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *SubstanceSpecificationBuilder) WithImplicitRules(v dt.URI) *SubstanceSpecificationBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *SubstanceSpecificationBuilder) WithLanguage(v dt.Code) *SubstanceSpecificationBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *SubstanceSpecificationBuilder) WithText(v dt.Narrative) *SubstanceSpecificationBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *SubstanceSpecificationBuilder) WithContained(v json.RawMessage) *SubstanceSpecificationBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *SubstanceSpecificationBuilder) WithExtension(v dt.Extension) *SubstanceSpecificationBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *SubstanceSpecificationBuilder) WithModifierExtension(v dt.Extension) *SubstanceSpecificationBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier sets the identifier field.
 func (b *SubstanceSpecificationBuilder) WithIdentifier(v dt.Identifier) *SubstanceSpecificationBuilder {
 	b.resource.Identifier = &v
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *SubstanceSpecificationBuilder) WithStatus(v dt.CodeableConcept) *SubstanceSpecificationBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithCode adds an item to the code field.
 func (b *SubstanceSpecificationBuilder) WithCode(v SubstanceSpecificationCode) *SubstanceSpecificationBuilder {
 	b.resource.Code = append(b.resource.Code, v)
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithComment sets the comment field.
 func (b *SubstanceSpecificationBuilder) WithComment(v string) *SubstanceSpecificationBuilder {
 	b.resource.Comment = &v
+	b.fieldsSet["comment"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *SubstanceSpecificationBuilder) WithDescription(v string) *SubstanceSpecificationBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithDomain sets the domain field.
 func (b *SubstanceSpecificationBuilder) WithDomain(v dt.CodeableConcept) *SubstanceSpecificationBuilder {
 	b.resource.Domain = &v
+	b.fieldsSet["domain"] = true
 	return b
 }
 
 // WithMoiety adds an item to the moiety field.
 func (b *SubstanceSpecificationBuilder) WithMoiety(v SubstanceSpecificationMoiety) *SubstanceSpecificationBuilder {
 	b.resource.Moiety = append(b.resource.Moiety, v)
+	b.fieldsSet["moiety"] = true
 	return b
 }
 
 // WithMolecularWeight adds an item to the molecularWeight field.
 func (b *SubstanceSpecificationBuilder) WithMolecularWeight(v SubstanceSpecificationMolecularWeight) *SubstanceSpecificationBuilder {
 	b.resource.MolecularWeight = append(b.resource.MolecularWeight, v)
+	b.fieldsSet["molecularWeight"] = true
 	return b
 }
 
 // WithName adds an item to the name field.
 func (b *SubstanceSpecificationBuilder) WithName(v SubstanceSpecificationName) *SubstanceSpecificationBuilder {
 	b.resource.Name = append(b.resource.Name, v)
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithNucleicAcid sets the nucleicAcid field.
 func (b *SubstanceSpecificationBuilder) WithNucleicAcid(v dt.Reference) *SubstanceSpecificationBuilder {
 	b.resource.NucleicAcid = &v
+	b.fieldsSet["nucleicAcid"] = true
 	return b
 }
 
 // WithPolymer sets the polymer field.
 func (b *SubstanceSpecificationBuilder) WithPolymer(v dt.Reference) *SubstanceSpecificationBuilder {
 	b.resource.Polymer = &v
+	b.fieldsSet["polymer"] = true
 	return b
 }
 
 // WithProperty adds an item to the property field.
 func (b *SubstanceSpecificationBuilder) WithProperty(v SubstanceSpecificationProperty) *SubstanceSpecificationBuilder {
 	b.resource.Property = append(b.resource.Property, v)
+	b.fieldsSet["property"] = true
 	return b
 }
 
 // WithProtein sets the protein field.
 func (b *SubstanceSpecificationBuilder) WithProtein(v dt.Reference) *SubstanceSpecificationBuilder {
 	b.resource.Protein = &v
+	b.fieldsSet["protein"] = true
 	return b
 }
 
 // WithReferenceInformation sets the referenceInformation field.
 func (b *SubstanceSpecificationBuilder) WithReferenceInformation(v dt.Reference) *SubstanceSpecificationBuilder {
 	b.resource.ReferenceInformation = &v
+	b.fieldsSet["referenceInformation"] = true
 	return b
 }
 
 // WithRelationship adds an item to the relationship field.
 func (b *SubstanceSpecificationBuilder) WithRelationship(v SubstanceSpecificationRelationship) *SubstanceSpecificationBuilder {
 	b.resource.Relationship = append(b.resource.Relationship, v)
+	b.fieldsSet["relationship"] = true
 	return b
 }
 
 // WithSource adds an item to the source field.
 func (b *SubstanceSpecificationBuilder) WithSource(v dt.Reference) *SubstanceSpecificationBuilder {
 	b.resource.Source = append(b.resource.Source, v)
+	b.fieldsSet["source"] = true
 	return b
 }
 
 // WithSourceMaterial sets the sourceMaterial field.
 func (b *SubstanceSpecificationBuilder) WithSourceMaterial(v dt.Reference) *SubstanceSpecificationBuilder {
 	b.resource.SourceMaterial = &v
+	b.fieldsSet["sourceMaterial"] = true
 	return b
 }
 
 // WithStructure sets the structure field.
 func (b *SubstanceSpecificationBuilder) WithStructure(v SubstanceSpecificationStructure) *SubstanceSpecificationBuilder {
 	b.resource.Structure = &v
+	b.fieldsSet["structure"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *SubstanceSpecificationBuilder) WithType(v dt.CodeableConcept) *SubstanceSpecificationBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
@@ -272,6 +342,8 @@ func (b *SubstanceSpecificationBuilder) Build() (*SubstanceSpecification, error)
 type SubstanceSpecificationCode struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -282,16 +354,22 @@ type SubstanceSpecificationCode struct {
 	Code *dt.CodeableConcept `json:"code,omitempty"`
 	// Comment Any comment can be provided in this field, if necessary.
 	Comment *string `json:"comment,omitempty"`
+	// CommentElement contains element extensions for comment.
+	CommentElement *dt.Element `json:"_comment,omitempty"`
 	// Source Supporting literature.
 	Source []dt.Reference `json:"source,omitempty"`
 	// StatusDate The date at which the code status is changed as part of the terminology maintenance.
 	StatusDate *dt.DateTime `json:"statusDate,omitempty"`
+	// StatusDateElement contains element extensions for statusDate.
+	StatusDateElement *dt.Element `json:"_statusDate,omitempty"`
 }
 
 // SubstanceSpecificationIsotope The detailed description of a substance, typically at a level beyond what is used for prescribing.
 type SubstanceSpecificationIsotope struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -312,6 +390,8 @@ type SubstanceSpecificationIsotope struct {
 type SubstanceSpecificationMoiety struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -322,10 +402,16 @@ type SubstanceSpecificationMoiety struct {
 	AmountQuantity *dt.Quantity `json:"amountQuantity,omitempty"`
 	// AmountString Quantitative value for this moiety.
 	AmountString *string `json:"amountString,omitempty"`
+	// AmountStringElement contains element extensions for amountString.
+	AmountStringElement *dt.Element `json:"_amountString,omitempty"`
 	// MolecularFormula Molecular formula.
 	MolecularFormula *string `json:"molecularFormula,omitempty"`
+	// MolecularFormulaElement contains element extensions for molecularFormula.
+	MolecularFormulaElement *dt.Element `json:"_molecularFormula,omitempty"`
 	// Name Textual name for this moiety substance.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// OpticalActivity Optical activity type.
 	OpticalActivity *dt.CodeableConcept `json:"opticalActivity,omitempty"`
 	// Role Role that the moiety is playing.
@@ -338,6 +424,8 @@ type SubstanceSpecificationMoiety struct {
 type SubstanceSpecificationMolecularWeight struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -354,6 +442,8 @@ type SubstanceSpecificationMolecularWeight struct {
 type SubstanceSpecificationName struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Language Language of the name.
 	Language []dt.CodeableConcept `json:"language,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
@@ -368,10 +458,14 @@ type SubstanceSpecificationName struct {
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Name The actual name.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Official Details of the official nature of this name.
 	Official []SubstanceSpecificationOfficial `json:"official,omitempty"`
 	// Preferred If this is the preferred name for this substance.
 	Preferred *bool `json:"preferred,omitempty"`
+	// PreferredElement contains element extensions for preferred.
+	PreferredElement *dt.Element `json:"_preferred,omitempty"`
 	// Source Supporting literature.
 	Source []dt.Reference `json:"source,omitempty"`
 	// Synonym A synonym of this name.
@@ -386,6 +480,8 @@ type SubstanceSpecificationName struct {
 type SubstanceSpecificationOfficial struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -396,12 +492,16 @@ type SubstanceSpecificationOfficial struct {
 	Authority *dt.CodeableConcept `json:"authority,omitempty"`
 	// Date Date of official name change.
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 }
 
 // SubstanceSpecificationProperty The detailed description of a substance, typically at a level beyond what is used for prescribing.
 type SubstanceSpecificationProperty struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -410,6 +510,8 @@ type SubstanceSpecificationProperty struct {
 	AmountQuantity *dt.Quantity `json:"amountQuantity,omitempty"`
 	// AmountString Quantitative value for this property.
 	AmountString *string `json:"amountString,omitempty"`
+	// AmountStringElement contains element extensions for amountString.
+	AmountStringElement *dt.Element `json:"_amountString,omitempty"`
 	// Category A category for this property, e.g. Physical, Chemical, Enzymatic.
 	Category *dt.CodeableConcept `json:"category,omitempty"`
 	// Code Property type e.g. viscosity, pH, isoelectric point.
@@ -420,12 +522,16 @@ type SubstanceSpecificationProperty struct {
 	DefiningSubstanceReference *dt.Reference `json:"definingSubstanceReference,omitempty"`
 	// Parameters Parameters that were used in the measurement of a property (e.g. for viscosity: measured at 20C with a pH of 7.1).
 	Parameters *string `json:"parameters,omitempty"`
+	// ParametersElement contains element extensions for parameters.
+	ParametersElement *dt.Element `json:"_parameters,omitempty"`
 }
 
 // SubstanceSpecificationRelationship The detailed description of a substance, typically at a level beyond what is used for prescribing.
 type SubstanceSpecificationRelationship struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -440,10 +546,14 @@ type SubstanceSpecificationRelationship struct {
 	AmountRatioLowLimit *dt.Ratio `json:"amountRatioLowLimit,omitempty"`
 	// AmountString A numeric factor for the relationship, for instance to express that the salt of a substance has some percentage of the active substance in relation to some other.
 	AmountString *string `json:"amountString,omitempty"`
+	// AmountStringElement contains element extensions for amountString.
+	AmountStringElement *dt.Element `json:"_amountString,omitempty"`
 	// AmountType An operator for the amount, for example "average", "approximately", "less than".
 	AmountType *dt.CodeableConcept `json:"amountType,omitempty"`
 	// IsDefining For example where an enzyme strongly bonds with a particular substance, this is a defining relationship for that enzyme, out of several possible substance relationships.
 	IsDefining *bool `json:"isDefining,omitempty"`
+	// IsDefiningElement contains element extensions for isDefining.
+	IsDefiningElement *dt.Element `json:"_isDefining,omitempty"`
 	// Relationship For example "salt to parent", "active moiety", "starting material".
 	Relationship *dt.CodeableConcept `json:"relationship,omitempty"`
 	// Source Supporting literature.
@@ -458,6 +568,8 @@ type SubstanceSpecificationRelationship struct {
 type SubstanceSpecificationRepresentation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -466,6 +578,8 @@ type SubstanceSpecificationRepresentation struct {
 	Attachment *dt.Attachment `json:"attachment,omitempty"`
 	// Representation The structural representation as text string in a format e.g. InChI, SMILES, MOLFILE, CDX.
 	Representation *string `json:"representation,omitempty"`
+	// RepresentationElement contains element extensions for representation.
+	RepresentationElement *dt.Element `json:"_representation,omitempty"`
 	// Type The type of structure (e.g. Full, Partial, Representative).
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 }
@@ -474,6 +588,8 @@ type SubstanceSpecificationRepresentation struct {
 type SubstanceSpecificationStructure struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -482,8 +598,12 @@ type SubstanceSpecificationStructure struct {
 	Isotope []SubstanceSpecificationIsotope `json:"isotope,omitempty"`
 	// MolecularFormula Molecular formula.
 	MolecularFormula *string `json:"molecularFormula,omitempty"`
+	// MolecularFormulaElement contains element extensions for molecularFormula.
+	MolecularFormulaElement *dt.Element `json:"_molecularFormula,omitempty"`
 	// MolecularFormulaByMoiety Specified per moiety according to the Hill system, i.e. first C, then H, then alphabetical, each moiety separated by a dot.
 	MolecularFormulaByMoiety *string `json:"molecularFormulaByMoiety,omitempty"`
+	// MolecularFormulaByMoietyElement contains element extensions for molecularFormulaByMoiety.
+	MolecularFormulaByMoietyElement *dt.Element `json:"_molecularFormulaByMoiety,omitempty"`
 	// MolecularWeight The molecular weight or weight range (for proteins, polymers or nucleic acids).
 	MolecularWeight *SubstanceSpecificationMolecularWeight `json:"molecularWeight,omitempty"`
 	// OpticalActivity Optical activity type.

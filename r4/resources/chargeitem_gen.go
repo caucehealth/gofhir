@@ -18,12 +18,18 @@ type ChargeItem struct {
 	ResourceType string `json:"resourceType"` // Always "ChargeItem"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type ChargeItem struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The current state of the ChargeItem.
 	Status *ChargeItemStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Account Account into which this ChargeItems belongs.
 	Account []dt.Reference `json:"account,omitempty"`
 	// Bodysite The anatomical location where the related service has been applied.
@@ -50,16 +58,22 @@ type ChargeItem struct {
 	Definition *ChargeItemDefinitionChoice `json:"-"` // polymorphic
 	// EnteredDate Date the charge item was entered.
 	EnteredDate *dt.DateTime `json:"enteredDate,omitempty"`
+	// EnteredDateElement contains element extensions for enteredDate.
+	EnteredDateElement *dt.Element `json:"_enteredDate,omitempty"`
 	// Enterer The device, practitioner, etc. who entered the charge item.
 	Enterer *dt.Reference `json:"enterer,omitempty"`
 	// FactorOverride Factor overriding the factor determined by the rules associated with the code.
 	FactorOverride *float64 `json:"factorOverride,omitempty"`
+	// FactorOverrideElement contains element extensions for factorOverride.
+	FactorOverrideElement *dt.Element `json:"_factorOverride,omitempty"`
 	// Note Comments made about the event by the performer, subject or other participants.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// Occurrence Date/time(s) or duration when the charged service was applied.
 	Occurrence *ChargeItemOccurrence `json:"-"` // polymorphic
 	// OverrideReason If the list price or the rule-based factor associated with the code is overridden, this attribute can capture a text to indicate the  reason for this action.
 	OverrideReason *string `json:"overrideReason,omitempty"`
+	// OverrideReasonElement contains element extensions for overrideReason.
+	OverrideReasonElement *dt.Element `json:"_overrideReason,omitempty"`
 	// PartOf ChargeItems can be grouped to larger ChargeItems covering the whole set.
 	PartOf []dt.Reference `json:"partOf,omitempty"`
 	// Performer Indicates who or what performed or participated in the charged service.
@@ -82,6 +96,8 @@ type ChargeItem struct {
 	Subject dt.Reference `json:"subject"`
 	// SupportingInformation Further information supporting this charge.
 	SupportingInformation []dt.Reference `json:"supportingInformation,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for ChargeItem.
@@ -92,7 +108,6 @@ func (r ChargeItem) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -136,6 +151,9 @@ func (r ChargeItem) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
 	return json.Marshal(m)
 }
 
@@ -169,106 +187,138 @@ func (r *ChargeItem) UnmarshalJSON(data []byte) error {
 	if productVal.CodeableConcept != nil || productVal.Reference != nil {
 		r.Product = &productVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_account", "_bodysite", "_code", "_contained", "_context", "_costCenter", "_definitionCanonical", "_definitionUri", "_enteredDate", "_enterer", "_extension", "_factorOverride", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_modifierExtension", "_note", "_occurrenceDateTime", "_occurrencePeriod", "_occurrenceTiming", "_overrideReason", "_partOf", "_performer", "_performingOrganization", "_priceOverride", "_productCodeableConcept", "_productReference", "_quantity", "_reason", "_requestingOrganization", "_service", "_status", "_subject", "_supportingInformation", "_text", "account", "bodysite", "code", "contained", "context", "costCenter", "definitionCanonical", "definitionUri", "enteredDate", "enterer", "extension", "factorOverride", "id", "identifier", "implicitRules", "language", "meta", "modifierExtension", "note", "occurrenceDateTime", "occurrencePeriod", "occurrenceTiming", "overrideReason", "partOf", "performer", "performingOrganization", "priceOverride", "productCodeableConcept", "productReference", "quantity", "reason", "requestingOrganization", "resourceType", "service", "status", "subject", "supportingInformation", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ChargeItemBuilder provides a fluent API for constructing ChargeItem resources.
 type ChargeItemBuilder struct {
-	resource ChargeItem
+	resource  ChargeItem
+	fieldsSet map[string]bool
 }
 
 // NewChargeItem creates a new ChargeItemBuilder for building a ChargeItem resource.
 func NewChargeItem() *ChargeItemBuilder {
-	return &ChargeItemBuilder{resource: ChargeItem{ResourceType: "ChargeItem"}}
+	return &ChargeItemBuilder{resource: ChargeItem{ResourceType: "ChargeItem"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ChargeItemBuilder) WithId(v dt.ID) *ChargeItemBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ChargeItemBuilder) WithMeta(v dt.Meta) *ChargeItemBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ChargeItemBuilder) WithImplicitRules(v dt.URI) *ChargeItemBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ChargeItemBuilder) WithLanguage(v dt.Code) *ChargeItemBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ChargeItemBuilder) WithText(v dt.Narrative) *ChargeItemBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ChargeItemBuilder) WithContained(v json.RawMessage) *ChargeItemBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ChargeItemBuilder) WithExtension(v dt.Extension) *ChargeItemBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ChargeItemBuilder) WithModifierExtension(v dt.Extension) *ChargeItemBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ChargeItemBuilder) WithIdentifier(v dt.Identifier) *ChargeItemBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ChargeItemBuilder) WithStatus(v ChargeItemStatus) *ChargeItemBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAccount adds an item to the account field.
 func (b *ChargeItemBuilder) WithAccount(v dt.Reference) *ChargeItemBuilder {
 	b.resource.Account = append(b.resource.Account, v)
+	b.fieldsSet["account"] = true
 	return b
 }
 
 // WithBodysite adds an item to the bodysite field.
 func (b *ChargeItemBuilder) WithBodysite(v dt.CodeableConcept) *ChargeItemBuilder {
 	b.resource.Bodysite = append(b.resource.Bodysite, v)
+	b.fieldsSet["bodysite"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *ChargeItemBuilder) WithCode(v dt.CodeableConcept) *ChargeItemBuilder {
 	b.resource.Code = v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithContext sets the context field.
 func (b *ChargeItemBuilder) WithContext(v dt.Reference) *ChargeItemBuilder {
 	b.resource.Context = &v
+	b.fieldsSet["context"] = true
 	return b
 }
 
 // WithCostCenter sets the costCenter field.
 func (b *ChargeItemBuilder) WithCostCenter(v dt.Reference) *ChargeItemBuilder {
 	b.resource.CostCenter = &v
+	b.fieldsSet["costCenter"] = true
 	return b
 }
 
@@ -278,6 +328,7 @@ func (b *ChargeItemBuilder) WithDefinitionCanonical(v []dt.Canonical) *ChargeIte
 		b.resource.Definition = &ChargeItemDefinitionChoice{}
 	}
 	b.resource.Definition.Canonical = v
+	b.fieldsSet["definition"] = true
 	return b
 }
 
@@ -287,30 +338,35 @@ func (b *ChargeItemBuilder) WithDefinitionUri(v []dt.URI) *ChargeItemBuilder {
 		b.resource.Definition = &ChargeItemDefinitionChoice{}
 	}
 	b.resource.Definition.Uri = v
+	b.fieldsSet["definition"] = true
 	return b
 }
 
 // WithEnteredDate sets the enteredDate field.
 func (b *ChargeItemBuilder) WithEnteredDate(v dt.DateTime) *ChargeItemBuilder {
 	b.resource.EnteredDate = &v
+	b.fieldsSet["enteredDate"] = true
 	return b
 }
 
 // WithEnterer sets the enterer field.
 func (b *ChargeItemBuilder) WithEnterer(v dt.Reference) *ChargeItemBuilder {
 	b.resource.Enterer = &v
+	b.fieldsSet["enterer"] = true
 	return b
 }
 
 // WithFactorOverride sets the factorOverride field.
 func (b *ChargeItemBuilder) WithFactorOverride(v float64) *ChargeItemBuilder {
 	b.resource.FactorOverride = &v
+	b.fieldsSet["factorOverride"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *ChargeItemBuilder) WithNote(v dt.Annotation) *ChargeItemBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
@@ -320,6 +376,7 @@ func (b *ChargeItemBuilder) WithOccurrenceDateTime(v string) *ChargeItemBuilder 
 		b.resource.Occurrence = &ChargeItemOccurrence{}
 	}
 	b.resource.Occurrence.DateTime = &v
+	b.fieldsSet["occurrence"] = true
 	return b
 }
 
@@ -329,6 +386,7 @@ func (b *ChargeItemBuilder) WithOccurrencePeriod(v dt.Period) *ChargeItemBuilder
 		b.resource.Occurrence = &ChargeItemOccurrence{}
 	}
 	b.resource.Occurrence.Period = &v
+	b.fieldsSet["occurrence"] = true
 	return b
 }
 
@@ -338,36 +396,42 @@ func (b *ChargeItemBuilder) WithOccurrenceTiming(v dt.Timing) *ChargeItemBuilder
 		b.resource.Occurrence = &ChargeItemOccurrence{}
 	}
 	b.resource.Occurrence.Timing = &v
+	b.fieldsSet["occurrence"] = true
 	return b
 }
 
 // WithOverrideReason sets the overrideReason field.
 func (b *ChargeItemBuilder) WithOverrideReason(v string) *ChargeItemBuilder {
 	b.resource.OverrideReason = &v
+	b.fieldsSet["overrideReason"] = true
 	return b
 }
 
 // WithPartOf adds an item to the partOf field.
 func (b *ChargeItemBuilder) WithPartOf(v dt.Reference) *ChargeItemBuilder {
 	b.resource.PartOf = append(b.resource.PartOf, v)
+	b.fieldsSet["partOf"] = true
 	return b
 }
 
 // WithPerformer adds an item to the performer field.
 func (b *ChargeItemBuilder) WithPerformer(v ChargeItemPerformer) *ChargeItemBuilder {
 	b.resource.Performer = append(b.resource.Performer, v)
+	b.fieldsSet["performer"] = true
 	return b
 }
 
 // WithPerformingOrganization sets the performingOrganization field.
 func (b *ChargeItemBuilder) WithPerformingOrganization(v dt.Reference) *ChargeItemBuilder {
 	b.resource.PerformingOrganization = &v
+	b.fieldsSet["performingOrganization"] = true
 	return b
 }
 
 // WithPriceOverride sets the priceOverride field.
 func (b *ChargeItemBuilder) WithPriceOverride(v dt.Money) *ChargeItemBuilder {
 	b.resource.PriceOverride = &v
+	b.fieldsSet["priceOverride"] = true
 	return b
 }
 
@@ -377,6 +441,7 @@ func (b *ChargeItemBuilder) WithProductCodeableConcept(v dt.CodeableConcept) *Ch
 		b.resource.Product = &ChargeItemProduct{}
 	}
 	b.resource.Product.CodeableConcept = &v
+	b.fieldsSet["product"] = true
 	return b
 }
 
@@ -386,48 +451,65 @@ func (b *ChargeItemBuilder) WithProductReference(v dt.Reference) *ChargeItemBuil
 		b.resource.Product = &ChargeItemProduct{}
 	}
 	b.resource.Product.Reference = &v
+	b.fieldsSet["product"] = true
 	return b
 }
 
 // WithQuantity sets the quantity field.
 func (b *ChargeItemBuilder) WithQuantity(v dt.Quantity) *ChargeItemBuilder {
 	b.resource.Quantity = &v
+	b.fieldsSet["quantity"] = true
 	return b
 }
 
 // WithReason adds an item to the reason field.
 func (b *ChargeItemBuilder) WithReason(v dt.CodeableConcept) *ChargeItemBuilder {
 	b.resource.Reason = append(b.resource.Reason, v)
+	b.fieldsSet["reason"] = true
 	return b
 }
 
 // WithRequestingOrganization sets the requestingOrganization field.
 func (b *ChargeItemBuilder) WithRequestingOrganization(v dt.Reference) *ChargeItemBuilder {
 	b.resource.RequestingOrganization = &v
+	b.fieldsSet["requestingOrganization"] = true
 	return b
 }
 
 // WithService adds an item to the service field.
 func (b *ChargeItemBuilder) WithService(v dt.Reference) *ChargeItemBuilder {
 	b.resource.Service = append(b.resource.Service, v)
+	b.fieldsSet["service"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *ChargeItemBuilder) WithSubject(v dt.Reference) *ChargeItemBuilder {
 	b.resource.Subject = v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithSupportingInformation adds an item to the supportingInformation field.
 func (b *ChargeItemBuilder) WithSupportingInformation(v dt.Reference) *ChargeItemBuilder {
 	b.resource.SupportingInformation = append(b.resource.SupportingInformation, v)
+	b.fieldsSet["supportingInformation"] = true
 	return b
 }
 
 // Build returns the constructed ChargeItem. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *ChargeItemBuilder) Build() (*ChargeItem, error) {
+	var missing []string
+	if !b.fieldsSet["code"] {
+		missing = append(missing, "code")
+	}
+	if !b.fieldsSet["subject"] {
+		missing = append(missing, "subject")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("ChargeItem: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -436,6 +518,8 @@ func (b *ChargeItemBuilder) Build() (*ChargeItem, error) {
 type ChargeItemPerformer struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -444,6 +528,47 @@ type ChargeItemPerformer struct {
 	Actor dt.Reference `json:"actor"`
 	// Function Describes the type of performance or participation(e.g. primary surgeon, anesthesiologiest, etc.).
 	Function *dt.CodeableConcept `json:"function,omitempty"`
+}
+
+// ChargeItemDefinitionChoice represents a polymorphic choice type in FHIR.
+type ChargeItemDefinitionChoice struct {
+	Canonical []dt.Canonical `json:"definitionCanonical,omitempty"` // References the source of pricing information, rules of application for the code this ChargeItem uses.
+	Uri       []dt.URI       `json:"definitionUri,omitempty"`       // References the (external) source of pricing information, rules of application for the code this ChargeItem uses.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ChargeItemDefinitionChoice.
+func (v ChargeItemDefinitionChoice) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Canonical != nil {
+		m["definitionCanonical"] = v.Canonical
+	}
+	if v.Uri != nil {
+		m["definitionUri"] = v.Uri
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ChargeItemDefinitionChoice.
+func (v *ChargeItemDefinitionChoice) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["definitionCanonical"]; ok {
+		var val []dt.Canonical
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling definitionCanonical: %w", err)
+		}
+		v.Canonical = val
+	}
+	if d, ok := raw["definitionUri"]; ok {
+		var val []dt.URI
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling definitionUri: %w", err)
+		}
+		v.Uri = val
+	}
+	return nil
 }
 
 // ChargeItemOccurrence represents a polymorphic choice type in FHIR.
@@ -535,47 +660,6 @@ func (v *ChargeItemProduct) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling productReference: %w", err)
 		}
 		v.Reference = &val
-	}
-	return nil
-}
-
-// ChargeItemDefinitionChoice represents a polymorphic choice type in FHIR.
-type ChargeItemDefinitionChoice struct {
-	Canonical []dt.Canonical `json:"definitionCanonical,omitempty"` // References the source of pricing information, rules of application for the code this ChargeItem uses.
-	Uri       []dt.URI       `json:"definitionUri,omitempty"`       // References the (external) source of pricing information, rules of application for the code this ChargeItem uses.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ChargeItemDefinitionChoice.
-func (v ChargeItemDefinitionChoice) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Canonical != nil {
-		m["definitionCanonical"] = v.Canonical
-	}
-	if v.Uri != nil {
-		m["definitionUri"] = v.Uri
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ChargeItemDefinitionChoice.
-func (v *ChargeItemDefinitionChoice) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["definitionCanonical"]; ok {
-		var val []dt.Canonical
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling definitionCanonical: %w", err)
-		}
-		v.Canonical = val
-	}
-	if d, ok := raw["definitionUri"]; ok {
-		var val []dt.URI
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling definitionUri: %w", err)
-		}
-		v.Uri = val
 	}
 	return nil
 }

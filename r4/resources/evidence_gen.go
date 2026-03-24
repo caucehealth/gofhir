@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type Evidence struct {
 	ResourceType string `json:"resourceType"` // Always "Evidence"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,18 +42,28 @@ type Evidence struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this evidence. Enables tracking the life-cycle of the content.
 	Status *EvidenceStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
+	// ApprovalDateElement contains element extensions for approvalDate.
+	ApprovalDateElement *dt.Element `json:"_approvalDate,omitempty"`
 	// Author An individiual or organization primarily involved in the creation and maintenance of the content.
 	Author []dt.ContactDetail `json:"author,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the evidence and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the evidence.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date  (and optionally time) when the evidence was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change ...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description A free text natural language description of the evidence from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Editor An individual or organization primarily responsible for internal coherence of the content.
 	Editor []dt.ContactDetail `json:"editor,omitempty"`
 	// EffectivePeriod The period during which the evidence content was or is planned to be in active use.
@@ -61,39 +78,71 @@ type Evidence struct {
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// LastReviewDate The date on which the resource content was last reviewed. Review happens periodically after approval but does not change the original approval date.
 	LastReviewDate *dt.Date `json:"lastReviewDate,omitempty"`
+	// LastReviewDateElement contains element extensions for lastReviewDate.
+	LastReviewDateElement *dt.Element `json:"_lastReviewDate,omitempty"`
 	// Name A natural language name identifying the evidence. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Note A human-readable string to clarify or explain concepts about the resource.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// Outcome A reference to a EvidenceVariable resomece that defines the outcome for the research.
 	Outcome []dt.Reference `json:"outcome,omitempty"`
 	// Publisher The name of the organization or individual that published the evidence.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// RelatedArtifact Related artifacts such as additional documentation, justification, or bibliographic references.
 	RelatedArtifact []dt.RelatedArtifact `json:"relatedArtifact,omitempty"`
 	// Reviewer An individual or organization primarily responsible for review of some aspect of the content.
 	Reviewer []dt.ContactDetail `json:"reviewer,omitempty"`
 	// ShortTitle The short title provides an alternate title for use in informal descriptive contexts where the full, formal title is not necessary.
 	ShortTitle *string `json:"shortTitle,omitempty"`
+	// ShortTitleElement contains element extensions for shortTitle.
+	ShortTitleElement *dt.Element `json:"_shortTitle,omitempty"`
 	// Subtitle An explanatory or alternate title for the Evidence giving additional information about its content.
 	Subtitle *string `json:"subtitle,omitempty"`
+	// SubtitleElement contains element extensions for subtitle.
+	SubtitleElement *dt.Element `json:"_subtitle,omitempty"`
 	// Title A short, descriptive, user-friendly title for the evidence.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Topic Descriptive topics related to the content of the Evidence. Topics provide a high-level categorization grouping types of Evidences that can be useful for filtering and searching.
 	Topic []dt.CodeableConcept `json:"topic,omitempty"`
 	// Url An absolute URI that is used to identify this evidence when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique a...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the evidence when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the evidence author a...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Evidence.
 func (r Evidence) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Evidence"
 	type Alias Evidence
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Evidence.
@@ -104,238 +153,298 @@ func (r *Evidence) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Evidence(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_approvalDate", "_author", "_contact", "_contained", "_copyright", "_date", "_description", "_editor", "_effectivePeriod", "_endorser", "_exposureBackground", "_exposureVariant", "_extension", "_id", "_identifier", "_implicitRules", "_jurisdiction", "_language", "_lastReviewDate", "_meta", "_modifierExtension", "_name", "_note", "_outcome", "_publisher", "_relatedArtifact", "_reviewer", "_shortTitle", "_status", "_subtitle", "_text", "_title", "_topic", "_url", "_useContext", "_version", "approvalDate", "author", "contact", "contained", "copyright", "date", "description", "editor", "effectivePeriod", "endorser", "exposureBackground", "exposureVariant", "extension", "id", "identifier", "implicitRules", "jurisdiction", "language", "lastReviewDate", "meta", "modifierExtension", "name", "note", "outcome", "publisher", "relatedArtifact", "resourceType", "reviewer", "shortTitle", "status", "subtitle", "text", "title", "topic", "url", "useContext", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // EvidenceBuilder provides a fluent API for constructing Evidence resources.
 type EvidenceBuilder struct {
-	resource Evidence
+	resource  Evidence
+	fieldsSet map[string]bool
 }
 
 // NewEvidence creates a new EvidenceBuilder for building a Evidence resource.
 func NewEvidence() *EvidenceBuilder {
-	return &EvidenceBuilder{resource: Evidence{ResourceType: "Evidence"}}
+	return &EvidenceBuilder{resource: Evidence{ResourceType: "Evidence"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *EvidenceBuilder) WithId(v dt.ID) *EvidenceBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *EvidenceBuilder) WithMeta(v dt.Meta) *EvidenceBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *EvidenceBuilder) WithImplicitRules(v dt.URI) *EvidenceBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *EvidenceBuilder) WithLanguage(v dt.Code) *EvidenceBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *EvidenceBuilder) WithText(v dt.Narrative) *EvidenceBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *EvidenceBuilder) WithContained(v json.RawMessage) *EvidenceBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *EvidenceBuilder) WithExtension(v dt.Extension) *EvidenceBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *EvidenceBuilder) WithModifierExtension(v dt.Extension) *EvidenceBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *EvidenceBuilder) WithIdentifier(v dt.Identifier) *EvidenceBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *EvidenceBuilder) WithStatus(v EvidenceStatus) *EvidenceBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithApprovalDate sets the approvalDate field.
 func (b *EvidenceBuilder) WithApprovalDate(v dt.Date) *EvidenceBuilder {
 	b.resource.ApprovalDate = &v
+	b.fieldsSet["approvalDate"] = true
 	return b
 }
 
 // WithAuthor adds an item to the author field.
 func (b *EvidenceBuilder) WithAuthor(v dt.ContactDetail) *EvidenceBuilder {
 	b.resource.Author = append(b.resource.Author, v)
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *EvidenceBuilder) WithContact(v dt.ContactDetail) *EvidenceBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *EvidenceBuilder) WithCopyright(v dt.Markdown) *EvidenceBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *EvidenceBuilder) WithDate(v dt.DateTime) *EvidenceBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *EvidenceBuilder) WithDescription(v dt.Markdown) *EvidenceBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithEditor adds an item to the editor field.
 func (b *EvidenceBuilder) WithEditor(v dt.ContactDetail) *EvidenceBuilder {
 	b.resource.Editor = append(b.resource.Editor, v)
+	b.fieldsSet["editor"] = true
 	return b
 }
 
 // WithEffectivePeriod sets the effectivePeriod field.
 func (b *EvidenceBuilder) WithEffectivePeriod(v dt.Period) *EvidenceBuilder {
 	b.resource.EffectivePeriod = &v
+	b.fieldsSet["effectivePeriod"] = true
 	return b
 }
 
 // WithEndorser adds an item to the endorser field.
 func (b *EvidenceBuilder) WithEndorser(v dt.ContactDetail) *EvidenceBuilder {
 	b.resource.Endorser = append(b.resource.Endorser, v)
+	b.fieldsSet["endorser"] = true
 	return b
 }
 
 // WithExposureBackground sets the exposureBackground field.
 func (b *EvidenceBuilder) WithExposureBackground(v dt.Reference) *EvidenceBuilder {
 	b.resource.ExposureBackground = v
+	b.fieldsSet["exposureBackground"] = true
 	return b
 }
 
 // WithExposureVariant adds an item to the exposureVariant field.
 func (b *EvidenceBuilder) WithExposureVariant(v dt.Reference) *EvidenceBuilder {
 	b.resource.ExposureVariant = append(b.resource.ExposureVariant, v)
+	b.fieldsSet["exposureVariant"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *EvidenceBuilder) WithJurisdiction(v dt.CodeableConcept) *EvidenceBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithLastReviewDate sets the lastReviewDate field.
 func (b *EvidenceBuilder) WithLastReviewDate(v dt.Date) *EvidenceBuilder {
 	b.resource.LastReviewDate = &v
+	b.fieldsSet["lastReviewDate"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *EvidenceBuilder) WithName(v string) *EvidenceBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *EvidenceBuilder) WithNote(v dt.Annotation) *EvidenceBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithOutcome adds an item to the outcome field.
 func (b *EvidenceBuilder) WithOutcome(v dt.Reference) *EvidenceBuilder {
 	b.resource.Outcome = append(b.resource.Outcome, v)
+	b.fieldsSet["outcome"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *EvidenceBuilder) WithPublisher(v string) *EvidenceBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithRelatedArtifact adds an item to the relatedArtifact field.
 func (b *EvidenceBuilder) WithRelatedArtifact(v dt.RelatedArtifact) *EvidenceBuilder {
 	b.resource.RelatedArtifact = append(b.resource.RelatedArtifact, v)
+	b.fieldsSet["relatedArtifact"] = true
 	return b
 }
 
 // WithReviewer adds an item to the reviewer field.
 func (b *EvidenceBuilder) WithReviewer(v dt.ContactDetail) *EvidenceBuilder {
 	b.resource.Reviewer = append(b.resource.Reviewer, v)
+	b.fieldsSet["reviewer"] = true
 	return b
 }
 
 // WithShortTitle sets the shortTitle field.
 func (b *EvidenceBuilder) WithShortTitle(v string) *EvidenceBuilder {
 	b.resource.ShortTitle = &v
+	b.fieldsSet["shortTitle"] = true
 	return b
 }
 
 // WithSubtitle sets the subtitle field.
 func (b *EvidenceBuilder) WithSubtitle(v string) *EvidenceBuilder {
 	b.resource.Subtitle = &v
+	b.fieldsSet["subtitle"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *EvidenceBuilder) WithTitle(v string) *EvidenceBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithTopic adds an item to the topic field.
 func (b *EvidenceBuilder) WithTopic(v dt.CodeableConcept) *EvidenceBuilder {
 	b.resource.Topic = append(b.resource.Topic, v)
+	b.fieldsSet["topic"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *EvidenceBuilder) WithUrl(v dt.URI) *EvidenceBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *EvidenceBuilder) WithUseContext(v dt.UsageContext) *EvidenceBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *EvidenceBuilder) WithVersion(v string) *EvidenceBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
 // Build returns the constructed Evidence. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *EvidenceBuilder) Build() (*Evidence, error) {
+	var missing []string
+	if !b.fieldsSet["exposureBackground"] {
+		missing = append(missing, "exposureBackground")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("Evidence: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }

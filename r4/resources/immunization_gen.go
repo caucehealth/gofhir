@@ -18,12 +18,18 @@ type Immunization struct {
 	ResourceType string `json:"resourceType"` // Always "Immunization"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type Immunization struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Indicates the current status of the immunization event.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// DoseQuantity The quantity of vaccine product that was administered.
 	DoseQuantity *dt.Quantity `json:"doseQuantity,omitempty"`
 	// Education Educational material presented to the patient (or guardian) at the time of vaccine administration.
@@ -44,14 +52,20 @@ type Immunization struct {
 	Encounter *dt.Reference `json:"encounter,omitempty"`
 	// ExpirationDate Date vaccine batch expires.
 	ExpirationDate *dt.Date `json:"expirationDate,omitempty"`
+	// ExpirationDateElement contains element extensions for expirationDate.
+	ExpirationDateElement *dt.Element `json:"_expirationDate,omitempty"`
 	// FundingSource Indicates the source of the vaccine actually administered. This may be different than the patient eligibility (e.g. the patient may be eligible for a publically purchased vaccine but due to invento...
 	FundingSource *dt.CodeableConcept `json:"fundingSource,omitempty"`
 	// IsSubpotent Indication if a dose is considered to be subpotent. By default, a dose should be considered to be potent.
 	IsSubpotent *bool `json:"isSubpotent,omitempty"`
+	// IsSubpotentElement contains element extensions for isSubpotent.
+	IsSubpotentElement *dt.Element `json:"_isSubpotent,omitempty"`
 	// Location The service delivery location where the vaccine administration occurred.
 	Location *dt.Reference `json:"location,omitempty"`
 	// LotNumber Lot number of the  vaccine product.
 	LotNumber *string `json:"lotNumber,omitempty"`
+	// LotNumberElement contains element extensions for lotNumber.
+	LotNumberElement *dt.Element `json:"_lotNumber,omitempty"`
 	// Manufacturer Name of vaccine manufacturer.
 	Manufacturer *dt.Reference `json:"manufacturer,omitempty"`
 	// Note Extra information about the immunization that is not conveyed by the other attributes.
@@ -64,6 +78,8 @@ type Immunization struct {
 	Performer []ImmunizationPerformer `json:"performer,omitempty"`
 	// PrimarySource An indication that the content of the record is based on information from the person who administered the vaccine. This reflects the context under which the data was originally recorded.
 	PrimarySource *bool `json:"primarySource,omitempty"`
+	// PrimarySourceElement contains element extensions for primarySource.
+	PrimarySourceElement *dt.Element `json:"_primarySource,omitempty"`
 	// ProgramEligibility Indicates a patient's eligibility for a funding program.
 	ProgramEligibility []dt.CodeableConcept `json:"programEligibility,omitempty"`
 	// ProtocolApplied The protocol (set of recommendations) being followed by the provider who administered the dose.
@@ -76,6 +92,8 @@ type Immunization struct {
 	ReasonReference []dt.Reference `json:"reasonReference,omitempty"`
 	// Recorded The date the occurrence of the immunization was first captured in the record - potentially significantly after the occurrence of the event.
 	Recorded *dt.DateTime `json:"recorded,omitempty"`
+	// RecordedElement contains element extensions for recorded.
+	RecordedElement *dt.Element `json:"_recorded,omitempty"`
 	// ReportOrigin The source of the data when the report of the immunization event is not based on information from the person who administered the vaccine.
 	ReportOrigin *dt.CodeableConcept `json:"reportOrigin,omitempty"`
 	// Route The path by which the vaccine product is taken into the body.
@@ -88,6 +106,8 @@ type Immunization struct {
 	SubpotentReason []dt.CodeableConcept `json:"subpotentReason,omitempty"`
 	// VaccineCode Vaccine that was administered or was to be administered.
 	VaccineCode dt.CodeableConcept `json:"vaccineCode"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Immunization.
@@ -98,7 +118,6 @@ func (r Immunization) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -115,6 +134,9 @@ func (r Immunization) MarshalJSON() ([]byte, error) {
 		for k, v := range vm {
 			m[k] = v
 		}
+	}
+	for k, v := range r.Extra {
+		m[k] = v
 	}
 	return json.Marshal(m)
 }
@@ -135,136 +157,173 @@ func (r *Immunization) UnmarshalJSON(data []byte) error {
 	if occurrenceVal.DateTime != nil || occurrenceVal.String != nil {
 		r.Occurrence = &occurrenceVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contained", "_doseQuantity", "_education", "_encounter", "_expirationDate", "_extension", "_fundingSource", "_id", "_identifier", "_implicitRules", "_isSubpotent", "_language", "_location", "_lotNumber", "_manufacturer", "_meta", "_modifierExtension", "_note", "_occurrenceDateTime", "_occurrenceString", "_patient", "_performer", "_primarySource", "_programEligibility", "_protocolApplied", "_reaction", "_reasonCode", "_reasonReference", "_recorded", "_reportOrigin", "_route", "_site", "_status", "_statusReason", "_subpotentReason", "_text", "_vaccineCode", "contained", "doseQuantity", "education", "encounter", "expirationDate", "extension", "fundingSource", "id", "identifier", "implicitRules", "isSubpotent", "language", "location", "lotNumber", "manufacturer", "meta", "modifierExtension", "note", "occurrenceDateTime", "occurrenceString", "patient", "performer", "primarySource", "programEligibility", "protocolApplied", "reaction", "reasonCode", "reasonReference", "recorded", "reportOrigin", "resourceType", "route", "site", "status", "statusReason", "subpotentReason", "text", "vaccineCode":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ImmunizationBuilder provides a fluent API for constructing Immunization resources.
 type ImmunizationBuilder struct {
-	resource Immunization
+	resource  Immunization
+	fieldsSet map[string]bool
 }
 
 // NewImmunization creates a new ImmunizationBuilder for building a Immunization resource.
 func NewImmunization() *ImmunizationBuilder {
-	return &ImmunizationBuilder{resource: Immunization{ResourceType: "Immunization"}}
+	return &ImmunizationBuilder{resource: Immunization{ResourceType: "Immunization"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ImmunizationBuilder) WithId(v dt.ID) *ImmunizationBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ImmunizationBuilder) WithMeta(v dt.Meta) *ImmunizationBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ImmunizationBuilder) WithImplicitRules(v dt.URI) *ImmunizationBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ImmunizationBuilder) WithLanguage(v dt.Code) *ImmunizationBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ImmunizationBuilder) WithText(v dt.Narrative) *ImmunizationBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ImmunizationBuilder) WithContained(v json.RawMessage) *ImmunizationBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ImmunizationBuilder) WithExtension(v dt.Extension) *ImmunizationBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ImmunizationBuilder) WithModifierExtension(v dt.Extension) *ImmunizationBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ImmunizationBuilder) WithIdentifier(v dt.Identifier) *ImmunizationBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ImmunizationBuilder) WithStatus(v dt.Code) *ImmunizationBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithDoseQuantity sets the doseQuantity field.
 func (b *ImmunizationBuilder) WithDoseQuantity(v dt.Quantity) *ImmunizationBuilder {
 	b.resource.DoseQuantity = &v
+	b.fieldsSet["doseQuantity"] = true
 	return b
 }
 
 // WithEducation adds an item to the education field.
 func (b *ImmunizationBuilder) WithEducation(v ImmunizationEducation) *ImmunizationBuilder {
 	b.resource.Education = append(b.resource.Education, v)
+	b.fieldsSet["education"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *ImmunizationBuilder) WithEncounter(v dt.Reference) *ImmunizationBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithExpirationDate sets the expirationDate field.
 func (b *ImmunizationBuilder) WithExpirationDate(v dt.Date) *ImmunizationBuilder {
 	b.resource.ExpirationDate = &v
+	b.fieldsSet["expirationDate"] = true
 	return b
 }
 
 // WithFundingSource sets the fundingSource field.
 func (b *ImmunizationBuilder) WithFundingSource(v dt.CodeableConcept) *ImmunizationBuilder {
 	b.resource.FundingSource = &v
+	b.fieldsSet["fundingSource"] = true
 	return b
 }
 
 // WithIsSubpotent sets the isSubpotent field.
 func (b *ImmunizationBuilder) WithIsSubpotent(v bool) *ImmunizationBuilder {
 	b.resource.IsSubpotent = &v
+	b.fieldsSet["isSubpotent"] = true
 	return b
 }
 
 // WithLocation sets the location field.
 func (b *ImmunizationBuilder) WithLocation(v dt.Reference) *ImmunizationBuilder {
 	b.resource.Location = &v
+	b.fieldsSet["location"] = true
 	return b
 }
 
 // WithLotNumber sets the lotNumber field.
 func (b *ImmunizationBuilder) WithLotNumber(v string) *ImmunizationBuilder {
 	b.resource.LotNumber = &v
+	b.fieldsSet["lotNumber"] = true
 	return b
 }
 
 // WithManufacturer sets the manufacturer field.
 func (b *ImmunizationBuilder) WithManufacturer(v dt.Reference) *ImmunizationBuilder {
 	b.resource.Manufacturer = &v
+	b.fieldsSet["manufacturer"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *ImmunizationBuilder) WithNote(v dt.Annotation) *ImmunizationBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
@@ -274,6 +333,7 @@ func (b *ImmunizationBuilder) WithOccurrenceDateTime(v string) *ImmunizationBuil
 		b.resource.Occurrence = &ImmunizationOccurrence{}
 	}
 	b.resource.Occurrence.DateTime = &v
+	b.fieldsSet["occurrence"] = true
 	return b
 }
 
@@ -283,102 +343,128 @@ func (b *ImmunizationBuilder) WithOccurrenceString(v string) *ImmunizationBuilde
 		b.resource.Occurrence = &ImmunizationOccurrence{}
 	}
 	b.resource.Occurrence.String = &v
+	b.fieldsSet["occurrence"] = true
 	return b
 }
 
 // WithPatient sets the patient field.
 func (b *ImmunizationBuilder) WithPatient(v dt.Reference) *ImmunizationBuilder {
 	b.resource.Patient = v
+	b.fieldsSet["patient"] = true
 	return b
 }
 
 // WithPerformer adds an item to the performer field.
 func (b *ImmunizationBuilder) WithPerformer(v ImmunizationPerformer) *ImmunizationBuilder {
 	b.resource.Performer = append(b.resource.Performer, v)
+	b.fieldsSet["performer"] = true
 	return b
 }
 
 // WithPrimarySource sets the primarySource field.
 func (b *ImmunizationBuilder) WithPrimarySource(v bool) *ImmunizationBuilder {
 	b.resource.PrimarySource = &v
+	b.fieldsSet["primarySource"] = true
 	return b
 }
 
 // WithProgramEligibility adds an item to the programEligibility field.
 func (b *ImmunizationBuilder) WithProgramEligibility(v dt.CodeableConcept) *ImmunizationBuilder {
 	b.resource.ProgramEligibility = append(b.resource.ProgramEligibility, v)
+	b.fieldsSet["programEligibility"] = true
 	return b
 }
 
 // WithProtocolApplied adds an item to the protocolApplied field.
 func (b *ImmunizationBuilder) WithProtocolApplied(v ImmunizationProtocolApplied) *ImmunizationBuilder {
 	b.resource.ProtocolApplied = append(b.resource.ProtocolApplied, v)
+	b.fieldsSet["protocolApplied"] = true
 	return b
 }
 
 // WithReaction adds an item to the reaction field.
 func (b *ImmunizationBuilder) WithReaction(v ImmunizationReaction) *ImmunizationBuilder {
 	b.resource.Reaction = append(b.resource.Reaction, v)
+	b.fieldsSet["reaction"] = true
 	return b
 }
 
 // WithReasonCode adds an item to the reasonCode field.
 func (b *ImmunizationBuilder) WithReasonCode(v dt.CodeableConcept) *ImmunizationBuilder {
 	b.resource.ReasonCode = append(b.resource.ReasonCode, v)
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithReasonReference adds an item to the reasonReference field.
 func (b *ImmunizationBuilder) WithReasonReference(v dt.Reference) *ImmunizationBuilder {
 	b.resource.ReasonReference = append(b.resource.ReasonReference, v)
+	b.fieldsSet["reasonReference"] = true
 	return b
 }
 
 // WithRecorded sets the recorded field.
 func (b *ImmunizationBuilder) WithRecorded(v dt.DateTime) *ImmunizationBuilder {
 	b.resource.Recorded = &v
+	b.fieldsSet["recorded"] = true
 	return b
 }
 
 // WithReportOrigin sets the reportOrigin field.
 func (b *ImmunizationBuilder) WithReportOrigin(v dt.CodeableConcept) *ImmunizationBuilder {
 	b.resource.ReportOrigin = &v
+	b.fieldsSet["reportOrigin"] = true
 	return b
 }
 
 // WithRoute sets the route field.
 func (b *ImmunizationBuilder) WithRoute(v dt.CodeableConcept) *ImmunizationBuilder {
 	b.resource.Route = &v
+	b.fieldsSet["route"] = true
 	return b
 }
 
 // WithSite sets the site field.
 func (b *ImmunizationBuilder) WithSite(v dt.CodeableConcept) *ImmunizationBuilder {
 	b.resource.Site = &v
+	b.fieldsSet["site"] = true
 	return b
 }
 
 // WithStatusReason sets the statusReason field.
 func (b *ImmunizationBuilder) WithStatusReason(v dt.CodeableConcept) *ImmunizationBuilder {
 	b.resource.StatusReason = &v
+	b.fieldsSet["statusReason"] = true
 	return b
 }
 
 // WithSubpotentReason adds an item to the subpotentReason field.
 func (b *ImmunizationBuilder) WithSubpotentReason(v dt.CodeableConcept) *ImmunizationBuilder {
 	b.resource.SubpotentReason = append(b.resource.SubpotentReason, v)
+	b.fieldsSet["subpotentReason"] = true
 	return b
 }
 
 // WithVaccineCode sets the vaccineCode field.
 func (b *ImmunizationBuilder) WithVaccineCode(v dt.CodeableConcept) *ImmunizationBuilder {
 	b.resource.VaccineCode = v
+	b.fieldsSet["vaccineCode"] = true
 	return b
 }
 
 // Build returns the constructed Immunization. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *ImmunizationBuilder) Build() (*Immunization, error) {
+	var missing []string
+	if !b.fieldsSet["patient"] {
+		missing = append(missing, "patient")
+	}
+	if !b.fieldsSet["vaccineCode"] {
+		missing = append(missing, "vaccineCode")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("Immunization: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -387,24 +473,36 @@ func (b *ImmunizationBuilder) Build() (*Immunization, error) {
 type ImmunizationEducation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// DocumentType Identifier of the material presented to the patient.
 	DocumentType *string `json:"documentType,omitempty"`
+	// DocumentTypeElement contains element extensions for documentType.
+	DocumentTypeElement *dt.Element `json:"_documentType,omitempty"`
 	// PresentationDate Date the educational material was given to the patient.
 	PresentationDate *dt.DateTime `json:"presentationDate,omitempty"`
+	// PresentationDateElement contains element extensions for presentationDate.
+	PresentationDateElement *dt.Element `json:"_presentationDate,omitempty"`
 	// PublicationDate Date the educational material was published.
 	PublicationDate *dt.DateTime `json:"publicationDate,omitempty"`
+	// PublicationDateElement contains element extensions for publicationDate.
+	PublicationDateElement *dt.Element `json:"_publicationDate,omitempty"`
 	// Reference Reference pointer to the educational material given to the patient if the information was on line.
 	Reference *dt.URI `json:"reference,omitempty"`
+	// ReferenceElement contains element extensions for reference.
+	ReferenceElement *dt.Element `json:"_reference,omitempty"`
 }
 
 // ImmunizationPerformer Describes the event of a patient being administered a vaccine or a record of an immunization as reported by a patient, a clinician or another party.
 type ImmunizationPerformer struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -419,6 +517,8 @@ type ImmunizationPerformer struct {
 type ImmunizationProtocolApplied struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -429,10 +529,16 @@ type ImmunizationProtocolApplied struct {
 	Dose *ImmunizationProtocolAppliedDose `json:"-"` // polymorphic
 	// Series One possible path to achieve presumed immunity against a disease - within the context of an authority.
 	Series *string `json:"series,omitempty"`
+	// SeriesElement contains element extensions for series.
+	SeriesElement *dt.Element `json:"_series,omitempty"`
 	// SeriesDosesPositiveInt The recommended number of doses to achieve immunity.
 	SeriesDosesPositiveInt *float64 `json:"seriesDosesPositiveInt,omitempty"`
+	// SeriesDosesPositiveIntElement contains element extensions for seriesDosesPositiveInt.
+	SeriesDosesPositiveIntElement *dt.Element `json:"_seriesDosesPositiveInt,omitempty"`
 	// SeriesDosesString The recommended number of doses to achieve immunity.
 	SeriesDosesString *string `json:"seriesDosesString,omitempty"`
+	// SeriesDosesStringElement contains element extensions for seriesDosesString.
+	SeriesDosesStringElement *dt.Element `json:"_seriesDosesString,omitempty"`
 	// TargetDisease The vaccine preventable disease the dose is being administered against.
 	TargetDisease []dt.CodeableConcept `json:"targetDisease,omitempty"`
 }
@@ -527,16 +633,22 @@ func (v *ImmunizationProtocolAppliedDose) UnmarshalJSON(data []byte) error {
 type ImmunizationReaction struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Date Date of reaction to the immunization.
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Detail Details of the reaction.
 	Detail *dt.Reference `json:"detail,omitempty"`
 	// Reported Self-reported indicator.
 	Reported *bool `json:"reported,omitempty"`
+	// ReportedElement contains element extensions for reported.
+	ReportedElement *dt.Element `json:"_reported,omitempty"`
 }
 
 // ImmunizationOccurrence represents a polymorphic choice type in FHIR.

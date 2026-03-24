@@ -18,12 +18,18 @@ type OperationOutcome struct {
 	ResourceType string `json:"resourceType"` // Always "OperationOutcome"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -34,13 +40,29 @@ type OperationOutcome struct {
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Issue An error, warning, or information message that results from a system action.
 	Issue []OperationOutcomeIssue `json:"issue,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for OperationOutcome.
 func (r OperationOutcome) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "OperationOutcome"
 	type Alias OperationOutcome
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for OperationOutcome.
@@ -51,70 +73,96 @@ func (r *OperationOutcome) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = OperationOutcome(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contained", "_extension", "_id", "_implicitRules", "_issue", "_language", "_meta", "_modifierExtension", "_text", "contained", "extension", "id", "implicitRules", "issue", "language", "meta", "modifierExtension", "resourceType", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // OperationOutcomeBuilder provides a fluent API for constructing OperationOutcome resources.
 type OperationOutcomeBuilder struct {
-	resource OperationOutcome
+	resource  OperationOutcome
+	fieldsSet map[string]bool
 }
 
 // NewOperationOutcome creates a new OperationOutcomeBuilder for building a OperationOutcome resource.
 func NewOperationOutcome() *OperationOutcomeBuilder {
-	return &OperationOutcomeBuilder{resource: OperationOutcome{ResourceType: "OperationOutcome"}}
+	return &OperationOutcomeBuilder{resource: OperationOutcome{ResourceType: "OperationOutcome"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *OperationOutcomeBuilder) WithId(v dt.ID) *OperationOutcomeBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *OperationOutcomeBuilder) WithMeta(v dt.Meta) *OperationOutcomeBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *OperationOutcomeBuilder) WithImplicitRules(v dt.URI) *OperationOutcomeBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *OperationOutcomeBuilder) WithLanguage(v dt.Code) *OperationOutcomeBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *OperationOutcomeBuilder) WithText(v dt.Narrative) *OperationOutcomeBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *OperationOutcomeBuilder) WithContained(v json.RawMessage) *OperationOutcomeBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *OperationOutcomeBuilder) WithExtension(v dt.Extension) *OperationOutcomeBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *OperationOutcomeBuilder) WithModifierExtension(v dt.Extension) *OperationOutcomeBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIssue adds an item to the issue field.
 func (b *OperationOutcomeBuilder) WithIssue(v OperationOutcomeIssue) *OperationOutcomeBuilder {
 	b.resource.Issue = append(b.resource.Issue, v)
+	b.fieldsSet["issue"] = true
 	return b
 }
 
@@ -122,7 +170,7 @@ func (b *OperationOutcomeBuilder) WithIssue(v OperationOutcomeIssue) *OperationO
 // field (cardinality 1..1) is not set.
 func (b *OperationOutcomeBuilder) Build() (*OperationOutcome, error) {
 	var missing []string
-	if len(b.resource.Issue) == 0 {
+	if !b.fieldsSet["issue"] {
 		missing = append(missing, "issue")
 	}
 	if len(missing) > 0 {
@@ -136,20 +184,32 @@ func (b *OperationOutcomeBuilder) Build() (*OperationOutcome, error) {
 type OperationOutcomeIssue struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code Describes the type of the issue. The system that creates an OperationOutcome SHALL choose the most applicable code from the IssueType value set, and may additional provide its own code for the erro...
 	Code *OperationOutcomeIssueCode `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Details Additional details about the error. This may be a text description of the error or a system code that identifies the error.
 	Details *dt.CodeableConcept `json:"details,omitempty"`
 	// Diagnostics Additional diagnostic information about the issue.
 	Diagnostics *string `json:"diagnostics,omitempty"`
+	// DiagnosticsElement contains element extensions for diagnostics.
+	DiagnosticsElement *dt.Element `json:"_diagnostics,omitempty"`
 	// Expression A [simple subset of FHIRPath](fhirpath.html#simple) limited to element names, repetition indicators and the default child accessor that identifies one of the elements in the resource that caused th...
 	Expression []string `json:"expression,omitempty"`
+	// ExpressionElement contains element extensions for each expression.
+	ExpressionElement []dt.Element `json:"_expression,omitempty"`
 	// Location This element is deprecated because it is XML specific. It is replaced by issue.expression, which is format independent, and simpler to parse.   For resource issues, this will be a simple XPath limi...
 	Location []string `json:"location,omitempty"`
+	// LocationElement contains element extensions for each location.
+	LocationElement []dt.Element `json:"_location,omitempty"`
 	// Severity Indicates whether the issue indicates a variation from successful processing.
 	Severity *OperationOutcomeIssueSeverity `json:"severity,omitempty"`
+	// SeverityElement contains element extensions for severity.
+	SeverityElement *dt.Element `json:"_severity,omitempty"`
 }

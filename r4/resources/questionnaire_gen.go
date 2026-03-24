@@ -18,12 +18,18 @@ type Questionnaire struct {
 	ResourceType string `json:"resourceType"` // Always "Questionnaire"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,53 +42,99 @@ type Questionnaire struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this questionnaire. Enables tracking the life-cycle of the content.
 	Status *QuestionnaireStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
+	// ApprovalDateElement contains element extensions for approvalDate.
+	ApprovalDateElement *dt.Element `json:"_approvalDate,omitempty"`
 	// Code An identifier for this question or group of questions in a particular terminology such as LOINC.
 	Code []dt.Coding `json:"code,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the questionnaire and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the questionnaire.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date  (and optionally time) when the questionnaire was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should ch...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// DerivedFrom The URL of a Questionnaire that this Questionnaire is based on.
 	DerivedFrom []dt.Canonical `json:"derivedFrom,omitempty"`
+	// DerivedFromElement contains element extensions for each derivedFrom.
+	DerivedFromElement []dt.Element `json:"_derivedFrom,omitempty"`
 	// Description A free text natural language description of the questionnaire from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// EffectivePeriod The period during which the questionnaire content was or is planned to be in active use.
 	EffectivePeriod *dt.Period `json:"effectivePeriod,omitempty"`
 	// Experimental A Boolean value to indicate that this questionnaire is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// Item A particular question, question grouping or display text that is part of the questionnaire.
 	Item []QuestionnaireItem `json:"item,omitempty"`
 	// Jurisdiction A legal or geographic region in which the questionnaire is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// LastReviewDate The date on which the resource content was last reviewed. Review happens periodically after approval but does not change the original approval date.
 	LastReviewDate *dt.Date `json:"lastReviewDate,omitempty"`
+	// LastReviewDateElement contains element extensions for lastReviewDate.
+	LastReviewDateElement *dt.Element `json:"_lastReviewDate,omitempty"`
 	// Name A natural language name identifying the questionnaire. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Publisher The name of the organization or individual that published the questionnaire.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Purpose Explanation of why this questionnaire is needed and why it has been designed as it has.
 	Purpose *dt.Markdown `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for purpose.
+	PurposeElement *dt.Element `json:"_purpose,omitempty"`
 	// SubjectType The types of subjects that can be the subject of responses created for the questionnaire.
 	SubjectType []dt.Code `json:"subjectType,omitempty"`
+	// SubjectTypeElement contains element extensions for each subjectType.
+	SubjectTypeElement []dt.Element `json:"_subjectType,omitempty"`
 	// Title A short, descriptive, user-friendly title for the questionnaire.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Url An absolute URI that is used to identify this questionnaire when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally uni...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the questionnaire when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the questionnair...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Questionnaire.
 func (r Questionnaire) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Questionnaire"
 	type Alias Questionnaire
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Questionnaire.
@@ -93,196 +145,243 @@ func (r *Questionnaire) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Questionnaire(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_approvalDate", "_code", "_contact", "_contained", "_copyright", "_date", "_derivedFrom", "_description", "_effectivePeriod", "_experimental", "_extension", "_id", "_identifier", "_implicitRules", "_item", "_jurisdiction", "_language", "_lastReviewDate", "_meta", "_modifierExtension", "_name", "_publisher", "_purpose", "_status", "_subjectType", "_text", "_title", "_url", "_useContext", "_version", "approvalDate", "code", "contact", "contained", "copyright", "date", "derivedFrom", "description", "effectivePeriod", "experimental", "extension", "id", "identifier", "implicitRules", "item", "jurisdiction", "language", "lastReviewDate", "meta", "modifierExtension", "name", "publisher", "purpose", "resourceType", "status", "subjectType", "text", "title", "url", "useContext", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // QuestionnaireBuilder provides a fluent API for constructing Questionnaire resources.
 type QuestionnaireBuilder struct {
-	resource Questionnaire
+	resource  Questionnaire
+	fieldsSet map[string]bool
 }
 
 // NewQuestionnaire creates a new QuestionnaireBuilder for building a Questionnaire resource.
 func NewQuestionnaire() *QuestionnaireBuilder {
-	return &QuestionnaireBuilder{resource: Questionnaire{ResourceType: "Questionnaire"}}
+	return &QuestionnaireBuilder{resource: Questionnaire{ResourceType: "Questionnaire"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *QuestionnaireBuilder) WithId(v dt.ID) *QuestionnaireBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *QuestionnaireBuilder) WithMeta(v dt.Meta) *QuestionnaireBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *QuestionnaireBuilder) WithImplicitRules(v dt.URI) *QuestionnaireBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *QuestionnaireBuilder) WithLanguage(v dt.Code) *QuestionnaireBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *QuestionnaireBuilder) WithText(v dt.Narrative) *QuestionnaireBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *QuestionnaireBuilder) WithContained(v json.RawMessage) *QuestionnaireBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *QuestionnaireBuilder) WithExtension(v dt.Extension) *QuestionnaireBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *QuestionnaireBuilder) WithModifierExtension(v dt.Extension) *QuestionnaireBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *QuestionnaireBuilder) WithIdentifier(v dt.Identifier) *QuestionnaireBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *QuestionnaireBuilder) WithStatus(v QuestionnaireStatus) *QuestionnaireBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithApprovalDate sets the approvalDate field.
 func (b *QuestionnaireBuilder) WithApprovalDate(v dt.Date) *QuestionnaireBuilder {
 	b.resource.ApprovalDate = &v
+	b.fieldsSet["approvalDate"] = true
 	return b
 }
 
 // WithCode adds an item to the code field.
 func (b *QuestionnaireBuilder) WithCode(v dt.Coding) *QuestionnaireBuilder {
 	b.resource.Code = append(b.resource.Code, v)
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *QuestionnaireBuilder) WithContact(v dt.ContactDetail) *QuestionnaireBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *QuestionnaireBuilder) WithCopyright(v dt.Markdown) *QuestionnaireBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *QuestionnaireBuilder) WithDate(v dt.DateTime) *QuestionnaireBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDerivedFrom adds an item to the derivedFrom field.
 func (b *QuestionnaireBuilder) WithDerivedFrom(v dt.Canonical) *QuestionnaireBuilder {
 	b.resource.DerivedFrom = append(b.resource.DerivedFrom, v)
+	b.fieldsSet["derivedFrom"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *QuestionnaireBuilder) WithDescription(v dt.Markdown) *QuestionnaireBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithEffectivePeriod sets the effectivePeriod field.
 func (b *QuestionnaireBuilder) WithEffectivePeriod(v dt.Period) *QuestionnaireBuilder {
 	b.resource.EffectivePeriod = &v
+	b.fieldsSet["effectivePeriod"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *QuestionnaireBuilder) WithExperimental(v bool) *QuestionnaireBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithItem adds an item to the item field.
 func (b *QuestionnaireBuilder) WithItem(v QuestionnaireItem) *QuestionnaireBuilder {
 	b.resource.Item = append(b.resource.Item, v)
+	b.fieldsSet["item"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *QuestionnaireBuilder) WithJurisdiction(v dt.CodeableConcept) *QuestionnaireBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithLastReviewDate sets the lastReviewDate field.
 func (b *QuestionnaireBuilder) WithLastReviewDate(v dt.Date) *QuestionnaireBuilder {
 	b.resource.LastReviewDate = &v
+	b.fieldsSet["lastReviewDate"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *QuestionnaireBuilder) WithName(v string) *QuestionnaireBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *QuestionnaireBuilder) WithPublisher(v string) *QuestionnaireBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithPurpose sets the purpose field.
 func (b *QuestionnaireBuilder) WithPurpose(v dt.Markdown) *QuestionnaireBuilder {
 	b.resource.Purpose = &v
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
 // WithSubjectType adds an item to the subjectType field.
 func (b *QuestionnaireBuilder) WithSubjectType(v dt.Code) *QuestionnaireBuilder {
 	b.resource.SubjectType = append(b.resource.SubjectType, v)
+	b.fieldsSet["subjectType"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *QuestionnaireBuilder) WithTitle(v string) *QuestionnaireBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *QuestionnaireBuilder) WithUrl(v dt.URI) *QuestionnaireBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *QuestionnaireBuilder) WithUseContext(v dt.UsageContext) *QuestionnaireBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *QuestionnaireBuilder) WithVersion(v string) *QuestionnaireBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -297,12 +396,16 @@ func (b *QuestionnaireBuilder) Build() (*Questionnaire, error) {
 type QuestionnaireAnswerOption struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// InitialSelected Indicates whether the answer value is selected when the list of possible answers is initially shown.
 	InitialSelected *bool `json:"initialSelected,omitempty"`
+	// InitialSelectedElement contains element extensions for initialSelected.
+	InitialSelectedElement *dt.Element `json:"_initialSelected,omitempty"`
 	// Value A potential answer that's allowed as the answer to this question.
 	Value *QuestionnaireAnswerOptionValue `json:"-"` // polymorphic
 }
@@ -441,40 +544,62 @@ func (v *QuestionnaireAnswerOptionValue) UnmarshalJSON(data []byte) error {
 type QuestionnaireEnableWhen struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// AnswerBoolean A value that the referenced question is tested using the specified operator in order for the item to be enabled.
 	AnswerBoolean *bool `json:"answerBoolean,omitempty"`
+	// AnswerBooleanElement contains element extensions for answerBoolean.
+	AnswerBooleanElement *dt.Element `json:"_answerBoolean,omitempty"`
 	// AnswerCoding A value that the referenced question is tested using the specified operator in order for the item to be enabled.
 	AnswerCoding *dt.Coding `json:"answerCoding,omitempty"`
 	// AnswerDate A value that the referenced question is tested using the specified operator in order for the item to be enabled.
 	AnswerDate *string `json:"answerDate,omitempty"`
+	// AnswerDateElement contains element extensions for answerDate.
+	AnswerDateElement *dt.Element `json:"_answerDate,omitempty"`
 	// AnswerDateTime A value that the referenced question is tested using the specified operator in order for the item to be enabled.
 	AnswerDateTime *string `json:"answerDateTime,omitempty"`
+	// AnswerDateTimeElement contains element extensions for answerDateTime.
+	AnswerDateTimeElement *dt.Element `json:"_answerDateTime,omitempty"`
 	// AnswerDecimal A value that the referenced question is tested using the specified operator in order for the item to be enabled.
 	AnswerDecimal *float64 `json:"answerDecimal,omitempty"`
+	// AnswerDecimalElement contains element extensions for answerDecimal.
+	AnswerDecimalElement *dt.Element `json:"_answerDecimal,omitempty"`
 	// AnswerInteger A value that the referenced question is tested using the specified operator in order for the item to be enabled.
 	AnswerInteger *float64 `json:"answerInteger,omitempty"`
+	// AnswerIntegerElement contains element extensions for answerInteger.
+	AnswerIntegerElement *dt.Element `json:"_answerInteger,omitempty"`
 	// AnswerQuantity A value that the referenced question is tested using the specified operator in order for the item to be enabled.
 	AnswerQuantity *dt.Quantity `json:"answerQuantity,omitempty"`
 	// AnswerReference A value that the referenced question is tested using the specified operator in order for the item to be enabled.
 	AnswerReference *dt.Reference `json:"answerReference,omitempty"`
 	// AnswerString A value that the referenced question is tested using the specified operator in order for the item to be enabled.
 	AnswerString *string `json:"answerString,omitempty"`
+	// AnswerStringElement contains element extensions for answerString.
+	AnswerStringElement *dt.Element `json:"_answerString,omitempty"`
 	// AnswerTime A value that the referenced question is tested using the specified operator in order for the item to be enabled.
 	AnswerTime *string `json:"answerTime,omitempty"`
+	// AnswerTimeElement contains element extensions for answerTime.
+	AnswerTimeElement *dt.Element `json:"_answerTime,omitempty"`
 	// Operator Specifies the criteria by which the question is enabled.
 	Operator *QuestionnaireEnableWhenOperator `json:"operator,omitempty"`
+	// OperatorElement contains element extensions for operator.
+	OperatorElement *dt.Element `json:"_operator,omitempty"`
 	// Question The linkId for the question whose answer (or lack of answer) governs whether this item is enabled.
 	Question *string `json:"question,omitempty"`
+	// QuestionElement contains element extensions for question.
+	QuestionElement *dt.Element `json:"_question,omitempty"`
 }
 
 // QuestionnaireInitial A structured set of questions intended to guide the collection of answers from end-users. Questionnaires provide detailed control over order, presentation, phraseology and grouping to allow coheren...
 type QuestionnaireInitial struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -683,8 +808,12 @@ func (v *QuestionnaireInitialValue) UnmarshalJSON(data []byte) error {
 type QuestionnaireItem struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Text The name of a section, the text of a question or text content for a display item.
 	Text *string `json:"text,omitempty"`
+	// TextElement contains element extensions for text.
+	TextElement *dt.Element `json:"_text,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -693,12 +822,18 @@ type QuestionnaireItem struct {
 	AnswerOption []QuestionnaireAnswerOption `json:"answerOption,omitempty"`
 	// AnswerValueSet A reference to a value set containing a list of codes representing permitted answers for a "choice" or "open-choice" question.
 	AnswerValueSet *dt.Canonical `json:"answerValueSet,omitempty"`
+	// AnswerValueSetElement contains element extensions for answerValueSet.
+	AnswerValueSetElement *dt.Element `json:"_answerValueSet,omitempty"`
 	// Code A terminology code that corresponds to this group or question (e.g. a code from LOINC, which defines many questions and answers).
 	Code []dt.Coding `json:"code,omitempty"`
 	// Definition This element is a URI that refers to an [[[ElementDefinition]]] that provides information about this item, including information that might otherwise be included in the instance of the Questionnair...
 	Definition *dt.URI `json:"definition,omitempty"`
+	// DefinitionElement contains element extensions for definition.
+	DefinitionElement *dt.Element `json:"_definition,omitempty"`
 	// EnableBehavior Controls how multiple enableWhen values are interpreted -  whether all or any must be true.
 	EnableBehavior *QuestionnaireItemEnableBehavior `json:"enableBehavior,omitempty"`
+	// EnableBehaviorElement contains element extensions for enableBehavior.
+	EnableBehaviorElement *dt.Element `json:"_enableBehavior,omitempty"`
 	// EnableWhen A constraint indicating that this item should only be enabled (displayed/allow answers to be captured) when the specified condition is true.
 	EnableWhen []QuestionnaireEnableWhen `json:"enableWhen,omitempty"`
 	// Initial One or more values that should be pre-populated in the answer when initially rendering the questionnaire for user input.
@@ -707,16 +842,30 @@ type QuestionnaireItem struct {
 	Item []QuestionnaireItem `json:"item,omitempty"`
 	// LinkId An identifier that is unique within the Questionnaire allowing linkage to the equivalent item in a QuestionnaireResponse resource.
 	LinkId *string `json:"linkId,omitempty"`
+	// LinkIdElement contains element extensions for linkId.
+	LinkIdElement *dt.Element `json:"_linkId,omitempty"`
 	// MaxLength The maximum number of characters that are permitted in the answer to be considered a "valid" QuestionnaireResponse.
 	MaxLength *int32 `json:"maxLength,omitempty"`
+	// MaxLengthElement contains element extensions for maxLength.
+	MaxLengthElement *dt.Element `json:"_maxLength,omitempty"`
 	// Prefix A short label for a particular group, question or set of display text within the questionnaire used for reference by the individual completing the questionnaire.
 	Prefix *string `json:"prefix,omitempty"`
+	// PrefixElement contains element extensions for prefix.
+	PrefixElement *dt.Element `json:"_prefix,omitempty"`
 	// ReadOnly An indication, when true, that the value cannot be changed by a human respondent to the Questionnaire.
 	ReadOnly *bool `json:"readOnly,omitempty"`
+	// ReadOnlyElement contains element extensions for readOnly.
+	ReadOnlyElement *dt.Element `json:"_readOnly,omitempty"`
 	// Repeats An indication, if true, that the item may occur multiple times in the response, collecting multiple answers for questions or multiple sets of answers for groups.
 	Repeats *bool `json:"repeats,omitempty"`
+	// RepeatsElement contains element extensions for repeats.
+	RepeatsElement *dt.Element `json:"_repeats,omitempty"`
 	// Required An indication, if true, that the item must be present in a "completed" QuestionnaireResponse.  If false, the item may be skipped when answering the questionnaire.
 	Required *bool `json:"required,omitempty"`
+	// RequiredElement contains element extensions for required.
+	RequiredElement *dt.Element `json:"_required,omitempty"`
 	// Type The type of questionnaire item this is - whether text for display, a grouping of other items or a particular type of data to be captured (string, integer, coded choice, etc.).
 	Type *QuestionnaireItemType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }

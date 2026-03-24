@@ -18,12 +18,18 @@ type DocumentReference struct {
 	ResourceType string `json:"resourceType"` // Always "DocumentReference"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type DocumentReference struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this document reference.
 	Status *DocumentReferenceStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Authenticator Which person or organization authenticates that this document is valid.
 	Authenticator *dt.Reference `json:"authenticator,omitempty"`
 	// Author Identifies who is responsible for adding the information to the document.
@@ -50,10 +58,16 @@ type DocumentReference struct {
 	Custodian *dt.Reference `json:"custodian,omitempty"`
 	// Date When the document reference was created.
 	Date *dt.Instant `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description Human-readable description of the source document.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// DocStatus The status of the underlying document.
 	DocStatus *dt.Code `json:"docStatus,omitempty"`
+	// DocStatusElement contains element extensions for docStatus.
+	DocStatusElement *dt.Element `json:"_docStatus,omitempty"`
 	// MasterIdentifier Document identifier as assigned by the source of the document. This identifier is specific to this version of the document. This unique identifier may be used elsewhere to identify this version of ...
 	MasterIdentifier *dt.Identifier `json:"masterIdentifier,omitempty"`
 	// RelatesTo Relationships that this document has with other document references that already exist.
@@ -64,13 +78,29 @@ type DocumentReference struct {
 	Subject *dt.Reference `json:"subject,omitempty"`
 	// Type Specifies the particular kind of document referenced  (e.g. History and Physical, Discharge Summary, Progress Note). This usually equates to the purpose of making the document referenced.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for DocumentReference.
 func (r DocumentReference) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "DocumentReference"
 	type Alias DocumentReference
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for DocumentReference.
@@ -81,160 +111,201 @@ func (r *DocumentReference) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = DocumentReference(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_authenticator", "_author", "_category", "_contained", "_content", "_context", "_custodian", "_date", "_description", "_docStatus", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_masterIdentifier", "_meta", "_modifierExtension", "_relatesTo", "_securityLabel", "_status", "_subject", "_text", "_type", "authenticator", "author", "category", "contained", "content", "context", "custodian", "date", "description", "docStatus", "extension", "id", "identifier", "implicitRules", "language", "masterIdentifier", "meta", "modifierExtension", "relatesTo", "resourceType", "securityLabel", "status", "subject", "text", "type":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // DocumentReferenceBuilder provides a fluent API for constructing DocumentReference resources.
 type DocumentReferenceBuilder struct {
-	resource DocumentReference
+	resource  DocumentReference
+	fieldsSet map[string]bool
 }
 
 // NewDocumentReference creates a new DocumentReferenceBuilder for building a DocumentReference resource.
 func NewDocumentReference() *DocumentReferenceBuilder {
-	return &DocumentReferenceBuilder{resource: DocumentReference{ResourceType: "DocumentReference"}}
+	return &DocumentReferenceBuilder{resource: DocumentReference{ResourceType: "DocumentReference"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *DocumentReferenceBuilder) WithId(v dt.ID) *DocumentReferenceBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *DocumentReferenceBuilder) WithMeta(v dt.Meta) *DocumentReferenceBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *DocumentReferenceBuilder) WithImplicitRules(v dt.URI) *DocumentReferenceBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *DocumentReferenceBuilder) WithLanguage(v dt.Code) *DocumentReferenceBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *DocumentReferenceBuilder) WithText(v dt.Narrative) *DocumentReferenceBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *DocumentReferenceBuilder) WithContained(v json.RawMessage) *DocumentReferenceBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *DocumentReferenceBuilder) WithExtension(v dt.Extension) *DocumentReferenceBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *DocumentReferenceBuilder) WithModifierExtension(v dt.Extension) *DocumentReferenceBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *DocumentReferenceBuilder) WithIdentifier(v dt.Identifier) *DocumentReferenceBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *DocumentReferenceBuilder) WithStatus(v DocumentReferenceStatus) *DocumentReferenceBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAuthenticator sets the authenticator field.
 func (b *DocumentReferenceBuilder) WithAuthenticator(v dt.Reference) *DocumentReferenceBuilder {
 	b.resource.Authenticator = &v
+	b.fieldsSet["authenticator"] = true
 	return b
 }
 
 // WithAuthor adds an item to the author field.
 func (b *DocumentReferenceBuilder) WithAuthor(v dt.Reference) *DocumentReferenceBuilder {
 	b.resource.Author = append(b.resource.Author, v)
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithCategory adds an item to the category field.
 func (b *DocumentReferenceBuilder) WithCategory(v dt.CodeableConcept) *DocumentReferenceBuilder {
 	b.resource.Category = append(b.resource.Category, v)
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithContent adds an item to the content field.
 func (b *DocumentReferenceBuilder) WithContent(v DocumentReferenceContent) *DocumentReferenceBuilder {
 	b.resource.Content = append(b.resource.Content, v)
+	b.fieldsSet["content"] = true
 	return b
 }
 
 // WithContext sets the context field.
 func (b *DocumentReferenceBuilder) WithContext(v DocumentReferenceContext) *DocumentReferenceBuilder {
 	b.resource.Context = &v
+	b.fieldsSet["context"] = true
 	return b
 }
 
 // WithCustodian sets the custodian field.
 func (b *DocumentReferenceBuilder) WithCustodian(v dt.Reference) *DocumentReferenceBuilder {
 	b.resource.Custodian = &v
+	b.fieldsSet["custodian"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *DocumentReferenceBuilder) WithDate(v dt.Instant) *DocumentReferenceBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *DocumentReferenceBuilder) WithDescription(v string) *DocumentReferenceBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithDocStatus sets the docStatus field.
 func (b *DocumentReferenceBuilder) WithDocStatus(v dt.Code) *DocumentReferenceBuilder {
 	b.resource.DocStatus = &v
+	b.fieldsSet["docStatus"] = true
 	return b
 }
 
 // WithMasterIdentifier sets the masterIdentifier field.
 func (b *DocumentReferenceBuilder) WithMasterIdentifier(v dt.Identifier) *DocumentReferenceBuilder {
 	b.resource.MasterIdentifier = &v
+	b.fieldsSet["masterIdentifier"] = true
 	return b
 }
 
 // WithRelatesTo adds an item to the relatesTo field.
 func (b *DocumentReferenceBuilder) WithRelatesTo(v DocumentReferenceRelatesTo) *DocumentReferenceBuilder {
 	b.resource.RelatesTo = append(b.resource.RelatesTo, v)
+	b.fieldsSet["relatesTo"] = true
 	return b
 }
 
 // WithSecurityLabel adds an item to the securityLabel field.
 func (b *DocumentReferenceBuilder) WithSecurityLabel(v dt.CodeableConcept) *DocumentReferenceBuilder {
 	b.resource.SecurityLabel = append(b.resource.SecurityLabel, v)
+	b.fieldsSet["securityLabel"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *DocumentReferenceBuilder) WithSubject(v dt.Reference) *DocumentReferenceBuilder {
 	b.resource.Subject = &v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *DocumentReferenceBuilder) WithType(v dt.CodeableConcept) *DocumentReferenceBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
@@ -242,7 +313,7 @@ func (b *DocumentReferenceBuilder) WithType(v dt.CodeableConcept) *DocumentRefer
 // field (cardinality 1..1) is not set.
 func (b *DocumentReferenceBuilder) Build() (*DocumentReference, error) {
 	var missing []string
-	if len(b.resource.Content) == 0 {
+	if !b.fieldsSet["content"] {
 		missing = append(missing, "content")
 	}
 	if len(missing) > 0 {
@@ -256,6 +327,8 @@ func (b *DocumentReferenceBuilder) Build() (*DocumentReference, error) {
 type DocumentReferenceContent struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -270,6 +343,8 @@ type DocumentReferenceContent struct {
 type DocumentReferenceContext struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -294,12 +369,16 @@ type DocumentReferenceContext struct {
 type DocumentReferenceRelatesTo struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code The type of relationship that this document has with anther document.
 	Code *DocumentReferenceRelatesToCode `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Target The target document of this relationship.
 	Target dt.Reference `json:"target"`
 }

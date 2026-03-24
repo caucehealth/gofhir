@@ -18,12 +18,18 @@ type ImmunizationRecommendation struct {
 	ResourceType string `json:"resourceType"` // Always "ImmunizationRecommendation"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -38,17 +44,35 @@ type ImmunizationRecommendation struct {
 	Authority *dt.Reference `json:"authority,omitempty"`
 	// Date The date the immunization recommendation(s) were created.
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Patient The patient the recommendation(s) are for.
 	Patient dt.Reference `json:"patient"`
 	// Recommendation Vaccine administration recommendations.
 	Recommendation []ImmunizationRecommendationRecommendation `json:"recommendation,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for ImmunizationRecommendation.
 func (r ImmunizationRecommendation) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "ImmunizationRecommendation"
 	type Alias ImmunizationRecommendation
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ImmunizationRecommendation.
@@ -59,94 +83,124 @@ func (r *ImmunizationRecommendation) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ImmunizationRecommendation(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_authority", "_contained", "_date", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_modifierExtension", "_patient", "_recommendation", "_text", "authority", "contained", "date", "extension", "id", "identifier", "implicitRules", "language", "meta", "modifierExtension", "patient", "recommendation", "resourceType", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ImmunizationRecommendationBuilder provides a fluent API for constructing ImmunizationRecommendation resources.
 type ImmunizationRecommendationBuilder struct {
-	resource ImmunizationRecommendation
+	resource  ImmunizationRecommendation
+	fieldsSet map[string]bool
 }
 
 // NewImmunizationRecommendation creates a new ImmunizationRecommendationBuilder for building a ImmunizationRecommendation resource.
 func NewImmunizationRecommendation() *ImmunizationRecommendationBuilder {
-	return &ImmunizationRecommendationBuilder{resource: ImmunizationRecommendation{ResourceType: "ImmunizationRecommendation"}}
+	return &ImmunizationRecommendationBuilder{resource: ImmunizationRecommendation{ResourceType: "ImmunizationRecommendation"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ImmunizationRecommendationBuilder) WithId(v dt.ID) *ImmunizationRecommendationBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ImmunizationRecommendationBuilder) WithMeta(v dt.Meta) *ImmunizationRecommendationBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ImmunizationRecommendationBuilder) WithImplicitRules(v dt.URI) *ImmunizationRecommendationBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ImmunizationRecommendationBuilder) WithLanguage(v dt.Code) *ImmunizationRecommendationBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ImmunizationRecommendationBuilder) WithText(v dt.Narrative) *ImmunizationRecommendationBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ImmunizationRecommendationBuilder) WithContained(v json.RawMessage) *ImmunizationRecommendationBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ImmunizationRecommendationBuilder) WithExtension(v dt.Extension) *ImmunizationRecommendationBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ImmunizationRecommendationBuilder) WithModifierExtension(v dt.Extension) *ImmunizationRecommendationBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ImmunizationRecommendationBuilder) WithIdentifier(v dt.Identifier) *ImmunizationRecommendationBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithAuthority sets the authority field.
 func (b *ImmunizationRecommendationBuilder) WithAuthority(v dt.Reference) *ImmunizationRecommendationBuilder {
 	b.resource.Authority = &v
+	b.fieldsSet["authority"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *ImmunizationRecommendationBuilder) WithDate(v dt.DateTime) *ImmunizationRecommendationBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithPatient sets the patient field.
 func (b *ImmunizationRecommendationBuilder) WithPatient(v dt.Reference) *ImmunizationRecommendationBuilder {
 	b.resource.Patient = v
+	b.fieldsSet["patient"] = true
 	return b
 }
 
 // WithRecommendation adds an item to the recommendation field.
 func (b *ImmunizationRecommendationBuilder) WithRecommendation(v ImmunizationRecommendationRecommendation) *ImmunizationRecommendationBuilder {
 	b.resource.Recommendation = append(b.resource.Recommendation, v)
+	b.fieldsSet["recommendation"] = true
 	return b
 }
 
@@ -154,7 +208,10 @@ func (b *ImmunizationRecommendationBuilder) WithRecommendation(v ImmunizationRec
 // field (cardinality 1..1) is not set.
 func (b *ImmunizationRecommendationBuilder) Build() (*ImmunizationRecommendation, error) {
 	var missing []string
-	if len(b.resource.Recommendation) == 0 {
+	if !b.fieldsSet["patient"] {
+		missing = append(missing, "patient")
+	}
+	if !b.fieldsSet["recommendation"] {
 		missing = append(missing, "recommendation")
 	}
 	if len(missing) > 0 {
@@ -168,6 +225,8 @@ func (b *ImmunizationRecommendationBuilder) Build() (*ImmunizationRecommendation
 type ImmunizationRecommendationDateCriterion struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -176,12 +235,16 @@ type ImmunizationRecommendationDateCriterion struct {
 	Code dt.CodeableConcept `json:"code"`
 	// Value The date whose meaning is specified by dateCriterion.code.
 	Value *dt.DateTime `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *dt.Element `json:"_value,omitempty"`
 }
 
 // ImmunizationRecommendationRecommendation A patient's point-in-time set of recommendations (i.e. forecasting) according to a published schedule with optional supporting justification.
 type ImmunizationRecommendationRecommendation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -192,6 +255,8 @@ type ImmunizationRecommendationRecommendation struct {
 	DateCriterion []ImmunizationRecommendationDateCriterion `json:"dateCriterion,omitempty"`
 	// Description Contains the description about the protocol under which the vaccine was administered.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Dose Nominal position of the recommended dose in a series (e.g. dose 2 is the next recommended dose).
 	Dose *ImmunizationRecommendationRecommendationDose `json:"-"` // polymorphic
 	// ForecastReason The reason for the assigned forecast status.
@@ -200,10 +265,16 @@ type ImmunizationRecommendationRecommendation struct {
 	ForecastStatus dt.CodeableConcept `json:"forecastStatus"`
 	// Series One possible path to achieve presumed immunity against a disease - within the context of an authority.
 	Series *string `json:"series,omitempty"`
+	// SeriesElement contains element extensions for series.
+	SeriesElement *dt.Element `json:"_series,omitempty"`
 	// SeriesDosesPositiveInt The recommended number of doses to achieve immunity.
 	SeriesDosesPositiveInt *float64 `json:"seriesDosesPositiveInt,omitempty"`
+	// SeriesDosesPositiveIntElement contains element extensions for seriesDosesPositiveInt.
+	SeriesDosesPositiveIntElement *dt.Element `json:"_seriesDosesPositiveInt,omitempty"`
 	// SeriesDosesString The recommended number of doses to achieve immunity.
 	SeriesDosesString *string `json:"seriesDosesString,omitempty"`
+	// SeriesDosesStringElement contains element extensions for seriesDosesString.
+	SeriesDosesStringElement *dt.Element `json:"_seriesDosesString,omitempty"`
 	// SupportingImmunization Immunization event history and/or evaluation that supports the status and recommendation.
 	SupportingImmunization []dt.Reference `json:"supportingImmunization,omitempty"`
 	// SupportingPatientInformation Patient Information that supports the status and recommendation.  This includes patient observations, adverse reactions and allergy/intolerance information.

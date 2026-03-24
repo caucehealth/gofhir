@@ -18,21 +18,43 @@ type Parameters struct {
 	ResourceType string `json:"resourceType"` // Always "Parameters"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Parameter A parameter passed to or received from the operation.
 	Parameter []ParametersParameter `json:"parameter,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Parameters.
 func (r Parameters) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Parameters"
 	type Alias Parameters
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Parameters.
@@ -43,46 +65,68 @@ func (r *Parameters) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Parameters(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_id", "_implicitRules", "_language", "_meta", "_parameter", "id", "implicitRules", "language", "meta", "parameter", "resourceType":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ParametersBuilder provides a fluent API for constructing Parameters resources.
 type ParametersBuilder struct {
-	resource Parameters
+	resource  Parameters
+	fieldsSet map[string]bool
 }
 
 // NewParameters creates a new ParametersBuilder for building a Parameters resource.
 func NewParameters() *ParametersBuilder {
-	return &ParametersBuilder{resource: Parameters{ResourceType: "Parameters"}}
+	return &ParametersBuilder{resource: Parameters{ResourceType: "Parameters"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ParametersBuilder) WithId(v dt.ID) *ParametersBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ParametersBuilder) WithMeta(v dt.Meta) *ParametersBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ParametersBuilder) WithImplicitRules(v dt.URI) *ParametersBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ParametersBuilder) WithLanguage(v dt.Code) *ParametersBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithParameter adds an item to the parameter field.
 func (b *ParametersBuilder) WithParameter(v ParametersParameter) *ParametersBuilder {
 	b.resource.Parameter = append(b.resource.Parameter, v)
+	b.fieldsSet["parameter"] = true
 	return b
 }
 
@@ -97,12 +141,16 @@ func (b *ParametersBuilder) Build() (*Parameters, error) {
 type ParametersParameter struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Name The name of the parameter (reference to the operation definition).
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Part A named part of a multi-part parameter.
 	Part []ParametersParameter `json:"part,omitempty"`
 	// Resource If the parameter is a whole resource.

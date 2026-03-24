@@ -18,12 +18,18 @@ type MedicationStatement struct {
 	ResourceType string `json:"resourceType"` // Always "MedicationStatement"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type MedicationStatement struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status A code representing the patient or other source's judgment about the state of the medication used that this statement is about.  Generally, this will be active or completed.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// BasedOn A plan, proposal or order that is fulfilled in whole or in part by this event.
 	BasedOn []dt.Reference `json:"basedOn,omitempty"`
 	// Category Indicates where the medication is expected to be consumed or administered.
@@ -44,6 +52,8 @@ type MedicationStatement struct {
 	Context *dt.Reference `json:"context,omitempty"`
 	// DateAsserted The date when the medication statement was asserted by the information source.
 	DateAsserted *dt.DateTime `json:"dateAsserted,omitempty"`
+	// DateAssertedElement contains element extensions for dateAsserted.
+	DateAssertedElement *dt.Element `json:"_dateAsserted,omitempty"`
 	// DerivedFrom Allows linking the MedicationStatement to the underlying MedicationRequest, or to other information that supports or is used to derive the MedicationStatement.
 	DerivedFrom []dt.Reference `json:"derivedFrom,omitempty"`
 	// Dosage Indicates how the medication is/was or should be taken by the patient.
@@ -66,6 +76,8 @@ type MedicationStatement struct {
 	StatusReason []dt.CodeableConcept `json:"statusReason,omitempty"`
 	// Subject The person, animal or group who is/was taking the medication.
 	Subject dt.Reference `json:"subject"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for MedicationStatement.
@@ -76,7 +88,6 @@ func (r MedicationStatement) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -107,6 +118,9 @@ func (r MedicationStatement) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
 	return json.Marshal(m)
 }
 
@@ -133,112 +147,145 @@ func (r *MedicationStatement) UnmarshalJSON(data []byte) error {
 	if medicationVal.CodeableConcept != nil || medicationVal.Reference != nil {
 		r.Medication = &medicationVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_basedOn", "_category", "_contained", "_context", "_dateAsserted", "_derivedFrom", "_dosage", "_effectiveDateTime", "_effectivePeriod", "_extension", "_id", "_identifier", "_implicitRules", "_informationSource", "_language", "_medicationCodeableConcept", "_medicationReference", "_meta", "_modifierExtension", "_note", "_partOf", "_reasonCode", "_reasonReference", "_status", "_statusReason", "_subject", "_text", "basedOn", "category", "contained", "context", "dateAsserted", "derivedFrom", "dosage", "effectiveDateTime", "effectivePeriod", "extension", "id", "identifier", "implicitRules", "informationSource", "language", "medicationCodeableConcept", "medicationReference", "meta", "modifierExtension", "note", "partOf", "reasonCode", "reasonReference", "resourceType", "status", "statusReason", "subject", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // MedicationStatementBuilder provides a fluent API for constructing MedicationStatement resources.
 type MedicationStatementBuilder struct {
-	resource MedicationStatement
+	resource  MedicationStatement
+	fieldsSet map[string]bool
 }
 
 // NewMedicationStatement creates a new MedicationStatementBuilder for building a MedicationStatement resource.
 func NewMedicationStatement() *MedicationStatementBuilder {
-	return &MedicationStatementBuilder{resource: MedicationStatement{ResourceType: "MedicationStatement"}}
+	return &MedicationStatementBuilder{resource: MedicationStatement{ResourceType: "MedicationStatement"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *MedicationStatementBuilder) WithId(v dt.ID) *MedicationStatementBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *MedicationStatementBuilder) WithMeta(v dt.Meta) *MedicationStatementBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *MedicationStatementBuilder) WithImplicitRules(v dt.URI) *MedicationStatementBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *MedicationStatementBuilder) WithLanguage(v dt.Code) *MedicationStatementBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *MedicationStatementBuilder) WithText(v dt.Narrative) *MedicationStatementBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *MedicationStatementBuilder) WithContained(v json.RawMessage) *MedicationStatementBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *MedicationStatementBuilder) WithExtension(v dt.Extension) *MedicationStatementBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *MedicationStatementBuilder) WithModifierExtension(v dt.Extension) *MedicationStatementBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *MedicationStatementBuilder) WithIdentifier(v dt.Identifier) *MedicationStatementBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *MedicationStatementBuilder) WithStatus(v dt.Code) *MedicationStatementBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithBasedOn adds an item to the basedOn field.
 func (b *MedicationStatementBuilder) WithBasedOn(v dt.Reference) *MedicationStatementBuilder {
 	b.resource.BasedOn = append(b.resource.BasedOn, v)
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithCategory sets the category field.
 func (b *MedicationStatementBuilder) WithCategory(v dt.CodeableConcept) *MedicationStatementBuilder {
 	b.resource.Category = &v
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithContext sets the context field.
 func (b *MedicationStatementBuilder) WithContext(v dt.Reference) *MedicationStatementBuilder {
 	b.resource.Context = &v
+	b.fieldsSet["context"] = true
 	return b
 }
 
 // WithDateAsserted sets the dateAsserted field.
 func (b *MedicationStatementBuilder) WithDateAsserted(v dt.DateTime) *MedicationStatementBuilder {
 	b.resource.DateAsserted = &v
+	b.fieldsSet["dateAsserted"] = true
 	return b
 }
 
 // WithDerivedFrom adds an item to the derivedFrom field.
 func (b *MedicationStatementBuilder) WithDerivedFrom(v dt.Reference) *MedicationStatementBuilder {
 	b.resource.DerivedFrom = append(b.resource.DerivedFrom, v)
+	b.fieldsSet["derivedFrom"] = true
 	return b
 }
 
 // WithDosage adds an item to the dosage field.
 func (b *MedicationStatementBuilder) WithDosage(v dt.Dosage) *MedicationStatementBuilder {
 	b.resource.Dosage = append(b.resource.Dosage, v)
+	b.fieldsSet["dosage"] = true
 	return b
 }
 
@@ -248,6 +295,7 @@ func (b *MedicationStatementBuilder) WithEffectiveDateTime(v string) *Medication
 		b.resource.Effective = &MedicationStatementEffective{}
 	}
 	b.resource.Effective.DateTime = &v
+	b.fieldsSet["effective"] = true
 	return b
 }
 
@@ -257,12 +305,14 @@ func (b *MedicationStatementBuilder) WithEffectivePeriod(v dt.Period) *Medicatio
 		b.resource.Effective = &MedicationStatementEffective{}
 	}
 	b.resource.Effective.Period = &v
+	b.fieldsSet["effective"] = true
 	return b
 }
 
 // WithInformationSource sets the informationSource field.
 func (b *MedicationStatementBuilder) WithInformationSource(v dt.Reference) *MedicationStatementBuilder {
 	b.resource.InformationSource = &v
+	b.fieldsSet["informationSource"] = true
 	return b
 }
 
@@ -272,6 +322,7 @@ func (b *MedicationStatementBuilder) WithMedicationCodeableConcept(v dt.Codeable
 		b.resource.Medication = &MedicationStatementMedication{}
 	}
 	b.resource.Medication.CodeableConcept = &v
+	b.fieldsSet["medication"] = true
 	return b
 }
 
@@ -281,91 +332,64 @@ func (b *MedicationStatementBuilder) WithMedicationReference(v dt.Reference) *Me
 		b.resource.Medication = &MedicationStatementMedication{}
 	}
 	b.resource.Medication.Reference = &v
+	b.fieldsSet["medication"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *MedicationStatementBuilder) WithNote(v dt.Annotation) *MedicationStatementBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithPartOf adds an item to the partOf field.
 func (b *MedicationStatementBuilder) WithPartOf(v dt.Reference) *MedicationStatementBuilder {
 	b.resource.PartOf = append(b.resource.PartOf, v)
+	b.fieldsSet["partOf"] = true
 	return b
 }
 
 // WithReasonCode adds an item to the reasonCode field.
 func (b *MedicationStatementBuilder) WithReasonCode(v dt.CodeableConcept) *MedicationStatementBuilder {
 	b.resource.ReasonCode = append(b.resource.ReasonCode, v)
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithReasonReference adds an item to the reasonReference field.
 func (b *MedicationStatementBuilder) WithReasonReference(v dt.Reference) *MedicationStatementBuilder {
 	b.resource.ReasonReference = append(b.resource.ReasonReference, v)
+	b.fieldsSet["reasonReference"] = true
 	return b
 }
 
 // WithStatusReason adds an item to the statusReason field.
 func (b *MedicationStatementBuilder) WithStatusReason(v dt.CodeableConcept) *MedicationStatementBuilder {
 	b.resource.StatusReason = append(b.resource.StatusReason, v)
+	b.fieldsSet["statusReason"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *MedicationStatementBuilder) WithSubject(v dt.Reference) *MedicationStatementBuilder {
 	b.resource.Subject = v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // Build returns the constructed MedicationStatement. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *MedicationStatementBuilder) Build() (*MedicationStatement, error) {
+	var missing []string
+	if !b.fieldsSet["subject"] {
+		missing = append(missing, "subject")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("MedicationStatement: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
-}
-
-// MedicationStatementMedication represents a polymorphic choice type in FHIR.
-type MedicationStatementMedication struct {
-	CodeableConcept *dt.CodeableConcept `json:"medicationCodeableConcept,omitempty"` // Identifies the medication being administered. This is either a link to a resource representing the details of the medication or a simple attribute carrying a code that identifies the medication fro...
-	Reference       *dt.Reference       `json:"medicationReference,omitempty"`       // Identifies the medication being administered. This is either a link to a resource representing the details of the medication or a simple attribute carrying a code that identifies the medication fro...
-}
-
-// MarshalJSON implements the json.Marshaler interface for MedicationStatementMedication.
-func (v MedicationStatementMedication) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.CodeableConcept != nil {
-		m["medicationCodeableConcept"] = v.CodeableConcept
-	}
-	if v.Reference != nil {
-		m["medicationReference"] = v.Reference
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for MedicationStatementMedication.
-func (v *MedicationStatementMedication) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["medicationCodeableConcept"]; ok {
-		var val dt.CodeableConcept
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling medicationCodeableConcept: %w", err)
-		}
-		v.CodeableConcept = &val
-	}
-	if d, ok := raw["medicationReference"]; ok {
-		var val dt.Reference
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling medicationReference: %w", err)
-		}
-		v.Reference = &val
-	}
-	return nil
 }
 
 // MedicationStatementEffective represents a polymorphic choice type in FHIR.
@@ -405,6 +429,47 @@ func (v *MedicationStatementEffective) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling effectivePeriod: %w", err)
 		}
 		v.Period = &val
+	}
+	return nil
+}
+
+// MedicationStatementMedication represents a polymorphic choice type in FHIR.
+type MedicationStatementMedication struct {
+	CodeableConcept *dt.CodeableConcept `json:"medicationCodeableConcept,omitempty"` // Identifies the medication being administered. This is either a link to a resource representing the details of the medication or a simple attribute carrying a code that identifies the medication fro...
+	Reference       *dt.Reference       `json:"medicationReference,omitempty"`       // Identifies the medication being administered. This is either a link to a resource representing the details of the medication or a simple attribute carrying a code that identifies the medication fro...
+}
+
+// MarshalJSON implements the json.Marshaler interface for MedicationStatementMedication.
+func (v MedicationStatementMedication) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.CodeableConcept != nil {
+		m["medicationCodeableConcept"] = v.CodeableConcept
+	}
+	if v.Reference != nil {
+		m["medicationReference"] = v.Reference
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for MedicationStatementMedication.
+func (v *MedicationStatementMedication) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["medicationCodeableConcept"]; ok {
+		var val dt.CodeableConcept
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling medicationCodeableConcept: %w", err)
+		}
+		v.CodeableConcept = &val
+	}
+	if d, ok := raw["medicationReference"]; ok {
+		var val dt.Reference
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling medicationReference: %w", err)
+		}
+		v.Reference = &val
 	}
 	return nil
 }

@@ -17,12 +17,18 @@ type MedicinalProductAuthorization struct {
 	ResourceType string `json:"resourceType"` // Always "MedicinalProductAuthorization"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -41,10 +47,14 @@ type MedicinalProductAuthorization struct {
 	DataExclusivityPeriod *dt.Period `json:"dataExclusivityPeriod,omitempty"`
 	// DateOfFirstAuthorization The date when the first authorization was granted by a Medicines Regulatory Agency.
 	DateOfFirstAuthorization *dt.DateTime `json:"dateOfFirstAuthorization,omitempty"`
+	// DateOfFirstAuthorizationElement contains element extensions for dateOfFirstAuthorization.
+	DateOfFirstAuthorizationElement *dt.Element `json:"_dateOfFirstAuthorization,omitempty"`
 	// Holder Marketing Authorization Holder.
 	Holder *dt.Reference `json:"holder,omitempty"`
 	// InternationalBirthDate Date of first marketing authorization for a company's new medicinal product in any country in the World.
 	InternationalBirthDate *dt.DateTime `json:"internationalBirthDate,omitempty"`
+	// InternationalBirthDateElement contains element extensions for internationalBirthDate.
+	InternationalBirthDateElement *dt.Element `json:"_internationalBirthDate,omitempty"`
 	// Jurisdiction Jurisdiction within a country.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// JurisdictionalAuthorization Authorization in areas within a country.
@@ -57,19 +67,39 @@ type MedicinalProductAuthorization struct {
 	Regulator *dt.Reference `json:"regulator,omitempty"`
 	// RestoreDate The date when a suspended the marketing or the marketing authorization of the product is anticipated to be restored.
 	RestoreDate *dt.DateTime `json:"restoreDate,omitempty"`
+	// RestoreDateElement contains element extensions for restoreDate.
+	RestoreDateElement *dt.Element `json:"_restoreDate,omitempty"`
 	// StatusDate The date at which the given status has become applicable.
 	StatusDate *dt.DateTime `json:"statusDate,omitempty"`
+	// StatusDateElement contains element extensions for statusDate.
+	StatusDateElement *dt.Element `json:"_statusDate,omitempty"`
 	// Subject The medicinal product that is being authorized.
 	Subject *dt.Reference `json:"subject,omitempty"`
 	// ValidityPeriod The beginning of the time period in which the marketing authorization is in the specific status shall be specified A complete date consisting of day, month and year shall be specified using the ISO...
 	ValidityPeriod *dt.Period `json:"validityPeriod,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for MedicinalProductAuthorization.
 func (r MedicinalProductAuthorization) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "MedicinalProductAuthorization"
 	type Alias MedicinalProductAuthorization
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for MedicinalProductAuthorization.
@@ -80,160 +110,201 @@ func (r *MedicinalProductAuthorization) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = MedicinalProductAuthorization(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contained", "_country", "_dataExclusivityPeriod", "_dateOfFirstAuthorization", "_extension", "_holder", "_id", "_identifier", "_implicitRules", "_internationalBirthDate", "_jurisdiction", "_jurisdictionalAuthorization", "_language", "_legalBasis", "_meta", "_modifierExtension", "_procedure", "_regulator", "_restoreDate", "_status", "_statusDate", "_subject", "_text", "_validityPeriod", "contained", "country", "dataExclusivityPeriod", "dateOfFirstAuthorization", "extension", "holder", "id", "identifier", "implicitRules", "internationalBirthDate", "jurisdiction", "jurisdictionalAuthorization", "language", "legalBasis", "meta", "modifierExtension", "procedure", "regulator", "resourceType", "restoreDate", "status", "statusDate", "subject", "text", "validityPeriod":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // MedicinalProductAuthorizationBuilder provides a fluent API for constructing MedicinalProductAuthorization resources.
 type MedicinalProductAuthorizationBuilder struct {
-	resource MedicinalProductAuthorization
+	resource  MedicinalProductAuthorization
+	fieldsSet map[string]bool
 }
 
 // NewMedicinalProductAuthorization creates a new MedicinalProductAuthorizationBuilder for building a MedicinalProductAuthorization resource.
 func NewMedicinalProductAuthorization() *MedicinalProductAuthorizationBuilder {
-	return &MedicinalProductAuthorizationBuilder{resource: MedicinalProductAuthorization{ResourceType: "MedicinalProductAuthorization"}}
+	return &MedicinalProductAuthorizationBuilder{resource: MedicinalProductAuthorization{ResourceType: "MedicinalProductAuthorization"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *MedicinalProductAuthorizationBuilder) WithId(v dt.ID) *MedicinalProductAuthorizationBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *MedicinalProductAuthorizationBuilder) WithMeta(v dt.Meta) *MedicinalProductAuthorizationBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *MedicinalProductAuthorizationBuilder) WithImplicitRules(v dt.URI) *MedicinalProductAuthorizationBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *MedicinalProductAuthorizationBuilder) WithLanguage(v dt.Code) *MedicinalProductAuthorizationBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *MedicinalProductAuthorizationBuilder) WithText(v dt.Narrative) *MedicinalProductAuthorizationBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *MedicinalProductAuthorizationBuilder) WithContained(v json.RawMessage) *MedicinalProductAuthorizationBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *MedicinalProductAuthorizationBuilder) WithExtension(v dt.Extension) *MedicinalProductAuthorizationBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *MedicinalProductAuthorizationBuilder) WithModifierExtension(v dt.Extension) *MedicinalProductAuthorizationBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *MedicinalProductAuthorizationBuilder) WithIdentifier(v dt.Identifier) *MedicinalProductAuthorizationBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *MedicinalProductAuthorizationBuilder) WithStatus(v dt.CodeableConcept) *MedicinalProductAuthorizationBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithCountry adds an item to the country field.
 func (b *MedicinalProductAuthorizationBuilder) WithCountry(v dt.CodeableConcept) *MedicinalProductAuthorizationBuilder {
 	b.resource.Country = append(b.resource.Country, v)
+	b.fieldsSet["country"] = true
 	return b
 }
 
 // WithDataExclusivityPeriod sets the dataExclusivityPeriod field.
 func (b *MedicinalProductAuthorizationBuilder) WithDataExclusivityPeriod(v dt.Period) *MedicinalProductAuthorizationBuilder {
 	b.resource.DataExclusivityPeriod = &v
+	b.fieldsSet["dataExclusivityPeriod"] = true
 	return b
 }
 
 // WithDateOfFirstAuthorization sets the dateOfFirstAuthorization field.
 func (b *MedicinalProductAuthorizationBuilder) WithDateOfFirstAuthorization(v dt.DateTime) *MedicinalProductAuthorizationBuilder {
 	b.resource.DateOfFirstAuthorization = &v
+	b.fieldsSet["dateOfFirstAuthorization"] = true
 	return b
 }
 
 // WithHolder sets the holder field.
 func (b *MedicinalProductAuthorizationBuilder) WithHolder(v dt.Reference) *MedicinalProductAuthorizationBuilder {
 	b.resource.Holder = &v
+	b.fieldsSet["holder"] = true
 	return b
 }
 
 // WithInternationalBirthDate sets the internationalBirthDate field.
 func (b *MedicinalProductAuthorizationBuilder) WithInternationalBirthDate(v dt.DateTime) *MedicinalProductAuthorizationBuilder {
 	b.resource.InternationalBirthDate = &v
+	b.fieldsSet["internationalBirthDate"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *MedicinalProductAuthorizationBuilder) WithJurisdiction(v dt.CodeableConcept) *MedicinalProductAuthorizationBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithJurisdictionalAuthorization adds an item to the jurisdictionalAuthorization field.
 func (b *MedicinalProductAuthorizationBuilder) WithJurisdictionalAuthorization(v MedicinalProductAuthorizationJurisdictionalAuthorization) *MedicinalProductAuthorizationBuilder {
 	b.resource.JurisdictionalAuthorization = append(b.resource.JurisdictionalAuthorization, v)
+	b.fieldsSet["jurisdictionalAuthorization"] = true
 	return b
 }
 
 // WithLegalBasis sets the legalBasis field.
 func (b *MedicinalProductAuthorizationBuilder) WithLegalBasis(v dt.CodeableConcept) *MedicinalProductAuthorizationBuilder {
 	b.resource.LegalBasis = &v
+	b.fieldsSet["legalBasis"] = true
 	return b
 }
 
 // WithProcedure sets the procedure field.
 func (b *MedicinalProductAuthorizationBuilder) WithProcedure(v MedicinalProductAuthorizationProcedure) *MedicinalProductAuthorizationBuilder {
 	b.resource.Procedure = &v
+	b.fieldsSet["procedure"] = true
 	return b
 }
 
 // WithRegulator sets the regulator field.
 func (b *MedicinalProductAuthorizationBuilder) WithRegulator(v dt.Reference) *MedicinalProductAuthorizationBuilder {
 	b.resource.Regulator = &v
+	b.fieldsSet["regulator"] = true
 	return b
 }
 
 // WithRestoreDate sets the restoreDate field.
 func (b *MedicinalProductAuthorizationBuilder) WithRestoreDate(v dt.DateTime) *MedicinalProductAuthorizationBuilder {
 	b.resource.RestoreDate = &v
+	b.fieldsSet["restoreDate"] = true
 	return b
 }
 
 // WithStatusDate sets the statusDate field.
 func (b *MedicinalProductAuthorizationBuilder) WithStatusDate(v dt.DateTime) *MedicinalProductAuthorizationBuilder {
 	b.resource.StatusDate = &v
+	b.fieldsSet["statusDate"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *MedicinalProductAuthorizationBuilder) WithSubject(v dt.Reference) *MedicinalProductAuthorizationBuilder {
 	b.resource.Subject = &v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithValidityPeriod sets the validityPeriod field.
 func (b *MedicinalProductAuthorizationBuilder) WithValidityPeriod(v dt.Period) *MedicinalProductAuthorizationBuilder {
 	b.resource.ValidityPeriod = &v
+	b.fieldsSet["validityPeriod"] = true
 	return b
 }
 
@@ -248,6 +319,8 @@ func (b *MedicinalProductAuthorizationBuilder) Build() (*MedicinalProductAuthori
 type MedicinalProductAuthorizationJurisdictionalAuthorization struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -268,6 +341,8 @@ type MedicinalProductAuthorizationJurisdictionalAuthorization struct {
 type MedicinalProductAuthorizationProcedure struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -278,6 +353,8 @@ type MedicinalProductAuthorizationProcedure struct {
 	Application []MedicinalProductAuthorizationProcedure `json:"application,omitempty"`
 	// DateDateTime Date of procedure.
 	DateDateTime *string `json:"dateDateTime,omitempty"`
+	// DateDateTimeElement contains element extensions for dateDateTime.
+	DateDateTimeElement *dt.Element `json:"_dateDateTime,omitempty"`
 	// DatePeriod Date of procedure.
 	DatePeriod *dt.Period `json:"datePeriod,omitempty"`
 	// Type Type of procedure.

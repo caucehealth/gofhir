@@ -18,12 +18,18 @@ type MedicationDispense struct {
 	ResourceType string `json:"resourceType"` // Always "MedicationDispense"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type MedicationDispense struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status A code specifying the state of the set of dispense events.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// AuthorizingPrescription Indicates the medication order that is being dispensed against.
 	AuthorizingPrescription []dt.Reference `json:"authorizingPrescription,omitempty"`
 	// Category Indicates the type of medication dispense (for example, where the medication is expected to be consumed or administered (i.e. inpatient or outpatient)).
@@ -80,8 +88,14 @@ type MedicationDispense struct {
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 	// WhenHandedOver The time the dispensed product was provided to the patient or their representative.
 	WhenHandedOver *dt.DateTime `json:"whenHandedOver,omitempty"`
+	// WhenHandedOverElement contains element extensions for whenHandedOver.
+	WhenHandedOverElement *dt.Element `json:"_whenHandedOver,omitempty"`
 	// WhenPrepared The time when the dispensed product was packaged and reviewed.
 	WhenPrepared *dt.DateTime `json:"whenPrepared,omitempty"`
+	// WhenPreparedElement contains element extensions for whenPrepared.
+	WhenPreparedElement *dt.Element `json:"_whenPrepared,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for MedicationDispense.
@@ -92,7 +106,6 @@ func (r MedicationDispense) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -109,6 +122,9 @@ func (r MedicationDispense) MarshalJSON() ([]byte, error) {
 		for k, v := range vm {
 			m[k] = v
 		}
+	}
+	for k, v := range r.Extra {
+		m[k] = v
 	}
 	return json.Marshal(m)
 }
@@ -129,130 +145,166 @@ func (r *MedicationDispense) UnmarshalJSON(data []byte) error {
 	if medicationVal.CodeableConcept != nil || medicationVal.Reference != nil {
 		r.Medication = &medicationVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_authorizingPrescription", "_category", "_contained", "_context", "_daysSupply", "_destination", "_detectedIssue", "_dosageInstruction", "_eventHistory", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_location", "_medicationCodeableConcept", "_medicationReference", "_meta", "_modifierExtension", "_note", "_partOf", "_performer", "_quantity", "_receiver", "_status", "_statusReasonCodeableConcept", "_statusReasonReference", "_subject", "_substitution", "_supportingInformation", "_text", "_type", "_whenHandedOver", "_whenPrepared", "authorizingPrescription", "category", "contained", "context", "daysSupply", "destination", "detectedIssue", "dosageInstruction", "eventHistory", "extension", "id", "identifier", "implicitRules", "language", "location", "medicationCodeableConcept", "medicationReference", "meta", "modifierExtension", "note", "partOf", "performer", "quantity", "receiver", "resourceType", "status", "statusReasonCodeableConcept", "statusReasonReference", "subject", "substitution", "supportingInformation", "text", "type", "whenHandedOver", "whenPrepared":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // MedicationDispenseBuilder provides a fluent API for constructing MedicationDispense resources.
 type MedicationDispenseBuilder struct {
-	resource MedicationDispense
+	resource  MedicationDispense
+	fieldsSet map[string]bool
 }
 
 // NewMedicationDispense creates a new MedicationDispenseBuilder for building a MedicationDispense resource.
 func NewMedicationDispense() *MedicationDispenseBuilder {
-	return &MedicationDispenseBuilder{resource: MedicationDispense{ResourceType: "MedicationDispense"}}
+	return &MedicationDispenseBuilder{resource: MedicationDispense{ResourceType: "MedicationDispense"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *MedicationDispenseBuilder) WithId(v dt.ID) *MedicationDispenseBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *MedicationDispenseBuilder) WithMeta(v dt.Meta) *MedicationDispenseBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *MedicationDispenseBuilder) WithImplicitRules(v dt.URI) *MedicationDispenseBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *MedicationDispenseBuilder) WithLanguage(v dt.Code) *MedicationDispenseBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *MedicationDispenseBuilder) WithText(v dt.Narrative) *MedicationDispenseBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *MedicationDispenseBuilder) WithContained(v json.RawMessage) *MedicationDispenseBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *MedicationDispenseBuilder) WithExtension(v dt.Extension) *MedicationDispenseBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *MedicationDispenseBuilder) WithModifierExtension(v dt.Extension) *MedicationDispenseBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *MedicationDispenseBuilder) WithIdentifier(v dt.Identifier) *MedicationDispenseBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *MedicationDispenseBuilder) WithStatus(v dt.Code) *MedicationDispenseBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAuthorizingPrescription adds an item to the authorizingPrescription field.
 func (b *MedicationDispenseBuilder) WithAuthorizingPrescription(v dt.Reference) *MedicationDispenseBuilder {
 	b.resource.AuthorizingPrescription = append(b.resource.AuthorizingPrescription, v)
+	b.fieldsSet["authorizingPrescription"] = true
 	return b
 }
 
 // WithCategory sets the category field.
 func (b *MedicationDispenseBuilder) WithCategory(v dt.CodeableConcept) *MedicationDispenseBuilder {
 	b.resource.Category = &v
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithContext sets the context field.
 func (b *MedicationDispenseBuilder) WithContext(v dt.Reference) *MedicationDispenseBuilder {
 	b.resource.Context = &v
+	b.fieldsSet["context"] = true
 	return b
 }
 
 // WithDaysSupply sets the daysSupply field.
 func (b *MedicationDispenseBuilder) WithDaysSupply(v dt.Quantity) *MedicationDispenseBuilder {
 	b.resource.DaysSupply = &v
+	b.fieldsSet["daysSupply"] = true
 	return b
 }
 
 // WithDestination sets the destination field.
 func (b *MedicationDispenseBuilder) WithDestination(v dt.Reference) *MedicationDispenseBuilder {
 	b.resource.Destination = &v
+	b.fieldsSet["destination"] = true
 	return b
 }
 
 // WithDetectedIssue adds an item to the detectedIssue field.
 func (b *MedicationDispenseBuilder) WithDetectedIssue(v dt.Reference) *MedicationDispenseBuilder {
 	b.resource.DetectedIssue = append(b.resource.DetectedIssue, v)
+	b.fieldsSet["detectedIssue"] = true
 	return b
 }
 
 // WithDosageInstruction adds an item to the dosageInstruction field.
 func (b *MedicationDispenseBuilder) WithDosageInstruction(v dt.Dosage) *MedicationDispenseBuilder {
 	b.resource.DosageInstruction = append(b.resource.DosageInstruction, v)
+	b.fieldsSet["dosageInstruction"] = true
 	return b
 }
 
 // WithEventHistory adds an item to the eventHistory field.
 func (b *MedicationDispenseBuilder) WithEventHistory(v dt.Reference) *MedicationDispenseBuilder {
 	b.resource.EventHistory = append(b.resource.EventHistory, v)
+	b.fieldsSet["eventHistory"] = true
 	return b
 }
 
 // WithLocation sets the location field.
 func (b *MedicationDispenseBuilder) WithLocation(v dt.Reference) *MedicationDispenseBuilder {
 	b.resource.Location = &v
+	b.fieldsSet["location"] = true
 	return b
 }
 
@@ -262,6 +314,7 @@ func (b *MedicationDispenseBuilder) WithMedicationCodeableConcept(v dt.CodeableC
 		b.resource.Medication = &MedicationDispenseMedication{}
 	}
 	b.resource.Medication.CodeableConcept = &v
+	b.fieldsSet["medication"] = true
 	return b
 }
 
@@ -271,84 +324,98 @@ func (b *MedicationDispenseBuilder) WithMedicationReference(v dt.Reference) *Med
 		b.resource.Medication = &MedicationDispenseMedication{}
 	}
 	b.resource.Medication.Reference = &v
+	b.fieldsSet["medication"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *MedicationDispenseBuilder) WithNote(v dt.Annotation) *MedicationDispenseBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithPartOf adds an item to the partOf field.
 func (b *MedicationDispenseBuilder) WithPartOf(v dt.Reference) *MedicationDispenseBuilder {
 	b.resource.PartOf = append(b.resource.PartOf, v)
+	b.fieldsSet["partOf"] = true
 	return b
 }
 
 // WithPerformer adds an item to the performer field.
 func (b *MedicationDispenseBuilder) WithPerformer(v MedicationDispensePerformer) *MedicationDispenseBuilder {
 	b.resource.Performer = append(b.resource.Performer, v)
+	b.fieldsSet["performer"] = true
 	return b
 }
 
 // WithQuantity sets the quantity field.
 func (b *MedicationDispenseBuilder) WithQuantity(v dt.Quantity) *MedicationDispenseBuilder {
 	b.resource.Quantity = &v
+	b.fieldsSet["quantity"] = true
 	return b
 }
 
 // WithReceiver adds an item to the receiver field.
 func (b *MedicationDispenseBuilder) WithReceiver(v dt.Reference) *MedicationDispenseBuilder {
 	b.resource.Receiver = append(b.resource.Receiver, v)
+	b.fieldsSet["receiver"] = true
 	return b
 }
 
 // WithStatusReasonCodeableConcept sets the statusReasonCodeableConcept field.
 func (b *MedicationDispenseBuilder) WithStatusReasonCodeableConcept(v dt.CodeableConcept) *MedicationDispenseBuilder {
 	b.resource.StatusReasonCodeableConcept = &v
+	b.fieldsSet["statusReasonCodeableConcept"] = true
 	return b
 }
 
 // WithStatusReasonReference sets the statusReasonReference field.
 func (b *MedicationDispenseBuilder) WithStatusReasonReference(v dt.Reference) *MedicationDispenseBuilder {
 	b.resource.StatusReasonReference = &v
+	b.fieldsSet["statusReasonReference"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *MedicationDispenseBuilder) WithSubject(v dt.Reference) *MedicationDispenseBuilder {
 	b.resource.Subject = &v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithSubstitution sets the substitution field.
 func (b *MedicationDispenseBuilder) WithSubstitution(v MedicationDispenseSubstitution) *MedicationDispenseBuilder {
 	b.resource.Substitution = &v
+	b.fieldsSet["substitution"] = true
 	return b
 }
 
 // WithSupportingInformation adds an item to the supportingInformation field.
 func (b *MedicationDispenseBuilder) WithSupportingInformation(v dt.Reference) *MedicationDispenseBuilder {
 	b.resource.SupportingInformation = append(b.resource.SupportingInformation, v)
+	b.fieldsSet["supportingInformation"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *MedicationDispenseBuilder) WithType(v dt.CodeableConcept) *MedicationDispenseBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
 // WithWhenHandedOver sets the whenHandedOver field.
 func (b *MedicationDispenseBuilder) WithWhenHandedOver(v dt.DateTime) *MedicationDispenseBuilder {
 	b.resource.WhenHandedOver = &v
+	b.fieldsSet["whenHandedOver"] = true
 	return b
 }
 
 // WithWhenPrepared sets the whenPrepared field.
 func (b *MedicationDispenseBuilder) WithWhenPrepared(v dt.DateTime) *MedicationDispenseBuilder {
 	b.resource.WhenPrepared = &v
+	b.fieldsSet["whenPrepared"] = true
 	return b
 }
 
@@ -363,6 +430,8 @@ func (b *MedicationDispenseBuilder) Build() (*MedicationDispense, error) {
 type MedicationDispensePerformer struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -377,6 +446,8 @@ type MedicationDispensePerformer struct {
 type MedicationDispenseSubstitution struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -389,6 +460,8 @@ type MedicationDispenseSubstitution struct {
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 	// WasSubstituted True if the dispenser dispensed a different drug or product from what was prescribed.
 	WasSubstituted *bool `json:"wasSubstituted,omitempty"`
+	// WasSubstitutedElement contains element extensions for wasSubstituted.
+	WasSubstitutedElement *dt.Element `json:"_wasSubstituted,omitempty"`
 }
 
 // MedicationDispenseMedication represents a polymorphic choice type in FHIR.

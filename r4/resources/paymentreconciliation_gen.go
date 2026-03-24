@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type PaymentReconciliation struct {
 	ResourceType string `json:"resourceType"` // Always "PaymentReconciliation"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,20 +42,30 @@ type PaymentReconciliation struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the resource instance.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Created The date when the resource was created.
 	Created *dt.DateTime `json:"created,omitempty"`
+	// CreatedElement contains element extensions for created.
+	CreatedElement *dt.Element `json:"_created,omitempty"`
 	// Detail Distribution of the payment amount for a previously acknowledged payable.
 	Detail []PaymentReconciliationDetail `json:"detail,omitempty"`
 	// Disposition A human readable description of the status of the request for the reconciliation.
 	Disposition *string `json:"disposition,omitempty"`
+	// DispositionElement contains element extensions for disposition.
+	DispositionElement *dt.Element `json:"_disposition,omitempty"`
 	// FormCode A code for the form to be used for printing the content.
 	FormCode *dt.CodeableConcept `json:"formCode,omitempty"`
 	// Outcome The outcome of a request for a reconciliation.
 	Outcome *PaymentReconciliationOutcome `json:"outcome,omitempty"`
+	// OutcomeElement contains element extensions for outcome.
+	OutcomeElement *dt.Element `json:"_outcome,omitempty"`
 	// PaymentAmount Total payment amount as indicated on the financial instrument.
 	PaymentAmount dt.Money `json:"paymentAmount"`
 	// PaymentDate The date of payment as indicated on the financial instrument.
 	PaymentDate *dt.Date `json:"paymentDate,omitempty"`
+	// PaymentDateElement contains element extensions for paymentDate.
+	PaymentDateElement *dt.Element `json:"_paymentDate,omitempty"`
 	// PaymentIdentifier Issuer's unique identifier for the payment instrument.
 	PaymentIdentifier *dt.Identifier `json:"paymentIdentifier,omitempty"`
 	// PaymentIssuer The party who generated the payment.
@@ -61,13 +78,29 @@ type PaymentReconciliation struct {
 	Request *dt.Reference `json:"request,omitempty"`
 	// Requestor The practitioner who is responsible for the services rendered to the patient.
 	Requestor *dt.Reference `json:"requestor,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for PaymentReconciliation.
 func (r PaymentReconciliation) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "PaymentReconciliation"
 	type Alias PaymentReconciliation
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for PaymentReconciliation.
@@ -78,160 +111,207 @@ func (r *PaymentReconciliation) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = PaymentReconciliation(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contained", "_created", "_detail", "_disposition", "_extension", "_formCode", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_modifierExtension", "_outcome", "_paymentAmount", "_paymentDate", "_paymentIdentifier", "_paymentIssuer", "_period", "_processNote", "_request", "_requestor", "_status", "_text", "contained", "created", "detail", "disposition", "extension", "formCode", "id", "identifier", "implicitRules", "language", "meta", "modifierExtension", "outcome", "paymentAmount", "paymentDate", "paymentIdentifier", "paymentIssuer", "period", "processNote", "request", "requestor", "resourceType", "status", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // PaymentReconciliationBuilder provides a fluent API for constructing PaymentReconciliation resources.
 type PaymentReconciliationBuilder struct {
-	resource PaymentReconciliation
+	resource  PaymentReconciliation
+	fieldsSet map[string]bool
 }
 
 // NewPaymentReconciliation creates a new PaymentReconciliationBuilder for building a PaymentReconciliation resource.
 func NewPaymentReconciliation() *PaymentReconciliationBuilder {
-	return &PaymentReconciliationBuilder{resource: PaymentReconciliation{ResourceType: "PaymentReconciliation"}}
+	return &PaymentReconciliationBuilder{resource: PaymentReconciliation{ResourceType: "PaymentReconciliation"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *PaymentReconciliationBuilder) WithId(v dt.ID) *PaymentReconciliationBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *PaymentReconciliationBuilder) WithMeta(v dt.Meta) *PaymentReconciliationBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *PaymentReconciliationBuilder) WithImplicitRules(v dt.URI) *PaymentReconciliationBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *PaymentReconciliationBuilder) WithLanguage(v dt.Code) *PaymentReconciliationBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *PaymentReconciliationBuilder) WithText(v dt.Narrative) *PaymentReconciliationBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *PaymentReconciliationBuilder) WithContained(v json.RawMessage) *PaymentReconciliationBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *PaymentReconciliationBuilder) WithExtension(v dt.Extension) *PaymentReconciliationBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *PaymentReconciliationBuilder) WithModifierExtension(v dt.Extension) *PaymentReconciliationBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *PaymentReconciliationBuilder) WithIdentifier(v dt.Identifier) *PaymentReconciliationBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *PaymentReconciliationBuilder) WithStatus(v dt.Code) *PaymentReconciliationBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithCreated sets the created field.
 func (b *PaymentReconciliationBuilder) WithCreated(v dt.DateTime) *PaymentReconciliationBuilder {
 	b.resource.Created = &v
+	b.fieldsSet["created"] = true
 	return b
 }
 
 // WithDetail adds an item to the detail field.
 func (b *PaymentReconciliationBuilder) WithDetail(v PaymentReconciliationDetail) *PaymentReconciliationBuilder {
 	b.resource.Detail = append(b.resource.Detail, v)
+	b.fieldsSet["detail"] = true
 	return b
 }
 
 // WithDisposition sets the disposition field.
 func (b *PaymentReconciliationBuilder) WithDisposition(v string) *PaymentReconciliationBuilder {
 	b.resource.Disposition = &v
+	b.fieldsSet["disposition"] = true
 	return b
 }
 
 // WithFormCode sets the formCode field.
 func (b *PaymentReconciliationBuilder) WithFormCode(v dt.CodeableConcept) *PaymentReconciliationBuilder {
 	b.resource.FormCode = &v
+	b.fieldsSet["formCode"] = true
 	return b
 }
 
 // WithOutcome sets the outcome field.
 func (b *PaymentReconciliationBuilder) WithOutcome(v PaymentReconciliationOutcome) *PaymentReconciliationBuilder {
 	b.resource.Outcome = &v
+	b.fieldsSet["outcome"] = true
 	return b
 }
 
 // WithPaymentAmount sets the paymentAmount field.
 func (b *PaymentReconciliationBuilder) WithPaymentAmount(v dt.Money) *PaymentReconciliationBuilder {
 	b.resource.PaymentAmount = v
+	b.fieldsSet["paymentAmount"] = true
 	return b
 }
 
 // WithPaymentDate sets the paymentDate field.
 func (b *PaymentReconciliationBuilder) WithPaymentDate(v dt.Date) *PaymentReconciliationBuilder {
 	b.resource.PaymentDate = &v
+	b.fieldsSet["paymentDate"] = true
 	return b
 }
 
 // WithPaymentIdentifier sets the paymentIdentifier field.
 func (b *PaymentReconciliationBuilder) WithPaymentIdentifier(v dt.Identifier) *PaymentReconciliationBuilder {
 	b.resource.PaymentIdentifier = &v
+	b.fieldsSet["paymentIdentifier"] = true
 	return b
 }
 
 // WithPaymentIssuer sets the paymentIssuer field.
 func (b *PaymentReconciliationBuilder) WithPaymentIssuer(v dt.Reference) *PaymentReconciliationBuilder {
 	b.resource.PaymentIssuer = &v
+	b.fieldsSet["paymentIssuer"] = true
 	return b
 }
 
 // WithPeriod sets the period field.
 func (b *PaymentReconciliationBuilder) WithPeriod(v dt.Period) *PaymentReconciliationBuilder {
 	b.resource.Period = &v
+	b.fieldsSet["period"] = true
 	return b
 }
 
 // WithProcessNote adds an item to the processNote field.
 func (b *PaymentReconciliationBuilder) WithProcessNote(v PaymentReconciliationProcessNote) *PaymentReconciliationBuilder {
 	b.resource.ProcessNote = append(b.resource.ProcessNote, v)
+	b.fieldsSet["processNote"] = true
 	return b
 }
 
 // WithRequest sets the request field.
 func (b *PaymentReconciliationBuilder) WithRequest(v dt.Reference) *PaymentReconciliationBuilder {
 	b.resource.Request = &v
+	b.fieldsSet["request"] = true
 	return b
 }
 
 // WithRequestor sets the requestor field.
 func (b *PaymentReconciliationBuilder) WithRequestor(v dt.Reference) *PaymentReconciliationBuilder {
 	b.resource.Requestor = &v
+	b.fieldsSet["requestor"] = true
 	return b
 }
 
 // Build returns the constructed PaymentReconciliation. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *PaymentReconciliationBuilder) Build() (*PaymentReconciliation, error) {
+	var missing []string
+	if !b.fieldsSet["paymentAmount"] {
+		missing = append(missing, "paymentAmount")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("PaymentReconciliation: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -240,6 +320,8 @@ func (b *PaymentReconciliationBuilder) Build() (*PaymentReconciliation, error) {
 type PaymentReconciliationDetail struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -250,6 +332,8 @@ type PaymentReconciliationDetail struct {
 	Amount *dt.Money `json:"amount,omitempty"`
 	// Date The date from the response resource containing a commitment to pay.
 	Date *dt.Date `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Payee The party which is receiving the payment.
 	Payee *dt.Reference `json:"payee,omitempty"`
 	// Predecessor Unique identifier for the prior payment item for the referenced payable.
@@ -270,12 +354,18 @@ type PaymentReconciliationDetail struct {
 type PaymentReconciliationProcessNote struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Text The explanation or description associated with the processing.
 	Text *string `json:"text,omitempty"`
+	// TextElement contains element extensions for text.
+	TextElement *dt.Element `json:"_text,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Type The business purpose of the note text.
 	Type *PaymentReconciliationProcessNoteType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }

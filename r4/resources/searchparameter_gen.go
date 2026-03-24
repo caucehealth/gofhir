@@ -17,12 +17,18 @@ type SearchParameter struct {
 	ResourceType string `json:"resourceType"` // Always "SearchParameter"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -33,63 +39,123 @@ type SearchParameter struct {
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The status of this search parameter. Enables tracking the life-cycle of the content.
 	Status *SearchParameterStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Base The base resource type(s) that this search parameter can be used against.
 	Base []dt.Code `json:"base,omitempty"`
+	// BaseElement contains element extensions for each base.
+	BaseElement []dt.Element `json:"_base,omitempty"`
 	// Chain Contains the names of any search parameters which may be chained to the containing search parameter. Chained parameters may be added to search parameters of type reference and specify that resource...
 	Chain []string `json:"chain,omitempty"`
+	// ChainElement contains element extensions for each chain.
+	ChainElement []dt.Element `json:"_chain,omitempty"`
 	// Code The code used in the URL or the parameter name in a parameters resource for this search parameter.
 	Code *dt.Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Comparator Comparators supported for the search parameter.
 	Comparator []SearchParameterComparator `json:"comparator,omitempty"`
+	// ComparatorElement contains element extensions for each comparator.
+	ComparatorElement []dt.Element `json:"_comparator,omitempty"`
 	// Component Used to define the parts of a composite search parameter.
 	Component []SearchParameterComponent `json:"component,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Date The date  (and optionally time) when the search parameter was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// DerivedFrom Where this search parameter is originally defined. If a derivedFrom is provided, then the details in the search parameter must be consistent with the definition from which it is defined. i.e. the p...
 	DerivedFrom *dt.Canonical `json:"derivedFrom,omitempty"`
+	// DerivedFromElement contains element extensions for derivedFrom.
+	DerivedFromElement *dt.Element `json:"_derivedFrom,omitempty"`
 	// Description And how it used.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Experimental A Boolean value to indicate that this search parameter is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// Expression A FHIRPath expression that returns a set of elements for the search parameter.
 	Expression *string `json:"expression,omitempty"`
+	// ExpressionElement contains element extensions for expression.
+	ExpressionElement *dt.Element `json:"_expression,omitempty"`
 	// Jurisdiction A legal or geographic region in which the search parameter is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Modifier A modifier supported for the search parameter.
 	Modifier []SearchParameterModifier `json:"modifier,omitempty"`
+	// ModifierElement contains element extensions for each modifier.
+	ModifierElement []dt.Element `json:"_modifier,omitempty"`
 	// MultipleAnd Whether multiple parameters are allowed - e.g. more than one parameter with the same name. The search matches if all the parameters match.
 	MultipleAnd *bool `json:"multipleAnd,omitempty"`
+	// MultipleAndElement contains element extensions for multipleAnd.
+	MultipleAndElement *dt.Element `json:"_multipleAnd,omitempty"`
 	// MultipleOr Whether multiple values are allowed for each time the parameter exists. Values are separated by commas, and the parameter matches if any of the values match.
 	MultipleOr *bool `json:"multipleOr,omitempty"`
+	// MultipleOrElement contains element extensions for multipleOr.
+	MultipleOrElement *dt.Element `json:"_multipleOr,omitempty"`
 	// Name A natural language name identifying the search parameter. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Publisher The name of the organization or individual that published the search parameter.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Purpose Explanation of why this search parameter is needed and why it has been designed as it has.
 	Purpose *dt.Markdown `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for purpose.
+	PurposeElement *dt.Element `json:"_purpose,omitempty"`
 	// Target Types of resource (if a resource is referenced).
 	Target []dt.Code `json:"target,omitempty"`
+	// TargetElement contains element extensions for each target.
+	TargetElement []dt.Element `json:"_target,omitempty"`
 	// Type The type of value that a search parameter may contain, and how the content is interpreted.
 	Type *SearchParameterType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 	// Url An absolute URI that is used to identify this search parameter when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally ...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the search parameter when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the search pa...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
 	// Xpath An XPath expression that returns a set of elements for the search parameter.
 	Xpath *string `json:"xpath,omitempty"`
+	// XpathElement contains element extensions for xpath.
+	XpathElement *dt.Element `json:"_xpath,omitempty"`
 	// XpathUsage How the search parameter relates to the set of elements returned by evaluating the xpath query.
 	XpathUsage *SearchParameterXpathUsage `json:"xpathUsage,omitempty"`
+	// XpathUsageElement contains element extensions for xpathUsage.
+	XpathUsageElement *dt.Element `json:"_xpathUsage,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for SearchParameter.
 func (r SearchParameter) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "SearchParameter"
 	type Alias SearchParameter
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for SearchParameter.
@@ -100,220 +166,271 @@ func (r *SearchParameter) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = SearchParameter(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_base", "_chain", "_code", "_comparator", "_component", "_contact", "_contained", "_date", "_derivedFrom", "_description", "_experimental", "_expression", "_extension", "_id", "_implicitRules", "_jurisdiction", "_language", "_meta", "_modifier", "_modifierExtension", "_multipleAnd", "_multipleOr", "_name", "_publisher", "_purpose", "_status", "_target", "_text", "_type", "_url", "_useContext", "_version", "_xpath", "_xpathUsage", "base", "chain", "code", "comparator", "component", "contact", "contained", "date", "derivedFrom", "description", "experimental", "expression", "extension", "id", "implicitRules", "jurisdiction", "language", "meta", "modifier", "modifierExtension", "multipleAnd", "multipleOr", "name", "publisher", "purpose", "resourceType", "status", "target", "text", "type", "url", "useContext", "version", "xpath", "xpathUsage":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // SearchParameterBuilder provides a fluent API for constructing SearchParameter resources.
 type SearchParameterBuilder struct {
-	resource SearchParameter
+	resource  SearchParameter
+	fieldsSet map[string]bool
 }
 
 // NewSearchParameter creates a new SearchParameterBuilder for building a SearchParameter resource.
 func NewSearchParameter() *SearchParameterBuilder {
-	return &SearchParameterBuilder{resource: SearchParameter{ResourceType: "SearchParameter"}}
+	return &SearchParameterBuilder{resource: SearchParameter{ResourceType: "SearchParameter"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *SearchParameterBuilder) WithId(v dt.ID) *SearchParameterBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *SearchParameterBuilder) WithMeta(v dt.Meta) *SearchParameterBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *SearchParameterBuilder) WithImplicitRules(v dt.URI) *SearchParameterBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *SearchParameterBuilder) WithLanguage(v dt.Code) *SearchParameterBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *SearchParameterBuilder) WithText(v dt.Narrative) *SearchParameterBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *SearchParameterBuilder) WithContained(v json.RawMessage) *SearchParameterBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *SearchParameterBuilder) WithExtension(v dt.Extension) *SearchParameterBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *SearchParameterBuilder) WithModifierExtension(v dt.Extension) *SearchParameterBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *SearchParameterBuilder) WithStatus(v SearchParameterStatus) *SearchParameterBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithBase adds an item to the base field.
 func (b *SearchParameterBuilder) WithBase(v dt.Code) *SearchParameterBuilder {
 	b.resource.Base = append(b.resource.Base, v)
+	b.fieldsSet["base"] = true
 	return b
 }
 
 // WithChain adds an item to the chain field.
 func (b *SearchParameterBuilder) WithChain(v string) *SearchParameterBuilder {
 	b.resource.Chain = append(b.resource.Chain, v)
+	b.fieldsSet["chain"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *SearchParameterBuilder) WithCode(v dt.Code) *SearchParameterBuilder {
 	b.resource.Code = &v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithComparator adds an item to the comparator field.
 func (b *SearchParameterBuilder) WithComparator(v SearchParameterComparator) *SearchParameterBuilder {
 	b.resource.Comparator = append(b.resource.Comparator, v)
+	b.fieldsSet["comparator"] = true
 	return b
 }
 
 // WithComponent adds an item to the component field.
 func (b *SearchParameterBuilder) WithComponent(v SearchParameterComponent) *SearchParameterBuilder {
 	b.resource.Component = append(b.resource.Component, v)
+	b.fieldsSet["component"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *SearchParameterBuilder) WithContact(v dt.ContactDetail) *SearchParameterBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *SearchParameterBuilder) WithDate(v dt.DateTime) *SearchParameterBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDerivedFrom sets the derivedFrom field.
 func (b *SearchParameterBuilder) WithDerivedFrom(v dt.Canonical) *SearchParameterBuilder {
 	b.resource.DerivedFrom = &v
+	b.fieldsSet["derivedFrom"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *SearchParameterBuilder) WithDescription(v dt.Markdown) *SearchParameterBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *SearchParameterBuilder) WithExperimental(v bool) *SearchParameterBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithExpression sets the expression field.
 func (b *SearchParameterBuilder) WithExpression(v string) *SearchParameterBuilder {
 	b.resource.Expression = &v
+	b.fieldsSet["expression"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *SearchParameterBuilder) WithJurisdiction(v dt.CodeableConcept) *SearchParameterBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithModifier adds an item to the modifier field.
 func (b *SearchParameterBuilder) WithModifier(v SearchParameterModifier) *SearchParameterBuilder {
 	b.resource.Modifier = append(b.resource.Modifier, v)
+	b.fieldsSet["modifier"] = true
 	return b
 }
 
 // WithMultipleAnd sets the multipleAnd field.
 func (b *SearchParameterBuilder) WithMultipleAnd(v bool) *SearchParameterBuilder {
 	b.resource.MultipleAnd = &v
+	b.fieldsSet["multipleAnd"] = true
 	return b
 }
 
 // WithMultipleOr sets the multipleOr field.
 func (b *SearchParameterBuilder) WithMultipleOr(v bool) *SearchParameterBuilder {
 	b.resource.MultipleOr = &v
+	b.fieldsSet["multipleOr"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *SearchParameterBuilder) WithName(v string) *SearchParameterBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *SearchParameterBuilder) WithPublisher(v string) *SearchParameterBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithPurpose sets the purpose field.
 func (b *SearchParameterBuilder) WithPurpose(v dt.Markdown) *SearchParameterBuilder {
 	b.resource.Purpose = &v
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
 // WithTarget adds an item to the target field.
 func (b *SearchParameterBuilder) WithTarget(v dt.Code) *SearchParameterBuilder {
 	b.resource.Target = append(b.resource.Target, v)
+	b.fieldsSet["target"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *SearchParameterBuilder) WithType(v SearchParameterType) *SearchParameterBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *SearchParameterBuilder) WithUrl(v dt.URI) *SearchParameterBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *SearchParameterBuilder) WithUseContext(v dt.UsageContext) *SearchParameterBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *SearchParameterBuilder) WithVersion(v string) *SearchParameterBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
 // WithXpath sets the xpath field.
 func (b *SearchParameterBuilder) WithXpath(v string) *SearchParameterBuilder {
 	b.resource.Xpath = &v
+	b.fieldsSet["xpath"] = true
 	return b
 }
 
 // WithXpathUsage sets the xpathUsage field.
 func (b *SearchParameterBuilder) WithXpathUsage(v SearchParameterXpathUsage) *SearchParameterBuilder {
 	b.resource.XpathUsage = &v
+	b.fieldsSet["xpathUsage"] = true
 	return b
 }
 
@@ -328,12 +445,18 @@ func (b *SearchParameterBuilder) Build() (*SearchParameter, error) {
 type SearchParameterComponent struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Definition The definition of the search parameter that describes this part.
 	Definition dt.Canonical `json:"definition"`
+	// DefinitionElement contains element extensions for definition.
+	DefinitionElement *dt.Element `json:"_definition,omitempty"`
 	// Expression A sub-expression that defines how to extract values for this component from the output of the main SearchParameter.expression.
 	Expression *string `json:"expression,omitempty"`
+	// ExpressionElement contains element extensions for expression.
+	ExpressionElement *dt.Element `json:"_expression,omitempty"`
 }

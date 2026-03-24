@@ -18,12 +18,18 @@ type Device struct {
 	ResourceType string `json:"resourceType"` // Always "Device"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type Device struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Status of the Device availability.
 	Status *DeviceStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Contact Contact details for an organization or a particular human that is responsible for the device.
 	Contact []dt.ContactPoint `json:"contact,omitempty"`
 	// Definition The reference to the definition for the device.
@@ -44,18 +52,30 @@ type Device struct {
 	DeviceName []DeviceDeviceName `json:"deviceName,omitempty"`
 	// DistinctIdentifier The distinct identification string as required by regulation for a human cell, tissue, or cellular and tissue-based product.
 	DistinctIdentifier *string `json:"distinctIdentifier,omitempty"`
+	// DistinctIdentifierElement contains element extensions for distinctIdentifier.
+	DistinctIdentifierElement *dt.Element `json:"_distinctIdentifier,omitempty"`
 	// ExpirationDate The date and time beyond which this device is no longer valid or should not be used (if applicable).
 	ExpirationDate *dt.DateTime `json:"expirationDate,omitempty"`
+	// ExpirationDateElement contains element extensions for expirationDate.
+	ExpirationDateElement *dt.Element `json:"_expirationDate,omitempty"`
 	// Location The place where the device can be found.
 	Location *dt.Reference `json:"location,omitempty"`
 	// LotNumber Lot number assigned by the manufacturer.
 	LotNumber *string `json:"lotNumber,omitempty"`
+	// LotNumberElement contains element extensions for lotNumber.
+	LotNumberElement *dt.Element `json:"_lotNumber,omitempty"`
 	// ManufactureDate The date and time when the device was manufactured.
 	ManufactureDate *dt.DateTime `json:"manufactureDate,omitempty"`
+	// ManufactureDateElement contains element extensions for manufactureDate.
+	ManufactureDateElement *dt.Element `json:"_manufactureDate,omitempty"`
 	// Manufacturer A name of the manufacturer.
 	Manufacturer *string `json:"manufacturer,omitempty"`
+	// ManufacturerElement contains element extensions for manufacturer.
+	ManufacturerElement *dt.Element `json:"_manufacturer,omitempty"`
 	// ModelNumber The model number for the device.
 	ModelNumber *string `json:"modelNumber,omitempty"`
+	// ModelNumberElement contains element extensions for modelNumber.
+	ModelNumberElement *dt.Element `json:"_modelNumber,omitempty"`
 	// Note Descriptive information, usage information or implantation information that is not captured in an existing element.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// Owner An organization that is responsible for the provision and ongoing maintenance of the device.
@@ -64,6 +84,8 @@ type Device struct {
 	Parent *dt.Reference `json:"parent,omitempty"`
 	// PartNumber The part number of the device.
 	PartNumber *string `json:"partNumber,omitempty"`
+	// PartNumberElement contains element extensions for partNumber.
+	PartNumberElement *dt.Element `json:"_partNumber,omitempty"`
 	// Patient Patient information, If the device is affixed to a person.
 	Patient *dt.Reference `json:"patient,omitempty"`
 	// Property The actual configuration settings of a device as it actually operates, e.g., regulation status, time properties.
@@ -72,6 +94,8 @@ type Device struct {
 	Safety []dt.CodeableConcept `json:"safety,omitempty"`
 	// SerialNumber The serial number assigned by the organization when the device was manufactured.
 	SerialNumber *string `json:"serialNumber,omitempty"`
+	// SerialNumberElement contains element extensions for serialNumber.
+	SerialNumberElement *dt.Element `json:"_serialNumber,omitempty"`
 	// Specialization The capabilities supported on a  device, the standards to which the device conforms for a particular purpose, and used for the communication.
 	Specialization []DeviceSpecialization `json:"specialization,omitempty"`
 	// StatusReason Reason for the dtatus of the Device availability.
@@ -82,15 +106,33 @@ type Device struct {
 	UdiCarrier []DeviceUdiCarrier `json:"udiCarrier,omitempty"`
 	// Url A network address on which the device may be contacted directly.
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// Version The actual design of the device or software version running on the device.
 	Version []DeviceVersion `json:"version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Device.
 func (r Device) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Device"
 	type Alias Device
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Device.
@@ -101,220 +143,271 @@ func (r *Device) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Device(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contact", "_contained", "_definition", "_deviceName", "_distinctIdentifier", "_expirationDate", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_location", "_lotNumber", "_manufactureDate", "_manufacturer", "_meta", "_modelNumber", "_modifierExtension", "_note", "_owner", "_parent", "_partNumber", "_patient", "_property", "_safety", "_serialNumber", "_specialization", "_status", "_statusReason", "_text", "_type", "_udiCarrier", "_url", "_version", "contact", "contained", "definition", "deviceName", "distinctIdentifier", "expirationDate", "extension", "id", "identifier", "implicitRules", "language", "location", "lotNumber", "manufactureDate", "manufacturer", "meta", "modelNumber", "modifierExtension", "note", "owner", "parent", "partNumber", "patient", "property", "resourceType", "safety", "serialNumber", "specialization", "status", "statusReason", "text", "type", "udiCarrier", "url", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // DeviceBuilder provides a fluent API for constructing Device resources.
 type DeviceBuilder struct {
-	resource Device
+	resource  Device
+	fieldsSet map[string]bool
 }
 
 // NewDevice creates a new DeviceBuilder for building a Device resource.
 func NewDevice() *DeviceBuilder {
-	return &DeviceBuilder{resource: Device{ResourceType: "Device"}}
+	return &DeviceBuilder{resource: Device{ResourceType: "Device"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *DeviceBuilder) WithId(v dt.ID) *DeviceBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *DeviceBuilder) WithMeta(v dt.Meta) *DeviceBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *DeviceBuilder) WithImplicitRules(v dt.URI) *DeviceBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *DeviceBuilder) WithLanguage(v dt.Code) *DeviceBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *DeviceBuilder) WithText(v dt.Narrative) *DeviceBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *DeviceBuilder) WithContained(v json.RawMessage) *DeviceBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *DeviceBuilder) WithExtension(v dt.Extension) *DeviceBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *DeviceBuilder) WithModifierExtension(v dt.Extension) *DeviceBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *DeviceBuilder) WithIdentifier(v dt.Identifier) *DeviceBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *DeviceBuilder) WithStatus(v DeviceStatus) *DeviceBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *DeviceBuilder) WithContact(v dt.ContactPoint) *DeviceBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithDefinition sets the definition field.
 func (b *DeviceBuilder) WithDefinition(v dt.Reference) *DeviceBuilder {
 	b.resource.Definition = &v
+	b.fieldsSet["definition"] = true
 	return b
 }
 
 // WithDeviceName adds an item to the deviceName field.
 func (b *DeviceBuilder) WithDeviceName(v DeviceDeviceName) *DeviceBuilder {
 	b.resource.DeviceName = append(b.resource.DeviceName, v)
+	b.fieldsSet["deviceName"] = true
 	return b
 }
 
 // WithDistinctIdentifier sets the distinctIdentifier field.
 func (b *DeviceBuilder) WithDistinctIdentifier(v string) *DeviceBuilder {
 	b.resource.DistinctIdentifier = &v
+	b.fieldsSet["distinctIdentifier"] = true
 	return b
 }
 
 // WithExpirationDate sets the expirationDate field.
 func (b *DeviceBuilder) WithExpirationDate(v dt.DateTime) *DeviceBuilder {
 	b.resource.ExpirationDate = &v
+	b.fieldsSet["expirationDate"] = true
 	return b
 }
 
 // WithLocation sets the location field.
 func (b *DeviceBuilder) WithLocation(v dt.Reference) *DeviceBuilder {
 	b.resource.Location = &v
+	b.fieldsSet["location"] = true
 	return b
 }
 
 // WithLotNumber sets the lotNumber field.
 func (b *DeviceBuilder) WithLotNumber(v string) *DeviceBuilder {
 	b.resource.LotNumber = &v
+	b.fieldsSet["lotNumber"] = true
 	return b
 }
 
 // WithManufactureDate sets the manufactureDate field.
 func (b *DeviceBuilder) WithManufactureDate(v dt.DateTime) *DeviceBuilder {
 	b.resource.ManufactureDate = &v
+	b.fieldsSet["manufactureDate"] = true
 	return b
 }
 
 // WithManufacturer sets the manufacturer field.
 func (b *DeviceBuilder) WithManufacturer(v string) *DeviceBuilder {
 	b.resource.Manufacturer = &v
+	b.fieldsSet["manufacturer"] = true
 	return b
 }
 
 // WithModelNumber sets the modelNumber field.
 func (b *DeviceBuilder) WithModelNumber(v string) *DeviceBuilder {
 	b.resource.ModelNumber = &v
+	b.fieldsSet["modelNumber"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *DeviceBuilder) WithNote(v dt.Annotation) *DeviceBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithOwner sets the owner field.
 func (b *DeviceBuilder) WithOwner(v dt.Reference) *DeviceBuilder {
 	b.resource.Owner = &v
+	b.fieldsSet["owner"] = true
 	return b
 }
 
 // WithParent sets the parent field.
 func (b *DeviceBuilder) WithParent(v dt.Reference) *DeviceBuilder {
 	b.resource.Parent = &v
+	b.fieldsSet["parent"] = true
 	return b
 }
 
 // WithPartNumber sets the partNumber field.
 func (b *DeviceBuilder) WithPartNumber(v string) *DeviceBuilder {
 	b.resource.PartNumber = &v
+	b.fieldsSet["partNumber"] = true
 	return b
 }
 
 // WithPatient sets the patient field.
 func (b *DeviceBuilder) WithPatient(v dt.Reference) *DeviceBuilder {
 	b.resource.Patient = &v
+	b.fieldsSet["patient"] = true
 	return b
 }
 
 // WithProperty adds an item to the property field.
 func (b *DeviceBuilder) WithProperty(v DeviceProperty) *DeviceBuilder {
 	b.resource.Property = append(b.resource.Property, v)
+	b.fieldsSet["property"] = true
 	return b
 }
 
 // WithSafety adds an item to the safety field.
 func (b *DeviceBuilder) WithSafety(v dt.CodeableConcept) *DeviceBuilder {
 	b.resource.Safety = append(b.resource.Safety, v)
+	b.fieldsSet["safety"] = true
 	return b
 }
 
 // WithSerialNumber sets the serialNumber field.
 func (b *DeviceBuilder) WithSerialNumber(v string) *DeviceBuilder {
 	b.resource.SerialNumber = &v
+	b.fieldsSet["serialNumber"] = true
 	return b
 }
 
 // WithSpecialization adds an item to the specialization field.
 func (b *DeviceBuilder) WithSpecialization(v DeviceSpecialization) *DeviceBuilder {
 	b.resource.Specialization = append(b.resource.Specialization, v)
+	b.fieldsSet["specialization"] = true
 	return b
 }
 
 // WithStatusReason adds an item to the statusReason field.
 func (b *DeviceBuilder) WithStatusReason(v dt.CodeableConcept) *DeviceBuilder {
 	b.resource.StatusReason = append(b.resource.StatusReason, v)
+	b.fieldsSet["statusReason"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *DeviceBuilder) WithType(v dt.CodeableConcept) *DeviceBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
 // WithUdiCarrier adds an item to the udiCarrier field.
 func (b *DeviceBuilder) WithUdiCarrier(v DeviceUdiCarrier) *DeviceBuilder {
 	b.resource.UdiCarrier = append(b.resource.UdiCarrier, v)
+	b.fieldsSet["udiCarrier"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *DeviceBuilder) WithUrl(v dt.URI) *DeviceBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithVersion adds an item to the version field.
 func (b *DeviceBuilder) WithVersion(v DeviceVersion) *DeviceBuilder {
 	b.resource.Version = append(b.resource.Version, v)
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -329,20 +422,28 @@ func (b *DeviceBuilder) Build() (*Device, error) {
 type DeviceDeviceName struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Name The name of the device.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Type The type of deviceName. UDILabelName | UserFriendlyName | PatientReportedName | ManufactureDeviceName | ModelName.
 	Type *DeviceDeviceNameType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }
 
 // DeviceProperty A type of a manufactured item that is used in the provision of healthcare without being substantially changed through that activity. The device may be a medical or non-medical device.
 type DeviceProperty struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -443,6 +544,8 @@ func (v *DevicePropertyValue) UnmarshalJSON(data []byte) error {
 type DeviceSpecialization struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -451,34 +554,52 @@ type DeviceSpecialization struct {
 	SystemType dt.CodeableConcept `json:"systemType"`
 	// Version The version of the standard that is used to operate and communicate.
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
 }
 
 // DeviceUdiCarrier A type of a manufactured item that is used in the provision of healthcare without being substantially changed through that activity. The device may be a medical or non-medical device.
 type DeviceUdiCarrier struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// CarrierAIDC The full UDI carrier of the Automatic Identification and Data Capture (AIDC) technology representation of the barcode string as printed on the packaging of the device - e.g., a barcode or RFID.   B...
 	CarrierAIDC []byte `json:"carrierAIDC,omitempty"`
+	// CarrierAIDCElement contains element extensions for carrierAIDC.
+	CarrierAIDCElement *dt.Element `json:"_carrierAIDC,omitempty"`
 	// CarrierHRF The full UDI carrier as the human readable form (HRF) representation of the barcode string as printed on the packaging of the device.
 	CarrierHRF *string `json:"carrierHRF,omitempty"`
+	// CarrierHRFElement contains element extensions for carrierHRF.
+	CarrierHRFElement *dt.Element `json:"_carrierHRF,omitempty"`
 	// DeviceIdentifier The device identifier (DI) is a mandatory, fixed portion of a UDI that identifies the labeler and the specific version or model of a device.
 	DeviceIdentifier *string `json:"deviceIdentifier,omitempty"`
+	// DeviceIdentifierElement contains element extensions for deviceIdentifier.
+	DeviceIdentifierElement *dt.Element `json:"_deviceIdentifier,omitempty"`
 	// EntryType A coded entry to indicate how the data was entered.
 	EntryType *DeviceUdiCarrierEntryType `json:"entryType,omitempty"`
+	// EntryTypeElement contains element extensions for entryType.
+	EntryTypeElement *dt.Element `json:"_entryType,omitempty"`
 	// Issuer Organization that is charged with issuing UDIs for devices.  For example, the US FDA issuers include : 1) GS1:  http://hl7.org/fhir/NamingSystem/gs1-di,  2) HIBCC: http://hl7.org/fhir/NamingSystem/...
 	Issuer *dt.URI `json:"issuer,omitempty"`
+	// IssuerElement contains element extensions for issuer.
+	IssuerElement *dt.Element `json:"_issuer,omitempty"`
 	// Jurisdiction The identity of the authoritative source for UDI generation within a  jurisdiction.  All UDIs are globally unique within a single namespace with the appropriate repository uri as the system.  For e...
 	Jurisdiction *dt.URI `json:"jurisdiction,omitempty"`
+	// JurisdictionElement contains element extensions for jurisdiction.
+	JurisdictionElement *dt.Element `json:"_jurisdiction,omitempty"`
 }
 
 // DeviceVersion A type of a manufactured item that is used in the provision of healthcare without being substantially changed through that activity. The device may be a medical or non-medical device.
 type DeviceVersion struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -489,4 +610,6 @@ type DeviceVersion struct {
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 	// Value The version text.
 	Value *string `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *dt.Element `json:"_value,omitempty"`
 }

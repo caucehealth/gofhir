@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type Media struct {
 	ResourceType string `json:"resourceType"` // Always "Media"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,6 +42,8 @@ type Media struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The current state of the {{title}}.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// BasedOn A procedure that is fulfilled in whole or in part by the creation of this media.
 	BasedOn []dt.Reference `json:"basedOn,omitempty"`
 	// BodySite Indicates the site on the subject's body where the observation was made (i.e. the target site).
@@ -43,22 +52,34 @@ type Media struct {
 	Content dt.Attachment `json:"content"`
 	// CreatedDateTime The date and time(s) at which the media was collected.
 	CreatedDateTime *string `json:"createdDateTime,omitempty"`
+	// CreatedDateTimeElement contains element extensions for createdDateTime.
+	CreatedDateTimeElement *dt.Element `json:"_createdDateTime,omitempty"`
 	// CreatedPeriod The date and time(s) at which the media was collected.
 	CreatedPeriod *dt.Period `json:"createdPeriod,omitempty"`
 	// Device The device used to collect the media.
 	Device *dt.Reference `json:"device,omitempty"`
 	// DeviceName The name of the device / manufacturer of the device  that was used to make the recording.
 	DeviceName *string `json:"deviceName,omitempty"`
+	// DeviceNameElement contains element extensions for deviceName.
+	DeviceNameElement *dt.Element `json:"_deviceName,omitempty"`
 	// Duration The duration of the recording in seconds - for audio and video.
 	Duration *float64 `json:"duration,omitempty"`
+	// DurationElement contains element extensions for duration.
+	DurationElement *dt.Element `json:"_duration,omitempty"`
 	// Encounter The encounter that establishes the context for this media.
 	Encounter *dt.Reference `json:"encounter,omitempty"`
 	// Frames The number of frames in a photo. This is used with a multi-page fax, or an imaging acquisition context that takes multiple slices in a single image, or an animated gif. If there is more than one fr...
 	Frames *uint32 `json:"frames,omitempty"`
+	// FramesElement contains element extensions for frames.
+	FramesElement *dt.Element `json:"_frames,omitempty"`
 	// Height Height of the image in pixels (photo/video).
 	Height *uint32 `json:"height,omitempty"`
+	// HeightElement contains element extensions for height.
+	HeightElement *dt.Element `json:"_height,omitempty"`
 	// Issued The date and time this version of the media was made available to providers, typically after having been reviewed.
 	Issued *dt.Instant `json:"issued,omitempty"`
+	// IssuedElement contains element extensions for issued.
+	IssuedElement *dt.Element `json:"_issued,omitempty"`
 	// Modality Details of the type of the media - usually, how it was acquired (what type of device). If images sourced from a DICOM system, are wrapped in a Media resource, then this is the modality.
 	Modality *dt.CodeableConcept `json:"modality,omitempty"`
 	// Note Comments made about the media by the performer, subject or other participants.
@@ -77,13 +98,31 @@ type Media struct {
 	View *dt.CodeableConcept `json:"view,omitempty"`
 	// Width Width of the image in pixels (photo/video).
 	Width *uint32 `json:"width,omitempty"`
+	// WidthElement contains element extensions for width.
+	WidthElement *dt.Element `json:"_width,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Media.
 func (r Media) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Media"
 	type Alias Media
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Media.
@@ -94,208 +133,263 @@ func (r *Media) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Media(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_basedOn", "_bodySite", "_contained", "_content", "_createdDateTime", "_createdPeriod", "_device", "_deviceName", "_duration", "_encounter", "_extension", "_frames", "_height", "_id", "_identifier", "_implicitRules", "_issued", "_language", "_meta", "_modality", "_modifierExtension", "_note", "_operator", "_partOf", "_reasonCode", "_status", "_subject", "_text", "_type", "_view", "_width", "basedOn", "bodySite", "contained", "content", "createdDateTime", "createdPeriod", "device", "deviceName", "duration", "encounter", "extension", "frames", "height", "id", "identifier", "implicitRules", "issued", "language", "meta", "modality", "modifierExtension", "note", "operator", "partOf", "reasonCode", "resourceType", "status", "subject", "text", "type", "view", "width":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // MediaBuilder provides a fluent API for constructing Media resources.
 type MediaBuilder struct {
-	resource Media
+	resource  Media
+	fieldsSet map[string]bool
 }
 
 // NewMedia creates a new MediaBuilder for building a Media resource.
 func NewMedia() *MediaBuilder {
-	return &MediaBuilder{resource: Media{ResourceType: "Media"}}
+	return &MediaBuilder{resource: Media{ResourceType: "Media"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *MediaBuilder) WithId(v dt.ID) *MediaBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *MediaBuilder) WithMeta(v dt.Meta) *MediaBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *MediaBuilder) WithImplicitRules(v dt.URI) *MediaBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *MediaBuilder) WithLanguage(v dt.Code) *MediaBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *MediaBuilder) WithText(v dt.Narrative) *MediaBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *MediaBuilder) WithContained(v json.RawMessage) *MediaBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *MediaBuilder) WithExtension(v dt.Extension) *MediaBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *MediaBuilder) WithModifierExtension(v dt.Extension) *MediaBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *MediaBuilder) WithIdentifier(v dt.Identifier) *MediaBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *MediaBuilder) WithStatus(v dt.Code) *MediaBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithBasedOn adds an item to the basedOn field.
 func (b *MediaBuilder) WithBasedOn(v dt.Reference) *MediaBuilder {
 	b.resource.BasedOn = append(b.resource.BasedOn, v)
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithBodySite sets the bodySite field.
 func (b *MediaBuilder) WithBodySite(v dt.CodeableConcept) *MediaBuilder {
 	b.resource.BodySite = &v
+	b.fieldsSet["bodySite"] = true
 	return b
 }
 
 // WithContent sets the content field.
 func (b *MediaBuilder) WithContent(v dt.Attachment) *MediaBuilder {
 	b.resource.Content = v
+	b.fieldsSet["content"] = true
 	return b
 }
 
 // WithCreatedDateTime sets the createdDateTime field.
 func (b *MediaBuilder) WithCreatedDateTime(v string) *MediaBuilder {
 	b.resource.CreatedDateTime = &v
+	b.fieldsSet["createdDateTime"] = true
 	return b
 }
 
 // WithCreatedPeriod sets the createdPeriod field.
 func (b *MediaBuilder) WithCreatedPeriod(v dt.Period) *MediaBuilder {
 	b.resource.CreatedPeriod = &v
+	b.fieldsSet["createdPeriod"] = true
 	return b
 }
 
 // WithDevice sets the device field.
 func (b *MediaBuilder) WithDevice(v dt.Reference) *MediaBuilder {
 	b.resource.Device = &v
+	b.fieldsSet["device"] = true
 	return b
 }
 
 // WithDeviceName sets the deviceName field.
 func (b *MediaBuilder) WithDeviceName(v string) *MediaBuilder {
 	b.resource.DeviceName = &v
+	b.fieldsSet["deviceName"] = true
 	return b
 }
 
 // WithDuration sets the duration field.
 func (b *MediaBuilder) WithDuration(v float64) *MediaBuilder {
 	b.resource.Duration = &v
+	b.fieldsSet["duration"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *MediaBuilder) WithEncounter(v dt.Reference) *MediaBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithFrames sets the frames field.
 func (b *MediaBuilder) WithFrames(v uint32) *MediaBuilder {
 	b.resource.Frames = &v
+	b.fieldsSet["frames"] = true
 	return b
 }
 
 // WithHeight sets the height field.
 func (b *MediaBuilder) WithHeight(v uint32) *MediaBuilder {
 	b.resource.Height = &v
+	b.fieldsSet["height"] = true
 	return b
 }
 
 // WithIssued sets the issued field.
 func (b *MediaBuilder) WithIssued(v dt.Instant) *MediaBuilder {
 	b.resource.Issued = &v
+	b.fieldsSet["issued"] = true
 	return b
 }
 
 // WithModality sets the modality field.
 func (b *MediaBuilder) WithModality(v dt.CodeableConcept) *MediaBuilder {
 	b.resource.Modality = &v
+	b.fieldsSet["modality"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *MediaBuilder) WithNote(v dt.Annotation) *MediaBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithOperator sets the operator field.
 func (b *MediaBuilder) WithOperator(v dt.Reference) *MediaBuilder {
 	b.resource.Operator = &v
+	b.fieldsSet["operator"] = true
 	return b
 }
 
 // WithPartOf adds an item to the partOf field.
 func (b *MediaBuilder) WithPartOf(v dt.Reference) *MediaBuilder {
 	b.resource.PartOf = append(b.resource.PartOf, v)
+	b.fieldsSet["partOf"] = true
 	return b
 }
 
 // WithReasonCode adds an item to the reasonCode field.
 func (b *MediaBuilder) WithReasonCode(v dt.CodeableConcept) *MediaBuilder {
 	b.resource.ReasonCode = append(b.resource.ReasonCode, v)
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *MediaBuilder) WithSubject(v dt.Reference) *MediaBuilder {
 	b.resource.Subject = &v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *MediaBuilder) WithType(v dt.CodeableConcept) *MediaBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
 // WithView sets the view field.
 func (b *MediaBuilder) WithView(v dt.CodeableConcept) *MediaBuilder {
 	b.resource.View = &v
+	b.fieldsSet["view"] = true
 	return b
 }
 
 // WithWidth sets the width field.
 func (b *MediaBuilder) WithWidth(v uint32) *MediaBuilder {
 	b.resource.Width = &v
+	b.fieldsSet["width"] = true
 	return b
 }
 
 // Build returns the constructed Media. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *MediaBuilder) Build() (*Media, error) {
+	var missing []string
+	if !b.fieldsSet["content"] {
+		missing = append(missing, "content")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("Media: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }

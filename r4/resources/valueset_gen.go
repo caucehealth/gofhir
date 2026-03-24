@@ -18,12 +18,18 @@ type ValueSet struct {
 	ResourceType string `json:"resourceType"` // Always "ValueSet"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,45 +42,85 @@ type ValueSet struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this value set. Enables tracking the life-cycle of the content. The status of the value set applies to the value set definition (ValueSet.compose) and the associated ValueSet metadata...
 	Status *ValueSetStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Compose A set of criteria that define the contents of the value set by including or excluding codes selected from the specified code system(s) that the value set draws from. This is also known as the Conte...
 	Compose *ValueSetCompose `json:"compose,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the value set and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the value set.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date (and optionally time) when the value set was created or revised (e.g. the 'content logical definition').
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description A free text natural language description of the value set from a consumer's perspective. The textual description specifies the span of meanings for concepts to be included within the Value Set Expa...
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Expansion A value set can also be "expanded", where the value set is turned into a simple collection of enumerated codes. This element holds the expansion, if it has been performed.
 	Expansion *ValueSetExpansion `json:"expansion,omitempty"`
 	// Experimental A Boolean value to indicate that this value set is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// Immutable If this is set to 'true', then no new versions of the content logical definition can be created.  Note: Other metadata might still change.
 	Immutable *bool `json:"immutable,omitempty"`
+	// ImmutableElement contains element extensions for immutable.
+	ImmutableElement *dt.Element `json:"_immutable,omitempty"`
 	// Jurisdiction A legal or geographic region in which the value set is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Name A natural language name identifying the value set. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Publisher The name of the organization or individual that published the value set.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Purpose Explanation of why this value set is needed and why it has been designed as it has.
 	Purpose *dt.Markdown `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for purpose.
+	PurposeElement *dt.Element `json:"_purpose,omitempty"`
 	// Title A short, descriptive, user-friendly title for the value set.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Url An absolute URI that is used to identify this value set when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally unique ...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the value set when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the value set author...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for ValueSet.
 func (r ValueSet) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "ValueSet"
 	type Alias ValueSet
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ValueSet.
@@ -85,172 +131,215 @@ func (r *ValueSet) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ValueSet(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_compose", "_contact", "_contained", "_copyright", "_date", "_description", "_expansion", "_experimental", "_extension", "_id", "_identifier", "_immutable", "_implicitRules", "_jurisdiction", "_language", "_meta", "_modifierExtension", "_name", "_publisher", "_purpose", "_status", "_text", "_title", "_url", "_useContext", "_version", "compose", "contact", "contained", "copyright", "date", "description", "expansion", "experimental", "extension", "id", "identifier", "immutable", "implicitRules", "jurisdiction", "language", "meta", "modifierExtension", "name", "publisher", "purpose", "resourceType", "status", "text", "title", "url", "useContext", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ValueSetBuilder provides a fluent API for constructing ValueSet resources.
 type ValueSetBuilder struct {
-	resource ValueSet
+	resource  ValueSet
+	fieldsSet map[string]bool
 }
 
 // NewValueSet creates a new ValueSetBuilder for building a ValueSet resource.
 func NewValueSet() *ValueSetBuilder {
-	return &ValueSetBuilder{resource: ValueSet{ResourceType: "ValueSet"}}
+	return &ValueSetBuilder{resource: ValueSet{ResourceType: "ValueSet"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ValueSetBuilder) WithId(v dt.ID) *ValueSetBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ValueSetBuilder) WithMeta(v dt.Meta) *ValueSetBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ValueSetBuilder) WithImplicitRules(v dt.URI) *ValueSetBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ValueSetBuilder) WithLanguage(v dt.Code) *ValueSetBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ValueSetBuilder) WithText(v dt.Narrative) *ValueSetBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ValueSetBuilder) WithContained(v json.RawMessage) *ValueSetBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ValueSetBuilder) WithExtension(v dt.Extension) *ValueSetBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ValueSetBuilder) WithModifierExtension(v dt.Extension) *ValueSetBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ValueSetBuilder) WithIdentifier(v dt.Identifier) *ValueSetBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ValueSetBuilder) WithStatus(v ValueSetStatus) *ValueSetBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithCompose sets the compose field.
 func (b *ValueSetBuilder) WithCompose(v ValueSetCompose) *ValueSetBuilder {
 	b.resource.Compose = &v
+	b.fieldsSet["compose"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *ValueSetBuilder) WithContact(v dt.ContactDetail) *ValueSetBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *ValueSetBuilder) WithCopyright(v dt.Markdown) *ValueSetBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *ValueSetBuilder) WithDate(v dt.DateTime) *ValueSetBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *ValueSetBuilder) WithDescription(v dt.Markdown) *ValueSetBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithExpansion sets the expansion field.
 func (b *ValueSetBuilder) WithExpansion(v ValueSetExpansion) *ValueSetBuilder {
 	b.resource.Expansion = &v
+	b.fieldsSet["expansion"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *ValueSetBuilder) WithExperimental(v bool) *ValueSetBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithImmutable sets the immutable field.
 func (b *ValueSetBuilder) WithImmutable(v bool) *ValueSetBuilder {
 	b.resource.Immutable = &v
+	b.fieldsSet["immutable"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *ValueSetBuilder) WithJurisdiction(v dt.CodeableConcept) *ValueSetBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *ValueSetBuilder) WithName(v string) *ValueSetBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *ValueSetBuilder) WithPublisher(v string) *ValueSetBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithPurpose sets the purpose field.
 func (b *ValueSetBuilder) WithPurpose(v dt.Markdown) *ValueSetBuilder {
 	b.resource.Purpose = &v
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *ValueSetBuilder) WithTitle(v string) *ValueSetBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *ValueSetBuilder) WithUrl(v dt.URI) *ValueSetBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *ValueSetBuilder) WithUseContext(v dt.UsageContext) *ValueSetBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *ValueSetBuilder) WithVersion(v string) *ValueSetBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -265,6 +354,8 @@ func (b *ValueSetBuilder) Build() (*ValueSet, error) {
 type ValueSetCompose struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -273,60 +364,88 @@ type ValueSetCompose struct {
 	Exclude []ValueSetInclude `json:"exclude,omitempty"`
 	// Inactive Whether inactive codes - codes that are not approved for current use - are in the value set. If inactive = true, inactive codes are to be included in the expansion, if inactive = false, the inactiv...
 	Inactive *bool `json:"inactive,omitempty"`
+	// InactiveElement contains element extensions for inactive.
+	InactiveElement *dt.Element `json:"_inactive,omitempty"`
 	// Include Include one or more codes from a code system or other value set(s).
 	Include []ValueSetInclude `json:"include,omitempty"`
 	// LockedDate The Locked Date is  the effective date that is used to determine the version of all referenced Code Systems and Value Set Definitions included in the compose that are not already tied to a specific...
 	LockedDate *dt.Date `json:"lockedDate,omitempty"`
+	// LockedDateElement contains element extensions for lockedDate.
+	LockedDateElement *dt.Element `json:"_lockedDate,omitempty"`
 }
 
 // ValueSetConcept A ValueSet resource instance specifies a set of codes drawn from one or more code systems, intended for use in a particular context. Value sets link between [[[CodeSystem]]] definitions and their u...
 type ValueSetConcept struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code Specifies a code for the concept to be included or excluded.
 	Code *dt.Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Designation Additional representations for this concept when used in this value set - other languages, aliases, specialized purposes, used for particular purposes, etc.
 	Designation []ValueSetDesignation `json:"designation,omitempty"`
 	// Display The text to display to the user for this concept in the context of this valueset. If no display is provided, then applications using the value set use the display specified for the code by the system.
 	Display *string `json:"display,omitempty"`
+	// DisplayElement contains element extensions for display.
+	DisplayElement *dt.Element `json:"_display,omitempty"`
 }
 
 // ValueSetContains A ValueSet resource instance specifies a set of codes drawn from one or more code systems, intended for use in a particular context. Value sets link between [[[CodeSystem]]] definitions and their u...
 type ValueSetContains struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Abstract If true, this entry is included in the expansion for navigational purposes, and the user cannot select the code directly as a proper value.
 	Abstract *bool `json:"abstract,omitempty"`
+	// AbstractElement contains element extensions for abstract.
+	AbstractElement *dt.Element `json:"_abstract,omitempty"`
 	// Code The code for this item in the expansion hierarchy. If this code is missing the entry in the hierarchy is a place holder (abstract) and does not represent a valid code in the value set.
 	Code *dt.Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Contains Other codes and entries contained under this entry in the hierarchy.
 	Contains []ValueSetContains `json:"contains,omitempty"`
 	// Designation Additional representations for this item - other languages, aliases, specialized purposes, used for particular purposes, etc. These are relevant when the conditions of the expansion do not fix to a...
 	Designation []ValueSetDesignation `json:"designation,omitempty"`
 	// Display The recommended display for this item in the expansion.
 	Display *string `json:"display,omitempty"`
+	// DisplayElement contains element extensions for display.
+	DisplayElement *dt.Element `json:"_display,omitempty"`
 	// Inactive If the concept is inactive in the code system that defines it. Inactive codes are those that are no longer to be used, but are maintained by the code system for understanding legacy data. It might ...
 	Inactive *bool `json:"inactive,omitempty"`
+	// InactiveElement contains element extensions for inactive.
+	InactiveElement *dt.Element `json:"_inactive,omitempty"`
 	// System An absolute URI which is the code system in which the code for this item in the expansion is defined.
 	System *dt.URI `json:"system,omitempty"`
+	// SystemElement contains element extensions for system.
+	SystemElement *dt.Element `json:"_system,omitempty"`
 	// Version The version of the code system from this code was taken. Note that a well-maintained code system does not need the version reported, because the meaning of codes is consistent across versions. Howe...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
 }
 
 // ValueSetDesignation A ValueSet resource instance specifies a set of codes drawn from one or more code systems, intended for use in a particular context. Value sets link between [[[CodeSystem]]] definitions and their u...
 type ValueSetDesignation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Language The language this designation is defined for.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -335,50 +454,72 @@ type ValueSetDesignation struct {
 	Use *dt.Coding `json:"use,omitempty"`
 	// Value The text value for this designation.
 	Value *string `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *dt.Element `json:"_value,omitempty"`
 }
 
 // ValueSetExpansion A ValueSet resource instance specifies a set of codes drawn from one or more code systems, intended for use in a particular context. Value sets link between [[[CodeSystem]]] definitions and their u...
 type ValueSetExpansion struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Identifier An identifier that uniquely identifies this expansion of the valueset, based on a unique combination of the provided parameters, the system default parameters, and the underlying system code system...
 	Identifier *dt.URI `json:"identifier,omitempty"`
+	// IdentifierElement contains element extensions for identifier.
+	IdentifierElement *dt.Element `json:"_identifier,omitempty"`
 	// Contains The codes that are contained in the value set expansion.
 	Contains []ValueSetContains `json:"contains,omitempty"`
 	// Offset If paging is being used, the offset at which this resource starts.  I.e. this resource is a partial view into the expansion. If paging is not being used, this element SHALL NOT be present.
 	Offset *int32 `json:"offset,omitempty"`
+	// OffsetElement contains element extensions for offset.
+	OffsetElement *dt.Element `json:"_offset,omitempty"`
 	// Parameter A parameter that controlled the expansion process. These parameters may be used by users of expanded value sets to check whether the expansion is suitable for a particular purpose, or to pick the c...
 	Parameter []ValueSetParameter `json:"parameter,omitempty"`
 	// Timestamp The time at which the expansion was produced by the expanding system.
 	Timestamp *dt.DateTime `json:"timestamp,omitempty"`
+	// TimestampElement contains element extensions for timestamp.
+	TimestampElement *dt.Element `json:"_timestamp,omitempty"`
 	// Total The total number of concepts in the expansion. If the number of concept nodes in this resource is less than the stated number, then the server can return more using the offset parameter.
 	Total *int32 `json:"total,omitempty"`
+	// TotalElement contains element extensions for total.
+	TotalElement *dt.Element `json:"_total,omitempty"`
 }
 
 // ValueSetFilter A ValueSet resource instance specifies a set of codes drawn from one or more code systems, intended for use in a particular context. Value sets link between [[[CodeSystem]]] definitions and their u...
 type ValueSetFilter struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Op The kind of operation to perform as a part of the filter criteria.
 	Op *ValueSetFilterOp `json:"op,omitempty"`
+	// OpElement contains element extensions for op.
+	OpElement *dt.Element `json:"_op,omitempty"`
 	// Property A code that identifies a property or a filter defined in the code system.
 	Property *dt.Code `json:"property,omitempty"`
+	// PropertyElement contains element extensions for property.
+	PropertyElement *dt.Element `json:"_property,omitempty"`
 	// Value The match value may be either a code defined by the system, or a string value, which is a regex match on the literal string of the property value  (if the filter represents a property defined in Co...
 	Value *string `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *dt.Element `json:"_value,omitempty"`
 }
 
 // ValueSetInclude A ValueSet resource instance specifies a set of codes drawn from one or more code systems, intended for use in a particular context. Value sets link between [[[CodeSystem]]] definitions and their u...
 type ValueSetInclude struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -389,22 +530,32 @@ type ValueSetInclude struct {
 	Filter []ValueSetFilter `json:"filter,omitempty"`
 	// System An absolute URI which is the code system from which the selected codes come from.
 	System *dt.URI `json:"system,omitempty"`
+	// SystemElement contains element extensions for system.
+	SystemElement *dt.Element `json:"_system,omitempty"`
 	// ValueSet Selects the concepts found in this value set (based on its value set definition). This is an absolute URI that is a reference to ValueSet.url.  If multiple value sets are specified this includes th...
 	ValueSet []dt.Canonical `json:"valueSet,omitempty"`
+	// ValueSetElement contains element extensions for each valueSet.
+	ValueSetElement []dt.Element `json:"_valueSet,omitempty"`
 	// Version The version of the code system that the codes are selected from, or the special version '*' for all versions.
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
 }
 
 // ValueSetParameter A ValueSet resource instance specifies a set of codes drawn from one or more code systems, intended for use in a particular context. Value sets link between [[[CodeSystem]]] definitions and their u...
 type ValueSetParameter struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Name Name of the input parameter to the $expand operation; may be a server-assigned name for additional default or other server-supplied parameters used to control the expansion process.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Value The value of the parameter.
 	Value *ValueSetParameterValue `json:"-"` // polymorphic
 }

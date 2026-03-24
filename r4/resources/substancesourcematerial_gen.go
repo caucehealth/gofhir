@@ -17,12 +17,18 @@ type SubstanceSourceMaterial struct {
 	ResourceType string `json:"resourceType"` // Always "SubstanceSourceMaterial"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -39,16 +45,22 @@ type SubstanceSourceMaterial struct {
 	FractionDescription []SubstanceSourceMaterialFractionDescription `json:"fractionDescription,omitempty"`
 	// GeographicalLocation The place/region where the plant is harvested or the places/regions where the animal source material has its habitat.
 	GeographicalLocation []string `json:"geographicalLocation,omitempty"`
+	// GeographicalLocationElement contains element extensions for each geographicalLocation.
+	GeographicalLocationElement []dt.Element `json:"_geographicalLocation,omitempty"`
 	// Organism This subclause describes the organism which the substance is derived from. For vaccines, the parent organism shall be specified based on these subclause elements. As an example, full taxonomy will ...
 	Organism *SubstanceSourceMaterialOrganism `json:"organism,omitempty"`
 	// OrganismId The unique identifier associated with the source material parent organism shall be specified.
 	OrganismId *dt.Identifier `json:"organismId,omitempty"`
 	// OrganismName The organism accepted Scientific name shall be provided based on the organism taxonomy.
 	OrganismName *string `json:"organismName,omitempty"`
+	// OrganismNameElement contains element extensions for organismName.
+	OrganismNameElement *dt.Element `json:"_organismName,omitempty"`
 	// ParentSubstanceId The parent of the herbal drug Ginkgo biloba, Leaf is the substance ID of the substance (fresh) of Ginkgo biloba L. or Ginkgo biloba L. (Whole plant).
 	ParentSubstanceId []dt.Identifier `json:"parentSubstanceId,omitempty"`
 	// ParentSubstanceName The parent substance of the Herbal Drug, or Herbal preparation.
 	ParentSubstanceName []string `json:"parentSubstanceName,omitempty"`
+	// ParentSubstanceNameElement contains element extensions for each parentSubstanceName.
+	ParentSubstanceNameElement []dt.Element `json:"_parentSubstanceName,omitempty"`
 	// PartDescription To do.
 	PartDescription []SubstanceSourceMaterialPartDescription `json:"partDescription,omitempty"`
 	// SourceMaterialClass General high level classification of the source material specific to the origin of the material.
@@ -57,13 +69,29 @@ type SubstanceSourceMaterial struct {
 	SourceMaterialState *dt.CodeableConcept `json:"sourceMaterialState,omitempty"`
 	// SourceMaterialType The type of the source material shall be specified based on a controlled vocabulary. For vaccines, this subclause refers to the class of infectious agent.
 	SourceMaterialType *dt.CodeableConcept `json:"sourceMaterialType,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for SubstanceSourceMaterial.
 func (r SubstanceSourceMaterial) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "SubstanceSourceMaterial"
 	type Alias SubstanceSourceMaterial
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for SubstanceSourceMaterial.
@@ -74,142 +102,180 @@ func (r *SubstanceSourceMaterial) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = SubstanceSourceMaterial(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contained", "_countryOfOrigin", "_developmentStage", "_extension", "_fractionDescription", "_geographicalLocation", "_id", "_implicitRules", "_language", "_meta", "_modifierExtension", "_organism", "_organismId", "_organismName", "_parentSubstanceId", "_parentSubstanceName", "_partDescription", "_sourceMaterialClass", "_sourceMaterialState", "_sourceMaterialType", "_text", "contained", "countryOfOrigin", "developmentStage", "extension", "fractionDescription", "geographicalLocation", "id", "implicitRules", "language", "meta", "modifierExtension", "organism", "organismId", "organismName", "parentSubstanceId", "parentSubstanceName", "partDescription", "resourceType", "sourceMaterialClass", "sourceMaterialState", "sourceMaterialType", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // SubstanceSourceMaterialBuilder provides a fluent API for constructing SubstanceSourceMaterial resources.
 type SubstanceSourceMaterialBuilder struct {
-	resource SubstanceSourceMaterial
+	resource  SubstanceSourceMaterial
+	fieldsSet map[string]bool
 }
 
 // NewSubstanceSourceMaterial creates a new SubstanceSourceMaterialBuilder for building a SubstanceSourceMaterial resource.
 func NewSubstanceSourceMaterial() *SubstanceSourceMaterialBuilder {
-	return &SubstanceSourceMaterialBuilder{resource: SubstanceSourceMaterial{ResourceType: "SubstanceSourceMaterial"}}
+	return &SubstanceSourceMaterialBuilder{resource: SubstanceSourceMaterial{ResourceType: "SubstanceSourceMaterial"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *SubstanceSourceMaterialBuilder) WithId(v dt.ID) *SubstanceSourceMaterialBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *SubstanceSourceMaterialBuilder) WithMeta(v dt.Meta) *SubstanceSourceMaterialBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *SubstanceSourceMaterialBuilder) WithImplicitRules(v dt.URI) *SubstanceSourceMaterialBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *SubstanceSourceMaterialBuilder) WithLanguage(v dt.Code) *SubstanceSourceMaterialBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *SubstanceSourceMaterialBuilder) WithText(v dt.Narrative) *SubstanceSourceMaterialBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *SubstanceSourceMaterialBuilder) WithContained(v json.RawMessage) *SubstanceSourceMaterialBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *SubstanceSourceMaterialBuilder) WithExtension(v dt.Extension) *SubstanceSourceMaterialBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *SubstanceSourceMaterialBuilder) WithModifierExtension(v dt.Extension) *SubstanceSourceMaterialBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithCountryOfOrigin adds an item to the countryOfOrigin field.
 func (b *SubstanceSourceMaterialBuilder) WithCountryOfOrigin(v dt.CodeableConcept) *SubstanceSourceMaterialBuilder {
 	b.resource.CountryOfOrigin = append(b.resource.CountryOfOrigin, v)
+	b.fieldsSet["countryOfOrigin"] = true
 	return b
 }
 
 // WithDevelopmentStage sets the developmentStage field.
 func (b *SubstanceSourceMaterialBuilder) WithDevelopmentStage(v dt.CodeableConcept) *SubstanceSourceMaterialBuilder {
 	b.resource.DevelopmentStage = &v
+	b.fieldsSet["developmentStage"] = true
 	return b
 }
 
 // WithFractionDescription adds an item to the fractionDescription field.
 func (b *SubstanceSourceMaterialBuilder) WithFractionDescription(v SubstanceSourceMaterialFractionDescription) *SubstanceSourceMaterialBuilder {
 	b.resource.FractionDescription = append(b.resource.FractionDescription, v)
+	b.fieldsSet["fractionDescription"] = true
 	return b
 }
 
 // WithGeographicalLocation adds an item to the geographicalLocation field.
 func (b *SubstanceSourceMaterialBuilder) WithGeographicalLocation(v string) *SubstanceSourceMaterialBuilder {
 	b.resource.GeographicalLocation = append(b.resource.GeographicalLocation, v)
+	b.fieldsSet["geographicalLocation"] = true
 	return b
 }
 
 // WithOrganism sets the organism field.
 func (b *SubstanceSourceMaterialBuilder) WithOrganism(v SubstanceSourceMaterialOrganism) *SubstanceSourceMaterialBuilder {
 	b.resource.Organism = &v
+	b.fieldsSet["organism"] = true
 	return b
 }
 
 // WithOrganismId sets the organismId field.
 func (b *SubstanceSourceMaterialBuilder) WithOrganismId(v dt.Identifier) *SubstanceSourceMaterialBuilder {
 	b.resource.OrganismId = &v
+	b.fieldsSet["organismId"] = true
 	return b
 }
 
 // WithOrganismName sets the organismName field.
 func (b *SubstanceSourceMaterialBuilder) WithOrganismName(v string) *SubstanceSourceMaterialBuilder {
 	b.resource.OrganismName = &v
+	b.fieldsSet["organismName"] = true
 	return b
 }
 
 // WithParentSubstanceId adds an item to the parentSubstanceId field.
 func (b *SubstanceSourceMaterialBuilder) WithParentSubstanceId(v dt.Identifier) *SubstanceSourceMaterialBuilder {
 	b.resource.ParentSubstanceId = append(b.resource.ParentSubstanceId, v)
+	b.fieldsSet["parentSubstanceId"] = true
 	return b
 }
 
 // WithParentSubstanceName adds an item to the parentSubstanceName field.
 func (b *SubstanceSourceMaterialBuilder) WithParentSubstanceName(v string) *SubstanceSourceMaterialBuilder {
 	b.resource.ParentSubstanceName = append(b.resource.ParentSubstanceName, v)
+	b.fieldsSet["parentSubstanceName"] = true
 	return b
 }
 
 // WithPartDescription adds an item to the partDescription field.
 func (b *SubstanceSourceMaterialBuilder) WithPartDescription(v SubstanceSourceMaterialPartDescription) *SubstanceSourceMaterialBuilder {
 	b.resource.PartDescription = append(b.resource.PartDescription, v)
+	b.fieldsSet["partDescription"] = true
 	return b
 }
 
 // WithSourceMaterialClass sets the sourceMaterialClass field.
 func (b *SubstanceSourceMaterialBuilder) WithSourceMaterialClass(v dt.CodeableConcept) *SubstanceSourceMaterialBuilder {
 	b.resource.SourceMaterialClass = &v
+	b.fieldsSet["sourceMaterialClass"] = true
 	return b
 }
 
 // WithSourceMaterialState sets the sourceMaterialState field.
 func (b *SubstanceSourceMaterialBuilder) WithSourceMaterialState(v dt.CodeableConcept) *SubstanceSourceMaterialBuilder {
 	b.resource.SourceMaterialState = &v
+	b.fieldsSet["sourceMaterialState"] = true
 	return b
 }
 
 // WithSourceMaterialType sets the sourceMaterialType field.
 func (b *SubstanceSourceMaterialBuilder) WithSourceMaterialType(v dt.CodeableConcept) *SubstanceSourceMaterialBuilder {
 	b.resource.SourceMaterialType = &v
+	b.fieldsSet["sourceMaterialType"] = true
 	return b
 }
 
@@ -224,12 +290,16 @@ func (b *SubstanceSourceMaterialBuilder) Build() (*SubstanceSourceMaterial, erro
 type SubstanceSourceMaterialAuthor struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// AuthorDescription The author of an organism species shall be specified. The author year of an organism shall also be specified when applicable; refers to the year in which the first author(s) published the infraspec...
 	AuthorDescription *string `json:"authorDescription,omitempty"`
+	// AuthorDescriptionElement contains element extensions for authorDescription.
+	AuthorDescriptionElement *dt.Element `json:"_authorDescription,omitempty"`
 	// AuthorType The type of author of an organism species shall be specified. The parenthetical author of an organism species refers to the first author who published the plant/animal name (of any rank). The prima...
 	AuthorType *dt.CodeableConcept `json:"authorType,omitempty"`
 }
@@ -238,12 +308,16 @@ type SubstanceSourceMaterialAuthor struct {
 type SubstanceSourceMaterialFractionDescription struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Fraction This element is capturing information about the fraction of a plant part, or human plasma for fractionation.
 	Fraction *string `json:"fraction,omitempty"`
+	// FractionElement contains element extensions for fraction.
+	FractionElement *dt.Element `json:"_fraction,omitempty"`
 	// MaterialType The specific type of the material constituting the component. For Herbal preparations the particulars of the extracts (liquid/dry) is described in Specified Substance Group 1.
 	MaterialType *dt.CodeableConcept `json:"materialType,omitempty"`
 }
@@ -252,6 +326,8 @@ type SubstanceSourceMaterialFractionDescription struct {
 type SubstanceSourceMaterialHybrid struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -260,18 +336,28 @@ type SubstanceSourceMaterialHybrid struct {
 	HybridType *dt.CodeableConcept `json:"hybridType,omitempty"`
 	// MaternalOrganismId The identifier of the maternal species constituting the hybrid organism shall be specified based on a controlled vocabulary. For plants, the parents aren’t always known, and it is unlikely that i...
 	MaternalOrganismId *string `json:"maternalOrganismId,omitempty"`
+	// MaternalOrganismIdElement contains element extensions for maternalOrganismId.
+	MaternalOrganismIdElement *dt.Element `json:"_maternalOrganismId,omitempty"`
 	// MaternalOrganismName The name of the maternal species constituting the hybrid organism shall be specified. For plants, the parents aren’t always known, and it is unlikely that it will be known which is maternal and w...
 	MaternalOrganismName *string `json:"maternalOrganismName,omitempty"`
+	// MaternalOrganismNameElement contains element extensions for maternalOrganismName.
+	MaternalOrganismNameElement *dt.Element `json:"_maternalOrganismName,omitempty"`
 	// PaternalOrganismId The identifier of the paternal species constituting the hybrid organism shall be specified based on a controlled vocabulary.
 	PaternalOrganismId *string `json:"paternalOrganismId,omitempty"`
+	// PaternalOrganismIdElement contains element extensions for paternalOrganismId.
+	PaternalOrganismIdElement *dt.Element `json:"_paternalOrganismId,omitempty"`
 	// PaternalOrganismName The name of the paternal species constituting the hybrid organism shall be specified.
 	PaternalOrganismName *string `json:"paternalOrganismName,omitempty"`
+	// PaternalOrganismNameElement contains element extensions for paternalOrganismName.
+	PaternalOrganismNameElement *dt.Element `json:"_paternalOrganismName,omitempty"`
 }
 
 // SubstanceSourceMaterialOrganism Source material shall capture information on the taxonomic and anatomical origins as well as the fraction of a material that can result in or can be modified to form a substance. This set of data e...
 type SubstanceSourceMaterialOrganism struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -286,6 +372,8 @@ type SubstanceSourceMaterialOrganism struct {
 	Hybrid *SubstanceSourceMaterialHybrid `json:"hybrid,omitempty"`
 	// IntraspecificDescription The intraspecific description of an organism shall be specified based on a controlled vocabulary. For Influenza Vaccine, the intraspecific description shall contain the syntax of the antigen in lin...
 	IntraspecificDescription *string `json:"intraspecificDescription,omitempty"`
+	// IntraspecificDescriptionElement contains element extensions for intraspecificDescription.
+	IntraspecificDescriptionElement *dt.Element `json:"_intraspecificDescription,omitempty"`
 	// IntraspecificType The Intraspecific type of an organism shall be specified.
 	IntraspecificType *dt.CodeableConcept `json:"intraspecificType,omitempty"`
 	// OrganismGeneral 4.9.13.7.1 Kingdom (Conditional).
@@ -298,6 +386,8 @@ type SubstanceSourceMaterialOrganism struct {
 type SubstanceSourceMaterialOrganismGeneral struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -316,6 +406,8 @@ type SubstanceSourceMaterialOrganismGeneral struct {
 type SubstanceSourceMaterialPartDescription struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

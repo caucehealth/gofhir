@@ -18,12 +18,18 @@ type ImagingStudy struct {
 	ResourceType string `json:"resourceType"` // Always "ImagingStudy"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,10 +42,14 @@ type ImagingStudy struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The current state of the ImagingStudy.
 	Status *ImagingStudyStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// BasedOn A list of the diagnostic requests that resulted in this imaging study being performed.
 	BasedOn []dt.Reference `json:"basedOn,omitempty"`
 	// Description The Imaging Manager description of the study. Institution-generated description or classification of the Study (component) performed.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Encounter The healthcare event (e.g. a patient and healthcare provider interaction) during which this ImagingStudy is made.
 	Encounter *dt.Reference `json:"encounter,omitempty"`
 	// Endpoint The network service providing access (e.g., query, view, or retrieval) for the study. See implementation notes for information about using DICOM endpoints. A study-level endpoint applies to each se...
@@ -54,8 +64,12 @@ type ImagingStudy struct {
 	Note []dt.Annotation `json:"note,omitempty"`
 	// NumberOfInstances Number of SOP Instances in Study. This value given may be larger than the number of instance elements this resource contains due to resource availability, security, or other factors. This element s...
 	NumberOfInstances *uint32 `json:"numberOfInstances,omitempty"`
+	// NumberOfInstancesElement contains element extensions for numberOfInstances.
+	NumberOfInstancesElement *dt.Element `json:"_numberOfInstances,omitempty"`
 	// NumberOfSeries Number of Series in the Study. This value given may be larger than the number of series elements this Resource contains due to resource availability, security, or other factors. This element should...
 	NumberOfSeries *uint32 `json:"numberOfSeries,omitempty"`
+	// NumberOfSeriesElement contains element extensions for numberOfSeries.
+	NumberOfSeriesElement *dt.Element `json:"_numberOfSeries,omitempty"`
 	// Procedure The code for the performed procedure type.
 	Procedure *ImagingStudyProcedure `json:"-"` // polymorphic
 	// ReasonCode Description of clinical condition indicating why the ImagingStudy was requested.
@@ -68,8 +82,12 @@ type ImagingStudy struct {
 	Series []ImagingStudySeries `json:"series,omitempty"`
 	// Started Date and time the study started.
 	Started *dt.DateTime `json:"started,omitempty"`
+	// StartedElement contains element extensions for started.
+	StartedElement *dt.Element `json:"_started,omitempty"`
 	// Subject The subject, typically a patient, of the imaging study.
 	Subject dt.Reference `json:"subject"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for ImagingStudy.
@@ -80,7 +98,6 @@ func (r ImagingStudy) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -97,6 +114,9 @@ func (r ImagingStudy) MarshalJSON() ([]byte, error) {
 		for k, v := range vm {
 			m[k] = v
 		}
+	}
+	for k, v := range r.Extra {
+		m[k] = v
 	}
 	return json.Marshal(m)
 }
@@ -117,136 +137,173 @@ func (r *ImagingStudy) UnmarshalJSON(data []byte) error {
 	if procedureVal.Code != nil || procedureVal.Reference != nil {
 		r.Procedure = &procedureVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_basedOn", "_contained", "_description", "_encounter", "_endpoint", "_extension", "_id", "_identifier", "_implicitRules", "_interpreter", "_language", "_location", "_meta", "_modality", "_modifierExtension", "_note", "_numberOfInstances", "_numberOfSeries", "_procedureCode", "_procedureReference", "_reasonCode", "_reasonReference", "_referrer", "_series", "_started", "_status", "_subject", "_text", "basedOn", "contained", "description", "encounter", "endpoint", "extension", "id", "identifier", "implicitRules", "interpreter", "language", "location", "meta", "modality", "modifierExtension", "note", "numberOfInstances", "numberOfSeries", "procedureCode", "procedureReference", "reasonCode", "reasonReference", "referrer", "resourceType", "series", "started", "status", "subject", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ImagingStudyBuilder provides a fluent API for constructing ImagingStudy resources.
 type ImagingStudyBuilder struct {
-	resource ImagingStudy
+	resource  ImagingStudy
+	fieldsSet map[string]bool
 }
 
 // NewImagingStudy creates a new ImagingStudyBuilder for building a ImagingStudy resource.
 func NewImagingStudy() *ImagingStudyBuilder {
-	return &ImagingStudyBuilder{resource: ImagingStudy{ResourceType: "ImagingStudy"}}
+	return &ImagingStudyBuilder{resource: ImagingStudy{ResourceType: "ImagingStudy"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ImagingStudyBuilder) WithId(v dt.ID) *ImagingStudyBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ImagingStudyBuilder) WithMeta(v dt.Meta) *ImagingStudyBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ImagingStudyBuilder) WithImplicitRules(v dt.URI) *ImagingStudyBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ImagingStudyBuilder) WithLanguage(v dt.Code) *ImagingStudyBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ImagingStudyBuilder) WithText(v dt.Narrative) *ImagingStudyBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ImagingStudyBuilder) WithContained(v json.RawMessage) *ImagingStudyBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ImagingStudyBuilder) WithExtension(v dt.Extension) *ImagingStudyBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ImagingStudyBuilder) WithModifierExtension(v dt.Extension) *ImagingStudyBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ImagingStudyBuilder) WithIdentifier(v dt.Identifier) *ImagingStudyBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ImagingStudyBuilder) WithStatus(v ImagingStudyStatus) *ImagingStudyBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithBasedOn adds an item to the basedOn field.
 func (b *ImagingStudyBuilder) WithBasedOn(v dt.Reference) *ImagingStudyBuilder {
 	b.resource.BasedOn = append(b.resource.BasedOn, v)
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *ImagingStudyBuilder) WithDescription(v string) *ImagingStudyBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *ImagingStudyBuilder) WithEncounter(v dt.Reference) *ImagingStudyBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithEndpoint adds an item to the endpoint field.
 func (b *ImagingStudyBuilder) WithEndpoint(v dt.Reference) *ImagingStudyBuilder {
 	b.resource.Endpoint = append(b.resource.Endpoint, v)
+	b.fieldsSet["endpoint"] = true
 	return b
 }
 
 // WithInterpreter adds an item to the interpreter field.
 func (b *ImagingStudyBuilder) WithInterpreter(v dt.Reference) *ImagingStudyBuilder {
 	b.resource.Interpreter = append(b.resource.Interpreter, v)
+	b.fieldsSet["interpreter"] = true
 	return b
 }
 
 // WithLocation sets the location field.
 func (b *ImagingStudyBuilder) WithLocation(v dt.Reference) *ImagingStudyBuilder {
 	b.resource.Location = &v
+	b.fieldsSet["location"] = true
 	return b
 }
 
 // WithModality adds an item to the modality field.
 func (b *ImagingStudyBuilder) WithModality(v dt.Coding) *ImagingStudyBuilder {
 	b.resource.Modality = append(b.resource.Modality, v)
+	b.fieldsSet["modality"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *ImagingStudyBuilder) WithNote(v dt.Annotation) *ImagingStudyBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithNumberOfInstances sets the numberOfInstances field.
 func (b *ImagingStudyBuilder) WithNumberOfInstances(v uint32) *ImagingStudyBuilder {
 	b.resource.NumberOfInstances = &v
+	b.fieldsSet["numberOfInstances"] = true
 	return b
 }
 
 // WithNumberOfSeries sets the numberOfSeries field.
 func (b *ImagingStudyBuilder) WithNumberOfSeries(v uint32) *ImagingStudyBuilder {
 	b.resource.NumberOfSeries = &v
+	b.fieldsSet["numberOfSeries"] = true
 	return b
 }
 
@@ -256,6 +313,7 @@ func (b *ImagingStudyBuilder) WithProcedureCode(v []dt.CodeableConcept) *Imaging
 		b.resource.Procedure = &ImagingStudyProcedure{}
 	}
 	b.resource.Procedure.Code = v
+	b.fieldsSet["procedure"] = true
 	return b
 }
 
@@ -265,48 +323,62 @@ func (b *ImagingStudyBuilder) WithProcedureReference(v dt.Reference) *ImagingStu
 		b.resource.Procedure = &ImagingStudyProcedure{}
 	}
 	b.resource.Procedure.Reference = &v
+	b.fieldsSet["procedure"] = true
 	return b
 }
 
 // WithReasonCode adds an item to the reasonCode field.
 func (b *ImagingStudyBuilder) WithReasonCode(v dt.CodeableConcept) *ImagingStudyBuilder {
 	b.resource.ReasonCode = append(b.resource.ReasonCode, v)
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithReasonReference adds an item to the reasonReference field.
 func (b *ImagingStudyBuilder) WithReasonReference(v dt.Reference) *ImagingStudyBuilder {
 	b.resource.ReasonReference = append(b.resource.ReasonReference, v)
+	b.fieldsSet["reasonReference"] = true
 	return b
 }
 
 // WithReferrer sets the referrer field.
 func (b *ImagingStudyBuilder) WithReferrer(v dt.Reference) *ImagingStudyBuilder {
 	b.resource.Referrer = &v
+	b.fieldsSet["referrer"] = true
 	return b
 }
 
 // WithSeries adds an item to the series field.
 func (b *ImagingStudyBuilder) WithSeries(v ImagingStudySeries) *ImagingStudyBuilder {
 	b.resource.Series = append(b.resource.Series, v)
+	b.fieldsSet["series"] = true
 	return b
 }
 
 // WithStarted sets the started field.
 func (b *ImagingStudyBuilder) WithStarted(v dt.DateTime) *ImagingStudyBuilder {
 	b.resource.Started = &v
+	b.fieldsSet["started"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *ImagingStudyBuilder) WithSubject(v dt.Reference) *ImagingStudyBuilder {
 	b.resource.Subject = v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // Build returns the constructed ImagingStudy. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *ImagingStudyBuilder) Build() (*ImagingStudy, error) {
+	var missing []string
+	if !b.fieldsSet["subject"] {
+		missing = append(missing, "subject")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("ImagingStudy: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -315,24 +387,34 @@ func (b *ImagingStudyBuilder) Build() (*ImagingStudy, error) {
 type ImagingStudyInstance struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Number The number of instance in the series.
 	Number *uint32 `json:"number,omitempty"`
+	// NumberElement contains element extensions for number.
+	NumberElement *dt.Element `json:"_number,omitempty"`
 	// SopClass DICOM instance  type.
 	SopClass dt.Coding `json:"sopClass"`
 	// Title The description of the instance.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Uid The DICOM SOP Instance UID for this image or other DICOM content.
 	Uid *dt.ID `json:"uid,omitempty"`
+	// UidElement contains element extensions for uid.
+	UidElement *dt.Element `json:"_uid,omitempty"`
 }
 
 // ImagingStudyPerformer Representation of the content produced in a DICOM imaging study. A study comprises a set of series, each of which includes a set of Service-Object Pair Instances (SOP Instances - images or other da...
 type ImagingStudyPerformer struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -347,6 +429,8 @@ type ImagingStudyPerformer struct {
 type ImagingStudySeries struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -355,6 +439,8 @@ type ImagingStudySeries struct {
 	BodySite *dt.Coding `json:"bodySite,omitempty"`
 	// Description A description of the series.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Endpoint The network service providing access (e.g., query, view, or retrieval) for this series. See implementation notes for information about using DICOM endpoints. A series-level endpoint, if present, ha...
 	Endpoint []dt.Reference `json:"endpoint,omitempty"`
 	// Instance A single SOP instance within the series, e.g. an image, or presentation state.
@@ -365,16 +451,24 @@ type ImagingStudySeries struct {
 	Modality dt.Coding `json:"modality"`
 	// Number The numeric identifier of this series in the study.
 	Number *uint32 `json:"number,omitempty"`
+	// NumberElement contains element extensions for number.
+	NumberElement *dt.Element `json:"_number,omitempty"`
 	// NumberOfInstances Number of SOP Instances in the Study. The value given may be larger than the number of instance elements this resource contains due to resource availability, security, or other factors. This elemen...
 	NumberOfInstances *uint32 `json:"numberOfInstances,omitempty"`
+	// NumberOfInstancesElement contains element extensions for numberOfInstances.
+	NumberOfInstancesElement *dt.Element `json:"_numberOfInstances,omitempty"`
 	// Performer Indicates who or what performed the series and how they were involved.
 	Performer []ImagingStudyPerformer `json:"performer,omitempty"`
 	// Specimen The specimen imaged, e.g., for whole slide imaging of a biopsy.
 	Specimen []dt.Reference `json:"specimen,omitempty"`
 	// Started The date and time the series was started.
 	Started *dt.DateTime `json:"started,omitempty"`
+	// StartedElement contains element extensions for started.
+	StartedElement *dt.Element `json:"_started,omitempty"`
 	// Uid The DICOM Series Instance UID for the series.
 	Uid *dt.ID `json:"uid,omitempty"`
+	// UidElement contains element extensions for uid.
+	UidElement *dt.Element `json:"_uid,omitempty"`
 }
 
 // ImagingStudyProcedure represents a polymorphic choice type in FHIR.

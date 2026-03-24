@@ -17,12 +17,18 @@ type List struct {
 	ResourceType string `json:"resourceType"` // Always "List"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,10 +41,14 @@ type List struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Indicates the current state of this list.
 	Status *ListStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Code This code defines the purpose of the list - why it was created.
 	Code *dt.CodeableConcept `json:"code,omitempty"`
 	// Date The date that the list was prepared.
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// EmptyReason If the list is empty, why the list is empty.
 	EmptyReason *dt.CodeableConcept `json:"emptyReason,omitempty"`
 	// Encounter The encounter that is the context in which this list was created.
@@ -47,6 +57,8 @@ type List struct {
 	Entry []ListEntry `json:"entry,omitempty"`
 	// Mode How this list was prepared - whether it is a working list that is suitable for being maintained on an ongoing basis, or if it represents a snapshot of a list of items from another source, or whethe...
 	Mode *ListMode `json:"mode,omitempty"`
+	// ModeElement contains element extensions for mode.
+	ModeElement *dt.Element `json:"_mode,omitempty"`
 	// Note Comments that apply to the overall list.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// OrderedBy What order applies to the items in the list.
@@ -57,13 +69,31 @@ type List struct {
 	Subject *dt.Reference `json:"subject,omitempty"`
 	// Title A label for the list assigned by the author.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for List.
 func (r List) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "List"
 	type Alias List
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for List.
@@ -74,142 +104,180 @@ func (r *List) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = List(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_code", "_contained", "_date", "_emptyReason", "_encounter", "_entry", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_mode", "_modifierExtension", "_note", "_orderedBy", "_source", "_status", "_subject", "_text", "_title", "code", "contained", "date", "emptyReason", "encounter", "entry", "extension", "id", "identifier", "implicitRules", "language", "meta", "mode", "modifierExtension", "note", "orderedBy", "resourceType", "source", "status", "subject", "text", "title":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ListBuilder provides a fluent API for constructing List resources.
 type ListBuilder struct {
-	resource List
+	resource  List
+	fieldsSet map[string]bool
 }
 
 // NewList creates a new ListBuilder for building a List resource.
 func NewList() *ListBuilder {
-	return &ListBuilder{resource: List{ResourceType: "List"}}
+	return &ListBuilder{resource: List{ResourceType: "List"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ListBuilder) WithId(v dt.ID) *ListBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ListBuilder) WithMeta(v dt.Meta) *ListBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ListBuilder) WithImplicitRules(v dt.URI) *ListBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ListBuilder) WithLanguage(v dt.Code) *ListBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ListBuilder) WithText(v dt.Narrative) *ListBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ListBuilder) WithContained(v json.RawMessage) *ListBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ListBuilder) WithExtension(v dt.Extension) *ListBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ListBuilder) WithModifierExtension(v dt.Extension) *ListBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ListBuilder) WithIdentifier(v dt.Identifier) *ListBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ListBuilder) WithStatus(v ListStatus) *ListBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *ListBuilder) WithCode(v dt.CodeableConcept) *ListBuilder {
 	b.resource.Code = &v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *ListBuilder) WithDate(v dt.DateTime) *ListBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithEmptyReason sets the emptyReason field.
 func (b *ListBuilder) WithEmptyReason(v dt.CodeableConcept) *ListBuilder {
 	b.resource.EmptyReason = &v
+	b.fieldsSet["emptyReason"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *ListBuilder) WithEncounter(v dt.Reference) *ListBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithEntry adds an item to the entry field.
 func (b *ListBuilder) WithEntry(v ListEntry) *ListBuilder {
 	b.resource.Entry = append(b.resource.Entry, v)
+	b.fieldsSet["entry"] = true
 	return b
 }
 
 // WithMode sets the mode field.
 func (b *ListBuilder) WithMode(v ListMode) *ListBuilder {
 	b.resource.Mode = &v
+	b.fieldsSet["mode"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *ListBuilder) WithNote(v dt.Annotation) *ListBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithOrderedBy sets the orderedBy field.
 func (b *ListBuilder) WithOrderedBy(v dt.CodeableConcept) *ListBuilder {
 	b.resource.OrderedBy = &v
+	b.fieldsSet["orderedBy"] = true
 	return b
 }
 
 // WithSource sets the source field.
 func (b *ListBuilder) WithSource(v dt.Reference) *ListBuilder {
 	b.resource.Source = &v
+	b.fieldsSet["source"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *ListBuilder) WithSubject(v dt.Reference) *ListBuilder {
 	b.resource.Subject = &v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *ListBuilder) WithTitle(v string) *ListBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
@@ -224,14 +292,20 @@ func (b *ListBuilder) Build() (*List, error) {
 type ListEntry struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Date When this item was added to the list.
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Deleted True if this item is marked as deleted in the list.
 	Deleted *bool `json:"deleted,omitempty"`
+	// DeletedElement contains element extensions for deleted.
+	DeletedElement *dt.Element `json:"_deleted,omitempty"`
 	// Flag The flag allows the system constructing the list to indicate the role and significance of the item in the list.
 	Flag *dt.CodeableConcept `json:"flag,omitempty"`
 	// Item A reference to the actual resource from which data was derived.

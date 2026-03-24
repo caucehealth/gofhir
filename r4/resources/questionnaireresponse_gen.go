@@ -18,12 +18,18 @@ type QuestionnaireResponse struct {
 	ResourceType string `json:"resourceType"` // Always "QuestionnaireResponse"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,10 +42,14 @@ type QuestionnaireResponse struct {
 	Identifier *dt.Identifier `json:"identifier,omitempty"`
 	// Status The position of the questionnaire response within its overall lifecycle.
 	Status *QuestionnaireResponseStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Author Person who received the answers to the questions in the QuestionnaireResponse and recorded them in the system.
 	Author *dt.Reference `json:"author,omitempty"`
 	// Authored The date and/or time that this set of answers were last changed.
 	Authored *dt.DateTime `json:"authored,omitempty"`
+	// AuthoredElement contains element extensions for authored.
+	AuthoredElement *dt.Element `json:"_authored,omitempty"`
 	// BasedOn The order, proposal or plan that is fulfilled in whole or in part by this QuestionnaireResponse.  For example, a ServiceRequest seeking an intake assessment or a decision support recommendation to ...
 	BasedOn []dt.Reference `json:"basedOn,omitempty"`
 	// Encounter The Encounter during which this questionnaire response was created or to which the creation of this record is tightly associated.
@@ -50,17 +60,35 @@ type QuestionnaireResponse struct {
 	PartOf []dt.Reference `json:"partOf,omitempty"`
 	// Questionnaire The Questionnaire that defines and organizes the questions for which answers are being provided.
 	Questionnaire *dt.Canonical `json:"questionnaire,omitempty"`
+	// QuestionnaireElement contains element extensions for questionnaire.
+	QuestionnaireElement *dt.Element `json:"_questionnaire,omitempty"`
 	// Source The person who answered the questions about the subject.
 	Source *dt.Reference `json:"source,omitempty"`
 	// Subject The subject of the questionnaire response.  This could be a patient, organization, practitioner, device, etc.  This is who/what the answers apply to, but is not necessarily the source of information.
 	Subject *dt.Reference `json:"subject,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for QuestionnaireResponse.
 func (r QuestionnaireResponse) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "QuestionnaireResponse"
 	type Alias QuestionnaireResponse
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for QuestionnaireResponse.
@@ -71,130 +99,166 @@ func (r *QuestionnaireResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = QuestionnaireResponse(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_author", "_authored", "_basedOn", "_contained", "_encounter", "_extension", "_id", "_identifier", "_implicitRules", "_item", "_language", "_meta", "_modifierExtension", "_partOf", "_questionnaire", "_source", "_status", "_subject", "_text", "author", "authored", "basedOn", "contained", "encounter", "extension", "id", "identifier", "implicitRules", "item", "language", "meta", "modifierExtension", "partOf", "questionnaire", "resourceType", "source", "status", "subject", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // QuestionnaireResponseBuilder provides a fluent API for constructing QuestionnaireResponse resources.
 type QuestionnaireResponseBuilder struct {
-	resource QuestionnaireResponse
+	resource  QuestionnaireResponse
+	fieldsSet map[string]bool
 }
 
 // NewQuestionnaireResponse creates a new QuestionnaireResponseBuilder for building a QuestionnaireResponse resource.
 func NewQuestionnaireResponse() *QuestionnaireResponseBuilder {
-	return &QuestionnaireResponseBuilder{resource: QuestionnaireResponse{ResourceType: "QuestionnaireResponse"}}
+	return &QuestionnaireResponseBuilder{resource: QuestionnaireResponse{ResourceType: "QuestionnaireResponse"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *QuestionnaireResponseBuilder) WithId(v dt.ID) *QuestionnaireResponseBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *QuestionnaireResponseBuilder) WithMeta(v dt.Meta) *QuestionnaireResponseBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *QuestionnaireResponseBuilder) WithImplicitRules(v dt.URI) *QuestionnaireResponseBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *QuestionnaireResponseBuilder) WithLanguage(v dt.Code) *QuestionnaireResponseBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *QuestionnaireResponseBuilder) WithText(v dt.Narrative) *QuestionnaireResponseBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *QuestionnaireResponseBuilder) WithContained(v json.RawMessage) *QuestionnaireResponseBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *QuestionnaireResponseBuilder) WithExtension(v dt.Extension) *QuestionnaireResponseBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *QuestionnaireResponseBuilder) WithModifierExtension(v dt.Extension) *QuestionnaireResponseBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier sets the identifier field.
 func (b *QuestionnaireResponseBuilder) WithIdentifier(v dt.Identifier) *QuestionnaireResponseBuilder {
 	b.resource.Identifier = &v
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *QuestionnaireResponseBuilder) WithStatus(v QuestionnaireResponseStatus) *QuestionnaireResponseBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAuthor sets the author field.
 func (b *QuestionnaireResponseBuilder) WithAuthor(v dt.Reference) *QuestionnaireResponseBuilder {
 	b.resource.Author = &v
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithAuthored sets the authored field.
 func (b *QuestionnaireResponseBuilder) WithAuthored(v dt.DateTime) *QuestionnaireResponseBuilder {
 	b.resource.Authored = &v
+	b.fieldsSet["authored"] = true
 	return b
 }
 
 // WithBasedOn adds an item to the basedOn field.
 func (b *QuestionnaireResponseBuilder) WithBasedOn(v dt.Reference) *QuestionnaireResponseBuilder {
 	b.resource.BasedOn = append(b.resource.BasedOn, v)
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *QuestionnaireResponseBuilder) WithEncounter(v dt.Reference) *QuestionnaireResponseBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithItem adds an item to the item field.
 func (b *QuestionnaireResponseBuilder) WithItem(v QuestionnaireResponseItem) *QuestionnaireResponseBuilder {
 	b.resource.Item = append(b.resource.Item, v)
+	b.fieldsSet["item"] = true
 	return b
 }
 
 // WithPartOf adds an item to the partOf field.
 func (b *QuestionnaireResponseBuilder) WithPartOf(v dt.Reference) *QuestionnaireResponseBuilder {
 	b.resource.PartOf = append(b.resource.PartOf, v)
+	b.fieldsSet["partOf"] = true
 	return b
 }
 
 // WithQuestionnaire sets the questionnaire field.
 func (b *QuestionnaireResponseBuilder) WithQuestionnaire(v dt.Canonical) *QuestionnaireResponseBuilder {
 	b.resource.Questionnaire = &v
+	b.fieldsSet["questionnaire"] = true
 	return b
 }
 
 // WithSource sets the source field.
 func (b *QuestionnaireResponseBuilder) WithSource(v dt.Reference) *QuestionnaireResponseBuilder {
 	b.resource.Source = &v
+	b.fieldsSet["source"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *QuestionnaireResponseBuilder) WithSubject(v dt.Reference) *QuestionnaireResponseBuilder {
 	b.resource.Subject = &v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
@@ -209,6 +273,8 @@ func (b *QuestionnaireResponseBuilder) Build() (*QuestionnaireResponse, error) {
 type QuestionnaireResponseAnswer struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -419,8 +485,12 @@ func (v *QuestionnaireResponseAnswerValue) UnmarshalJSON(data []byte) error {
 type QuestionnaireResponseItem struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Text Text that is displayed above the contents of the group or as the text of the question being answered.
 	Text *string `json:"text,omitempty"`
+	// TextElement contains element extensions for text.
+	TextElement *dt.Element `json:"_text,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -429,8 +499,12 @@ type QuestionnaireResponseItem struct {
 	Answer []QuestionnaireResponseAnswer `json:"answer,omitempty"`
 	// Definition A reference to an [[[ElementDefinition]]] that provides the details for the item.
 	Definition *dt.URI `json:"definition,omitempty"`
+	// DefinitionElement contains element extensions for definition.
+	DefinitionElement *dt.Element `json:"_definition,omitempty"`
 	// Item Questions or sub-groups nested beneath a question or group.
 	Item []QuestionnaireResponseItem `json:"item,omitempty"`
 	// LinkId The item from the Questionnaire that corresponds to this item in the QuestionnaireResponse resource.
 	LinkId *string `json:"linkId,omitempty"`
+	// LinkIdElement contains element extensions for linkId.
+	LinkIdElement *dt.Element `json:"_linkId,omitempty"`
 }

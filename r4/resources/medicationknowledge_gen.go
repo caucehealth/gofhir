@@ -18,12 +18,18 @@ type MedicationKnowledge struct {
 	ResourceType string `json:"resourceType"` // Always "MedicationKnowledge"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -34,6 +40,8 @@ type MedicationKnowledge struct {
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status A code to indicate if the medication is in active use.  The status refers to the validity about the information of the medication and not to its medicinal properties.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// AdministrationGuidelines Guidelines for the administration of the medication.
 	AdministrationGuidelines []MedicationKnowledgeAdministrationGuidelines `json:"administrationGuidelines,omitempty"`
 	// Amount Specific amount of the drug in the packaged product.  For example, when specifying a product that has the same strength (For example, Insulin glargine 100 unit per mL solution for injection), this ...
@@ -68,6 +76,8 @@ type MedicationKnowledge struct {
 	Packaging *MedicationKnowledgePackaging `json:"packaging,omitempty"`
 	// PreparationInstruction The instructions for preparing the medication.
 	PreparationInstruction *dt.Markdown `json:"preparationInstruction,omitempty"`
+	// PreparationInstructionElement contains element extensions for preparationInstruction.
+	PreparationInstructionElement *dt.Element `json:"_preparationInstruction,omitempty"`
 	// ProductType Category of the medication or product (e.g. branded product, therapeutic moeity, generic product, innovator product, etc.).
 	ProductType []dt.CodeableConcept `json:"productType,omitempty"`
 	// Regulatory Regulatory information about a medication.
@@ -76,13 +86,31 @@ type MedicationKnowledge struct {
 	RelatedMedicationKnowledge []MedicationKnowledgeRelatedMedicationKnowledge `json:"relatedMedicationKnowledge,omitempty"`
 	// Synonym Additional names for a medication, for example, the name(s) given to a medication in different countries.  For example, acetaminophen and paracetamol or salbutamol and albuterol.
 	Synonym []string `json:"synonym,omitempty"`
+	// SynonymElement contains element extensions for each synonym.
+	SynonymElement []dt.Element `json:"_synonym,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for MedicationKnowledge.
 func (r MedicationKnowledge) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "MedicationKnowledge"
 	type Alias MedicationKnowledge
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for MedicationKnowledge.
@@ -93,196 +121,243 @@ func (r *MedicationKnowledge) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = MedicationKnowledge(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_administrationGuidelines", "_amount", "_associatedMedication", "_code", "_contained", "_contraindication", "_cost", "_doseForm", "_drugCharacteristic", "_extension", "_id", "_implicitRules", "_ingredient", "_intendedRoute", "_kinetics", "_language", "_manufacturer", "_medicineClassification", "_meta", "_modifierExtension", "_monitoringProgram", "_monograph", "_packaging", "_preparationInstruction", "_productType", "_regulatory", "_relatedMedicationKnowledge", "_status", "_synonym", "_text", "administrationGuidelines", "amount", "associatedMedication", "code", "contained", "contraindication", "cost", "doseForm", "drugCharacteristic", "extension", "id", "implicitRules", "ingredient", "intendedRoute", "kinetics", "language", "manufacturer", "medicineClassification", "meta", "modifierExtension", "monitoringProgram", "monograph", "packaging", "preparationInstruction", "productType", "regulatory", "relatedMedicationKnowledge", "resourceType", "status", "synonym", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // MedicationKnowledgeBuilder provides a fluent API for constructing MedicationKnowledge resources.
 type MedicationKnowledgeBuilder struct {
-	resource MedicationKnowledge
+	resource  MedicationKnowledge
+	fieldsSet map[string]bool
 }
 
 // NewMedicationKnowledge creates a new MedicationKnowledgeBuilder for building a MedicationKnowledge resource.
 func NewMedicationKnowledge() *MedicationKnowledgeBuilder {
-	return &MedicationKnowledgeBuilder{resource: MedicationKnowledge{ResourceType: "MedicationKnowledge"}}
+	return &MedicationKnowledgeBuilder{resource: MedicationKnowledge{ResourceType: "MedicationKnowledge"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *MedicationKnowledgeBuilder) WithId(v dt.ID) *MedicationKnowledgeBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *MedicationKnowledgeBuilder) WithMeta(v dt.Meta) *MedicationKnowledgeBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *MedicationKnowledgeBuilder) WithImplicitRules(v dt.URI) *MedicationKnowledgeBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *MedicationKnowledgeBuilder) WithLanguage(v dt.Code) *MedicationKnowledgeBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *MedicationKnowledgeBuilder) WithText(v dt.Narrative) *MedicationKnowledgeBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *MedicationKnowledgeBuilder) WithContained(v json.RawMessage) *MedicationKnowledgeBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *MedicationKnowledgeBuilder) WithExtension(v dt.Extension) *MedicationKnowledgeBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *MedicationKnowledgeBuilder) WithModifierExtension(v dt.Extension) *MedicationKnowledgeBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *MedicationKnowledgeBuilder) WithStatus(v dt.Code) *MedicationKnowledgeBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAdministrationGuidelines adds an item to the administrationGuidelines field.
 func (b *MedicationKnowledgeBuilder) WithAdministrationGuidelines(v MedicationKnowledgeAdministrationGuidelines) *MedicationKnowledgeBuilder {
 	b.resource.AdministrationGuidelines = append(b.resource.AdministrationGuidelines, v)
+	b.fieldsSet["administrationGuidelines"] = true
 	return b
 }
 
 // WithAmount sets the amount field.
 func (b *MedicationKnowledgeBuilder) WithAmount(v dt.Quantity) *MedicationKnowledgeBuilder {
 	b.resource.Amount = &v
+	b.fieldsSet["amount"] = true
 	return b
 }
 
 // WithAssociatedMedication adds an item to the associatedMedication field.
 func (b *MedicationKnowledgeBuilder) WithAssociatedMedication(v dt.Reference) *MedicationKnowledgeBuilder {
 	b.resource.AssociatedMedication = append(b.resource.AssociatedMedication, v)
+	b.fieldsSet["associatedMedication"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *MedicationKnowledgeBuilder) WithCode(v dt.CodeableConcept) *MedicationKnowledgeBuilder {
 	b.resource.Code = &v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithContraindication adds an item to the contraindication field.
 func (b *MedicationKnowledgeBuilder) WithContraindication(v dt.Reference) *MedicationKnowledgeBuilder {
 	b.resource.Contraindication = append(b.resource.Contraindication, v)
+	b.fieldsSet["contraindication"] = true
 	return b
 }
 
 // WithCost adds an item to the cost field.
 func (b *MedicationKnowledgeBuilder) WithCost(v MedicationKnowledgeCost) *MedicationKnowledgeBuilder {
 	b.resource.Cost = append(b.resource.Cost, v)
+	b.fieldsSet["cost"] = true
 	return b
 }
 
 // WithDoseForm sets the doseForm field.
 func (b *MedicationKnowledgeBuilder) WithDoseForm(v dt.CodeableConcept) *MedicationKnowledgeBuilder {
 	b.resource.DoseForm = &v
+	b.fieldsSet["doseForm"] = true
 	return b
 }
 
 // WithDrugCharacteristic adds an item to the drugCharacteristic field.
 func (b *MedicationKnowledgeBuilder) WithDrugCharacteristic(v MedicationKnowledgeDrugCharacteristic) *MedicationKnowledgeBuilder {
 	b.resource.DrugCharacteristic = append(b.resource.DrugCharacteristic, v)
+	b.fieldsSet["drugCharacteristic"] = true
 	return b
 }
 
 // WithIngredient adds an item to the ingredient field.
 func (b *MedicationKnowledgeBuilder) WithIngredient(v MedicationKnowledgeIngredient) *MedicationKnowledgeBuilder {
 	b.resource.Ingredient = append(b.resource.Ingredient, v)
+	b.fieldsSet["ingredient"] = true
 	return b
 }
 
 // WithIntendedRoute adds an item to the intendedRoute field.
 func (b *MedicationKnowledgeBuilder) WithIntendedRoute(v dt.CodeableConcept) *MedicationKnowledgeBuilder {
 	b.resource.IntendedRoute = append(b.resource.IntendedRoute, v)
+	b.fieldsSet["intendedRoute"] = true
 	return b
 }
 
 // WithKinetics adds an item to the kinetics field.
 func (b *MedicationKnowledgeBuilder) WithKinetics(v MedicationKnowledgeKinetics) *MedicationKnowledgeBuilder {
 	b.resource.Kinetics = append(b.resource.Kinetics, v)
+	b.fieldsSet["kinetics"] = true
 	return b
 }
 
 // WithManufacturer sets the manufacturer field.
 func (b *MedicationKnowledgeBuilder) WithManufacturer(v dt.Reference) *MedicationKnowledgeBuilder {
 	b.resource.Manufacturer = &v
+	b.fieldsSet["manufacturer"] = true
 	return b
 }
 
 // WithMedicineClassification adds an item to the medicineClassification field.
 func (b *MedicationKnowledgeBuilder) WithMedicineClassification(v MedicationKnowledgeMedicineClassification) *MedicationKnowledgeBuilder {
 	b.resource.MedicineClassification = append(b.resource.MedicineClassification, v)
+	b.fieldsSet["medicineClassification"] = true
 	return b
 }
 
 // WithMonitoringProgram adds an item to the monitoringProgram field.
 func (b *MedicationKnowledgeBuilder) WithMonitoringProgram(v MedicationKnowledgeMonitoringProgram) *MedicationKnowledgeBuilder {
 	b.resource.MonitoringProgram = append(b.resource.MonitoringProgram, v)
+	b.fieldsSet["monitoringProgram"] = true
 	return b
 }
 
 // WithMonograph adds an item to the monograph field.
 func (b *MedicationKnowledgeBuilder) WithMonograph(v MedicationKnowledgeMonograph) *MedicationKnowledgeBuilder {
 	b.resource.Monograph = append(b.resource.Monograph, v)
+	b.fieldsSet["monograph"] = true
 	return b
 }
 
 // WithPackaging sets the packaging field.
 func (b *MedicationKnowledgeBuilder) WithPackaging(v MedicationKnowledgePackaging) *MedicationKnowledgeBuilder {
 	b.resource.Packaging = &v
+	b.fieldsSet["packaging"] = true
 	return b
 }
 
 // WithPreparationInstruction sets the preparationInstruction field.
 func (b *MedicationKnowledgeBuilder) WithPreparationInstruction(v dt.Markdown) *MedicationKnowledgeBuilder {
 	b.resource.PreparationInstruction = &v
+	b.fieldsSet["preparationInstruction"] = true
 	return b
 }
 
 // WithProductType adds an item to the productType field.
 func (b *MedicationKnowledgeBuilder) WithProductType(v dt.CodeableConcept) *MedicationKnowledgeBuilder {
 	b.resource.ProductType = append(b.resource.ProductType, v)
+	b.fieldsSet["productType"] = true
 	return b
 }
 
 // WithRegulatory adds an item to the regulatory field.
 func (b *MedicationKnowledgeBuilder) WithRegulatory(v MedicationKnowledgeRegulatory) *MedicationKnowledgeBuilder {
 	b.resource.Regulatory = append(b.resource.Regulatory, v)
+	b.fieldsSet["regulatory"] = true
 	return b
 }
 
 // WithRelatedMedicationKnowledge adds an item to the relatedMedicationKnowledge field.
 func (b *MedicationKnowledgeBuilder) WithRelatedMedicationKnowledge(v MedicationKnowledgeRelatedMedicationKnowledge) *MedicationKnowledgeBuilder {
 	b.resource.RelatedMedicationKnowledge = append(b.resource.RelatedMedicationKnowledge, v)
+	b.fieldsSet["relatedMedicationKnowledge"] = true
 	return b
 }
 
 // WithSynonym adds an item to the synonym field.
 func (b *MedicationKnowledgeBuilder) WithSynonym(v string) *MedicationKnowledgeBuilder {
 	b.resource.Synonym = append(b.resource.Synonym, v)
+	b.fieldsSet["synonym"] = true
 	return b
 }
 
@@ -297,6 +372,8 @@ func (b *MedicationKnowledgeBuilder) Build() (*MedicationKnowledge, error) {
 type MedicationKnowledgeAdministrationGuidelines struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -315,6 +392,8 @@ type MedicationKnowledgeAdministrationGuidelines struct {
 type MedicationKnowledgeCost struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -323,6 +402,8 @@ type MedicationKnowledgeCost struct {
 	Cost dt.Money `json:"cost"`
 	// Source The source or owner that assigns the price to the medication.
 	Source *string `json:"source,omitempty"`
+	// SourceElement contains element extensions for source.
+	SourceElement *dt.Element `json:"_source,omitempty"`
 	// Type The category of the cost information.  For example, manufacturers' cost, patient cost, claim reimbursement cost, actual acquisition cost.
 	Type dt.CodeableConcept `json:"type"`
 }
@@ -331,6 +412,8 @@ type MedicationKnowledgeCost struct {
 type MedicationKnowledgeDosage struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -345,6 +428,8 @@ type MedicationKnowledgeDosage struct {
 type MedicationKnowledgeDrugCharacteristic struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -467,12 +552,16 @@ func (v *MedicationKnowledgeDrugCharacteristicValue) UnmarshalJSON(data []byte) 
 type MedicationKnowledgeIngredient struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// IsActive Indication of whether this ingredient affects the therapeutic action of the drug.
 	IsActive *bool `json:"isActive,omitempty"`
+	// IsActiveElement contains element extensions for isActive.
+	IsActiveElement *dt.Element `json:"_isActive,omitempty"`
 	// Item The actual ingredient - either a substance (simple ingredient) or another medication.
 	Item *MedicationKnowledgeIngredientItem `json:"-"` // polymorphic
 	// Strength Specifies how many (or how much) of the items there are in this Medication.  For example, 250 mg per tablet.  This is expressed as a ratio where the numerator is 250mg and the denominator is 1 tablet.
@@ -569,6 +658,8 @@ func (v *MedicationKnowledgeIngredientItem) UnmarshalJSON(data []byte) error {
 type MedicationKnowledgeKinetics struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -585,6 +676,8 @@ type MedicationKnowledgeKinetics struct {
 type MedicationKnowledgeMaxDispense struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -599,6 +692,8 @@ type MedicationKnowledgeMaxDispense struct {
 type MedicationKnowledgeMedicineClassification struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -613,12 +708,16 @@ type MedicationKnowledgeMedicineClassification struct {
 type MedicationKnowledgeMonitoringProgram struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Name Name of the reviewing program.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Type Type of program under which the medication is monitored.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 }
@@ -627,6 +726,8 @@ type MedicationKnowledgeMonitoringProgram struct {
 type MedicationKnowledgeMonograph struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -641,6 +742,8 @@ type MedicationKnowledgeMonograph struct {
 type MedicationKnowledgePackaging struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -655,6 +758,8 @@ type MedicationKnowledgePackaging struct {
 type MedicationKnowledgePatientCharacteristics struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -665,12 +770,16 @@ type MedicationKnowledgePatientCharacteristics struct {
 	CharacteristicQuantity *dt.Quantity `json:"characteristicQuantity,omitempty"`
 	// Value The specific characteristic (e.g. height, weight, gender, etc.).
 	Value []string `json:"value,omitempty"`
+	// ValueElement contains element extensions for each value.
+	ValueElement []dt.Element `json:"_value,omitempty"`
 }
 
 // MedicationKnowledgeRegulatory Information about a medication that is used to support knowledge.
 type MedicationKnowledgeRegulatory struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -689,6 +798,8 @@ type MedicationKnowledgeRegulatory struct {
 type MedicationKnowledgeRelatedMedicationKnowledge struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -703,6 +814,8 @@ type MedicationKnowledgeRelatedMedicationKnowledge struct {
 type MedicationKnowledgeSchedule struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -715,12 +828,16 @@ type MedicationKnowledgeSchedule struct {
 type MedicationKnowledgeSubstitution struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Allowed Specifies if regulation allows for changes in the medication when dispensing.
 	Allowed *bool `json:"allowed,omitempty"`
+	// AllowedElement contains element extensions for allowed.
+	AllowedElement *dt.Element `json:"_allowed,omitempty"`
 	// Type Specifies the type of substitution allowed.
 	Type dt.CodeableConcept `json:"type"`
 }

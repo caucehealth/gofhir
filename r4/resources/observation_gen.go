@@ -18,12 +18,18 @@ type Observation struct {
 	ResourceType string `json:"resourceType"` // Always "Observation"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type Observation struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the result value.
 	Status *ObservationStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// BasedOn A plan, proposal or order that is fulfilled in whole or in part by this event.  For example, a MedicationRequest may require a patient to have laboratory test performed before  it is dispensed.
 	BasedOn []dt.Reference `json:"basedOn,omitempty"`
 	// BodySite Indicates the site on the subject's body where the observation was made (i.e. the target site).
@@ -64,6 +72,8 @@ type Observation struct {
 	Interpretation []dt.CodeableConcept `json:"interpretation,omitempty"`
 	// Issued The date and time this version of the observation was made available to providers, typically after the results have been reviewed and verified.
 	Issued *dt.Instant `json:"issued,omitempty"`
+	// IssuedElement contains element extensions for issued.
+	IssuedElement *dt.Element `json:"_issued,omitempty"`
 	// Method Indicates the mechanism used to perform the observation.
 	Method *dt.CodeableConcept `json:"method,omitempty"`
 	// Note Comments about the observation or the results.
@@ -80,6 +90,8 @@ type Observation struct {
 	Subject *dt.Reference `json:"subject,omitempty"`
 	// Value The information determined as a result of making the observation, if the information has a simple value.
 	Value *ObservationValue `json:"-"` // polymorphic
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Observation.
@@ -90,7 +102,6 @@ func (r Observation) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -121,6 +132,9 @@ func (r Observation) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
 	return json.Marshal(m)
 }
 
@@ -147,22 +161,40 @@ func (r *Observation) UnmarshalJSON(data []byte) error {
 	if valueVal.Boolean != nil || valueVal.CodeableConcept != nil || valueVal.DateTime != nil || valueVal.Integer != nil || valueVal.Period != nil || valueVal.Quantity != nil || valueVal.Range != nil || valueVal.Ratio != nil || valueVal.SampledData != nil || valueVal.String != nil || valueVal.Time != nil {
 		r.Value = &valueVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_basedOn", "_bodySite", "_category", "_code", "_component", "_contained", "_dataAbsentReason", "_derivedFrom", "_device", "_effectiveDateTime", "_effectiveInstant", "_effectivePeriod", "_effectiveTiming", "_encounter", "_extension", "_focus", "_hasMember", "_id", "_identifier", "_implicitRules", "_interpretation", "_issued", "_language", "_meta", "_method", "_modifierExtension", "_note", "_partOf", "_performer", "_referenceRange", "_specimen", "_status", "_subject", "_text", "_valueBoolean", "_valueCodeableConcept", "_valueDateTime", "_valueInteger", "_valuePeriod", "_valueQuantity", "_valueRange", "_valueRatio", "_valueSampledData", "_valueString", "_valueTime", "basedOn", "bodySite", "category", "code", "component", "contained", "dataAbsentReason", "derivedFrom", "device", "effectiveDateTime", "effectiveInstant", "effectivePeriod", "effectiveTiming", "encounter", "extension", "focus", "hasMember", "id", "identifier", "implicitRules", "interpretation", "issued", "language", "meta", "method", "modifierExtension", "note", "partOf", "performer", "referenceRange", "resourceType", "specimen", "status", "subject", "text", "valueBoolean", "valueCodeableConcept", "valueDateTime", "valueInteger", "valuePeriod", "valueQuantity", "valueRange", "valueRatio", "valueSampledData", "valueString", "valueTime":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ObservationBuilder provides a fluent API for constructing Observation resources.
 type ObservationBuilder struct {
-	resource Observation
+	resource  Observation
+	fieldsSet map[string]bool
 }
 
 // NewObservation creates a new ObservationBuilder for building a Observation resource.
 func NewObservation() *ObservationBuilder {
-	return &ObservationBuilder{resource: Observation{ResourceType: "Observation"}}
+	return &ObservationBuilder{resource: Observation{ResourceType: "Observation"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithStatus sets the observation status.
 func (b *ObservationBuilder) WithStatus(status ObservationStatus) *ObservationBuilder {
 	b.resource.Status = &status
+	b.fieldsSet["status"] = true
 	return b
 }
 
@@ -177,108 +209,126 @@ func (b *ObservationBuilder) WithCode(system, code, display string) *Observation
 			Display: &display,
 		}},
 	}
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithSubject sets the observation subject reference.
 func (b *ObservationBuilder) WithSubject(reference string) *ObservationBuilder {
 	b.resource.Subject = &dt.Reference{Reference: &reference}
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithId sets the id field.
 func (b *ObservationBuilder) WithId(v dt.ID) *ObservationBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ObservationBuilder) WithMeta(v dt.Meta) *ObservationBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ObservationBuilder) WithImplicitRules(v dt.URI) *ObservationBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ObservationBuilder) WithLanguage(v dt.Code) *ObservationBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ObservationBuilder) WithText(v dt.Narrative) *ObservationBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ObservationBuilder) WithContained(v json.RawMessage) *ObservationBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ObservationBuilder) WithExtension(v dt.Extension) *ObservationBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ObservationBuilder) WithModifierExtension(v dt.Extension) *ObservationBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ObservationBuilder) WithIdentifier(v dt.Identifier) *ObservationBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithBasedOn adds an item to the basedOn field.
 func (b *ObservationBuilder) WithBasedOn(v dt.Reference) *ObservationBuilder {
 	b.resource.BasedOn = append(b.resource.BasedOn, v)
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithBodySite sets the bodySite field.
 func (b *ObservationBuilder) WithBodySite(v dt.CodeableConcept) *ObservationBuilder {
 	b.resource.BodySite = &v
+	b.fieldsSet["bodySite"] = true
 	return b
 }
 
 // WithCategory adds an item to the category field.
 func (b *ObservationBuilder) WithCategory(v dt.CodeableConcept) *ObservationBuilder {
 	b.resource.Category = append(b.resource.Category, v)
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithComponent adds an item to the component field.
 func (b *ObservationBuilder) WithComponent(v ObservationComponent) *ObservationBuilder {
 	b.resource.Component = append(b.resource.Component, v)
+	b.fieldsSet["component"] = true
 	return b
 }
 
 // WithDataAbsentReason sets the dataAbsentReason field.
 func (b *ObservationBuilder) WithDataAbsentReason(v dt.CodeableConcept) *ObservationBuilder {
 	b.resource.DataAbsentReason = &v
+	b.fieldsSet["dataAbsentReason"] = true
 	return b
 }
 
 // WithDerivedFrom adds an item to the derivedFrom field.
 func (b *ObservationBuilder) WithDerivedFrom(v dt.Reference) *ObservationBuilder {
 	b.resource.DerivedFrom = append(b.resource.DerivedFrom, v)
+	b.fieldsSet["derivedFrom"] = true
 	return b
 }
 
 // WithDevice sets the device field.
 func (b *ObservationBuilder) WithDevice(v dt.Reference) *ObservationBuilder {
 	b.resource.Device = &v
+	b.fieldsSet["device"] = true
 	return b
 }
 
@@ -288,6 +338,7 @@ func (b *ObservationBuilder) WithEffectiveDateTime(v string) *ObservationBuilder
 		b.resource.Effective = &ObservationEffective{}
 	}
 	b.resource.Effective.DateTime = &v
+	b.fieldsSet["effective"] = true
 	return b
 }
 
@@ -297,6 +348,7 @@ func (b *ObservationBuilder) WithEffectiveInstant(v string) *ObservationBuilder 
 		b.resource.Effective = &ObservationEffective{}
 	}
 	b.resource.Effective.Instant = &v
+	b.fieldsSet["effective"] = true
 	return b
 }
 
@@ -306,6 +358,7 @@ func (b *ObservationBuilder) WithEffectivePeriod(v dt.Period) *ObservationBuilde
 		b.resource.Effective = &ObservationEffective{}
 	}
 	b.resource.Effective.Period = &v
+	b.fieldsSet["effective"] = true
 	return b
 }
 
@@ -315,72 +368,84 @@ func (b *ObservationBuilder) WithEffectiveTiming(v dt.Timing) *ObservationBuilde
 		b.resource.Effective = &ObservationEffective{}
 	}
 	b.resource.Effective.Timing = &v
+	b.fieldsSet["effective"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *ObservationBuilder) WithEncounter(v dt.Reference) *ObservationBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithFocus adds an item to the focus field.
 func (b *ObservationBuilder) WithFocus(v dt.Reference) *ObservationBuilder {
 	b.resource.Focus = append(b.resource.Focus, v)
+	b.fieldsSet["focus"] = true
 	return b
 }
 
 // WithHasMember adds an item to the hasMember field.
 func (b *ObservationBuilder) WithHasMember(v dt.Reference) *ObservationBuilder {
 	b.resource.HasMember = append(b.resource.HasMember, v)
+	b.fieldsSet["hasMember"] = true
 	return b
 }
 
 // WithInterpretation adds an item to the interpretation field.
 func (b *ObservationBuilder) WithInterpretation(v dt.CodeableConcept) *ObservationBuilder {
 	b.resource.Interpretation = append(b.resource.Interpretation, v)
+	b.fieldsSet["interpretation"] = true
 	return b
 }
 
 // WithIssued sets the issued field.
 func (b *ObservationBuilder) WithIssued(v dt.Instant) *ObservationBuilder {
 	b.resource.Issued = &v
+	b.fieldsSet["issued"] = true
 	return b
 }
 
 // WithMethod sets the method field.
 func (b *ObservationBuilder) WithMethod(v dt.CodeableConcept) *ObservationBuilder {
 	b.resource.Method = &v
+	b.fieldsSet["method"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *ObservationBuilder) WithNote(v dt.Annotation) *ObservationBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithPartOf adds an item to the partOf field.
 func (b *ObservationBuilder) WithPartOf(v dt.Reference) *ObservationBuilder {
 	b.resource.PartOf = append(b.resource.PartOf, v)
+	b.fieldsSet["partOf"] = true
 	return b
 }
 
 // WithPerformer adds an item to the performer field.
 func (b *ObservationBuilder) WithPerformer(v dt.Reference) *ObservationBuilder {
 	b.resource.Performer = append(b.resource.Performer, v)
+	b.fieldsSet["performer"] = true
 	return b
 }
 
 // WithReferenceRange adds an item to the referenceRange field.
 func (b *ObservationBuilder) WithReferenceRange(v ObservationReferenceRange) *ObservationBuilder {
 	b.resource.ReferenceRange = append(b.resource.ReferenceRange, v)
+	b.fieldsSet["referenceRange"] = true
 	return b
 }
 
 // WithSpecimen sets the specimen field.
 func (b *ObservationBuilder) WithSpecimen(v dt.Reference) *ObservationBuilder {
 	b.resource.Specimen = &v
+	b.fieldsSet["specimen"] = true
 	return b
 }
 
@@ -390,6 +455,7 @@ func (b *ObservationBuilder) WithValueBoolean(v bool) *ObservationBuilder {
 		b.resource.Value = &ObservationValue{}
 	}
 	b.resource.Value.Boolean = &v
+	b.fieldsSet["value"] = true
 	return b
 }
 
@@ -399,6 +465,7 @@ func (b *ObservationBuilder) WithValueCodeableConcept(v dt.CodeableConcept) *Obs
 		b.resource.Value = &ObservationValue{}
 	}
 	b.resource.Value.CodeableConcept = &v
+	b.fieldsSet["value"] = true
 	return b
 }
 
@@ -408,6 +475,7 @@ func (b *ObservationBuilder) WithValueDateTime(v string) *ObservationBuilder {
 		b.resource.Value = &ObservationValue{}
 	}
 	b.resource.Value.DateTime = &v
+	b.fieldsSet["value"] = true
 	return b
 }
 
@@ -417,6 +485,7 @@ func (b *ObservationBuilder) WithValueInteger(v float64) *ObservationBuilder {
 		b.resource.Value = &ObservationValue{}
 	}
 	b.resource.Value.Integer = &v
+	b.fieldsSet["value"] = true
 	return b
 }
 
@@ -426,6 +495,7 @@ func (b *ObservationBuilder) WithValuePeriod(v dt.Period) *ObservationBuilder {
 		b.resource.Value = &ObservationValue{}
 	}
 	b.resource.Value.Period = &v
+	b.fieldsSet["value"] = true
 	return b
 }
 
@@ -435,6 +505,7 @@ func (b *ObservationBuilder) WithValueQuantity(v dt.Quantity) *ObservationBuilde
 		b.resource.Value = &ObservationValue{}
 	}
 	b.resource.Value.Quantity = &v
+	b.fieldsSet["value"] = true
 	return b
 }
 
@@ -444,6 +515,7 @@ func (b *ObservationBuilder) WithValueRange(v dt.Range) *ObservationBuilder {
 		b.resource.Value = &ObservationValue{}
 	}
 	b.resource.Value.Range = &v
+	b.fieldsSet["value"] = true
 	return b
 }
 
@@ -453,6 +525,7 @@ func (b *ObservationBuilder) WithValueRatio(v dt.Ratio) *ObservationBuilder {
 		b.resource.Value = &ObservationValue{}
 	}
 	b.resource.Value.Ratio = &v
+	b.fieldsSet["value"] = true
 	return b
 }
 
@@ -462,6 +535,7 @@ func (b *ObservationBuilder) WithValueSampledData(v dt.SampledData) *Observation
 		b.resource.Value = &ObservationValue{}
 	}
 	b.resource.Value.SampledData = &v
+	b.fieldsSet["value"] = true
 	return b
 }
 
@@ -471,6 +545,7 @@ func (b *ObservationBuilder) WithValueString(v string) *ObservationBuilder {
 		b.resource.Value = &ObservationValue{}
 	}
 	b.resource.Value.String = &v
+	b.fieldsSet["value"] = true
 	return b
 }
 
@@ -480,12 +555,20 @@ func (b *ObservationBuilder) WithValueTime(v string) *ObservationBuilder {
 		b.resource.Value = &ObservationValue{}
 	}
 	b.resource.Value.Time = &v
+	b.fieldsSet["value"] = true
 	return b
 }
 
 // Build returns the constructed Observation. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *ObservationBuilder) Build() (*Observation, error) {
+	var missing []string
+	if !b.fieldsSet["code"] {
+		missing = append(missing, "code")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("Observation: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -494,6 +577,8 @@ func (b *ObservationBuilder) Build() (*Observation, error) {
 type ObservationComponent struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -699,8 +784,12 @@ func (v *ObservationComponentValue) UnmarshalJSON(data []byte) error {
 type ObservationReferenceRange struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Text Text based reference range in an observation which may be used when a quantitative range is not appropriate for an observation.  An example would be a reference value of "Negative" or a list or tab...
 	Text *string `json:"text,omitempty"`
+	// TextElement contains element extensions for text.
+	TextElement *dt.Element `json:"_text,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

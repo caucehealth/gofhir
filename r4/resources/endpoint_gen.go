@@ -18,12 +18,18 @@ type Endpoint struct {
 	ResourceType string `json:"resourceType"` // Always "Endpoint"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,31 +42,57 @@ type Endpoint struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status active | suspended | error | off | test.
 	Status *EndpointStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Address The uri that describes the actual end-point to connect to.
 	Address *dt.URL `json:"address,omitempty"`
+	// AddressElement contains element extensions for address.
+	AddressElement *dt.Element `json:"_address,omitempty"`
 	// ConnectionType A coded value that represents the technical details of the usage of this endpoint, such as what WSDLs should be used in what way. (e.g. XDS.b/DICOM/cds-hook).
 	ConnectionType dt.Coding `json:"connectionType"`
 	// Contact Contact details for a human to contact about the subscription. The primary use of this for system administrator troubleshooting.
 	Contact []dt.ContactPoint `json:"contact,omitempty"`
 	// Header Additional headers / information to send as part of the notification.
 	Header []string `json:"header,omitempty"`
+	// HeaderElement contains element extensions for each header.
+	HeaderElement []dt.Element `json:"_header,omitempty"`
 	// ManagingOrganization The organization that manages this endpoint (even if technically another organization is hosting this in the cloud, it is the organization associated with the data).
 	ManagingOrganization *dt.Reference `json:"managingOrganization,omitempty"`
 	// Name A friendly name that this endpoint can be referred to with.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// PayloadMimeType The mime type to send the payload in - e.g. application/fhir+xml, application/fhir+json. If the mime type is not specified, then the sender could send any content (including no content depending on...
 	PayloadMimeType []dt.Code `json:"payloadMimeType,omitempty"`
+	// PayloadMimeTypeElement contains element extensions for each payloadMimeType.
+	PayloadMimeTypeElement []dt.Element `json:"_payloadMimeType,omitempty"`
 	// PayloadType The payload type describes the acceptable content that can be communicated on the endpoint.
 	PayloadType []dt.CodeableConcept `json:"payloadType,omitempty"`
 	// Period The interval during which the endpoint is expected to be operational.
 	Period *dt.Period `json:"period,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Endpoint.
 func (r Endpoint) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Endpoint"
 	type Alias Endpoint
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Endpoint.
@@ -71,130 +103,166 @@ func (r *Endpoint) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Endpoint(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_address", "_connectionType", "_contact", "_contained", "_extension", "_header", "_id", "_identifier", "_implicitRules", "_language", "_managingOrganization", "_meta", "_modifierExtension", "_name", "_payloadMimeType", "_payloadType", "_period", "_status", "_text", "address", "connectionType", "contact", "contained", "extension", "header", "id", "identifier", "implicitRules", "language", "managingOrganization", "meta", "modifierExtension", "name", "payloadMimeType", "payloadType", "period", "resourceType", "status", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // EndpointBuilder provides a fluent API for constructing Endpoint resources.
 type EndpointBuilder struct {
-	resource Endpoint
+	resource  Endpoint
+	fieldsSet map[string]bool
 }
 
 // NewEndpoint creates a new EndpointBuilder for building a Endpoint resource.
 func NewEndpoint() *EndpointBuilder {
-	return &EndpointBuilder{resource: Endpoint{ResourceType: "Endpoint"}}
+	return &EndpointBuilder{resource: Endpoint{ResourceType: "Endpoint"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *EndpointBuilder) WithId(v dt.ID) *EndpointBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *EndpointBuilder) WithMeta(v dt.Meta) *EndpointBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *EndpointBuilder) WithImplicitRules(v dt.URI) *EndpointBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *EndpointBuilder) WithLanguage(v dt.Code) *EndpointBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *EndpointBuilder) WithText(v dt.Narrative) *EndpointBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *EndpointBuilder) WithContained(v json.RawMessage) *EndpointBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *EndpointBuilder) WithExtension(v dt.Extension) *EndpointBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *EndpointBuilder) WithModifierExtension(v dt.Extension) *EndpointBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *EndpointBuilder) WithIdentifier(v dt.Identifier) *EndpointBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *EndpointBuilder) WithStatus(v EndpointStatus) *EndpointBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAddress sets the address field.
 func (b *EndpointBuilder) WithAddress(v dt.URL) *EndpointBuilder {
 	b.resource.Address = &v
+	b.fieldsSet["address"] = true
 	return b
 }
 
 // WithConnectionType sets the connectionType field.
 func (b *EndpointBuilder) WithConnectionType(v dt.Coding) *EndpointBuilder {
 	b.resource.ConnectionType = v
+	b.fieldsSet["connectionType"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *EndpointBuilder) WithContact(v dt.ContactPoint) *EndpointBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithHeader adds an item to the header field.
 func (b *EndpointBuilder) WithHeader(v string) *EndpointBuilder {
 	b.resource.Header = append(b.resource.Header, v)
+	b.fieldsSet["header"] = true
 	return b
 }
 
 // WithManagingOrganization sets the managingOrganization field.
 func (b *EndpointBuilder) WithManagingOrganization(v dt.Reference) *EndpointBuilder {
 	b.resource.ManagingOrganization = &v
+	b.fieldsSet["managingOrganization"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *EndpointBuilder) WithName(v string) *EndpointBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithPayloadMimeType adds an item to the payloadMimeType field.
 func (b *EndpointBuilder) WithPayloadMimeType(v dt.Code) *EndpointBuilder {
 	b.resource.PayloadMimeType = append(b.resource.PayloadMimeType, v)
+	b.fieldsSet["payloadMimeType"] = true
 	return b
 }
 
 // WithPayloadType adds an item to the payloadType field.
 func (b *EndpointBuilder) WithPayloadType(v dt.CodeableConcept) *EndpointBuilder {
 	b.resource.PayloadType = append(b.resource.PayloadType, v)
+	b.fieldsSet["payloadType"] = true
 	return b
 }
 
 // WithPeriod sets the period field.
 func (b *EndpointBuilder) WithPeriod(v dt.Period) *EndpointBuilder {
 	b.resource.Period = &v
+	b.fieldsSet["period"] = true
 	return b
 }
 
@@ -202,7 +270,10 @@ func (b *EndpointBuilder) WithPeriod(v dt.Period) *EndpointBuilder {
 // field (cardinality 1..1) is not set.
 func (b *EndpointBuilder) Build() (*Endpoint, error) {
 	var missing []string
-	if len(b.resource.PayloadType) == 0 {
+	if !b.fieldsSet["connectionType"] {
+		missing = append(missing, "connectionType")
+	}
+	if !b.fieldsSet["payloadType"] {
 		missing = append(missing, "payloadType")
 	}
 	if len(missing) > 0 {

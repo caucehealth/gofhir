@@ -18,12 +18,18 @@ type Group struct {
 	ResourceType string `json:"resourceType"` // Always "Group"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,8 +42,12 @@ type Group struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Active Indicates whether the record for the group is available for use or is merely being retained for historical purposes.
 	Active *bool `json:"active,omitempty"`
+	// ActiveElement contains element extensions for active.
+	ActiveElement *dt.Element `json:"_active,omitempty"`
 	// Actual If true, indicates that the resource refers to a specific group of real individuals.  If false, the group defines a set of intended individuals.
 	Actual *bool `json:"actual,omitempty"`
+	// ActualElement contains element extensions for actual.
+	ActualElement *dt.Element `json:"_actual,omitempty"`
 	// Characteristic Identifies traits whose presence r absence is shared by members of the group.
 	Characteristic []GroupCharacteristic `json:"characteristic,omitempty"`
 	// Code Provides a specific type of resource the group includes; e.g. "cow", "syringe", etc.
@@ -48,17 +58,39 @@ type Group struct {
 	Member []GroupMember `json:"member,omitempty"`
 	// Name A label assigned to the group for human identification and communication.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Quantity A count of the number of resource instances that are part of the group.
 	Quantity *uint32 `json:"quantity,omitempty"`
+	// QuantityElement contains element extensions for quantity.
+	QuantityElement *dt.Element `json:"_quantity,omitempty"`
 	// Type Identifies the broad classification of the kind of resources the group includes.
 	Type *GroupType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Group.
 func (r Group) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Group"
 	type Alias Group
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Group.
@@ -69,124 +101,159 @@ func (r *Group) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Group(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_active", "_actual", "_characteristic", "_code", "_contained", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_managingEntity", "_member", "_meta", "_modifierExtension", "_name", "_quantity", "_text", "_type", "active", "actual", "characteristic", "code", "contained", "extension", "id", "identifier", "implicitRules", "language", "managingEntity", "member", "meta", "modifierExtension", "name", "quantity", "resourceType", "text", "type":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // GroupBuilder provides a fluent API for constructing Group resources.
 type GroupBuilder struct {
-	resource Group
+	resource  Group
+	fieldsSet map[string]bool
 }
 
 // NewGroup creates a new GroupBuilder for building a Group resource.
 func NewGroup() *GroupBuilder {
-	return &GroupBuilder{resource: Group{ResourceType: "Group"}}
+	return &GroupBuilder{resource: Group{ResourceType: "Group"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *GroupBuilder) WithId(v dt.ID) *GroupBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *GroupBuilder) WithMeta(v dt.Meta) *GroupBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *GroupBuilder) WithImplicitRules(v dt.URI) *GroupBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *GroupBuilder) WithLanguage(v dt.Code) *GroupBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *GroupBuilder) WithText(v dt.Narrative) *GroupBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *GroupBuilder) WithContained(v json.RawMessage) *GroupBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *GroupBuilder) WithExtension(v dt.Extension) *GroupBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *GroupBuilder) WithModifierExtension(v dt.Extension) *GroupBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *GroupBuilder) WithIdentifier(v dt.Identifier) *GroupBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithActive sets the active field.
 func (b *GroupBuilder) WithActive(v bool) *GroupBuilder {
 	b.resource.Active = &v
+	b.fieldsSet["active"] = true
 	return b
 }
 
 // WithActual sets the actual field.
 func (b *GroupBuilder) WithActual(v bool) *GroupBuilder {
 	b.resource.Actual = &v
+	b.fieldsSet["actual"] = true
 	return b
 }
 
 // WithCharacteristic adds an item to the characteristic field.
 func (b *GroupBuilder) WithCharacteristic(v GroupCharacteristic) *GroupBuilder {
 	b.resource.Characteristic = append(b.resource.Characteristic, v)
+	b.fieldsSet["characteristic"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *GroupBuilder) WithCode(v dt.CodeableConcept) *GroupBuilder {
 	b.resource.Code = &v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithManagingEntity sets the managingEntity field.
 func (b *GroupBuilder) WithManagingEntity(v dt.Reference) *GroupBuilder {
 	b.resource.ManagingEntity = &v
+	b.fieldsSet["managingEntity"] = true
 	return b
 }
 
 // WithMember adds an item to the member field.
 func (b *GroupBuilder) WithMember(v GroupMember) *GroupBuilder {
 	b.resource.Member = append(b.resource.Member, v)
+	b.fieldsSet["member"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *GroupBuilder) WithName(v string) *GroupBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithQuantity sets the quantity field.
 func (b *GroupBuilder) WithQuantity(v uint32) *GroupBuilder {
 	b.resource.Quantity = &v
+	b.fieldsSet["quantity"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *GroupBuilder) WithType(v GroupType) *GroupBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
@@ -201,6 +268,8 @@ func (b *GroupBuilder) Build() (*Group, error) {
 type GroupCharacteristic struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -209,6 +278,8 @@ type GroupCharacteristic struct {
 	Code dt.CodeableConcept `json:"code"`
 	// Exclude If true, indicates the characteristic is one that is NOT held by members of the group.
 	Exclude *bool `json:"exclude,omitempty"`
+	// ExcludeElement contains element extensions for exclude.
+	ExcludeElement *dt.Element `json:"_exclude,omitempty"`
 	// Period The period over which the characteristic is tested; e.g. the patient had an operation during the month of June.
 	Period *dt.Period `json:"period,omitempty"`
 	// Value The value of the trait that holds (or does not hold - see 'exclude') for members of the group.
@@ -338,6 +409,8 @@ func (v *GroupCharacteristicValue) UnmarshalJSON(data []byte) error {
 type GroupMember struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -346,6 +419,8 @@ type GroupMember struct {
 	Entity dt.Reference `json:"entity"`
 	// Inactive A flag to indicate that the member is no longer in the group, but previously may have been a member.
 	Inactive *bool `json:"inactive,omitempty"`
+	// InactiveElement contains element extensions for inactive.
+	InactiveElement *dt.Element `json:"_inactive,omitempty"`
 	// Period The period that the member was in the group, if known.
 	Period *dt.Period `json:"period,omitempty"`
 }

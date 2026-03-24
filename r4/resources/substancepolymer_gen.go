@@ -17,12 +17,18 @@ type SubstancePolymer struct {
 	ResourceType string `json:"resourceType"` // Always "SubstancePolymer"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -39,17 +45,35 @@ type SubstancePolymer struct {
 	Geometry *dt.CodeableConcept `json:"geometry,omitempty"`
 	// Modification Todo.
 	Modification []string `json:"modification,omitempty"`
+	// ModificationElement contains element extensions for each modification.
+	ModificationElement []dt.Element `json:"_modification,omitempty"`
 	// MonomerSet Todo.
 	MonomerSet []SubstancePolymerMonomerSet `json:"monomerSet,omitempty"`
 	// Repeat Todo.
 	Repeat []SubstancePolymerRepeat `json:"repeat,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for SubstancePolymer.
 func (r SubstancePolymer) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "SubstancePolymer"
 	type Alias SubstancePolymer
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for SubstancePolymer.
@@ -60,100 +84,131 @@ func (r *SubstancePolymer) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = SubstancePolymer(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_class", "_contained", "_copolymerConnectivity", "_extension", "_geometry", "_id", "_implicitRules", "_language", "_meta", "_modification", "_modifierExtension", "_monomerSet", "_repeat", "_text", "class", "contained", "copolymerConnectivity", "extension", "geometry", "id", "implicitRules", "language", "meta", "modification", "modifierExtension", "monomerSet", "repeat", "resourceType", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // SubstancePolymerBuilder provides a fluent API for constructing SubstancePolymer resources.
 type SubstancePolymerBuilder struct {
-	resource SubstancePolymer
+	resource  SubstancePolymer
+	fieldsSet map[string]bool
 }
 
 // NewSubstancePolymer creates a new SubstancePolymerBuilder for building a SubstancePolymer resource.
 func NewSubstancePolymer() *SubstancePolymerBuilder {
-	return &SubstancePolymerBuilder{resource: SubstancePolymer{ResourceType: "SubstancePolymer"}}
+	return &SubstancePolymerBuilder{resource: SubstancePolymer{ResourceType: "SubstancePolymer"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *SubstancePolymerBuilder) WithId(v dt.ID) *SubstancePolymerBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *SubstancePolymerBuilder) WithMeta(v dt.Meta) *SubstancePolymerBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *SubstancePolymerBuilder) WithImplicitRules(v dt.URI) *SubstancePolymerBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *SubstancePolymerBuilder) WithLanguage(v dt.Code) *SubstancePolymerBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *SubstancePolymerBuilder) WithText(v dt.Narrative) *SubstancePolymerBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *SubstancePolymerBuilder) WithContained(v json.RawMessage) *SubstancePolymerBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *SubstancePolymerBuilder) WithExtension(v dt.Extension) *SubstancePolymerBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *SubstancePolymerBuilder) WithModifierExtension(v dt.Extension) *SubstancePolymerBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithClass sets the class field.
 func (b *SubstancePolymerBuilder) WithClass(v dt.CodeableConcept) *SubstancePolymerBuilder {
 	b.resource.Class = &v
+	b.fieldsSet["class"] = true
 	return b
 }
 
 // WithCopolymerConnectivity adds an item to the copolymerConnectivity field.
 func (b *SubstancePolymerBuilder) WithCopolymerConnectivity(v dt.CodeableConcept) *SubstancePolymerBuilder {
 	b.resource.CopolymerConnectivity = append(b.resource.CopolymerConnectivity, v)
+	b.fieldsSet["copolymerConnectivity"] = true
 	return b
 }
 
 // WithGeometry sets the geometry field.
 func (b *SubstancePolymerBuilder) WithGeometry(v dt.CodeableConcept) *SubstancePolymerBuilder {
 	b.resource.Geometry = &v
+	b.fieldsSet["geometry"] = true
 	return b
 }
 
 // WithModification adds an item to the modification field.
 func (b *SubstancePolymerBuilder) WithModification(v string) *SubstancePolymerBuilder {
 	b.resource.Modification = append(b.resource.Modification, v)
+	b.fieldsSet["modification"] = true
 	return b
 }
 
 // WithMonomerSet adds an item to the monomerSet field.
 func (b *SubstancePolymerBuilder) WithMonomerSet(v SubstancePolymerMonomerSet) *SubstancePolymerBuilder {
 	b.resource.MonomerSet = append(b.resource.MonomerSet, v)
+	b.fieldsSet["monomerSet"] = true
 	return b
 }
 
 // WithRepeat adds an item to the repeat field.
 func (b *SubstancePolymerBuilder) WithRepeat(v SubstancePolymerRepeat) *SubstancePolymerBuilder {
 	b.resource.Repeat = append(b.resource.Repeat, v)
+	b.fieldsSet["repeat"] = true
 	return b
 }
 
@@ -168,6 +223,8 @@ func (b *SubstancePolymerBuilder) Build() (*SubstancePolymer, error) {
 type SubstancePolymerDegreeOfPolymerisation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -182,6 +239,8 @@ type SubstancePolymerDegreeOfPolymerisation struct {
 type SubstancePolymerMonomerSet struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -196,14 +255,20 @@ type SubstancePolymerMonomerSet struct {
 type SubstancePolymerRepeat struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// AverageMolecularFormula Todo.
 	AverageMolecularFormula *string `json:"averageMolecularFormula,omitempty"`
+	// AverageMolecularFormulaElement contains element extensions for averageMolecularFormula.
+	AverageMolecularFormulaElement *dt.Element `json:"_averageMolecularFormula,omitempty"`
 	// NumberOfUnits Todo.
 	NumberOfUnits *int32 `json:"numberOfUnits,omitempty"`
+	// NumberOfUnitsElement contains element extensions for numberOfUnits.
+	NumberOfUnitsElement *dt.Element `json:"_numberOfUnits,omitempty"`
 	// RepeatUnit Todo.
 	RepeatUnit []SubstancePolymerRepeatUnit `json:"repeatUnit,omitempty"`
 	// RepeatUnitAmountType Todo.
@@ -214,6 +279,8 @@ type SubstancePolymerRepeat struct {
 type SubstancePolymerRepeatUnit struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -226,6 +293,8 @@ type SubstancePolymerRepeatUnit struct {
 	OrientationOfPolymerisation *dt.CodeableConcept `json:"orientationOfPolymerisation,omitempty"`
 	// RepeatUnit Todo.
 	RepeatUnit *string `json:"repeatUnit,omitempty"`
+	// RepeatUnitElement contains element extensions for repeatUnit.
+	RepeatUnitElement *dt.Element `json:"_repeatUnit,omitempty"`
 	// StructuralRepresentation Todo.
 	StructuralRepresentation []SubstancePolymerStructuralRepresentation `json:"structuralRepresentation,omitempty"`
 }
@@ -234,6 +303,8 @@ type SubstancePolymerRepeatUnit struct {
 type SubstancePolymerStartingMaterial struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -242,6 +313,8 @@ type SubstancePolymerStartingMaterial struct {
 	Amount *dt.SubstanceAmount `json:"amount,omitempty"`
 	// IsDefining Todo.
 	IsDefining *bool `json:"isDefining,omitempty"`
+	// IsDefiningElement contains element extensions for isDefining.
+	IsDefiningElement *dt.Element `json:"_isDefining,omitempty"`
 	// Material Todo.
 	Material *dt.CodeableConcept `json:"material,omitempty"`
 	// Type Todo.
@@ -252,6 +325,8 @@ type SubstancePolymerStartingMaterial struct {
 type SubstancePolymerStructuralRepresentation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -260,6 +335,8 @@ type SubstancePolymerStructuralRepresentation struct {
 	Attachment *dt.Attachment `json:"attachment,omitempty"`
 	// Representation Todo.
 	Representation *string `json:"representation,omitempty"`
+	// RepresentationElement contains element extensions for representation.
+	RepresentationElement *dt.Element `json:"_representation,omitempty"`
 	// Type Todo.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 }

@@ -18,12 +18,18 @@ type AuditEvent struct {
 	ResourceType string `json:"resourceType"` // Always "AuditEvent"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -34,33 +40,57 @@ type AuditEvent struct {
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Action Indicator for type of action performed during the event that generated the audit.
 	Action *AuditEventAction `json:"action,omitempty"`
+	// ActionElement contains element extensions for action.
+	ActionElement *dt.Element `json:"_action,omitempty"`
 	// Agent An actor taking an active role in the event or activity that is logged.
 	Agent []AuditEventAgent `json:"agent,omitempty"`
 	// Entity Specific instances of data or objects that have been accessed.
 	Entity []AuditEventEntity `json:"entity,omitempty"`
 	// Outcome Indicates whether the event succeeded or failed.
 	Outcome *AuditEventOutcome `json:"outcome,omitempty"`
+	// OutcomeElement contains element extensions for outcome.
+	OutcomeElement *dt.Element `json:"_outcome,omitempty"`
 	// OutcomeDesc A free text description of the outcome of the event.
 	OutcomeDesc *string `json:"outcomeDesc,omitempty"`
+	// OutcomeDescElement contains element extensions for outcomeDesc.
+	OutcomeDescElement *dt.Element `json:"_outcomeDesc,omitempty"`
 	// Period The period during which the activity occurred.
 	Period *dt.Period `json:"period,omitempty"`
 	// PurposeOfEvent The purposeOfUse (reason) that was used during the event being recorded.
 	PurposeOfEvent []dt.CodeableConcept `json:"purposeOfEvent,omitempty"`
 	// Recorded The time when the event was recorded.
 	Recorded *dt.Instant `json:"recorded,omitempty"`
+	// RecordedElement contains element extensions for recorded.
+	RecordedElement *dt.Element `json:"_recorded,omitempty"`
 	// Source The system that is reporting the event.
 	Source AuditEventSource `json:"source"`
 	// Subtype Identifier for the category of event.
 	Subtype []dt.Coding `json:"subtype,omitempty"`
 	// Type Identifier for a family of the event.  For example, a menu item, program, rule, policy, function code, application name or URL. It identifies the performed function.
 	Type dt.Coding `json:"type"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for AuditEvent.
 func (r AuditEvent) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "AuditEvent"
 	type Alias AuditEvent
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for AuditEvent.
@@ -71,130 +101,166 @@ func (r *AuditEvent) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = AuditEvent(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_action", "_agent", "_contained", "_entity", "_extension", "_id", "_implicitRules", "_language", "_meta", "_modifierExtension", "_outcome", "_outcomeDesc", "_period", "_purposeOfEvent", "_recorded", "_source", "_subtype", "_text", "_type", "action", "agent", "contained", "entity", "extension", "id", "implicitRules", "language", "meta", "modifierExtension", "outcome", "outcomeDesc", "period", "purposeOfEvent", "recorded", "resourceType", "source", "subtype", "text", "type":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // AuditEventBuilder provides a fluent API for constructing AuditEvent resources.
 type AuditEventBuilder struct {
-	resource AuditEvent
+	resource  AuditEvent
+	fieldsSet map[string]bool
 }
 
 // NewAuditEvent creates a new AuditEventBuilder for building a AuditEvent resource.
 func NewAuditEvent() *AuditEventBuilder {
-	return &AuditEventBuilder{resource: AuditEvent{ResourceType: "AuditEvent"}}
+	return &AuditEventBuilder{resource: AuditEvent{ResourceType: "AuditEvent"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *AuditEventBuilder) WithId(v dt.ID) *AuditEventBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *AuditEventBuilder) WithMeta(v dt.Meta) *AuditEventBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *AuditEventBuilder) WithImplicitRules(v dt.URI) *AuditEventBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *AuditEventBuilder) WithLanguage(v dt.Code) *AuditEventBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *AuditEventBuilder) WithText(v dt.Narrative) *AuditEventBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *AuditEventBuilder) WithContained(v json.RawMessage) *AuditEventBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *AuditEventBuilder) WithExtension(v dt.Extension) *AuditEventBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *AuditEventBuilder) WithModifierExtension(v dt.Extension) *AuditEventBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithAction sets the action field.
 func (b *AuditEventBuilder) WithAction(v AuditEventAction) *AuditEventBuilder {
 	b.resource.Action = &v
+	b.fieldsSet["action"] = true
 	return b
 }
 
 // WithAgent adds an item to the agent field.
 func (b *AuditEventBuilder) WithAgent(v AuditEventAgent) *AuditEventBuilder {
 	b.resource.Agent = append(b.resource.Agent, v)
+	b.fieldsSet["agent"] = true
 	return b
 }
 
 // WithEntity adds an item to the entity field.
 func (b *AuditEventBuilder) WithEntity(v AuditEventEntity) *AuditEventBuilder {
 	b.resource.Entity = append(b.resource.Entity, v)
+	b.fieldsSet["entity"] = true
 	return b
 }
 
 // WithOutcome sets the outcome field.
 func (b *AuditEventBuilder) WithOutcome(v AuditEventOutcome) *AuditEventBuilder {
 	b.resource.Outcome = &v
+	b.fieldsSet["outcome"] = true
 	return b
 }
 
 // WithOutcomeDesc sets the outcomeDesc field.
 func (b *AuditEventBuilder) WithOutcomeDesc(v string) *AuditEventBuilder {
 	b.resource.OutcomeDesc = &v
+	b.fieldsSet["outcomeDesc"] = true
 	return b
 }
 
 // WithPeriod sets the period field.
 func (b *AuditEventBuilder) WithPeriod(v dt.Period) *AuditEventBuilder {
 	b.resource.Period = &v
+	b.fieldsSet["period"] = true
 	return b
 }
 
 // WithPurposeOfEvent adds an item to the purposeOfEvent field.
 func (b *AuditEventBuilder) WithPurposeOfEvent(v dt.CodeableConcept) *AuditEventBuilder {
 	b.resource.PurposeOfEvent = append(b.resource.PurposeOfEvent, v)
+	b.fieldsSet["purposeOfEvent"] = true
 	return b
 }
 
 // WithRecorded sets the recorded field.
 func (b *AuditEventBuilder) WithRecorded(v dt.Instant) *AuditEventBuilder {
 	b.resource.Recorded = &v
+	b.fieldsSet["recorded"] = true
 	return b
 }
 
 // WithSource sets the source field.
 func (b *AuditEventBuilder) WithSource(v AuditEventSource) *AuditEventBuilder {
 	b.resource.Source = v
+	b.fieldsSet["source"] = true
 	return b
 }
 
 // WithSubtype adds an item to the subtype field.
 func (b *AuditEventBuilder) WithSubtype(v dt.Coding) *AuditEventBuilder {
 	b.resource.Subtype = append(b.resource.Subtype, v)
+	b.fieldsSet["subtype"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *AuditEventBuilder) WithType(v dt.Coding) *AuditEventBuilder {
 	b.resource.Type = v
+	b.fieldsSet["type"] = true
 	return b
 }
 
@@ -202,8 +268,14 @@ func (b *AuditEventBuilder) WithType(v dt.Coding) *AuditEventBuilder {
 // field (cardinality 1..1) is not set.
 func (b *AuditEventBuilder) Build() (*AuditEvent, error) {
 	var missing []string
-	if len(b.resource.Agent) == 0 {
+	if !b.fieldsSet["agent"] {
 		missing = append(missing, "agent")
+	}
+	if !b.fieldsSet["source"] {
+		missing = append(missing, "source")
+	}
+	if !b.fieldsSet["type"] {
+		missing = append(missing, "type")
 	}
 	if len(missing) > 0 {
 		return nil, fmt.Errorf("AuditEvent: required fields missing: %v", missing)
@@ -216,26 +288,36 @@ func (b *AuditEventBuilder) Build() (*AuditEvent, error) {
 type AuditEventAgent struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// AltId Alternative agent Identifier. For a human, this should be a user identifier text string from authentication system. This identifier would be one known to a common authentication system (e.g. single...
 	AltId *string `json:"altId,omitempty"`
+	// AltIdElement contains element extensions for altId.
+	AltIdElement *dt.Element `json:"_altId,omitempty"`
 	// Location Where the event occurred.
 	Location *dt.Reference `json:"location,omitempty"`
 	// Media Type of media involved. Used when the event is about exporting/importing onto media.
 	Media *dt.Coding `json:"media,omitempty"`
 	// Name Human-meaningful name for the agent.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Network Logical network location for application activity, if the activity has a network location.
 	Network *AuditEventNetwork `json:"network,omitempty"`
 	// Policy The policy or plan that authorized the activity being recorded. Typically, a single activity may have multiple applicable policies, such as patient consent, guarantor funding, etc. The policy would...
 	Policy []dt.URI `json:"policy,omitempty"`
+	// PolicyElement contains element extensions for each policy.
+	PolicyElement []dt.Element `json:"_policy,omitempty"`
 	// PurposeOfUse The reason (purpose of use), specific to this agent, that was used during the event being recorded.
 	PurposeOfUse []dt.CodeableConcept `json:"purposeOfUse,omitempty"`
 	// Requestor Indicator that the user is or is not the requestor, or initiator, for the event being audited.
 	Requestor *bool `json:"requestor,omitempty"`
+	// RequestorElement contains element extensions for requestor.
+	RequestorElement *dt.Element `json:"_requestor,omitempty"`
 	// Role The security role that the user was acting under, that come from local codes defined by the access control security system (e.g. RBAC, ABAC) used in the local context.
 	Role []dt.CodeableConcept `json:"role,omitempty"`
 	// Type Specification of the participation type the user plays when performing the event.
@@ -248,12 +330,16 @@ type AuditEventAgent struct {
 type AuditEventDetail struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Type The type of extra detail provided in the value.
 	Type *string `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 	// Value The  value of the extra detail.
 	Value *AuditEventDetailValue `json:"-"` // polymorphic
 }
@@ -348,20 +434,28 @@ func (v *AuditEventDetailValue) UnmarshalJSON(data []byte) error {
 type AuditEventEntity struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description Text that describes the entity in more detail.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Detail Tagged value pairs for conveying additional information about the entity.
 	Detail []AuditEventDetail `json:"detail,omitempty"`
 	// Lifecycle Identifier for the data life-cycle stage for the entity.
 	Lifecycle *dt.Coding `json:"lifecycle,omitempty"`
 	// Name A name of the entity in the audit event.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Query The query parameters for a query-type entities.
 	Query []byte `json:"query,omitempty"`
+	// QueryElement contains element extensions for query.
+	QueryElement *dt.Element `json:"_query,omitempty"`
 	// Role Code representing the role the entity played in the event being audited.
 	Role *dt.Coding `json:"role,omitempty"`
 	// SecurityLabel Security labels for the identified entity.
@@ -376,20 +470,28 @@ type AuditEventEntity struct {
 type AuditEventNetwork struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Address An identifier for the network access point of the user device for the audit event.
 	Address *string `json:"address,omitempty"`
+	// AddressElement contains element extensions for address.
+	AddressElement *dt.Element `json:"_address,omitempty"`
 	// Type An identifier for the type of network access point that originated the audit event.
 	Type *AuditEventNetworkType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }
 
 // AuditEventSource A record of an event made for purposes of maintaining a security log. Typical uses include detection of intrusion attempts and monitoring for inappropriate usage.
 type AuditEventSource struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -398,6 +500,8 @@ type AuditEventSource struct {
 	Observer dt.Reference `json:"observer"`
 	// Site Logical source location within the healthcare enterprise network.  For example, a hospital or other provider location within a multi-entity provider group.
 	Site *string `json:"site,omitempty"`
+	// SiteElement contains element extensions for site.
+	SiteElement *dt.Element `json:"_site,omitempty"`
 	// Type Code specifying the type of source where event originated.
 	Type []dt.Coding `json:"type,omitempty"`
 }

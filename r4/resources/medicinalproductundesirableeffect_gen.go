@@ -17,12 +17,18 @@ type MedicinalProductUndesirableEffect struct {
 	ResourceType string `json:"resourceType"` // Always "MedicinalProductUndesirableEffect"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -41,13 +47,29 @@ type MedicinalProductUndesirableEffect struct {
 	Subject []dt.Reference `json:"subject,omitempty"`
 	// SymptomConditionEffect The symptom, condition or undesirable effect.
 	SymptomConditionEffect *dt.CodeableConcept `json:"symptomConditionEffect,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for MedicinalProductUndesirableEffect.
 func (r MedicinalProductUndesirableEffect) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "MedicinalProductUndesirableEffect"
 	type Alias MedicinalProductUndesirableEffect
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for MedicinalProductUndesirableEffect.
@@ -58,94 +80,124 @@ func (r *MedicinalProductUndesirableEffect) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = MedicinalProductUndesirableEffect(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_classification", "_contained", "_extension", "_frequencyOfOccurrence", "_id", "_implicitRules", "_language", "_meta", "_modifierExtension", "_population", "_subject", "_symptomConditionEffect", "_text", "classification", "contained", "extension", "frequencyOfOccurrence", "id", "implicitRules", "language", "meta", "modifierExtension", "population", "resourceType", "subject", "symptomConditionEffect", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // MedicinalProductUndesirableEffectBuilder provides a fluent API for constructing MedicinalProductUndesirableEffect resources.
 type MedicinalProductUndesirableEffectBuilder struct {
-	resource MedicinalProductUndesirableEffect
+	resource  MedicinalProductUndesirableEffect
+	fieldsSet map[string]bool
 }
 
 // NewMedicinalProductUndesirableEffect creates a new MedicinalProductUndesirableEffectBuilder for building a MedicinalProductUndesirableEffect resource.
 func NewMedicinalProductUndesirableEffect() *MedicinalProductUndesirableEffectBuilder {
-	return &MedicinalProductUndesirableEffectBuilder{resource: MedicinalProductUndesirableEffect{ResourceType: "MedicinalProductUndesirableEffect"}}
+	return &MedicinalProductUndesirableEffectBuilder{resource: MedicinalProductUndesirableEffect{ResourceType: "MedicinalProductUndesirableEffect"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *MedicinalProductUndesirableEffectBuilder) WithId(v dt.ID) *MedicinalProductUndesirableEffectBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *MedicinalProductUndesirableEffectBuilder) WithMeta(v dt.Meta) *MedicinalProductUndesirableEffectBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *MedicinalProductUndesirableEffectBuilder) WithImplicitRules(v dt.URI) *MedicinalProductUndesirableEffectBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *MedicinalProductUndesirableEffectBuilder) WithLanguage(v dt.Code) *MedicinalProductUndesirableEffectBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *MedicinalProductUndesirableEffectBuilder) WithText(v dt.Narrative) *MedicinalProductUndesirableEffectBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *MedicinalProductUndesirableEffectBuilder) WithContained(v json.RawMessage) *MedicinalProductUndesirableEffectBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *MedicinalProductUndesirableEffectBuilder) WithExtension(v dt.Extension) *MedicinalProductUndesirableEffectBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *MedicinalProductUndesirableEffectBuilder) WithModifierExtension(v dt.Extension) *MedicinalProductUndesirableEffectBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithClassification sets the classification field.
 func (b *MedicinalProductUndesirableEffectBuilder) WithClassification(v dt.CodeableConcept) *MedicinalProductUndesirableEffectBuilder {
 	b.resource.Classification = &v
+	b.fieldsSet["classification"] = true
 	return b
 }
 
 // WithFrequencyOfOccurrence sets the frequencyOfOccurrence field.
 func (b *MedicinalProductUndesirableEffectBuilder) WithFrequencyOfOccurrence(v dt.CodeableConcept) *MedicinalProductUndesirableEffectBuilder {
 	b.resource.FrequencyOfOccurrence = &v
+	b.fieldsSet["frequencyOfOccurrence"] = true
 	return b
 }
 
 // WithPopulation adds an item to the population field.
 func (b *MedicinalProductUndesirableEffectBuilder) WithPopulation(v dt.Population) *MedicinalProductUndesirableEffectBuilder {
 	b.resource.Population = append(b.resource.Population, v)
+	b.fieldsSet["population"] = true
 	return b
 }
 
 // WithSubject adds an item to the subject field.
 func (b *MedicinalProductUndesirableEffectBuilder) WithSubject(v dt.Reference) *MedicinalProductUndesirableEffectBuilder {
 	b.resource.Subject = append(b.resource.Subject, v)
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithSymptomConditionEffect sets the symptomConditionEffect field.
 func (b *MedicinalProductUndesirableEffectBuilder) WithSymptomConditionEffect(v dt.CodeableConcept) *MedicinalProductUndesirableEffectBuilder {
 	b.resource.SymptomConditionEffect = &v
+	b.fieldsSet["symptomConditionEffect"] = true
 	return b
 }
 

@@ -17,12 +17,18 @@ type SubstanceProtein struct {
 	ResourceType string `json:"resourceType"` // Always "SubstanceProtein"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -33,19 +39,39 @@ type SubstanceProtein struct {
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// DisulfideLinkage The disulphide bond between two cysteine residues either on the same subunit or on two different subunits shall be described. The position of the disulfide bonds in the SubstanceProtein shall be li...
 	DisulfideLinkage []string `json:"disulfideLinkage,omitempty"`
+	// DisulfideLinkageElement contains element extensions for each disulfideLinkage.
+	DisulfideLinkageElement []dt.Element `json:"_disulfideLinkage,omitempty"`
 	// NumberOfSubunits Number of linear sequences of amino acids linked through peptide bonds. The number of subunits constituting the SubstanceProtein shall be described. It is possible that the number of subunits can b...
 	NumberOfSubunits *int32 `json:"numberOfSubunits,omitempty"`
+	// NumberOfSubunitsElement contains element extensions for numberOfSubunits.
+	NumberOfSubunitsElement *dt.Element `json:"_numberOfSubunits,omitempty"`
 	// SequenceType The SubstanceProtein descriptive elements will only be used when a complete or partial amino acid sequence is available or derivable from a nucleic acid sequence.
 	SequenceType *dt.CodeableConcept `json:"sequenceType,omitempty"`
 	// Subunit This subclause refers to the description of each subunit constituting the SubstanceProtein. A subunit is a linear sequence of amino acids linked through peptide bonds. The Subunit information shall...
 	Subunit []SubstanceProteinSubunit `json:"subunit,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for SubstanceProtein.
 func (r SubstanceProtein) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "SubstanceProtein"
 	type Alias SubstanceProtein
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for SubstanceProtein.
@@ -56,88 +82,117 @@ func (r *SubstanceProtein) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = SubstanceProtein(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contained", "_disulfideLinkage", "_extension", "_id", "_implicitRules", "_language", "_meta", "_modifierExtension", "_numberOfSubunits", "_sequenceType", "_subunit", "_text", "contained", "disulfideLinkage", "extension", "id", "implicitRules", "language", "meta", "modifierExtension", "numberOfSubunits", "resourceType", "sequenceType", "subunit", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // SubstanceProteinBuilder provides a fluent API for constructing SubstanceProtein resources.
 type SubstanceProteinBuilder struct {
-	resource SubstanceProtein
+	resource  SubstanceProtein
+	fieldsSet map[string]bool
 }
 
 // NewSubstanceProtein creates a new SubstanceProteinBuilder for building a SubstanceProtein resource.
 func NewSubstanceProtein() *SubstanceProteinBuilder {
-	return &SubstanceProteinBuilder{resource: SubstanceProtein{ResourceType: "SubstanceProtein"}}
+	return &SubstanceProteinBuilder{resource: SubstanceProtein{ResourceType: "SubstanceProtein"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *SubstanceProteinBuilder) WithId(v dt.ID) *SubstanceProteinBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *SubstanceProteinBuilder) WithMeta(v dt.Meta) *SubstanceProteinBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *SubstanceProteinBuilder) WithImplicitRules(v dt.URI) *SubstanceProteinBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *SubstanceProteinBuilder) WithLanguage(v dt.Code) *SubstanceProteinBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *SubstanceProteinBuilder) WithText(v dt.Narrative) *SubstanceProteinBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *SubstanceProteinBuilder) WithContained(v json.RawMessage) *SubstanceProteinBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *SubstanceProteinBuilder) WithExtension(v dt.Extension) *SubstanceProteinBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *SubstanceProteinBuilder) WithModifierExtension(v dt.Extension) *SubstanceProteinBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithDisulfideLinkage adds an item to the disulfideLinkage field.
 func (b *SubstanceProteinBuilder) WithDisulfideLinkage(v string) *SubstanceProteinBuilder {
 	b.resource.DisulfideLinkage = append(b.resource.DisulfideLinkage, v)
+	b.fieldsSet["disulfideLinkage"] = true
 	return b
 }
 
 // WithNumberOfSubunits sets the numberOfSubunits field.
 func (b *SubstanceProteinBuilder) WithNumberOfSubunits(v int32) *SubstanceProteinBuilder {
 	b.resource.NumberOfSubunits = &v
+	b.fieldsSet["numberOfSubunits"] = true
 	return b
 }
 
 // WithSequenceType sets the sequenceType field.
 func (b *SubstanceProteinBuilder) WithSequenceType(v dt.CodeableConcept) *SubstanceProteinBuilder {
 	b.resource.SequenceType = &v
+	b.fieldsSet["sequenceType"] = true
 	return b
 }
 
 // WithSubunit adds an item to the subunit field.
 func (b *SubstanceProteinBuilder) WithSubunit(v SubstanceProteinSubunit) *SubstanceProteinBuilder {
 	b.resource.Subunit = append(b.resource.Subunit, v)
+	b.fieldsSet["subunit"] = true
 	return b
 }
 
@@ -152,24 +207,36 @@ func (b *SubstanceProteinBuilder) Build() (*SubstanceProtein, error) {
 type SubstanceProteinSubunit struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// CTerminalModification The modification at the C-terminal shall be specified.
 	CTerminalModification *string `json:"cTerminalModification,omitempty"`
+	// CTerminalModificationElement contains element extensions for cTerminalModification.
+	CTerminalModificationElement *dt.Element `json:"_cTerminalModification,omitempty"`
 	// CTerminalModificationId Unique identifier for molecular fragment modification based on the ISO 11238 Substance ID.
 	CTerminalModificationId *dt.Identifier `json:"cTerminalModificationId,omitempty"`
 	// Length Length of linear sequences of amino acids contained in the subunit.
 	Length *int32 `json:"length,omitempty"`
+	// LengthElement contains element extensions for length.
+	LengthElement *dt.Element `json:"_length,omitempty"`
 	// NTerminalModification The name of the fragment modified at the N-terminal of the SubstanceProtein shall be specified.
 	NTerminalModification *string `json:"nTerminalModification,omitempty"`
+	// NTerminalModificationElement contains element extensions for nTerminalModification.
+	NTerminalModificationElement *dt.Element `json:"_nTerminalModification,omitempty"`
 	// NTerminalModificationId Unique identifier for molecular fragment modification based on the ISO 11238 Substance ID.
 	NTerminalModificationId *dt.Identifier `json:"nTerminalModificationId,omitempty"`
 	// Sequence The sequence information shall be provided enumerating the amino acids from N- to C-terminal end using standard single-letter amino acid codes. Uppercase shall be used for L-amino acids and lowerca...
 	Sequence *string `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 	// SequenceAttachment The sequence information shall be provided enumerating the amino acids from N- to C-terminal end using standard single-letter amino acid codes. Uppercase shall be used for L-amino acids and lowerca...
 	SequenceAttachment *dt.Attachment `json:"sequenceAttachment,omitempty"`
 	// Subunit Index of primary sequences of amino acids linked through peptide bonds in order of decreasing length. Sequences of the same length will be ordered by molecular weight. Subunits that have identical ...
 	Subunit *int32 `json:"subunit,omitempty"`
+	// SubunitElement contains element extensions for subunit.
+	SubunitElement *dt.Element `json:"_subunit,omitempty"`
 }

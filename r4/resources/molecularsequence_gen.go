@@ -17,12 +17,18 @@ type MolecularSequence struct {
 	ResourceType string `json:"resourceType"` // Always "MolecularSequence"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,10 +41,14 @@ type MolecularSequence struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// CoordinateSystem Whether the sequence is numbered starting at 0 (0-based numbering or coordinates, inclusive start, exclusive end) or starting at 1 (1-based numbering, inclusive start and inclusive end).
 	CoordinateSystem *int32 `json:"coordinateSystem,omitempty"`
+	// CoordinateSystemElement contains element extensions for coordinateSystem.
+	CoordinateSystemElement *dt.Element `json:"_coordinateSystem,omitempty"`
 	// Device The method for sequencing, for example, chip information.
 	Device *dt.Reference `json:"device,omitempty"`
 	// ObservedSeq Sequence that was observed. It is the result marked by referenceSeq along with variant records on referenceSeq. This shall start from referenceSeq.windowStart and end by referenceSeq.windowEnd.
 	ObservedSeq *string `json:"observedSeq,omitempty"`
+	// ObservedSeqElement contains element extensions for observedSeq.
+	ObservedSeqElement *dt.Element `json:"_observedSeq,omitempty"`
 	// Patient The patient whose sequencing results are described by this resource.
 	Patient *dt.Reference `json:"patient,omitempty"`
 	// Performer The organization or lab that should be responsible for this result.
@@ -51,6 +61,8 @@ type MolecularSequence struct {
 	Quantity *dt.Quantity `json:"quantity,omitempty"`
 	// ReadCoverage Coverage (read depth or depth) is the average number of reads representing a given nucleotide in the reconstructed sequence.
 	ReadCoverage *int32 `json:"readCoverage,omitempty"`
+	// ReadCoverageElement contains element extensions for readCoverage.
+	ReadCoverageElement *dt.Element `json:"_readCoverage,omitempty"`
 	// ReferenceSeq A sequence that is used as a reference to describe variants that are present in a sequence analyzed.
 	ReferenceSeq *MolecularSequenceReferenceSeq `json:"referenceSeq,omitempty"`
 	// Repository Configurations of the external repository. The repository shall store target's observedSeq or records related with target's observedSeq.
@@ -61,15 +73,33 @@ type MolecularSequence struct {
 	StructureVariant []MolecularSequenceStructureVariant `json:"structureVariant,omitempty"`
 	// Type Amino Acid Sequence/ DNA Sequence / RNA Sequence.
 	Type *MolecularSequenceType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 	// Variant The definition of variant here originates from Sequence ontology ([variant_of](http://www.sequenceontology.org/browser/current_svn/term/variant_of)). This element can represent amino acid or nuclei...
 	Variant []MolecularSequenceVariant `json:"variant,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for MolecularSequence.
 func (r MolecularSequence) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "MolecularSequence"
 	type Alias MolecularSequence
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for MolecularSequence.
@@ -80,160 +110,201 @@ func (r *MolecularSequence) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = MolecularSequence(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contained", "_coordinateSystem", "_device", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_modifierExtension", "_observedSeq", "_patient", "_performer", "_pointer", "_quality", "_quantity", "_readCoverage", "_referenceSeq", "_repository", "_specimen", "_structureVariant", "_text", "_type", "_variant", "contained", "coordinateSystem", "device", "extension", "id", "identifier", "implicitRules", "language", "meta", "modifierExtension", "observedSeq", "patient", "performer", "pointer", "quality", "quantity", "readCoverage", "referenceSeq", "repository", "resourceType", "specimen", "structureVariant", "text", "type", "variant":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // MolecularSequenceBuilder provides a fluent API for constructing MolecularSequence resources.
 type MolecularSequenceBuilder struct {
-	resource MolecularSequence
+	resource  MolecularSequence
+	fieldsSet map[string]bool
 }
 
 // NewMolecularSequence creates a new MolecularSequenceBuilder for building a MolecularSequence resource.
 func NewMolecularSequence() *MolecularSequenceBuilder {
-	return &MolecularSequenceBuilder{resource: MolecularSequence{ResourceType: "MolecularSequence"}}
+	return &MolecularSequenceBuilder{resource: MolecularSequence{ResourceType: "MolecularSequence"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *MolecularSequenceBuilder) WithId(v dt.ID) *MolecularSequenceBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *MolecularSequenceBuilder) WithMeta(v dt.Meta) *MolecularSequenceBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *MolecularSequenceBuilder) WithImplicitRules(v dt.URI) *MolecularSequenceBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *MolecularSequenceBuilder) WithLanguage(v dt.Code) *MolecularSequenceBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *MolecularSequenceBuilder) WithText(v dt.Narrative) *MolecularSequenceBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *MolecularSequenceBuilder) WithContained(v json.RawMessage) *MolecularSequenceBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *MolecularSequenceBuilder) WithExtension(v dt.Extension) *MolecularSequenceBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *MolecularSequenceBuilder) WithModifierExtension(v dt.Extension) *MolecularSequenceBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *MolecularSequenceBuilder) WithIdentifier(v dt.Identifier) *MolecularSequenceBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithCoordinateSystem sets the coordinateSystem field.
 func (b *MolecularSequenceBuilder) WithCoordinateSystem(v int32) *MolecularSequenceBuilder {
 	b.resource.CoordinateSystem = &v
+	b.fieldsSet["coordinateSystem"] = true
 	return b
 }
 
 // WithDevice sets the device field.
 func (b *MolecularSequenceBuilder) WithDevice(v dt.Reference) *MolecularSequenceBuilder {
 	b.resource.Device = &v
+	b.fieldsSet["device"] = true
 	return b
 }
 
 // WithObservedSeq sets the observedSeq field.
 func (b *MolecularSequenceBuilder) WithObservedSeq(v string) *MolecularSequenceBuilder {
 	b.resource.ObservedSeq = &v
+	b.fieldsSet["observedSeq"] = true
 	return b
 }
 
 // WithPatient sets the patient field.
 func (b *MolecularSequenceBuilder) WithPatient(v dt.Reference) *MolecularSequenceBuilder {
 	b.resource.Patient = &v
+	b.fieldsSet["patient"] = true
 	return b
 }
 
 // WithPerformer sets the performer field.
 func (b *MolecularSequenceBuilder) WithPerformer(v dt.Reference) *MolecularSequenceBuilder {
 	b.resource.Performer = &v
+	b.fieldsSet["performer"] = true
 	return b
 }
 
 // WithPointer adds an item to the pointer field.
 func (b *MolecularSequenceBuilder) WithPointer(v dt.Reference) *MolecularSequenceBuilder {
 	b.resource.Pointer = append(b.resource.Pointer, v)
+	b.fieldsSet["pointer"] = true
 	return b
 }
 
 // WithQuality adds an item to the quality field.
 func (b *MolecularSequenceBuilder) WithQuality(v MolecularSequenceQuality) *MolecularSequenceBuilder {
 	b.resource.Quality = append(b.resource.Quality, v)
+	b.fieldsSet["quality"] = true
 	return b
 }
 
 // WithQuantity sets the quantity field.
 func (b *MolecularSequenceBuilder) WithQuantity(v dt.Quantity) *MolecularSequenceBuilder {
 	b.resource.Quantity = &v
+	b.fieldsSet["quantity"] = true
 	return b
 }
 
 // WithReadCoverage sets the readCoverage field.
 func (b *MolecularSequenceBuilder) WithReadCoverage(v int32) *MolecularSequenceBuilder {
 	b.resource.ReadCoverage = &v
+	b.fieldsSet["readCoverage"] = true
 	return b
 }
 
 // WithReferenceSeq sets the referenceSeq field.
 func (b *MolecularSequenceBuilder) WithReferenceSeq(v MolecularSequenceReferenceSeq) *MolecularSequenceBuilder {
 	b.resource.ReferenceSeq = &v
+	b.fieldsSet["referenceSeq"] = true
 	return b
 }
 
 // WithRepository adds an item to the repository field.
 func (b *MolecularSequenceBuilder) WithRepository(v MolecularSequenceRepository) *MolecularSequenceBuilder {
 	b.resource.Repository = append(b.resource.Repository, v)
+	b.fieldsSet["repository"] = true
 	return b
 }
 
 // WithSpecimen sets the specimen field.
 func (b *MolecularSequenceBuilder) WithSpecimen(v dt.Reference) *MolecularSequenceBuilder {
 	b.resource.Specimen = &v
+	b.fieldsSet["specimen"] = true
 	return b
 }
 
 // WithStructureVariant adds an item to the structureVariant field.
 func (b *MolecularSequenceBuilder) WithStructureVariant(v MolecularSequenceStructureVariant) *MolecularSequenceBuilder {
 	b.resource.StructureVariant = append(b.resource.StructureVariant, v)
+	b.fieldsSet["structureVariant"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *MolecularSequenceBuilder) WithType(v MolecularSequenceType) *MolecularSequenceBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
 // WithVariant adds an item to the variant field.
 func (b *MolecularSequenceBuilder) WithVariant(v MolecularSequenceVariant) *MolecularSequenceBuilder {
 	b.resource.Variant = append(b.resource.Variant, v)
+	b.fieldsSet["variant"] = true
 	return b
 }
 
@@ -248,54 +319,82 @@ func (b *MolecularSequenceBuilder) Build() (*MolecularSequence, error) {
 type MolecularSequenceInner struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// End Structural variant inner end. If the coordinate system is 0-based then end is exclusive and does not include the last position. If the coordinate system is 1-base, then end is inclusive and include...
 	End *int32 `json:"end,omitempty"`
+	// EndElement contains element extensions for end.
+	EndElement *dt.Element `json:"_end,omitempty"`
 	// Start Structural variant inner start. If the coordinate system is either 0-based or 1-based, then start position is inclusive.
 	Start *int32 `json:"start,omitempty"`
+	// StartElement contains element extensions for start.
+	StartElement *dt.Element `json:"_start,omitempty"`
 }
 
 // MolecularSequenceOuter Raw data describing a biological sequence.
 type MolecularSequenceOuter struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// End Structural variant outer end. If the coordinate system is 0-based then end is exclusive and does not include the last position. If the coordinate system is 1-base, then end is inclusive and include...
 	End *int32 `json:"end,omitempty"`
+	// EndElement contains element extensions for end.
+	EndElement *dt.Element `json:"_end,omitempty"`
 	// Start Structural variant outer start. If the coordinate system is either 0-based or 1-based, then start position is inclusive.
 	Start *int32 `json:"start,omitempty"`
+	// StartElement contains element extensions for start.
+	StartElement *dt.Element `json:"_start,omitempty"`
 }
 
 // MolecularSequenceQuality Raw data describing a biological sequence.
 type MolecularSequenceQuality struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// End End position of the sequence. If the coordinate system is 0-based then end is exclusive and does not include the last position. If the coordinate system is 1-base, then end is inclusive and include...
 	End *int32 `json:"end,omitempty"`
+	// EndElement contains element extensions for end.
+	EndElement *dt.Element `json:"_end,omitempty"`
 	// FScore Harmonic mean of Recall and Precision, computed as: 2 * precision * recall / (precision + recall).
 	FScore *float64 `json:"fScore,omitempty"`
+	// FScoreElement contains element extensions for fScore.
+	FScoreElement *dt.Element `json:"_fScore,omitempty"`
 	// GtFP The number of false positives where the non-REF alleles in the Truth and Query Call Sets match (i.e. cases where the truth is 1/1 and the query is 0/1 or similar).
 	GtFP *float64 `json:"gtFP,omitempty"`
+	// GtFPElement contains element extensions for gtFP.
+	GtFPElement *dt.Element `json:"_gtFP,omitempty"`
 	// Method Which method is used to get sequence quality.
 	Method *dt.CodeableConcept `json:"method,omitempty"`
 	// Precision QUERY.TP / (QUERY.TP + QUERY.FP).
 	Precision *float64 `json:"precision,omitempty"`
+	// PrecisionElement contains element extensions for precision.
+	PrecisionElement *dt.Element `json:"_precision,omitempty"`
 	// QueryFP False positives, i.e. the number of sites in the Query Call Set for which there is no path through the Truth Call Set that is consistent with this site. Sites with correct variant but incorrect gen...
 	QueryFP *float64 `json:"queryFP,omitempty"`
+	// QueryFPElement contains element extensions for queryFP.
+	QueryFPElement *dt.Element `json:"_queryFP,omitempty"`
 	// QueryTP True positives, from the perspective of the query data, i.e. the number of sites in the Query Call Set for which there are paths through the Truth Call Set that are consistent with all of the allel...
 	QueryTP *float64 `json:"queryTP,omitempty"`
+	// QueryTPElement contains element extensions for queryTP.
+	QueryTPElement *dt.Element `json:"_queryTP,omitempty"`
 	// Recall TRUTH.TP / (TRUTH.TP + TRUTH.FN).
 	Recall *float64 `json:"recall,omitempty"`
+	// RecallElement contains element extensions for recall.
+	RecallElement *dt.Element `json:"_recall,omitempty"`
 	// Roc Receiver Operator Characteristic (ROC) Curve  to give sensitivity/specificity tradeoff.
 	Roc *MolecularSequenceRoc `json:"roc,omitempty"`
 	// Score The score of an experimentally derived feature such as a p-value ([SO:0001685](http://www.sequenceontology.org/browser/current_svn/term/SO:0001685)).
@@ -304,18 +403,28 @@ type MolecularSequenceQuality struct {
 	StandardSequence *dt.CodeableConcept `json:"standardSequence,omitempty"`
 	// Start Start position of the sequence. If the coordinate system is either 0-based or 1-based, then start position is inclusive.
 	Start *int32 `json:"start,omitempty"`
+	// StartElement contains element extensions for start.
+	StartElement *dt.Element `json:"_start,omitempty"`
 	// TruthFN False negatives, i.e. the number of sites in the Truth Call Set for which there is no path through the Query Call Set that is consistent with all of the alleles at this site, or sites for which the...
 	TruthFN *float64 `json:"truthFN,omitempty"`
+	// TruthFNElement contains element extensions for truthFN.
+	TruthFNElement *dt.Element `json:"_truthFN,omitempty"`
 	// TruthTP True positives, from the perspective of the truth data, i.e. the number of sites in the Truth Call Set for which there are paths through the Query Call Set that are consistent with all of the allel...
 	TruthTP *float64 `json:"truthTP,omitempty"`
+	// TruthTPElement contains element extensions for truthTP.
+	TruthTPElement *dt.Element `json:"_truthTP,omitempty"`
 	// Type INDEL / SNP / Undefined variant.
 	Type *MolecularSequenceQualityType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }
 
 // MolecularSequenceReferenceSeq Raw data describing a biological sequence.
 type MolecularSequenceReferenceSeq struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -324,82 +433,130 @@ type MolecularSequenceReferenceSeq struct {
 	Chromosome *dt.CodeableConcept `json:"chromosome,omitempty"`
 	// GenomeBuild The Genome Build used for reference, following GRCh build versions e.g. 'GRCh 37'.  Version number must be included if a versioned release of a primary build was used.
 	GenomeBuild *string `json:"genomeBuild,omitempty"`
+	// GenomeBuildElement contains element extensions for genomeBuild.
+	GenomeBuildElement *dt.Element `json:"_genomeBuild,omitempty"`
 	// Orientation A relative reference to a DNA strand based on gene orientation. The strand that contains the open reading frame of the gene is the "sense" strand, and the opposite complementary strand is the "anti...
 	Orientation *MolecularSequenceReferenceSeqOrientation `json:"orientation,omitempty"`
+	// OrientationElement contains element extensions for orientation.
+	OrientationElement *dt.Element `json:"_orientation,omitempty"`
 	// ReferenceSeqId Reference identifier of reference sequence submitted to NCBI. It must match the type in the MolecularSequence.type field. For example, the prefix, “NG_” identifies reference sequence for genes,...
 	ReferenceSeqId *dt.CodeableConcept `json:"referenceSeqId,omitempty"`
 	// ReferenceSeqPointer A pointer to another MolecularSequence entity as reference sequence.
 	ReferenceSeqPointer *dt.Reference `json:"referenceSeqPointer,omitempty"`
 	// ReferenceSeqString A string like "ACGT".
 	ReferenceSeqString *string `json:"referenceSeqString,omitempty"`
+	// ReferenceSeqStringElement contains element extensions for referenceSeqString.
+	ReferenceSeqStringElement *dt.Element `json:"_referenceSeqString,omitempty"`
 	// Strand An absolute reference to a strand. The Watson strand is the strand whose 5'-end is on the short arm of the chromosome, and the Crick strand as the one whose 5'-end is on the long arm.
 	Strand *MolecularSequenceReferenceSeqStrand `json:"strand,omitempty"`
+	// StrandElement contains element extensions for strand.
+	StrandElement *dt.Element `json:"_strand,omitempty"`
 	// WindowEnd End position of the window on the reference sequence. If the coordinate system is 0-based then end is exclusive and does not include the last position. If the coordinate system is 1-base, then end ...
 	WindowEnd *int32 `json:"windowEnd,omitempty"`
+	// WindowEndElement contains element extensions for windowEnd.
+	WindowEndElement *dt.Element `json:"_windowEnd,omitempty"`
 	// WindowStart Start position of the window on the reference sequence. If the coordinate system is either 0-based or 1-based, then start position is inclusive.
 	WindowStart *int32 `json:"windowStart,omitempty"`
+	// WindowStartElement contains element extensions for windowStart.
+	WindowStartElement *dt.Element `json:"_windowStart,omitempty"`
 }
 
 // MolecularSequenceRepository Raw data describing a biological sequence.
 type MolecularSequenceRepository struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// DatasetId Id of the variant in this external repository. The server will understand how to use this id to call for more info about datasets in external repository.
 	DatasetId *string `json:"datasetId,omitempty"`
+	// DatasetIdElement contains element extensions for datasetId.
+	DatasetIdElement *dt.Element `json:"_datasetId,omitempty"`
 	// Name URI of an external repository which contains further details about the genetics data.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// ReadsetId Id of the read in this external repository.
 	ReadsetId *string `json:"readsetId,omitempty"`
+	// ReadsetIdElement contains element extensions for readsetId.
+	ReadsetIdElement *dt.Element `json:"_readsetId,omitempty"`
 	// Type Click and see / RESTful API / Need login to see / RESTful API with authentication / Other ways to see resource.
 	Type *MolecularSequenceRepositoryType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 	// Url URI of an external repository which contains further details about the genetics data.
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// VariantsetId Id of the variantset in this external repository. The server will understand how to use this id to call for more info about variantsets in external repository.
 	VariantsetId *string `json:"variantsetId,omitempty"`
+	// VariantsetIdElement contains element extensions for variantsetId.
+	VariantsetIdElement *dt.Element `json:"_variantsetId,omitempty"`
 }
 
 // MolecularSequenceRoc Raw data describing a biological sequence.
 type MolecularSequenceRoc struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// FMeasure Calculated fScore if the GQ score threshold was set to "score" field value.
 	FMeasure []float64 `json:"fMeasure,omitempty"`
+	// FMeasureElement contains element extensions for each fMeasure.
+	FMeasureElement []dt.Element `json:"_fMeasure,omitempty"`
 	// NumFN The number of false negatives if the GQ score threshold was set to "score" field value.
 	NumFN []int32 `json:"numFN,omitempty"`
+	// NumFNElement contains element extensions for each numFN.
+	NumFNElement []dt.Element `json:"_numFN,omitempty"`
 	// NumFP The number of false positives if the GQ score threshold was set to "score" field value.
 	NumFP []int32 `json:"numFP,omitempty"`
+	// NumFPElement contains element extensions for each numFP.
+	NumFPElement []dt.Element `json:"_numFP,omitempty"`
 	// NumTP The number of true positives if the GQ score threshold was set to "score" field value.
 	NumTP []int32 `json:"numTP,omitempty"`
+	// NumTPElement contains element extensions for each numTP.
+	NumTPElement []dt.Element `json:"_numTP,omitempty"`
 	// Precision Calculated precision if the GQ score threshold was set to "score" field value.
 	Precision []float64 `json:"precision,omitempty"`
+	// PrecisionElement contains element extensions for each precision.
+	PrecisionElement []dt.Element `json:"_precision,omitempty"`
 	// Score Invidual data point representing the GQ (genotype quality) score threshold.
 	Score []int32 `json:"score,omitempty"`
+	// ScoreElement contains element extensions for each score.
+	ScoreElement []dt.Element `json:"_score,omitempty"`
 	// Sensitivity Calculated sensitivity if the GQ score threshold was set to "score" field value.
 	Sensitivity []float64 `json:"sensitivity,omitempty"`
+	// SensitivityElement contains element extensions for each sensitivity.
+	SensitivityElement []dt.Element `json:"_sensitivity,omitempty"`
 }
 
 // MolecularSequenceStructureVariant Raw data describing a biological sequence.
 type MolecularSequenceStructureVariant struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Exact Used to indicate if the outer and inner start-end values have the same meaning.
 	Exact *bool `json:"exact,omitempty"`
+	// ExactElement contains element extensions for exact.
+	ExactElement *dt.Element `json:"_exact,omitempty"`
 	// Inner Structural variant inner.
 	Inner *MolecularSequenceInner `json:"inner,omitempty"`
 	// Length Length of the variant chromosome.
 	Length *int32 `json:"length,omitempty"`
+	// LengthElement contains element extensions for length.
+	LengthElement *dt.Element `json:"_length,omitempty"`
 	// Outer Structural variant outer.
 	Outer *MolecularSequenceOuter `json:"outer,omitempty"`
 	// VariantType Information about chromosome structure variation DNA change type.
@@ -410,20 +567,32 @@ type MolecularSequenceStructureVariant struct {
 type MolecularSequenceVariant struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Cigar Extended CIGAR string for aligning the sequence with reference bases. See detailed documentation [here](http://support.illumina.com/help/SequencingAnalysisWorkflow/Content/Vault/Informatics/Sequenc...
 	Cigar *string `json:"cigar,omitempty"`
+	// CigarElement contains element extensions for cigar.
+	CigarElement *dt.Element `json:"_cigar,omitempty"`
 	// End End position of the variant on the reference sequence. If the coordinate system is 0-based then end is exclusive and does not include the last position. If the coordinate system is 1-base, then end...
 	End *int32 `json:"end,omitempty"`
+	// EndElement contains element extensions for end.
+	EndElement *dt.Element `json:"_end,omitempty"`
 	// ObservedAllele An allele is one of a set of coexisting sequence variants of a gene ([SO:0001023](http://www.sequenceontology.org/browser/current_svn/term/SO:0001023)).  Nucleotide(s)/amino acids from start positi...
 	ObservedAllele *string `json:"observedAllele,omitempty"`
+	// ObservedAlleleElement contains element extensions for observedAllele.
+	ObservedAlleleElement *dt.Element `json:"_observedAllele,omitempty"`
 	// ReferenceAllele An allele is one of a set of coexisting sequence variants of a gene ([SO:0001023](http://www.sequenceontology.org/browser/current_svn/term/SO:0001023)). Nucleotide(s)/amino acids from start positio...
 	ReferenceAllele *string `json:"referenceAllele,omitempty"`
+	// ReferenceAlleleElement contains element extensions for referenceAllele.
+	ReferenceAlleleElement *dt.Element `json:"_referenceAllele,omitempty"`
 	// Start Start position of the variant on the  reference sequence. If the coordinate system is either 0-based or 1-based, then start position is inclusive.
 	Start *int32 `json:"start,omitempty"`
+	// StartElement contains element extensions for start.
+	StartElement *dt.Element `json:"_start,omitempty"`
 	// VariantPointer A pointer to an Observation containing variant information.
 	VariantPointer *dt.Reference `json:"variantPointer,omitempty"`
 }

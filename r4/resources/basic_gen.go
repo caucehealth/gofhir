@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type Basic struct {
 	ResourceType string `json:"resourceType"` // Always "Basic"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -39,15 +46,33 @@ type Basic struct {
 	Code dt.CodeableConcept `json:"code"`
 	// Created Identifies when the resource was first created.
 	Created *dt.Date `json:"created,omitempty"`
+	// CreatedElement contains element extensions for created.
+	CreatedElement *dt.Element `json:"_created,omitempty"`
 	// Subject Identifies the patient, practitioner, device or any other resource that is the "focus" of this resource.
 	Subject *dt.Reference `json:"subject,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Basic.
 func (r Basic) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Basic"
 	type Alias Basic
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Basic.
@@ -58,100 +83,137 @@ func (r *Basic) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Basic(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_author", "_code", "_contained", "_created", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_modifierExtension", "_subject", "_text", "author", "code", "contained", "created", "extension", "id", "identifier", "implicitRules", "language", "meta", "modifierExtension", "resourceType", "subject", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // BasicBuilder provides a fluent API for constructing Basic resources.
 type BasicBuilder struct {
-	resource Basic
+	resource  Basic
+	fieldsSet map[string]bool
 }
 
 // NewBasic creates a new BasicBuilder for building a Basic resource.
 func NewBasic() *BasicBuilder {
-	return &BasicBuilder{resource: Basic{ResourceType: "Basic"}}
+	return &BasicBuilder{resource: Basic{ResourceType: "Basic"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *BasicBuilder) WithId(v dt.ID) *BasicBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *BasicBuilder) WithMeta(v dt.Meta) *BasicBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *BasicBuilder) WithImplicitRules(v dt.URI) *BasicBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *BasicBuilder) WithLanguage(v dt.Code) *BasicBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *BasicBuilder) WithText(v dt.Narrative) *BasicBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *BasicBuilder) WithContained(v json.RawMessage) *BasicBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *BasicBuilder) WithExtension(v dt.Extension) *BasicBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *BasicBuilder) WithModifierExtension(v dt.Extension) *BasicBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *BasicBuilder) WithIdentifier(v dt.Identifier) *BasicBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithAuthor sets the author field.
 func (b *BasicBuilder) WithAuthor(v dt.Reference) *BasicBuilder {
 	b.resource.Author = &v
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *BasicBuilder) WithCode(v dt.CodeableConcept) *BasicBuilder {
 	b.resource.Code = v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithCreated sets the created field.
 func (b *BasicBuilder) WithCreated(v dt.Date) *BasicBuilder {
 	b.resource.Created = &v
+	b.fieldsSet["created"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *BasicBuilder) WithSubject(v dt.Reference) *BasicBuilder {
 	b.resource.Subject = &v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // Build returns the constructed Basic. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *BasicBuilder) Build() (*Basic, error) {
+	var missing []string
+	if !b.fieldsSet["code"] {
+		missing = append(missing, "code")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("Basic: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }

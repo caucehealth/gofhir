@@ -17,12 +17,18 @@ type TerminologyCapabilities struct {
 	ResourceType string `json:"resourceType"` // Always "TerminologyCapabilities"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -33,59 +39,103 @@ type TerminologyCapabilities struct {
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The status of this terminology capabilities. Enables tracking the life-cycle of the content.
 	Status *TerminologyCapabilitiesStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Closure Whether the $closure operation is supported.
 	Closure *TerminologyCapabilitiesClosure `json:"closure,omitempty"`
 	// CodeSearch The degree to which the server supports the code search parameter on ValueSet, if it is supported.
 	CodeSearch *TerminologyCapabilitiesCodeSearch `json:"codeSearch,omitempty"`
+	// CodeSearchElement contains element extensions for codeSearch.
+	CodeSearchElement *dt.Element `json:"_codeSearch,omitempty"`
 	// CodeSystem Identifies a code system that is supported by the server. If there is a no code system URL, then this declares the general assumptions a client can make about support for any CodeSystem resource.
 	CodeSystem []TerminologyCapabilitiesCodeSystem `json:"codeSystem,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the terminology capabilities and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the terminology capabilities.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date  (and optionally time) when the terminology capabilities was published. The date must change when the business version changes and it must change if the status code changes. In addition, i...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description A free text natural language description of the terminology capabilities from a consumer's perspective. Typically, this is used when the capability statement describes a desired rather than an actu...
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Expansion Information about the [ValueSet/$expand](valueset-operation-expand.html) operation.
 	Expansion *TerminologyCapabilitiesExpansion `json:"expansion,omitempty"`
 	// Experimental A Boolean value to indicate that this terminology capabilities is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// Implementation Identifies a specific implementation instance that is described by the terminology capability statement - i.e. a particular installation, rather than the capabilities of a software program.
 	Implementation *TerminologyCapabilitiesImplementation `json:"implementation,omitempty"`
 	// Jurisdiction A legal or geographic region in which the terminology capabilities is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Kind The way that this statement is intended to be used, to describe an actual running instance of software, a particular product (kind, not instance of software) or a class of implementation (e.g. a de...
 	Kind *dt.Code `json:"kind,omitempty"`
+	// KindElement contains element extensions for kind.
+	KindElement *dt.Element `json:"_kind,omitempty"`
 	// LockedDate Whether the server supports lockedDate.
 	LockedDate *bool `json:"lockedDate,omitempty"`
+	// LockedDateElement contains element extensions for lockedDate.
+	LockedDateElement *dt.Element `json:"_lockedDate,omitempty"`
 	// Name A natural language name identifying the terminology capabilities. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Publisher The name of the organization or individual that published the terminology capabilities.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Purpose Explanation of why this terminology capabilities is needed and why it has been designed as it has.
 	Purpose *dt.Markdown `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for purpose.
+	PurposeElement *dt.Element `json:"_purpose,omitempty"`
 	// Software Software that is covered by this terminology capability statement.  It is used when the statement describes the capabilities of a particular software version, independent of an installation.
 	Software *TerminologyCapabilitiesSoftware `json:"software,omitempty"`
 	// Title A short, descriptive, user-friendly title for the terminology capabilities.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Translation Information about the [ConceptMap/$translate](conceptmap-operation-translate.html) operation.
 	Translation *TerminologyCapabilitiesTranslation `json:"translation,omitempty"`
 	// Url An absolute URI that is used to identify this terminology capabilities when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be g...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// ValidateCode Information about the [ValueSet/$validate-code](valueset-operation-validate-code.html) operation.
 	ValidateCode *TerminologyCapabilitiesValidateCode `json:"validateCode,omitempty"`
 	// Version The identifier that is used to identify this version of the terminology capabilities when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the t...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for TerminologyCapabilities.
 func (r TerminologyCapabilities) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "TerminologyCapabilities"
 	type Alias TerminologyCapabilities
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for TerminologyCapabilities.
@@ -96,208 +146,257 @@ func (r *TerminologyCapabilities) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = TerminologyCapabilities(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_closure", "_codeSearch", "_codeSystem", "_contact", "_contained", "_copyright", "_date", "_description", "_expansion", "_experimental", "_extension", "_id", "_implementation", "_implicitRules", "_jurisdiction", "_kind", "_language", "_lockedDate", "_meta", "_modifierExtension", "_name", "_publisher", "_purpose", "_software", "_status", "_text", "_title", "_translation", "_url", "_useContext", "_validateCode", "_version", "closure", "codeSearch", "codeSystem", "contact", "contained", "copyright", "date", "description", "expansion", "experimental", "extension", "id", "implementation", "implicitRules", "jurisdiction", "kind", "language", "lockedDate", "meta", "modifierExtension", "name", "publisher", "purpose", "resourceType", "software", "status", "text", "title", "translation", "url", "useContext", "validateCode", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // TerminologyCapabilitiesBuilder provides a fluent API for constructing TerminologyCapabilities resources.
 type TerminologyCapabilitiesBuilder struct {
-	resource TerminologyCapabilities
+	resource  TerminologyCapabilities
+	fieldsSet map[string]bool
 }
 
 // NewTerminologyCapabilities creates a new TerminologyCapabilitiesBuilder for building a TerminologyCapabilities resource.
 func NewTerminologyCapabilities() *TerminologyCapabilitiesBuilder {
-	return &TerminologyCapabilitiesBuilder{resource: TerminologyCapabilities{ResourceType: "TerminologyCapabilities"}}
+	return &TerminologyCapabilitiesBuilder{resource: TerminologyCapabilities{ResourceType: "TerminologyCapabilities"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *TerminologyCapabilitiesBuilder) WithId(v dt.ID) *TerminologyCapabilitiesBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *TerminologyCapabilitiesBuilder) WithMeta(v dt.Meta) *TerminologyCapabilitiesBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *TerminologyCapabilitiesBuilder) WithImplicitRules(v dt.URI) *TerminologyCapabilitiesBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *TerminologyCapabilitiesBuilder) WithLanguage(v dt.Code) *TerminologyCapabilitiesBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *TerminologyCapabilitiesBuilder) WithText(v dt.Narrative) *TerminologyCapabilitiesBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *TerminologyCapabilitiesBuilder) WithContained(v json.RawMessage) *TerminologyCapabilitiesBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *TerminologyCapabilitiesBuilder) WithExtension(v dt.Extension) *TerminologyCapabilitiesBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *TerminologyCapabilitiesBuilder) WithModifierExtension(v dt.Extension) *TerminologyCapabilitiesBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *TerminologyCapabilitiesBuilder) WithStatus(v TerminologyCapabilitiesStatus) *TerminologyCapabilitiesBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithClosure sets the closure field.
 func (b *TerminologyCapabilitiesBuilder) WithClosure(v TerminologyCapabilitiesClosure) *TerminologyCapabilitiesBuilder {
 	b.resource.Closure = &v
+	b.fieldsSet["closure"] = true
 	return b
 }
 
 // WithCodeSearch sets the codeSearch field.
 func (b *TerminologyCapabilitiesBuilder) WithCodeSearch(v TerminologyCapabilitiesCodeSearch) *TerminologyCapabilitiesBuilder {
 	b.resource.CodeSearch = &v
+	b.fieldsSet["codeSearch"] = true
 	return b
 }
 
 // WithCodeSystem adds an item to the codeSystem field.
 func (b *TerminologyCapabilitiesBuilder) WithCodeSystem(v TerminologyCapabilitiesCodeSystem) *TerminologyCapabilitiesBuilder {
 	b.resource.CodeSystem = append(b.resource.CodeSystem, v)
+	b.fieldsSet["codeSystem"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *TerminologyCapabilitiesBuilder) WithContact(v dt.ContactDetail) *TerminologyCapabilitiesBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *TerminologyCapabilitiesBuilder) WithCopyright(v dt.Markdown) *TerminologyCapabilitiesBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *TerminologyCapabilitiesBuilder) WithDate(v dt.DateTime) *TerminologyCapabilitiesBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *TerminologyCapabilitiesBuilder) WithDescription(v dt.Markdown) *TerminologyCapabilitiesBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithExpansion sets the expansion field.
 func (b *TerminologyCapabilitiesBuilder) WithExpansion(v TerminologyCapabilitiesExpansion) *TerminologyCapabilitiesBuilder {
 	b.resource.Expansion = &v
+	b.fieldsSet["expansion"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *TerminologyCapabilitiesBuilder) WithExperimental(v bool) *TerminologyCapabilitiesBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithImplementation sets the implementation field.
 func (b *TerminologyCapabilitiesBuilder) WithImplementation(v TerminologyCapabilitiesImplementation) *TerminologyCapabilitiesBuilder {
 	b.resource.Implementation = &v
+	b.fieldsSet["implementation"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *TerminologyCapabilitiesBuilder) WithJurisdiction(v dt.CodeableConcept) *TerminologyCapabilitiesBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithKind sets the kind field.
 func (b *TerminologyCapabilitiesBuilder) WithKind(v dt.Code) *TerminologyCapabilitiesBuilder {
 	b.resource.Kind = &v
+	b.fieldsSet["kind"] = true
 	return b
 }
 
 // WithLockedDate sets the lockedDate field.
 func (b *TerminologyCapabilitiesBuilder) WithLockedDate(v bool) *TerminologyCapabilitiesBuilder {
 	b.resource.LockedDate = &v
+	b.fieldsSet["lockedDate"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *TerminologyCapabilitiesBuilder) WithName(v string) *TerminologyCapabilitiesBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *TerminologyCapabilitiesBuilder) WithPublisher(v string) *TerminologyCapabilitiesBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithPurpose sets the purpose field.
 func (b *TerminologyCapabilitiesBuilder) WithPurpose(v dt.Markdown) *TerminologyCapabilitiesBuilder {
 	b.resource.Purpose = &v
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
 // WithSoftware sets the software field.
 func (b *TerminologyCapabilitiesBuilder) WithSoftware(v TerminologyCapabilitiesSoftware) *TerminologyCapabilitiesBuilder {
 	b.resource.Software = &v
+	b.fieldsSet["software"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *TerminologyCapabilitiesBuilder) WithTitle(v string) *TerminologyCapabilitiesBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithTranslation sets the translation field.
 func (b *TerminologyCapabilitiesBuilder) WithTranslation(v TerminologyCapabilitiesTranslation) *TerminologyCapabilitiesBuilder {
 	b.resource.Translation = &v
+	b.fieldsSet["translation"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *TerminologyCapabilitiesBuilder) WithUrl(v dt.URI) *TerminologyCapabilitiesBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *TerminologyCapabilitiesBuilder) WithUseContext(v dt.UsageContext) *TerminologyCapabilitiesBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithValidateCode sets the validateCode field.
 func (b *TerminologyCapabilitiesBuilder) WithValidateCode(v TerminologyCapabilitiesValidateCode) *TerminologyCapabilitiesBuilder {
 	b.resource.ValidateCode = &v
+	b.fieldsSet["validateCode"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *TerminologyCapabilitiesBuilder) WithVersion(v string) *TerminologyCapabilitiesBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -312,26 +411,36 @@ func (b *TerminologyCapabilitiesBuilder) Build() (*TerminologyCapabilities, erro
 type TerminologyCapabilitiesClosure struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Translation If cross-system closure is supported.
 	Translation *bool `json:"translation,omitempty"`
+	// TranslationElement contains element extensions for translation.
+	TranslationElement *dt.Element `json:"_translation,omitempty"`
 }
 
 // TerminologyCapabilitiesCodeSystem A TerminologyCapabilities resource documents a set of capabilities (behaviors) of a FHIR Terminology Server that may be used as a statement of actual server functionality or a statement of required...
 type TerminologyCapabilitiesCodeSystem struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Subsumption True if subsumption is supported for this version of the code system.
 	Subsumption *bool `json:"subsumption,omitempty"`
+	// SubsumptionElement contains element extensions for subsumption.
+	SubsumptionElement *dt.Element `json:"_subsumption,omitempty"`
 	// Uri URI for the Code System.
 	Uri *dt.Canonical `json:"uri,omitempty"`
+	// UriElement contains element extensions for uri.
+	UriElement *dt.Element `json:"_uri,omitempty"`
 	// Version For the code system, a list of versions that are supported by the server.
 	Version []TerminologyCapabilitiesVersion `json:"version,omitempty"`
 }
@@ -340,120 +449,174 @@ type TerminologyCapabilitiesCodeSystem struct {
 type TerminologyCapabilitiesExpansion struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Hierarchical Whether the server can return nested value sets.
 	Hierarchical *bool `json:"hierarchical,omitempty"`
+	// HierarchicalElement contains element extensions for hierarchical.
+	HierarchicalElement *dt.Element `json:"_hierarchical,omitempty"`
 	// Incomplete Allow request for incomplete expansions?
 	Incomplete *bool `json:"incomplete,omitempty"`
+	// IncompleteElement contains element extensions for incomplete.
+	IncompleteElement *dt.Element `json:"_incomplete,omitempty"`
 	// Paging Whether the server supports paging on expansion.
 	Paging *bool `json:"paging,omitempty"`
+	// PagingElement contains element extensions for paging.
+	PagingElement *dt.Element `json:"_paging,omitempty"`
 	// Parameter Supported expansion parameter.
 	Parameter []TerminologyCapabilitiesParameter `json:"parameter,omitempty"`
 	// TextFilter Documentation about text searching works.
 	TextFilter *dt.Markdown `json:"textFilter,omitempty"`
+	// TextFilterElement contains element extensions for textFilter.
+	TextFilterElement *dt.Element `json:"_textFilter,omitempty"`
 }
 
 // TerminologyCapabilitiesFilter A TerminologyCapabilities resource documents a set of capabilities (behaviors) of a FHIR Terminology Server that may be used as a statement of actual server functionality or a statement of required...
 type TerminologyCapabilitiesFilter struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code Code of the property supported.
 	Code *dt.Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Op Operations supported for the property.
 	Op []dt.Code `json:"op,omitempty"`
+	// OpElement contains element extensions for each op.
+	OpElement []dt.Element `json:"_op,omitempty"`
 }
 
 // TerminologyCapabilitiesImplementation A TerminologyCapabilities resource documents a set of capabilities (behaviors) of a FHIR Terminology Server that may be used as a statement of actual server functionality or a statement of required...
 type TerminologyCapabilitiesImplementation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description Information about the specific installation that this terminology capability statement relates to.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Url An absolute base URL for the implementation.
 	Url *dt.URL `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 }
 
 // TerminologyCapabilitiesParameter A TerminologyCapabilities resource documents a set of capabilities (behaviors) of a FHIR Terminology Server that may be used as a statement of actual server functionality or a statement of required...
 type TerminologyCapabilitiesParameter struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Documentation Description of support for parameter.
 	Documentation *string `json:"documentation,omitempty"`
+	// DocumentationElement contains element extensions for documentation.
+	DocumentationElement *dt.Element `json:"_documentation,omitempty"`
 	// Name Expansion Parameter name.
 	Name *dt.Code `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 }
 
 // TerminologyCapabilitiesSoftware A TerminologyCapabilities resource documents a set of capabilities (behaviors) of a FHIR Terminology Server that may be used as a statement of actual server functionality or a statement of required...
 type TerminologyCapabilitiesSoftware struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Name Name the software is known by.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Version The version identifier for the software covered by this statement.
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
 }
 
 // TerminologyCapabilitiesTranslation A TerminologyCapabilities resource documents a set of capabilities (behaviors) of a FHIR Terminology Server that may be used as a statement of actual server functionality or a statement of required...
 type TerminologyCapabilitiesTranslation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// NeedsMap Whether the client must identify the map.
 	NeedsMap *bool `json:"needsMap,omitempty"`
+	// NeedsMapElement contains element extensions for needsMap.
+	NeedsMapElement *dt.Element `json:"_needsMap,omitempty"`
 }
 
 // TerminologyCapabilitiesValidateCode A TerminologyCapabilities resource documents a set of capabilities (behaviors) of a FHIR Terminology Server that may be used as a statement of actual server functionality or a statement of required...
 type TerminologyCapabilitiesValidateCode struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Translations Whether translations are validated.
 	Translations *bool `json:"translations,omitempty"`
+	// TranslationsElement contains element extensions for translations.
+	TranslationsElement *dt.Element `json:"_translations,omitempty"`
 }
 
 // TerminologyCapabilitiesVersion A TerminologyCapabilities resource documents a set of capabilities (behaviors) of a FHIR Terminology Server that may be used as a statement of actual server functionality or a statement of required...
 type TerminologyCapabilitiesVersion struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Language Language Displays supported.
 	Language []dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for each language.
+	LanguageElement []dt.Element `json:"_language,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code For version-less code systems, there should be a single version with no identifier.
 	Code *string `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Compositional If the compositional grammar defined by the code system is supported.
 	Compositional *bool `json:"compositional,omitempty"`
+	// CompositionalElement contains element extensions for compositional.
+	CompositionalElement *dt.Element `json:"_compositional,omitempty"`
 	// Filter Filter Properties supported.
 	Filter []TerminologyCapabilitiesFilter `json:"filter,omitempty"`
 	// IsDefault If this is the default version for this code system.
 	IsDefault *bool `json:"isDefault,omitempty"`
+	// IsDefaultElement contains element extensions for isDefault.
+	IsDefaultElement *dt.Element `json:"_isDefault,omitempty"`
 	// Property Properties supported for $lookup.
 	Property []dt.Code `json:"property,omitempty"`
+	// PropertyElement contains element extensions for each property.
+	PropertyElement []dt.Element `json:"_property,omitempty"`
 }

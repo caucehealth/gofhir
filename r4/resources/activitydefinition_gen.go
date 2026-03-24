@@ -18,12 +18,18 @@ type ActivityDefinition struct {
 	ResourceType string `json:"resourceType"` // Always "ActivityDefinition"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,8 +42,12 @@ type ActivityDefinition struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this activity definition. Enables tracking the life-cycle of the content.
 	Status *ActivityDefinitionStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
+	// ApprovalDateElement contains element extensions for approvalDate.
+	ApprovalDateElement *dt.Element `json:"_approvalDate,omitempty"`
 	// Author An individiual or organization primarily involved in the creation and maintenance of the content.
 	Author []dt.ContactDetail `json:"author,omitempty"`
 	// BodySite Indicates the sites on the subject's body where the procedure should be performed (I.e. the target sites).
@@ -48,12 +58,20 @@ type ActivityDefinition struct {
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the activity definition and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the activity definition.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date  (and optionally time) when the activity definition was published. The date must change when the business version changes and it must change if the status code changes. In addition, it sho...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description A free text natural language description of the activity definition from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// DoNotPerform Set this to true if the definition is to indicate that a particular activity should NOT be performed. If true, this element should be interpreted to reinforce a negative coding. For example NPO as ...
 	DoNotPerform *bool `json:"doNotPerform,omitempty"`
+	// DoNotPerformElement contains element extensions for doNotPerform.
+	DoNotPerformElement *dt.Element `json:"_doNotPerform,omitempty"`
 	// Dosage Provides detailed dosage instructions in the same way that they are described for MedicationRequest resources.
 	Dosage []dt.Dosage `json:"dosage,omitempty"`
 	// DynamicValue Dynamic values that will be evaluated to produce values for elements of the resulting resource. For example, if the dosage of a medication must be computed based on the patient's weight, a dynamic ...
@@ -66,20 +84,32 @@ type ActivityDefinition struct {
 	Endorser []dt.ContactDetail `json:"endorser,omitempty"`
 	// Experimental A Boolean value to indicate that this activity definition is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// Intent Indicates the level of authority/intentionality associated with the activity and where the request should fit into the workflow chain.
 	Intent *dt.Code `json:"intent,omitempty"`
+	// IntentElement contains element extensions for intent.
+	IntentElement *dt.Element `json:"_intent,omitempty"`
 	// Jurisdiction A legal or geographic region in which the activity definition is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Kind A description of the kind of resource the activity definition is representing. For example, a MedicationRequest, a ServiceRequest, or a CommunicationRequest. Typically, but not always, this is a Re...
 	Kind *dt.Code `json:"kind,omitempty"`
+	// KindElement contains element extensions for kind.
+	KindElement *dt.Element `json:"_kind,omitempty"`
 	// LastReviewDate The date on which the resource content was last reviewed. Review happens periodically after approval but does not change the original approval date.
 	LastReviewDate *dt.Date `json:"lastReviewDate,omitempty"`
+	// LastReviewDateElement contains element extensions for lastReviewDate.
+	LastReviewDateElement *dt.Element `json:"_lastReviewDate,omitempty"`
 	// Library A reference to a Library resource containing any formal logic used by the activity definition.
 	Library []dt.Canonical `json:"library,omitempty"`
+	// LibraryElement contains element extensions for each library.
+	LibraryElement []dt.Element `json:"_library,omitempty"`
 	// Location Identifies the facility where the activity will occur; e.g. home, hospital, specific clinic, etc.
 	Location *dt.Reference `json:"location,omitempty"`
 	// Name A natural language name identifying the activity definition. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// ObservationRequirement Defines observation requirements for the action to be performed, such as body weight or surface area.
 	ObservationRequirement []dt.Reference `json:"observationRequirement,omitempty"`
 	// ObservationResultRequirement Defines the observations that are expected to be produced by the action.
@@ -88,14 +118,22 @@ type ActivityDefinition struct {
 	Participant []ActivityDefinitionParticipant `json:"participant,omitempty"`
 	// Priority Indicates how quickly the activity  should be addressed with respect to other requests.
 	Priority *dt.Code `json:"priority,omitempty"`
+	// PriorityElement contains element extensions for priority.
+	PriorityElement *dt.Element `json:"_priority,omitempty"`
 	// Product Identifies the food, drug or other product being consumed or supplied in the activity.
 	Product *ActivityDefinitionProduct `json:"-"` // polymorphic
 	// Profile A profile to which the target of the activity definition is expected to conform.
 	Profile *dt.Canonical `json:"profile,omitempty"`
+	// ProfileElement contains element extensions for profile.
+	ProfileElement *dt.Element `json:"_profile,omitempty"`
 	// Publisher The name of the organization or individual that published the activity definition.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Purpose Explanation of why this activity definition is needed and why it has been designed as it has.
 	Purpose *dt.Markdown `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for purpose.
+	PurposeElement *dt.Element `json:"_purpose,omitempty"`
 	// Quantity Identifies the quantity expected to be consumed at once (per dose, per meal, etc.).
 	Quantity *dt.Quantity `json:"quantity,omitempty"`
 	// RelatedArtifact Related artifacts such as additional documentation, justification, or bibliographic references.
@@ -110,22 +148,36 @@ type ActivityDefinition struct {
 	SubjectReference *dt.Reference `json:"subjectReference,omitempty"`
 	// Subtitle An explanatory or alternate title for the activity definition giving additional information about its content.
 	Subtitle *string `json:"subtitle,omitempty"`
+	// SubtitleElement contains element extensions for subtitle.
+	SubtitleElement *dt.Element `json:"_subtitle,omitempty"`
 	// Timing The period, timing or frequency upon which the described activity is to occur.
 	Timing *ActivityDefinitionTiming `json:"-"` // polymorphic
 	// Title A short, descriptive, user-friendly title for the activity definition.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Topic Descriptive topics related to the content of the activity. Topics provide a high-level categorization of the activity that can be useful for filtering and searching.
 	Topic []dt.CodeableConcept `json:"topic,omitempty"`
 	// Transform A reference to a StructureMap resource that defines a transform that can be executed to produce the intent resource using the ActivityDefinition instance as the input.
 	Transform *dt.Canonical `json:"transform,omitempty"`
+	// TransformElement contains element extensions for transform.
+	TransformElement *dt.Element `json:"_transform,omitempty"`
 	// Url An absolute URI that is used to identify this activity definition when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be global...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// Usage A detailed description of how the activity definition is used from a clinical perspective.
 	Usage *string `json:"usage,omitempty"`
+	// UsageElement contains element extensions for usage.
+	UsageElement *dt.Element `json:"_usage,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the activity definition when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the activi...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for ActivityDefinition.
@@ -136,7 +188,6 @@ func (r ActivityDefinition) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -167,6 +218,9 @@ func (r ActivityDefinition) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
 	return json.Marshal(m)
 }
 
@@ -193,232 +247,285 @@ func (r *ActivityDefinition) UnmarshalJSON(data []byte) error {
 	if timingVal.Age != nil || timingVal.DateTime != nil || timingVal.Duration != nil || timingVal.Period != nil || timingVal.Range != nil || timingVal.Timing != nil {
 		r.Timing = &timingVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_approvalDate", "_author", "_bodySite", "_code", "_contact", "_contained", "_copyright", "_date", "_description", "_doNotPerform", "_dosage", "_dynamicValue", "_editor", "_effectivePeriod", "_endorser", "_experimental", "_extension", "_id", "_identifier", "_implicitRules", "_intent", "_jurisdiction", "_kind", "_language", "_lastReviewDate", "_library", "_location", "_meta", "_modifierExtension", "_name", "_observationRequirement", "_observationResultRequirement", "_participant", "_priority", "_productCodeableConcept", "_productReference", "_profile", "_publisher", "_purpose", "_quantity", "_relatedArtifact", "_reviewer", "_specimenRequirement", "_status", "_subjectCodeableConcept", "_subjectReference", "_subtitle", "_text", "_timingAge", "_timingDateTime", "_timingDuration", "_timingPeriod", "_timingRange", "_timingTiming", "_title", "_topic", "_transform", "_url", "_usage", "_useContext", "_version", "approvalDate", "author", "bodySite", "code", "contact", "contained", "copyright", "date", "description", "doNotPerform", "dosage", "dynamicValue", "editor", "effectivePeriod", "endorser", "experimental", "extension", "id", "identifier", "implicitRules", "intent", "jurisdiction", "kind", "language", "lastReviewDate", "library", "location", "meta", "modifierExtension", "name", "observationRequirement", "observationResultRequirement", "participant", "priority", "productCodeableConcept", "productReference", "profile", "publisher", "purpose", "quantity", "relatedArtifact", "resourceType", "reviewer", "specimenRequirement", "status", "subjectCodeableConcept", "subjectReference", "subtitle", "text", "timingAge", "timingDateTime", "timingDuration", "timingPeriod", "timingRange", "timingTiming", "title", "topic", "transform", "url", "usage", "useContext", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ActivityDefinitionBuilder provides a fluent API for constructing ActivityDefinition resources.
 type ActivityDefinitionBuilder struct {
-	resource ActivityDefinition
+	resource  ActivityDefinition
+	fieldsSet map[string]bool
 }
 
 // NewActivityDefinition creates a new ActivityDefinitionBuilder for building a ActivityDefinition resource.
 func NewActivityDefinition() *ActivityDefinitionBuilder {
-	return &ActivityDefinitionBuilder{resource: ActivityDefinition{ResourceType: "ActivityDefinition"}}
+	return &ActivityDefinitionBuilder{resource: ActivityDefinition{ResourceType: "ActivityDefinition"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ActivityDefinitionBuilder) WithId(v dt.ID) *ActivityDefinitionBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ActivityDefinitionBuilder) WithMeta(v dt.Meta) *ActivityDefinitionBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ActivityDefinitionBuilder) WithImplicitRules(v dt.URI) *ActivityDefinitionBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ActivityDefinitionBuilder) WithLanguage(v dt.Code) *ActivityDefinitionBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ActivityDefinitionBuilder) WithText(v dt.Narrative) *ActivityDefinitionBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ActivityDefinitionBuilder) WithContained(v json.RawMessage) *ActivityDefinitionBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ActivityDefinitionBuilder) WithExtension(v dt.Extension) *ActivityDefinitionBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ActivityDefinitionBuilder) WithModifierExtension(v dt.Extension) *ActivityDefinitionBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ActivityDefinitionBuilder) WithIdentifier(v dt.Identifier) *ActivityDefinitionBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ActivityDefinitionBuilder) WithStatus(v ActivityDefinitionStatus) *ActivityDefinitionBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithApprovalDate sets the approvalDate field.
 func (b *ActivityDefinitionBuilder) WithApprovalDate(v dt.Date) *ActivityDefinitionBuilder {
 	b.resource.ApprovalDate = &v
+	b.fieldsSet["approvalDate"] = true
 	return b
 }
 
 // WithAuthor adds an item to the author field.
 func (b *ActivityDefinitionBuilder) WithAuthor(v dt.ContactDetail) *ActivityDefinitionBuilder {
 	b.resource.Author = append(b.resource.Author, v)
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithBodySite adds an item to the bodySite field.
 func (b *ActivityDefinitionBuilder) WithBodySite(v dt.CodeableConcept) *ActivityDefinitionBuilder {
 	b.resource.BodySite = append(b.resource.BodySite, v)
+	b.fieldsSet["bodySite"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *ActivityDefinitionBuilder) WithCode(v dt.CodeableConcept) *ActivityDefinitionBuilder {
 	b.resource.Code = &v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *ActivityDefinitionBuilder) WithContact(v dt.ContactDetail) *ActivityDefinitionBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *ActivityDefinitionBuilder) WithCopyright(v dt.Markdown) *ActivityDefinitionBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *ActivityDefinitionBuilder) WithDate(v dt.DateTime) *ActivityDefinitionBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *ActivityDefinitionBuilder) WithDescription(v dt.Markdown) *ActivityDefinitionBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithDoNotPerform sets the doNotPerform field.
 func (b *ActivityDefinitionBuilder) WithDoNotPerform(v bool) *ActivityDefinitionBuilder {
 	b.resource.DoNotPerform = &v
+	b.fieldsSet["doNotPerform"] = true
 	return b
 }
 
 // WithDosage adds an item to the dosage field.
 func (b *ActivityDefinitionBuilder) WithDosage(v dt.Dosage) *ActivityDefinitionBuilder {
 	b.resource.Dosage = append(b.resource.Dosage, v)
+	b.fieldsSet["dosage"] = true
 	return b
 }
 
 // WithDynamicValue adds an item to the dynamicValue field.
 func (b *ActivityDefinitionBuilder) WithDynamicValue(v ActivityDefinitionDynamicValue) *ActivityDefinitionBuilder {
 	b.resource.DynamicValue = append(b.resource.DynamicValue, v)
+	b.fieldsSet["dynamicValue"] = true
 	return b
 }
 
 // WithEditor adds an item to the editor field.
 func (b *ActivityDefinitionBuilder) WithEditor(v dt.ContactDetail) *ActivityDefinitionBuilder {
 	b.resource.Editor = append(b.resource.Editor, v)
+	b.fieldsSet["editor"] = true
 	return b
 }
 
 // WithEffectivePeriod sets the effectivePeriod field.
 func (b *ActivityDefinitionBuilder) WithEffectivePeriod(v dt.Period) *ActivityDefinitionBuilder {
 	b.resource.EffectivePeriod = &v
+	b.fieldsSet["effectivePeriod"] = true
 	return b
 }
 
 // WithEndorser adds an item to the endorser field.
 func (b *ActivityDefinitionBuilder) WithEndorser(v dt.ContactDetail) *ActivityDefinitionBuilder {
 	b.resource.Endorser = append(b.resource.Endorser, v)
+	b.fieldsSet["endorser"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *ActivityDefinitionBuilder) WithExperimental(v bool) *ActivityDefinitionBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithIntent sets the intent field.
 func (b *ActivityDefinitionBuilder) WithIntent(v dt.Code) *ActivityDefinitionBuilder {
 	b.resource.Intent = &v
+	b.fieldsSet["intent"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *ActivityDefinitionBuilder) WithJurisdiction(v dt.CodeableConcept) *ActivityDefinitionBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithKind sets the kind field.
 func (b *ActivityDefinitionBuilder) WithKind(v dt.Code) *ActivityDefinitionBuilder {
 	b.resource.Kind = &v
+	b.fieldsSet["kind"] = true
 	return b
 }
 
 // WithLastReviewDate sets the lastReviewDate field.
 func (b *ActivityDefinitionBuilder) WithLastReviewDate(v dt.Date) *ActivityDefinitionBuilder {
 	b.resource.LastReviewDate = &v
+	b.fieldsSet["lastReviewDate"] = true
 	return b
 }
 
 // WithLibrary adds an item to the library field.
 func (b *ActivityDefinitionBuilder) WithLibrary(v dt.Canonical) *ActivityDefinitionBuilder {
 	b.resource.Library = append(b.resource.Library, v)
+	b.fieldsSet["library"] = true
 	return b
 }
 
 // WithLocation sets the location field.
 func (b *ActivityDefinitionBuilder) WithLocation(v dt.Reference) *ActivityDefinitionBuilder {
 	b.resource.Location = &v
+	b.fieldsSet["location"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *ActivityDefinitionBuilder) WithName(v string) *ActivityDefinitionBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithObservationRequirement adds an item to the observationRequirement field.
 func (b *ActivityDefinitionBuilder) WithObservationRequirement(v dt.Reference) *ActivityDefinitionBuilder {
 	b.resource.ObservationRequirement = append(b.resource.ObservationRequirement, v)
+	b.fieldsSet["observationRequirement"] = true
 	return b
 }
 
 // WithObservationResultRequirement adds an item to the observationResultRequirement field.
 func (b *ActivityDefinitionBuilder) WithObservationResultRequirement(v dt.Reference) *ActivityDefinitionBuilder {
 	b.resource.ObservationResultRequirement = append(b.resource.ObservationResultRequirement, v)
+	b.fieldsSet["observationResultRequirement"] = true
 	return b
 }
 
 // WithParticipant adds an item to the participant field.
 func (b *ActivityDefinitionBuilder) WithParticipant(v ActivityDefinitionParticipant) *ActivityDefinitionBuilder {
 	b.resource.Participant = append(b.resource.Participant, v)
+	b.fieldsSet["participant"] = true
 	return b
 }
 
 // WithPriority sets the priority field.
 func (b *ActivityDefinitionBuilder) WithPriority(v dt.Code) *ActivityDefinitionBuilder {
 	b.resource.Priority = &v
+	b.fieldsSet["priority"] = true
 	return b
 }
 
@@ -428,6 +535,7 @@ func (b *ActivityDefinitionBuilder) WithProductCodeableConcept(v dt.CodeableConc
 		b.resource.Product = &ActivityDefinitionProduct{}
 	}
 	b.resource.Product.CodeableConcept = &v
+	b.fieldsSet["product"] = true
 	return b
 }
 
@@ -437,66 +545,77 @@ func (b *ActivityDefinitionBuilder) WithProductReference(v dt.Reference) *Activi
 		b.resource.Product = &ActivityDefinitionProduct{}
 	}
 	b.resource.Product.Reference = &v
+	b.fieldsSet["product"] = true
 	return b
 }
 
 // WithProfile sets the profile field.
 func (b *ActivityDefinitionBuilder) WithProfile(v dt.Canonical) *ActivityDefinitionBuilder {
 	b.resource.Profile = &v
+	b.fieldsSet["profile"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *ActivityDefinitionBuilder) WithPublisher(v string) *ActivityDefinitionBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithPurpose sets the purpose field.
 func (b *ActivityDefinitionBuilder) WithPurpose(v dt.Markdown) *ActivityDefinitionBuilder {
 	b.resource.Purpose = &v
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
 // WithQuantity sets the quantity field.
 func (b *ActivityDefinitionBuilder) WithQuantity(v dt.Quantity) *ActivityDefinitionBuilder {
 	b.resource.Quantity = &v
+	b.fieldsSet["quantity"] = true
 	return b
 }
 
 // WithRelatedArtifact adds an item to the relatedArtifact field.
 func (b *ActivityDefinitionBuilder) WithRelatedArtifact(v dt.RelatedArtifact) *ActivityDefinitionBuilder {
 	b.resource.RelatedArtifact = append(b.resource.RelatedArtifact, v)
+	b.fieldsSet["relatedArtifact"] = true
 	return b
 }
 
 // WithReviewer adds an item to the reviewer field.
 func (b *ActivityDefinitionBuilder) WithReviewer(v dt.ContactDetail) *ActivityDefinitionBuilder {
 	b.resource.Reviewer = append(b.resource.Reviewer, v)
+	b.fieldsSet["reviewer"] = true
 	return b
 }
 
 // WithSpecimenRequirement adds an item to the specimenRequirement field.
 func (b *ActivityDefinitionBuilder) WithSpecimenRequirement(v dt.Reference) *ActivityDefinitionBuilder {
 	b.resource.SpecimenRequirement = append(b.resource.SpecimenRequirement, v)
+	b.fieldsSet["specimenRequirement"] = true
 	return b
 }
 
 // WithSubjectCodeableConcept sets the subjectCodeableConcept field.
 func (b *ActivityDefinitionBuilder) WithSubjectCodeableConcept(v dt.CodeableConcept) *ActivityDefinitionBuilder {
 	b.resource.SubjectCodeableConcept = &v
+	b.fieldsSet["subjectCodeableConcept"] = true
 	return b
 }
 
 // WithSubjectReference sets the subjectReference field.
 func (b *ActivityDefinitionBuilder) WithSubjectReference(v dt.Reference) *ActivityDefinitionBuilder {
 	b.resource.SubjectReference = &v
+	b.fieldsSet["subjectReference"] = true
 	return b
 }
 
 // WithSubtitle sets the subtitle field.
 func (b *ActivityDefinitionBuilder) WithSubtitle(v string) *ActivityDefinitionBuilder {
 	b.resource.Subtitle = &v
+	b.fieldsSet["subtitle"] = true
 	return b
 }
 
@@ -506,6 +625,7 @@ func (b *ActivityDefinitionBuilder) WithTimingAge(v dt.Age) *ActivityDefinitionB
 		b.resource.Timing = &ActivityDefinitionTiming{}
 	}
 	b.resource.Timing.Age = &v
+	b.fieldsSet["timing"] = true
 	return b
 }
 
@@ -515,6 +635,7 @@ func (b *ActivityDefinitionBuilder) WithTimingDateTime(v string) *ActivityDefini
 		b.resource.Timing = &ActivityDefinitionTiming{}
 	}
 	b.resource.Timing.DateTime = &v
+	b.fieldsSet["timing"] = true
 	return b
 }
 
@@ -524,6 +645,7 @@ func (b *ActivityDefinitionBuilder) WithTimingDuration(v dt.Duration) *ActivityD
 		b.resource.Timing = &ActivityDefinitionTiming{}
 	}
 	b.resource.Timing.Duration = &v
+	b.fieldsSet["timing"] = true
 	return b
 }
 
@@ -533,6 +655,7 @@ func (b *ActivityDefinitionBuilder) WithTimingPeriod(v dt.Period) *ActivityDefin
 		b.resource.Timing = &ActivityDefinitionTiming{}
 	}
 	b.resource.Timing.Period = &v
+	b.fieldsSet["timing"] = true
 	return b
 }
 
@@ -542,6 +665,7 @@ func (b *ActivityDefinitionBuilder) WithTimingRange(v dt.Range) *ActivityDefinit
 		b.resource.Timing = &ActivityDefinitionTiming{}
 	}
 	b.resource.Timing.Range = &v
+	b.fieldsSet["timing"] = true
 	return b
 }
 
@@ -551,48 +675,56 @@ func (b *ActivityDefinitionBuilder) WithTimingTiming(v dt.Timing) *ActivityDefin
 		b.resource.Timing = &ActivityDefinitionTiming{}
 	}
 	b.resource.Timing.Timing = &v
+	b.fieldsSet["timing"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *ActivityDefinitionBuilder) WithTitle(v string) *ActivityDefinitionBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithTopic adds an item to the topic field.
 func (b *ActivityDefinitionBuilder) WithTopic(v dt.CodeableConcept) *ActivityDefinitionBuilder {
 	b.resource.Topic = append(b.resource.Topic, v)
+	b.fieldsSet["topic"] = true
 	return b
 }
 
 // WithTransform sets the transform field.
 func (b *ActivityDefinitionBuilder) WithTransform(v dt.Canonical) *ActivityDefinitionBuilder {
 	b.resource.Transform = &v
+	b.fieldsSet["transform"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *ActivityDefinitionBuilder) WithUrl(v dt.URI) *ActivityDefinitionBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUsage sets the usage field.
 func (b *ActivityDefinitionBuilder) WithUsage(v string) *ActivityDefinitionBuilder {
 	b.resource.Usage = &v
+	b.fieldsSet["usage"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *ActivityDefinitionBuilder) WithUseContext(v dt.UsageContext) *ActivityDefinitionBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *ActivityDefinitionBuilder) WithVersion(v string) *ActivityDefinitionBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -607,6 +739,8 @@ func (b *ActivityDefinitionBuilder) Build() (*ActivityDefinition, error) {
 type ActivityDefinitionDynamicValue struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -615,12 +749,16 @@ type ActivityDefinitionDynamicValue struct {
 	Expression dt.Expression `json:"expression"`
 	// Path The path to the element to be customized. This is the path on the resource that will hold the result of the calculation defined by the expression. The specified path SHALL be a FHIRPath resolveable...
 	Path *string `json:"path,omitempty"`
+	// PathElement contains element extensions for path.
+	PathElement *dt.Element `json:"_path,omitempty"`
 }
 
 // ActivityDefinitionParticipant This resource allows for the definition of some activity to be performed, independent of a particular patient, practitioner, or other performance context.
 type ActivityDefinitionParticipant struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -629,47 +767,8 @@ type ActivityDefinitionParticipant struct {
 	Role *dt.CodeableConcept `json:"role,omitempty"`
 	// Type The type of participant in the action.
 	Type *dt.Code `json:"type,omitempty"`
-}
-
-// ActivityDefinitionProduct represents a polymorphic choice type in FHIR.
-type ActivityDefinitionProduct struct {
-	CodeableConcept *dt.CodeableConcept `json:"productCodeableConcept,omitempty"` // Identifies the food, drug or other product being consumed or supplied in the activity.
-	Reference       *dt.Reference       `json:"productReference,omitempty"`       // Identifies the food, drug or other product being consumed or supplied in the activity.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ActivityDefinitionProduct.
-func (v ActivityDefinitionProduct) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.CodeableConcept != nil {
-		m["productCodeableConcept"] = v.CodeableConcept
-	}
-	if v.Reference != nil {
-		m["productReference"] = v.Reference
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ActivityDefinitionProduct.
-func (v *ActivityDefinitionProduct) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["productCodeableConcept"]; ok {
-		var val dt.CodeableConcept
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling productCodeableConcept: %w", err)
-		}
-		v.CodeableConcept = &val
-	}
-	if d, ok := raw["productReference"]; ok {
-		var val dt.Reference
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling productReference: %w", err)
-		}
-		v.Reference = &val
-	}
-	return nil
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }
 
 // ActivityDefinitionTiming represents a polymorphic choice type in FHIR.
@@ -753,6 +852,47 @@ func (v *ActivityDefinitionTiming) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling timingTiming: %w", err)
 		}
 		v.Timing = &val
+	}
+	return nil
+}
+
+// ActivityDefinitionProduct represents a polymorphic choice type in FHIR.
+type ActivityDefinitionProduct struct {
+	CodeableConcept *dt.CodeableConcept `json:"productCodeableConcept,omitempty"` // Identifies the food, drug or other product being consumed or supplied in the activity.
+	Reference       *dt.Reference       `json:"productReference,omitempty"`       // Identifies the food, drug or other product being consumed or supplied in the activity.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ActivityDefinitionProduct.
+func (v ActivityDefinitionProduct) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.CodeableConcept != nil {
+		m["productCodeableConcept"] = v.CodeableConcept
+	}
+	if v.Reference != nil {
+		m["productReference"] = v.Reference
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ActivityDefinitionProduct.
+func (v *ActivityDefinitionProduct) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["productCodeableConcept"]; ok {
+		var val dt.CodeableConcept
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling productCodeableConcept: %w", err)
+		}
+		v.CodeableConcept = &val
+	}
+	if d, ok := raw["productReference"]; ok {
+		var val dt.Reference
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling productReference: %w", err)
+		}
+		v.Reference = &val
 	}
 	return nil
 }

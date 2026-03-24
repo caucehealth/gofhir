@@ -17,12 +17,18 @@ type ConceptMap struct {
 	ResourceType string `json:"resourceType"` // Always "ConceptMap"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,49 +41,95 @@ type ConceptMap struct {
 	Identifier *dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this concept map. Enables tracking the life-cycle of the content.
 	Status *ConceptMapStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the concept map and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the concept map.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date  (and optionally time) when the concept map was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should chan...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description A free text natural language description of the concept map from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Experimental A Boolean value to indicate that this concept map is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// Group A group of mappings that all have the same source and target system.
 	Group []ConceptMapGroup `json:"group,omitempty"`
 	// Jurisdiction A legal or geographic region in which the concept map is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Name A natural language name identifying the concept map. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Publisher The name of the organization or individual that published the concept map.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Purpose Explanation of why this concept map is needed and why it has been designed as it has.
 	Purpose *dt.Markdown `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for purpose.
+	PurposeElement *dt.Element `json:"_purpose,omitempty"`
 	// SourceCanonical Identifier for the source value set that contains the concepts that are being mapped and provides context for the mappings.
 	SourceCanonical *string `json:"sourceCanonical,omitempty"`
+	// SourceCanonicalElement contains element extensions for sourceCanonical.
+	SourceCanonicalElement *dt.Element `json:"_sourceCanonical,omitempty"`
 	// SourceUri Identifier for the source value set that contains the concepts that are being mapped and provides context for the mappings.
 	SourceUri *string `json:"sourceUri,omitempty"`
+	// SourceUriElement contains element extensions for sourceUri.
+	SourceUriElement *dt.Element `json:"_sourceUri,omitempty"`
 	// TargetCanonical The target value set provides context for the mappings. Note that the mapping is made between concepts, not between value sets, but the value set provides important context about how the concept ma...
 	TargetCanonical *string `json:"targetCanonical,omitempty"`
+	// TargetCanonicalElement contains element extensions for targetCanonical.
+	TargetCanonicalElement *dt.Element `json:"_targetCanonical,omitempty"`
 	// TargetUri The target value set provides context for the mappings. Note that the mapping is made between concepts, not between value sets, but the value set provides important context about how the concept ma...
 	TargetUri *string `json:"targetUri,omitempty"`
+	// TargetUriElement contains element extensions for targetUri.
+	TargetUriElement *dt.Element `json:"_targetUri,omitempty"`
 	// Title A short, descriptive, user-friendly title for the concept map.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Url An absolute URI that is used to identify this concept map when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally uniqu...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the concept map when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the concept map au...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for ConceptMap.
 func (r ConceptMap) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "ConceptMap"
 	type Alias ConceptMap
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ConceptMap.
@@ -88,184 +140,229 @@ func (r *ConceptMap) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ConceptMap(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contact", "_contained", "_copyright", "_date", "_description", "_experimental", "_extension", "_group", "_id", "_identifier", "_implicitRules", "_jurisdiction", "_language", "_meta", "_modifierExtension", "_name", "_publisher", "_purpose", "_sourceCanonical", "_sourceUri", "_status", "_targetCanonical", "_targetUri", "_text", "_title", "_url", "_useContext", "_version", "contact", "contained", "copyright", "date", "description", "experimental", "extension", "group", "id", "identifier", "implicitRules", "jurisdiction", "language", "meta", "modifierExtension", "name", "publisher", "purpose", "resourceType", "sourceCanonical", "sourceUri", "status", "targetCanonical", "targetUri", "text", "title", "url", "useContext", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ConceptMapBuilder provides a fluent API for constructing ConceptMap resources.
 type ConceptMapBuilder struct {
-	resource ConceptMap
+	resource  ConceptMap
+	fieldsSet map[string]bool
 }
 
 // NewConceptMap creates a new ConceptMapBuilder for building a ConceptMap resource.
 func NewConceptMap() *ConceptMapBuilder {
-	return &ConceptMapBuilder{resource: ConceptMap{ResourceType: "ConceptMap"}}
+	return &ConceptMapBuilder{resource: ConceptMap{ResourceType: "ConceptMap"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ConceptMapBuilder) WithId(v dt.ID) *ConceptMapBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ConceptMapBuilder) WithMeta(v dt.Meta) *ConceptMapBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ConceptMapBuilder) WithImplicitRules(v dt.URI) *ConceptMapBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ConceptMapBuilder) WithLanguage(v dt.Code) *ConceptMapBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ConceptMapBuilder) WithText(v dt.Narrative) *ConceptMapBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ConceptMapBuilder) WithContained(v json.RawMessage) *ConceptMapBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ConceptMapBuilder) WithExtension(v dt.Extension) *ConceptMapBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ConceptMapBuilder) WithModifierExtension(v dt.Extension) *ConceptMapBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier sets the identifier field.
 func (b *ConceptMapBuilder) WithIdentifier(v dt.Identifier) *ConceptMapBuilder {
 	b.resource.Identifier = &v
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ConceptMapBuilder) WithStatus(v ConceptMapStatus) *ConceptMapBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *ConceptMapBuilder) WithContact(v dt.ContactDetail) *ConceptMapBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *ConceptMapBuilder) WithCopyright(v dt.Markdown) *ConceptMapBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *ConceptMapBuilder) WithDate(v dt.DateTime) *ConceptMapBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *ConceptMapBuilder) WithDescription(v dt.Markdown) *ConceptMapBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *ConceptMapBuilder) WithExperimental(v bool) *ConceptMapBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithGroup adds an item to the group field.
 func (b *ConceptMapBuilder) WithGroup(v ConceptMapGroup) *ConceptMapBuilder {
 	b.resource.Group = append(b.resource.Group, v)
+	b.fieldsSet["group"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *ConceptMapBuilder) WithJurisdiction(v dt.CodeableConcept) *ConceptMapBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *ConceptMapBuilder) WithName(v string) *ConceptMapBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *ConceptMapBuilder) WithPublisher(v string) *ConceptMapBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithPurpose sets the purpose field.
 func (b *ConceptMapBuilder) WithPurpose(v dt.Markdown) *ConceptMapBuilder {
 	b.resource.Purpose = &v
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
 // WithSourceCanonical sets the sourceCanonical field.
 func (b *ConceptMapBuilder) WithSourceCanonical(v string) *ConceptMapBuilder {
 	b.resource.SourceCanonical = &v
+	b.fieldsSet["sourceCanonical"] = true
 	return b
 }
 
 // WithSourceUri sets the sourceUri field.
 func (b *ConceptMapBuilder) WithSourceUri(v string) *ConceptMapBuilder {
 	b.resource.SourceUri = &v
+	b.fieldsSet["sourceUri"] = true
 	return b
 }
 
 // WithTargetCanonical sets the targetCanonical field.
 func (b *ConceptMapBuilder) WithTargetCanonical(v string) *ConceptMapBuilder {
 	b.resource.TargetCanonical = &v
+	b.fieldsSet["targetCanonical"] = true
 	return b
 }
 
 // WithTargetUri sets the targetUri field.
 func (b *ConceptMapBuilder) WithTargetUri(v string) *ConceptMapBuilder {
 	b.resource.TargetUri = &v
+	b.fieldsSet["targetUri"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *ConceptMapBuilder) WithTitle(v string) *ConceptMapBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *ConceptMapBuilder) WithUrl(v dt.URI) *ConceptMapBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *ConceptMapBuilder) WithUseContext(v dt.UsageContext) *ConceptMapBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *ConceptMapBuilder) WithVersion(v string) *ConceptMapBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -280,32 +377,48 @@ func (b *ConceptMapBuilder) Build() (*ConceptMap, error) {
 type ConceptMapDependsOn struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Display The display for the code. The display is only provided to help editors when editing the concept map.
 	Display *string `json:"display,omitempty"`
+	// DisplayElement contains element extensions for display.
+	DisplayElement *dt.Element `json:"_display,omitempty"`
 	// Property A reference to an element that holds a coded value that corresponds to a code system property. The idea is that the information model carries an element somewhere that is labeled to correspond with...
 	Property *dt.URI `json:"property,omitempty"`
+	// PropertyElement contains element extensions for property.
+	PropertyElement *dt.Element `json:"_property,omitempty"`
 	// System An absolute URI that identifies the code system of the dependency code (if the source/dependency is a value set that crosses code systems).
 	System *dt.Canonical `json:"system,omitempty"`
+	// SystemElement contains element extensions for system.
+	SystemElement *dt.Element `json:"_system,omitempty"`
 	// Value Identity (code or path) or the element/item/ValueSet/text that the map depends on / refers to.
 	Value *string `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *dt.Element `json:"_value,omitempty"`
 }
 
 // ConceptMapElement A statement of relationships from one set of concepts to one or more other concepts - either concepts in code systems, or data element/data element concepts, or classes in class models.
 type ConceptMapElement struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code Identity (code or path) or the element/item being mapped.
 	Code *dt.Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Display The display for the code. The display is only provided to help editors when editing the concept map.
 	Display *string `json:"display,omitempty"`
+	// DisplayElement contains element extensions for display.
+	DisplayElement *dt.Element `json:"_display,omitempty"`
 	// Target A concept from the target value set that this concept maps to.
 	Target []ConceptMapTarget `json:"target,omitempty"`
 }
@@ -314,6 +427,8 @@ type ConceptMapElement struct {
 type ConceptMapGroup struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -322,12 +437,20 @@ type ConceptMapGroup struct {
 	Element []ConceptMapElement `json:"element,omitempty"`
 	// Source An absolute URI that identifies the source system where the concepts to be mapped are defined.
 	Source *dt.URI `json:"source,omitempty"`
+	// SourceElement contains element extensions for source.
+	SourceElement *dt.Element `json:"_source,omitempty"`
 	// SourceVersion The specific version of the code system, as determined by the code system authority.
 	SourceVersion *string `json:"sourceVersion,omitempty"`
+	// SourceVersionElement contains element extensions for sourceVersion.
+	SourceVersionElement *dt.Element `json:"_sourceVersion,omitempty"`
 	// Target An absolute URI that identifies the target system that the concepts will be mapped to.
 	Target *dt.URI `json:"target,omitempty"`
+	// TargetElement contains element extensions for target.
+	TargetElement *dt.Element `json:"_target,omitempty"`
 	// TargetVersion The specific version of the code system, as determined by the code system authority.
 	TargetVersion *string `json:"targetVersion,omitempty"`
+	// TargetVersionElement contains element extensions for targetVersion.
+	TargetVersionElement *dt.Element `json:"_targetVersion,omitempty"`
 	// Unmapped What to do when there is no mapping for the source concept. "Unmapped" does not include codes that are unmatched, and the unmapped element is ignored in a code is specified to have equivalence = un...
 	Unmapped *ConceptMapUnmapped `json:"unmapped,omitempty"`
 }
@@ -336,20 +459,30 @@ type ConceptMapGroup struct {
 type ConceptMapTarget struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code Identity (code or path) or the element/item that the map refers to.
 	Code *dt.Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Comment A description of status/issues in mapping that conveys additional information not represented in  the structured data.
 	Comment *string `json:"comment,omitempty"`
+	// CommentElement contains element extensions for comment.
+	CommentElement *dt.Element `json:"_comment,omitempty"`
 	// DependsOn A set of additional dependencies for this mapping to hold. This mapping is only applicable if the specified element can be resolved, and it has the specified value.
 	DependsOn []ConceptMapDependsOn `json:"dependsOn,omitempty"`
 	// Display The display for the code. The display is only provided to help editors when editing the concept map.
 	Display *string `json:"display,omitempty"`
+	// DisplayElement contains element extensions for display.
+	DisplayElement *dt.Element `json:"_display,omitempty"`
 	// Equivalence The equivalence between the source and target concepts (counting for the dependencies and products). The equivalence is read from target to source (e.g. the target is 'wider' than the source).
 	Equivalence *ConceptMapTargetEquivalence `json:"equivalence,omitempty"`
+	// EquivalenceElement contains element extensions for equivalence.
+	EquivalenceElement *dt.Element `json:"_equivalence,omitempty"`
 	// Product A set of additional outcomes from this mapping to other elements. To properly execute this mapping, the specified element must be mapped to some data element or source that is in context. The mappi...
 	Product []ConceptMapDependsOn `json:"product,omitempty"`
 }
@@ -358,16 +491,26 @@ type ConceptMapTarget struct {
 type ConceptMapUnmapped struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code The fixed code to use when the mode = 'fixed'  - all unmapped codes are mapped to a single fixed code.
 	Code *dt.Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Display The display for the code. The display is only provided to help editors when editing the concept map.
 	Display *string `json:"display,omitempty"`
+	// DisplayElement contains element extensions for display.
+	DisplayElement *dt.Element `json:"_display,omitempty"`
 	// Mode Defines which action to take if there is no match for the source concept in the target system designated for the group. One of 3 actions are possible: use the unmapped code (this is useful when doi...
 	Mode *ConceptMapUnmappedMode `json:"mode,omitempty"`
+	// ModeElement contains element extensions for mode.
+	ModeElement *dt.Element `json:"_mode,omitempty"`
 	// Url The canonical reference to an additional ConceptMap resource instance to use for mapping if this ConceptMap resource contains no matching mapping for the source concept.
 	Url *dt.Canonical `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 }

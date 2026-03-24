@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type TestReport struct {
 	ResourceType string `json:"resourceType"` // Always "TestReport"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,16 +42,26 @@ type TestReport struct {
 	Identifier *dt.Identifier `json:"identifier,omitempty"`
 	// Status The current state of this test report.
 	Status *TestReportStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Issued When the TestScript was executed and this TestReport was generated.
 	Issued *dt.DateTime `json:"issued,omitempty"`
+	// IssuedElement contains element extensions for issued.
+	IssuedElement *dt.Element `json:"_issued,omitempty"`
 	// Name A free text natural language name identifying the executed TestScript.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Participant A participant in the test execution, either the execution engine, a client, or a server.
 	Participant []TestReportParticipant `json:"participant,omitempty"`
 	// Result The overall result from the execution of the TestScript.
 	Result *TestReportResult `json:"result,omitempty"`
+	// ResultElement contains element extensions for result.
+	ResultElement *dt.Element `json:"_result,omitempty"`
 	// Score The final score (percentage of tests passed) resulting from the execution of the TestScript.
 	Score *float64 `json:"score,omitempty"`
+	// ScoreElement contains element extensions for score.
+	ScoreElement *dt.Element `json:"_score,omitempty"`
 	// Setup The results of the series of required setup operations before the tests were executed.
 	Setup *TestReportSetup `json:"setup,omitempty"`
 	// Teardown The results of the series of operations required to clean up after all the tests were executed (successfully or otherwise).
@@ -55,13 +72,31 @@ type TestReport struct {
 	TestScript dt.Reference `json:"testScript"`
 	// Tester Name of the tester producing this report (Organization or individual).
 	Tester *string `json:"tester,omitempty"`
+	// TesterElement contains element extensions for tester.
+	TesterElement *dt.Element `json:"_tester,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for TestReport.
 func (r TestReport) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "TestReport"
 	type Alias TestReport
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for TestReport.
@@ -72,142 +107,186 @@ func (r *TestReport) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = TestReport(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contained", "_extension", "_id", "_identifier", "_implicitRules", "_issued", "_language", "_meta", "_modifierExtension", "_name", "_participant", "_result", "_score", "_setup", "_status", "_teardown", "_test", "_testScript", "_tester", "_text", "contained", "extension", "id", "identifier", "implicitRules", "issued", "language", "meta", "modifierExtension", "name", "participant", "resourceType", "result", "score", "setup", "status", "teardown", "test", "testScript", "tester", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // TestReportBuilder provides a fluent API for constructing TestReport resources.
 type TestReportBuilder struct {
-	resource TestReport
+	resource  TestReport
+	fieldsSet map[string]bool
 }
 
 // NewTestReport creates a new TestReportBuilder for building a TestReport resource.
 func NewTestReport() *TestReportBuilder {
-	return &TestReportBuilder{resource: TestReport{ResourceType: "TestReport"}}
+	return &TestReportBuilder{resource: TestReport{ResourceType: "TestReport"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *TestReportBuilder) WithId(v dt.ID) *TestReportBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *TestReportBuilder) WithMeta(v dt.Meta) *TestReportBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *TestReportBuilder) WithImplicitRules(v dt.URI) *TestReportBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *TestReportBuilder) WithLanguage(v dt.Code) *TestReportBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *TestReportBuilder) WithText(v dt.Narrative) *TestReportBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *TestReportBuilder) WithContained(v json.RawMessage) *TestReportBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *TestReportBuilder) WithExtension(v dt.Extension) *TestReportBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *TestReportBuilder) WithModifierExtension(v dt.Extension) *TestReportBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier sets the identifier field.
 func (b *TestReportBuilder) WithIdentifier(v dt.Identifier) *TestReportBuilder {
 	b.resource.Identifier = &v
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *TestReportBuilder) WithStatus(v TestReportStatus) *TestReportBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithIssued sets the issued field.
 func (b *TestReportBuilder) WithIssued(v dt.DateTime) *TestReportBuilder {
 	b.resource.Issued = &v
+	b.fieldsSet["issued"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *TestReportBuilder) WithName(v string) *TestReportBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithParticipant adds an item to the participant field.
 func (b *TestReportBuilder) WithParticipant(v TestReportParticipant) *TestReportBuilder {
 	b.resource.Participant = append(b.resource.Participant, v)
+	b.fieldsSet["participant"] = true
 	return b
 }
 
 // WithResult sets the result field.
 func (b *TestReportBuilder) WithResult(v TestReportResult) *TestReportBuilder {
 	b.resource.Result = &v
+	b.fieldsSet["result"] = true
 	return b
 }
 
 // WithScore sets the score field.
 func (b *TestReportBuilder) WithScore(v float64) *TestReportBuilder {
 	b.resource.Score = &v
+	b.fieldsSet["score"] = true
 	return b
 }
 
 // WithSetup sets the setup field.
 func (b *TestReportBuilder) WithSetup(v TestReportSetup) *TestReportBuilder {
 	b.resource.Setup = &v
+	b.fieldsSet["setup"] = true
 	return b
 }
 
 // WithTeardown sets the teardown field.
 func (b *TestReportBuilder) WithTeardown(v TestReportTeardown) *TestReportBuilder {
 	b.resource.Teardown = &v
+	b.fieldsSet["teardown"] = true
 	return b
 }
 
 // WithTest adds an item to the test field.
 func (b *TestReportBuilder) WithTest(v TestReportTest) *TestReportBuilder {
 	b.resource.Test = append(b.resource.Test, v)
+	b.fieldsSet["test"] = true
 	return b
 }
 
 // WithTestScript sets the testScript field.
 func (b *TestReportBuilder) WithTestScript(v dt.Reference) *TestReportBuilder {
 	b.resource.TestScript = v
+	b.fieldsSet["testScript"] = true
 	return b
 }
 
 // WithTester sets the tester field.
 func (b *TestReportBuilder) WithTester(v string) *TestReportBuilder {
 	b.resource.Tester = &v
+	b.fieldsSet["tester"] = true
 	return b
 }
 
 // Build returns the constructed TestReport. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *TestReportBuilder) Build() (*TestReport, error) {
+	var missing []string
+	if !b.fieldsSet["testScript"] {
+		missing = append(missing, "testScript")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("TestReport: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -216,6 +295,8 @@ func (b *TestReportBuilder) Build() (*TestReport, error) {
 type TestReportAction struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -230,6 +311,8 @@ type TestReportAction struct {
 type TestReportAction1 struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -244,6 +327,8 @@ type TestReportAction1 struct {
 type TestReportAction2 struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -256,54 +341,80 @@ type TestReportAction2 struct {
 type TestReportAssert struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Detail A link to further details on the result.
 	Detail *string `json:"detail,omitempty"`
+	// DetailElement contains element extensions for detail.
+	DetailElement *dt.Element `json:"_detail,omitempty"`
 	// Message An explanatory message associated with the result.
 	Message *dt.Markdown `json:"message,omitempty"`
+	// MessageElement contains element extensions for message.
+	MessageElement *dt.Element `json:"_message,omitempty"`
 	// Result The result of this assertion.
 	Result *TestReportAssertResult `json:"result,omitempty"`
+	// ResultElement contains element extensions for result.
+	ResultElement *dt.Element `json:"_result,omitempty"`
 }
 
 // TestReportOperation A summary of information based on the results of executing a TestScript.
 type TestReportOperation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Detail A link to further details on the result.
 	Detail *dt.URI `json:"detail,omitempty"`
+	// DetailElement contains element extensions for detail.
+	DetailElement *dt.Element `json:"_detail,omitempty"`
 	// Message An explanatory message associated with the result.
 	Message *dt.Markdown `json:"message,omitempty"`
+	// MessageElement contains element extensions for message.
+	MessageElement *dt.Element `json:"_message,omitempty"`
 	// Result The result of this operation.
 	Result *TestReportOperationResult `json:"result,omitempty"`
+	// ResultElement contains element extensions for result.
+	ResultElement *dt.Element `json:"_result,omitempty"`
 }
 
 // TestReportParticipant A summary of information based on the results of executing a TestScript.
 type TestReportParticipant struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Display The display name of the participant.
 	Display *string `json:"display,omitempty"`
+	// DisplayElement contains element extensions for display.
+	DisplayElement *dt.Element `json:"_display,omitempty"`
 	// Type The type of participant.
 	Type *TestReportParticipantType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 	// Uri The uri of the participant. An absolute URL is preferred.
 	Uri *dt.URI `json:"uri,omitempty"`
+	// UriElement contains element extensions for uri.
+	UriElement *dt.Element `json:"_uri,omitempty"`
 }
 
 // TestReportSetup A summary of information based on the results of executing a TestScript.
 type TestReportSetup struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -316,6 +427,8 @@ type TestReportSetup struct {
 type TestReportTeardown struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -328,6 +441,8 @@ type TestReportTeardown struct {
 type TestReportTest struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -336,6 +451,10 @@ type TestReportTest struct {
 	Action []TestReportAction1 `json:"action,omitempty"`
 	// Description A short description of the test used by test engines for tracking and reporting purposes.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Name The name of this test used for tracking/logging purposes by test engines.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 }

@@ -18,12 +18,18 @@ type Coverage struct {
 	ResourceType string `json:"resourceType"` // Always "Coverage"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type Coverage struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the resource instance.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Beneficiary The party who benefits from the insurance coverage; the patient when products and/or services are provided.
 	Beneficiary dt.Reference `json:"beneficiary"`
 	// Class A suite of underwriter specific classifiers.
@@ -46,10 +54,16 @@ type Coverage struct {
 	CostToBeneficiary []CoverageCostToBeneficiary `json:"costToBeneficiary,omitempty"`
 	// Dependent A unique identifier for a dependent under the coverage.
 	Dependent *string `json:"dependent,omitempty"`
+	// DependentElement contains element extensions for dependent.
+	DependentElement *dt.Element `json:"_dependent,omitempty"`
 	// Network The insurer-specific identifier for the insurer-defined network of providers to which the beneficiary may seek treatment which will be covered at the 'in-network' rate, otherwise 'out of network' t...
 	Network *string `json:"network,omitempty"`
+	// NetworkElement contains element extensions for network.
+	NetworkElement *dt.Element `json:"_network,omitempty"`
 	// Order The order of applicability of this coverage relative to other coverages which are currently in force. Note, there may be gaps in the numbering and this does not imply primary, secondary etc. as the...
 	Order *uint32 `json:"order,omitempty"`
+	// OrderElement contains element extensions for order.
+	OrderElement *dt.Element `json:"_order,omitempty"`
 	// Payor The program or plan underwriter or payor including both insurance and non-insurance agreements, such as patient-pay agreements.
 	Payor []dt.Reference `json:"payor,omitempty"`
 	// Period Time period during which the coverage is in force. A missing start date indicates the start date isn't known, a missing end date means the coverage is continuing to be in force.
@@ -60,19 +74,39 @@ type Coverage struct {
 	Relationship *dt.CodeableConcept `json:"relationship,omitempty"`
 	// Subrogation When 'subrogation=true' this insurance instance has been included not for adjudication but to provide insurers with the details to recover costs.
 	Subrogation *bool `json:"subrogation,omitempty"`
+	// SubrogationElement contains element extensions for subrogation.
+	SubrogationElement *dt.Element `json:"_subrogation,omitempty"`
 	// Subscriber The party who has signed-up for or 'owns' the contractual relationship to the policy or to whom the benefit of the policy for services rendered to them or their family is due.
 	Subscriber *dt.Reference `json:"subscriber,omitempty"`
 	// SubscriberId The insurer assigned ID for the Subscriber.
 	SubscriberId *string `json:"subscriberId,omitempty"`
+	// SubscriberIdElement contains element extensions for subscriberId.
+	SubscriberIdElement *dt.Element `json:"_subscriberId,omitempty"`
 	// Type The type of coverage: social program, medical plan, accident coverage (workers compensation, auto), group health or payment by an individual or organization.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Coverage.
 func (r Coverage) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Coverage"
 	type Alias Coverage
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Coverage.
@@ -83,166 +117,208 @@ func (r *Coverage) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Coverage(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_beneficiary", "_class", "_contained", "_contract", "_costToBeneficiary", "_dependent", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_modifierExtension", "_network", "_order", "_payor", "_period", "_policyHolder", "_relationship", "_status", "_subrogation", "_subscriber", "_subscriberId", "_text", "_type", "beneficiary", "class", "contained", "contract", "costToBeneficiary", "dependent", "extension", "id", "identifier", "implicitRules", "language", "meta", "modifierExtension", "network", "order", "payor", "period", "policyHolder", "relationship", "resourceType", "status", "subrogation", "subscriber", "subscriberId", "text", "type":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // CoverageBuilder provides a fluent API for constructing Coverage resources.
 type CoverageBuilder struct {
-	resource Coverage
+	resource  Coverage
+	fieldsSet map[string]bool
 }
 
 // NewCoverage creates a new CoverageBuilder for building a Coverage resource.
 func NewCoverage() *CoverageBuilder {
-	return &CoverageBuilder{resource: Coverage{ResourceType: "Coverage"}}
+	return &CoverageBuilder{resource: Coverage{ResourceType: "Coverage"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *CoverageBuilder) WithId(v dt.ID) *CoverageBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *CoverageBuilder) WithMeta(v dt.Meta) *CoverageBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *CoverageBuilder) WithImplicitRules(v dt.URI) *CoverageBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *CoverageBuilder) WithLanguage(v dt.Code) *CoverageBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *CoverageBuilder) WithText(v dt.Narrative) *CoverageBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *CoverageBuilder) WithContained(v json.RawMessage) *CoverageBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *CoverageBuilder) WithExtension(v dt.Extension) *CoverageBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *CoverageBuilder) WithModifierExtension(v dt.Extension) *CoverageBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *CoverageBuilder) WithIdentifier(v dt.Identifier) *CoverageBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *CoverageBuilder) WithStatus(v dt.Code) *CoverageBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithBeneficiary sets the beneficiary field.
 func (b *CoverageBuilder) WithBeneficiary(v dt.Reference) *CoverageBuilder {
 	b.resource.Beneficiary = v
+	b.fieldsSet["beneficiary"] = true
 	return b
 }
 
 // WithClass adds an item to the class field.
 func (b *CoverageBuilder) WithClass(v CoverageClass) *CoverageBuilder {
 	b.resource.Class = append(b.resource.Class, v)
+	b.fieldsSet["class"] = true
 	return b
 }
 
 // WithContract adds an item to the contract field.
 func (b *CoverageBuilder) WithContract(v dt.Reference) *CoverageBuilder {
 	b.resource.Contract = append(b.resource.Contract, v)
+	b.fieldsSet["contract"] = true
 	return b
 }
 
 // WithCostToBeneficiary adds an item to the costToBeneficiary field.
 func (b *CoverageBuilder) WithCostToBeneficiary(v CoverageCostToBeneficiary) *CoverageBuilder {
 	b.resource.CostToBeneficiary = append(b.resource.CostToBeneficiary, v)
+	b.fieldsSet["costToBeneficiary"] = true
 	return b
 }
 
 // WithDependent sets the dependent field.
 func (b *CoverageBuilder) WithDependent(v string) *CoverageBuilder {
 	b.resource.Dependent = &v
+	b.fieldsSet["dependent"] = true
 	return b
 }
 
 // WithNetwork sets the network field.
 func (b *CoverageBuilder) WithNetwork(v string) *CoverageBuilder {
 	b.resource.Network = &v
+	b.fieldsSet["network"] = true
 	return b
 }
 
 // WithOrder sets the order field.
 func (b *CoverageBuilder) WithOrder(v uint32) *CoverageBuilder {
 	b.resource.Order = &v
+	b.fieldsSet["order"] = true
 	return b
 }
 
 // WithPayor adds an item to the payor field.
 func (b *CoverageBuilder) WithPayor(v dt.Reference) *CoverageBuilder {
 	b.resource.Payor = append(b.resource.Payor, v)
+	b.fieldsSet["payor"] = true
 	return b
 }
 
 // WithPeriod sets the period field.
 func (b *CoverageBuilder) WithPeriod(v dt.Period) *CoverageBuilder {
 	b.resource.Period = &v
+	b.fieldsSet["period"] = true
 	return b
 }
 
 // WithPolicyHolder sets the policyHolder field.
 func (b *CoverageBuilder) WithPolicyHolder(v dt.Reference) *CoverageBuilder {
 	b.resource.PolicyHolder = &v
+	b.fieldsSet["policyHolder"] = true
 	return b
 }
 
 // WithRelationship sets the relationship field.
 func (b *CoverageBuilder) WithRelationship(v dt.CodeableConcept) *CoverageBuilder {
 	b.resource.Relationship = &v
+	b.fieldsSet["relationship"] = true
 	return b
 }
 
 // WithSubrogation sets the subrogation field.
 func (b *CoverageBuilder) WithSubrogation(v bool) *CoverageBuilder {
 	b.resource.Subrogation = &v
+	b.fieldsSet["subrogation"] = true
 	return b
 }
 
 // WithSubscriber sets the subscriber field.
 func (b *CoverageBuilder) WithSubscriber(v dt.Reference) *CoverageBuilder {
 	b.resource.Subscriber = &v
+	b.fieldsSet["subscriber"] = true
 	return b
 }
 
 // WithSubscriberId sets the subscriberId field.
 func (b *CoverageBuilder) WithSubscriberId(v string) *CoverageBuilder {
 	b.resource.SubscriberId = &v
+	b.fieldsSet["subscriberId"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *CoverageBuilder) WithType(v dt.CodeableConcept) *CoverageBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
@@ -250,7 +326,10 @@ func (b *CoverageBuilder) WithType(v dt.CodeableConcept) *CoverageBuilder {
 // field (cardinality 1..1) is not set.
 func (b *CoverageBuilder) Build() (*Coverage, error) {
 	var missing []string
-	if len(b.resource.Payor) == 0 {
+	if !b.fieldsSet["beneficiary"] {
+		missing = append(missing, "beneficiary")
+	}
+	if !b.fieldsSet["payor"] {
 		missing = append(missing, "payor")
 	}
 	if len(missing) > 0 {
@@ -264,22 +343,30 @@ func (b *CoverageBuilder) Build() (*Coverage, error) {
 type CoverageClass struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Name A short description for the class.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Type The type of classification for which an insurer-specific class label or number and optional name is provided, for example may be used to identify a class of coverage or employer group, Policy, Plan.
 	Type dt.CodeableConcept `json:"type"`
 	// Value The alphanumeric string value associated with the insurer issued label.
 	Value *string `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *dt.Element `json:"_value,omitempty"`
 }
 
 // CoverageCostToBeneficiary Financial instrument which may be used to reimburse or pay for health care products and services. Includes both insurance and self-payment.
 type CoverageCostToBeneficiary struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -382,6 +469,8 @@ func (v *CoverageCostToBeneficiaryValue) UnmarshalJSON(data []byte) error {
 type CoverageException struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

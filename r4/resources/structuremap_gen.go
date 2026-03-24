@@ -18,12 +18,18 @@ type StructureMap struct {
 	ResourceType string `json:"resourceType"` // Always "StructureMap"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,45 +42,85 @@ type StructureMap struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this structure map. Enables tracking the life-cycle of the content.
 	Status *StructureMapStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the structure map and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the structure map.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date  (and optionally time) when the structure map was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should ch...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description A free text natural language description of the structure map from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Experimental A Boolean value to indicate that this structure map is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// Group Organizes the mapping into manageable chunks for human review/ease of maintenance.
 	Group []StructureMapGroup `json:"group,omitempty"`
 	// Import Other maps used by this map (canonical URLs).
 	Import []dt.Canonical `json:"import,omitempty"`
+	// ImportElement contains element extensions for each import.
+	ImportElement []dt.Element `json:"_import,omitempty"`
 	// Jurisdiction A legal or geographic region in which the structure map is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Name A natural language name identifying the structure map. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Publisher The name of the organization or individual that published the structure map.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Purpose Explanation of why this structure map is needed and why it has been designed as it has.
 	Purpose *dt.Markdown `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for purpose.
+	PurposeElement *dt.Element `json:"_purpose,omitempty"`
 	// Structure A structure definition used by this map. The structure definition may describe instances that are converted, or the instances that are produced.
 	Structure []StructureMapStructure `json:"structure,omitempty"`
 	// Title A short, descriptive, user-friendly title for the structure map.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Url An absolute URI that is used to identify this structure map when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally uni...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the structure map when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the structure ma...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for StructureMap.
 func (r StructureMap) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "StructureMap"
 	type Alias StructureMap
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for StructureMap.
@@ -85,172 +131,215 @@ func (r *StructureMap) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = StructureMap(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contact", "_contained", "_copyright", "_date", "_description", "_experimental", "_extension", "_group", "_id", "_identifier", "_implicitRules", "_import", "_jurisdiction", "_language", "_meta", "_modifierExtension", "_name", "_publisher", "_purpose", "_status", "_structure", "_text", "_title", "_url", "_useContext", "_version", "contact", "contained", "copyright", "date", "description", "experimental", "extension", "group", "id", "identifier", "implicitRules", "import", "jurisdiction", "language", "meta", "modifierExtension", "name", "publisher", "purpose", "resourceType", "status", "structure", "text", "title", "url", "useContext", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // StructureMapBuilder provides a fluent API for constructing StructureMap resources.
 type StructureMapBuilder struct {
-	resource StructureMap
+	resource  StructureMap
+	fieldsSet map[string]bool
 }
 
 // NewStructureMap creates a new StructureMapBuilder for building a StructureMap resource.
 func NewStructureMap() *StructureMapBuilder {
-	return &StructureMapBuilder{resource: StructureMap{ResourceType: "StructureMap"}}
+	return &StructureMapBuilder{resource: StructureMap{ResourceType: "StructureMap"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *StructureMapBuilder) WithId(v dt.ID) *StructureMapBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *StructureMapBuilder) WithMeta(v dt.Meta) *StructureMapBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *StructureMapBuilder) WithImplicitRules(v dt.URI) *StructureMapBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *StructureMapBuilder) WithLanguage(v dt.Code) *StructureMapBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *StructureMapBuilder) WithText(v dt.Narrative) *StructureMapBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *StructureMapBuilder) WithContained(v json.RawMessage) *StructureMapBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *StructureMapBuilder) WithExtension(v dt.Extension) *StructureMapBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *StructureMapBuilder) WithModifierExtension(v dt.Extension) *StructureMapBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *StructureMapBuilder) WithIdentifier(v dt.Identifier) *StructureMapBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *StructureMapBuilder) WithStatus(v StructureMapStatus) *StructureMapBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *StructureMapBuilder) WithContact(v dt.ContactDetail) *StructureMapBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *StructureMapBuilder) WithCopyright(v dt.Markdown) *StructureMapBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *StructureMapBuilder) WithDate(v dt.DateTime) *StructureMapBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *StructureMapBuilder) WithDescription(v dt.Markdown) *StructureMapBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *StructureMapBuilder) WithExperimental(v bool) *StructureMapBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithGroup adds an item to the group field.
 func (b *StructureMapBuilder) WithGroup(v StructureMapGroup) *StructureMapBuilder {
 	b.resource.Group = append(b.resource.Group, v)
+	b.fieldsSet["group"] = true
 	return b
 }
 
 // WithImport adds an item to the import field.
 func (b *StructureMapBuilder) WithImport(v dt.Canonical) *StructureMapBuilder {
 	b.resource.Import = append(b.resource.Import, v)
+	b.fieldsSet["import"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *StructureMapBuilder) WithJurisdiction(v dt.CodeableConcept) *StructureMapBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *StructureMapBuilder) WithName(v string) *StructureMapBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *StructureMapBuilder) WithPublisher(v string) *StructureMapBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithPurpose sets the purpose field.
 func (b *StructureMapBuilder) WithPurpose(v dt.Markdown) *StructureMapBuilder {
 	b.resource.Purpose = &v
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
 // WithStructure adds an item to the structure field.
 func (b *StructureMapBuilder) WithStructure(v StructureMapStructure) *StructureMapBuilder {
 	b.resource.Structure = append(b.resource.Structure, v)
+	b.fieldsSet["structure"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *StructureMapBuilder) WithTitle(v string) *StructureMapBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *StructureMapBuilder) WithUrl(v dt.URI) *StructureMapBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *StructureMapBuilder) WithUseContext(v dt.UsageContext) *StructureMapBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *StructureMapBuilder) WithVersion(v string) *StructureMapBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -258,7 +347,7 @@ func (b *StructureMapBuilder) WithVersion(v string) *StructureMapBuilder {
 // field (cardinality 1..1) is not set.
 func (b *StructureMapBuilder) Build() (*StructureMap, error) {
 	var missing []string
-	if len(b.resource.Group) == 0 {
+	if !b.fieldsSet["group"] {
 		missing = append(missing, "group")
 	}
 	if len(missing) > 0 {
@@ -272,60 +361,88 @@ func (b *StructureMapBuilder) Build() (*StructureMap, error) {
 type StructureMapDependent struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Name Name of a rule or group to apply.
 	Name *dt.ID `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Variable Variable to pass to the rule or group.
 	Variable []string `json:"variable,omitempty"`
+	// VariableElement contains element extensions for each variable.
+	VariableElement []dt.Element `json:"_variable,omitempty"`
 }
 
 // StructureMapGroup A Map of relationships between 2 structures that can be used to transform data.
 type StructureMapGroup struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Documentation Additional supporting documentation that explains the purpose of the group and the types of mappings within it.
 	Documentation *string `json:"documentation,omitempty"`
+	// DocumentationElement contains element extensions for documentation.
+	DocumentationElement *dt.Element `json:"_documentation,omitempty"`
 	// Extends Another group that this group adds rules to.
 	Extends *dt.ID `json:"extends,omitempty"`
+	// ExtendsElement contains element extensions for extends.
+	ExtendsElement *dt.Element `json:"_extends,omitempty"`
 	// Input A name assigned to an instance of data. The instance must be provided when the mapping is invoked.
 	Input []StructureMapInput `json:"input,omitempty"`
 	// Name A unique name for the group for the convenience of human readers.
 	Name *dt.ID `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Rule Transform Rule from source to target.
 	Rule []StructureMapRule `json:"rule,omitempty"`
 	// TypeMode If this is the default rule set to apply for the source type or this combination of types.
 	TypeMode *StructureMapGroupTypeMode `json:"typeMode,omitempty"`
+	// TypeModeElement contains element extensions for typeMode.
+	TypeModeElement *dt.Element `json:"_typeMode,omitempty"`
 }
 
 // StructureMapInput A Map of relationships between 2 structures that can be used to transform data.
 type StructureMapInput struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Documentation Documentation for this instance of data.
 	Documentation *string `json:"documentation,omitempty"`
+	// DocumentationElement contains element extensions for documentation.
+	DocumentationElement *dt.Element `json:"_documentation,omitempty"`
 	// Mode Mode for this instance of data.
 	Mode *StructureMapInputMode `json:"mode,omitempty"`
+	// ModeElement contains element extensions for mode.
+	ModeElement *dt.Element `json:"_mode,omitempty"`
 	// Name Name for this instance of data.
 	Name *dt.ID `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Type Type for this instance of data.
 	Type *string `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }
 
 // StructureMapParameter A Map of relationships between 2 structures that can be used to transform data.
 type StructureMapParameter struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -457,6 +574,8 @@ func (v *StructureMapParameterValue) UnmarshalJSON(data []byte) error {
 type StructureMapRule struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -465,8 +584,12 @@ type StructureMapRule struct {
 	Dependent []StructureMapDependent `json:"dependent,omitempty"`
 	// Documentation Documentation for this instance of data.
 	Documentation *string `json:"documentation,omitempty"`
+	// DocumentationElement contains element extensions for documentation.
+	DocumentationElement *dt.Element `json:"_documentation,omitempty"`
 	// Name Name of the rule for internal references.
 	Name *dt.ID `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Rule Rules contained in this rule.
 	Rule []StructureMapRule `json:"rule,omitempty"`
 	// Source Source inputs to the mapping.
@@ -479,32 +602,54 @@ type StructureMapRule struct {
 type StructureMapSource struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Check FHIRPath expression  - must be true or the mapping engine throws an error instead of completing.
 	Check *string `json:"check,omitempty"`
+	// CheckElement contains element extensions for check.
+	CheckElement *dt.Element `json:"_check,omitempty"`
 	// Condition FHIRPath expression  - must be true or the rule does not apply.
 	Condition *string `json:"condition,omitempty"`
+	// ConditionElement contains element extensions for condition.
+	ConditionElement *dt.Element `json:"_condition,omitempty"`
 	// Context Type or variable this rule applies to.
 	Context *dt.ID `json:"context,omitempty"`
+	// ContextElement contains element extensions for context.
+	ContextElement *dt.Element `json:"_context,omitempty"`
 	// DefaultValue A value to use if there is no existing value in the source object.
 	DefaultValue *StructureMapSourceDefaultValue `json:"-"` // polymorphic
 	// Element Optional field for this source.
 	Element *string `json:"element,omitempty"`
+	// ElementElement contains element extensions for element.
+	ElementElement *dt.Element `json:"_element,omitempty"`
 	// ListMode How to handle the list mode for this element.
 	ListMode *StructureMapSourceListMode `json:"listMode,omitempty"`
+	// ListModeElement contains element extensions for listMode.
+	ListModeElement *dt.Element `json:"_listMode,omitempty"`
 	// LogMessage A FHIRPath expression which specifies a message to put in the transform log when content matching the source rule is found.
 	LogMessage *string `json:"logMessage,omitempty"`
+	// LogMessageElement contains element extensions for logMessage.
+	LogMessageElement *dt.Element `json:"_logMessage,omitempty"`
 	// Max Specified maximum cardinality for the element - a number or a "*". This is optional; if present, it acts an implicit check on the input content (* just serves as documentation; it's the default val...
 	Max *string `json:"max,omitempty"`
+	// MaxElement contains element extensions for max.
+	MaxElement *dt.Element `json:"_max,omitempty"`
 	// Min Specified minimum cardinality for the element. This is optional; if present, it acts an implicit check on the input content.
 	Min *int32 `json:"min,omitempty"`
+	// MinElement contains element extensions for min.
+	MinElement *dt.Element `json:"_min,omitempty"`
 	// Type Specified type for the element. This works as a condition on the mapping - use for polymorphic elements.
 	Type *string `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 	// Variable Named context for field, if a field is specified.
 	Variable *dt.ID `json:"variable,omitempty"`
+	// VariableElement contains element extensions for variable.
+	VariableElement *dt.Element `json:"_variable,omitempty"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for StructureMapSource.
@@ -1125,42 +1270,68 @@ func (v *StructureMapSourceDefaultValue) UnmarshalJSON(data []byte) error {
 type StructureMapStructure struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Alias The name used for this type in the map.
 	Alias *string `json:"alias,omitempty"`
+	// AliasElement contains element extensions for alias.
+	AliasElement *dt.Element `json:"_alias,omitempty"`
 	// Documentation Documentation that describes how the structure is used in the mapping.
 	Documentation *string `json:"documentation,omitempty"`
+	// DocumentationElement contains element extensions for documentation.
+	DocumentationElement *dt.Element `json:"_documentation,omitempty"`
 	// Mode How the referenced structure is used in this mapping.
 	Mode *StructureMapStructureMode `json:"mode,omitempty"`
+	// ModeElement contains element extensions for mode.
+	ModeElement *dt.Element `json:"_mode,omitempty"`
 	// Url The canonical reference to the structure.
 	Url dt.Canonical `json:"url"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 }
 
 // StructureMapTarget A Map of relationships between 2 structures that can be used to transform data.
 type StructureMapTarget struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Context Type or variable this rule applies to.
 	Context *dt.ID `json:"context,omitempty"`
+	// ContextElement contains element extensions for context.
+	ContextElement *dt.Element `json:"_context,omitempty"`
 	// ContextType How to interpret the context.
 	ContextType *StructureMapTargetContextType `json:"contextType,omitempty"`
+	// ContextTypeElement contains element extensions for contextType.
+	ContextTypeElement *dt.Element `json:"_contextType,omitempty"`
 	// Element Field to create in the context.
 	Element *string `json:"element,omitempty"`
+	// ElementElement contains element extensions for element.
+	ElementElement *dt.Element `json:"_element,omitempty"`
 	// ListMode If field is a list, how to manage the list.
 	ListMode []StructureMapTargetListMode `json:"listMode,omitempty"`
+	// ListModeElement contains element extensions for each listMode.
+	ListModeElement []dt.Element `json:"_listMode,omitempty"`
 	// ListRuleId Internal rule reference for shared list items.
 	ListRuleId *dt.ID `json:"listRuleId,omitempty"`
+	// ListRuleIdElement contains element extensions for listRuleId.
+	ListRuleIdElement *dt.Element `json:"_listRuleId,omitempty"`
 	// Parameter Parameters to the transform.
 	Parameter []StructureMapParameter `json:"parameter,omitempty"`
 	// Transform How the data is copied / created.
 	Transform *StructureMapTargetTransform `json:"transform,omitempty"`
+	// TransformElement contains element extensions for transform.
+	TransformElement *dt.Element `json:"_transform,omitempty"`
 	// Variable Named context for field, if desired, and a field is specified.
 	Variable *dt.ID `json:"variable,omitempty"`
+	// VariableElement contains element extensions for variable.
+	VariableElement *dt.Element `json:"_variable,omitempty"`
 }

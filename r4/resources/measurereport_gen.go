@@ -18,12 +18,18 @@ type MeasureReport struct {
 	ResourceType string `json:"resourceType"` // Always "MeasureReport"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,8 +42,12 @@ type MeasureReport struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The MeasureReport status. No data will be available until the MeasureReport status is complete.
 	Status *MeasureReportStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Date The date this measure report was generated.
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// EvaluatedResource A reference to a Bundle containing the Resources that were used in the calculation of this measure.
 	EvaluatedResource []dt.Reference `json:"evaluatedResource,omitempty"`
 	// Group The results of the calculation, one for each population group in the measure.
@@ -46,6 +56,8 @@ type MeasureReport struct {
 	ImprovementNotation *dt.CodeableConcept `json:"improvementNotation,omitempty"`
 	// Measure A reference to the Measure that was calculated to produce this report.
 	Measure dt.Canonical `json:"measure"`
+	// MeasureElement contains element extensions for measure.
+	MeasureElement *dt.Element `json:"_measure,omitempty"`
 	// Period The reporting period for which the report was calculated.
 	Period dt.Period `json:"period"`
 	// Reporter The individual, location, or organization that is reporting the data.
@@ -54,13 +66,31 @@ type MeasureReport struct {
 	Subject *dt.Reference `json:"subject,omitempty"`
 	// Type The type of measure report. This may be an individual report, which provides the score for the measure for an individual member of the population; a subject-listing, which returns the list of membe...
 	Type *MeasureReportType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for MeasureReport.
 func (r MeasureReport) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "MeasureReport"
 	type Alias MeasureReport
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for MeasureReport.
@@ -71,130 +101,166 @@ func (r *MeasureReport) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = MeasureReport(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contained", "_date", "_evaluatedResource", "_extension", "_group", "_id", "_identifier", "_implicitRules", "_improvementNotation", "_language", "_measure", "_meta", "_modifierExtension", "_period", "_reporter", "_status", "_subject", "_text", "_type", "contained", "date", "evaluatedResource", "extension", "group", "id", "identifier", "implicitRules", "improvementNotation", "language", "measure", "meta", "modifierExtension", "period", "reporter", "resourceType", "status", "subject", "text", "type":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // MeasureReportBuilder provides a fluent API for constructing MeasureReport resources.
 type MeasureReportBuilder struct {
-	resource MeasureReport
+	resource  MeasureReport
+	fieldsSet map[string]bool
 }
 
 // NewMeasureReport creates a new MeasureReportBuilder for building a MeasureReport resource.
 func NewMeasureReport() *MeasureReportBuilder {
-	return &MeasureReportBuilder{resource: MeasureReport{ResourceType: "MeasureReport"}}
+	return &MeasureReportBuilder{resource: MeasureReport{ResourceType: "MeasureReport"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *MeasureReportBuilder) WithId(v dt.ID) *MeasureReportBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *MeasureReportBuilder) WithMeta(v dt.Meta) *MeasureReportBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *MeasureReportBuilder) WithImplicitRules(v dt.URI) *MeasureReportBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *MeasureReportBuilder) WithLanguage(v dt.Code) *MeasureReportBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *MeasureReportBuilder) WithText(v dt.Narrative) *MeasureReportBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *MeasureReportBuilder) WithContained(v json.RawMessage) *MeasureReportBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *MeasureReportBuilder) WithExtension(v dt.Extension) *MeasureReportBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *MeasureReportBuilder) WithModifierExtension(v dt.Extension) *MeasureReportBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *MeasureReportBuilder) WithIdentifier(v dt.Identifier) *MeasureReportBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *MeasureReportBuilder) WithStatus(v MeasureReportStatus) *MeasureReportBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *MeasureReportBuilder) WithDate(v dt.DateTime) *MeasureReportBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithEvaluatedResource adds an item to the evaluatedResource field.
 func (b *MeasureReportBuilder) WithEvaluatedResource(v dt.Reference) *MeasureReportBuilder {
 	b.resource.EvaluatedResource = append(b.resource.EvaluatedResource, v)
+	b.fieldsSet["evaluatedResource"] = true
 	return b
 }
 
 // WithGroup adds an item to the group field.
 func (b *MeasureReportBuilder) WithGroup(v MeasureReportGroup) *MeasureReportBuilder {
 	b.resource.Group = append(b.resource.Group, v)
+	b.fieldsSet["group"] = true
 	return b
 }
 
 // WithImprovementNotation sets the improvementNotation field.
 func (b *MeasureReportBuilder) WithImprovementNotation(v dt.CodeableConcept) *MeasureReportBuilder {
 	b.resource.ImprovementNotation = &v
+	b.fieldsSet["improvementNotation"] = true
 	return b
 }
 
 // WithMeasure sets the measure field.
 func (b *MeasureReportBuilder) WithMeasure(v dt.Canonical) *MeasureReportBuilder {
 	b.resource.Measure = v
+	b.fieldsSet["measure"] = true
 	return b
 }
 
 // WithPeriod sets the period field.
 func (b *MeasureReportBuilder) WithPeriod(v dt.Period) *MeasureReportBuilder {
 	b.resource.Period = v
+	b.fieldsSet["period"] = true
 	return b
 }
 
 // WithReporter sets the reporter field.
 func (b *MeasureReportBuilder) WithReporter(v dt.Reference) *MeasureReportBuilder {
 	b.resource.Reporter = &v
+	b.fieldsSet["reporter"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *MeasureReportBuilder) WithSubject(v dt.Reference) *MeasureReportBuilder {
 	b.resource.Subject = &v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *MeasureReportBuilder) WithType(v MeasureReportType) *MeasureReportBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
@@ -202,8 +268,11 @@ func (b *MeasureReportBuilder) WithType(v MeasureReportType) *MeasureReportBuild
 // field (cardinality 1..1) is not set.
 func (b *MeasureReportBuilder) Build() (*MeasureReport, error) {
 	var missing []string
-	if b.resource.Measure == "" {
+	if !b.fieldsSet["measure"] {
 		missing = append(missing, "measure")
+	}
+	if !b.fieldsSet["period"] {
+		missing = append(missing, "period")
 	}
 	if len(missing) > 0 {
 		return nil, fmt.Errorf("MeasureReport: required fields missing: %v", missing)
@@ -216,6 +285,8 @@ func (b *MeasureReportBuilder) Build() (*MeasureReport, error) {
 type MeasureReportComponent struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -230,6 +301,8 @@ type MeasureReportComponent struct {
 type MeasureReportGroup struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -248,6 +321,8 @@ type MeasureReportGroup struct {
 type MeasureReportPopulation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -256,6 +331,8 @@ type MeasureReportPopulation struct {
 	Code *dt.CodeableConcept `json:"code,omitempty"`
 	// Count The number of members of the population.
 	Count *int32 `json:"count,omitempty"`
+	// CountElement contains element extensions for count.
+	CountElement *dt.Element `json:"_count,omitempty"`
 	// SubjectResults This element refers to a List of subject level MeasureReport resources, one for each subject in this population.
 	SubjectResults *dt.Reference `json:"subjectResults,omitempty"`
 }
@@ -264,6 +341,8 @@ type MeasureReportPopulation struct {
 type MeasureReportPopulation1 struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -272,6 +351,8 @@ type MeasureReportPopulation1 struct {
 	Code *dt.CodeableConcept `json:"code,omitempty"`
 	// Count The number of members of the population in this stratum.
 	Count *int32 `json:"count,omitempty"`
+	// CountElement contains element extensions for count.
+	CountElement *dt.Element `json:"_count,omitempty"`
 	// SubjectResults This element refers to a List of subject level MeasureReport resources, one for each subject in this population in this stratum.
 	SubjectResults *dt.Reference `json:"subjectResults,omitempty"`
 }
@@ -280,6 +361,8 @@ type MeasureReportPopulation1 struct {
 type MeasureReportStratifier struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -294,6 +377,8 @@ type MeasureReportStratifier struct {
 type MeasureReportStratum struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

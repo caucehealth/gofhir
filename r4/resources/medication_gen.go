@@ -18,12 +18,18 @@ type Medication struct {
 	ResourceType string `json:"resourceType"` // Always "Medication"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type Medication struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status A code to indicate if the medication is in active use.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Amount Specific amount of the drug in the packaged product.  For example, when specifying a product that has the same strength (For example, Insulin glargine 100 unit per mL solution for injection), this ...
 	Amount *dt.Ratio `json:"amount,omitempty"`
 	// Batch Information that only applies to packages (not products).
@@ -48,13 +56,29 @@ type Medication struct {
 	Ingredient []MedicationIngredient `json:"ingredient,omitempty"`
 	// Manufacturer Describes the details of the manufacturer of the medication product.  This is not intended to represent the distributor of a medication product.
 	Manufacturer *dt.Reference `json:"manufacturer,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Medication.
 func (r Medication) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Medication"
 	type Alias Medication
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Medication.
@@ -65,112 +89,145 @@ func (r *Medication) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Medication(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_amount", "_batch", "_code", "_contained", "_extension", "_form", "_id", "_identifier", "_implicitRules", "_ingredient", "_language", "_manufacturer", "_meta", "_modifierExtension", "_status", "_text", "amount", "batch", "code", "contained", "extension", "form", "id", "identifier", "implicitRules", "ingredient", "language", "manufacturer", "meta", "modifierExtension", "resourceType", "status", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // MedicationBuilder provides a fluent API for constructing Medication resources.
 type MedicationBuilder struct {
-	resource Medication
+	resource  Medication
+	fieldsSet map[string]bool
 }
 
 // NewMedication creates a new MedicationBuilder for building a Medication resource.
 func NewMedication() *MedicationBuilder {
-	return &MedicationBuilder{resource: Medication{ResourceType: "Medication"}}
+	return &MedicationBuilder{resource: Medication{ResourceType: "Medication"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *MedicationBuilder) WithId(v dt.ID) *MedicationBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *MedicationBuilder) WithMeta(v dt.Meta) *MedicationBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *MedicationBuilder) WithImplicitRules(v dt.URI) *MedicationBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *MedicationBuilder) WithLanguage(v dt.Code) *MedicationBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *MedicationBuilder) WithText(v dt.Narrative) *MedicationBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *MedicationBuilder) WithContained(v json.RawMessage) *MedicationBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *MedicationBuilder) WithExtension(v dt.Extension) *MedicationBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *MedicationBuilder) WithModifierExtension(v dt.Extension) *MedicationBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *MedicationBuilder) WithIdentifier(v dt.Identifier) *MedicationBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *MedicationBuilder) WithStatus(v dt.Code) *MedicationBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAmount sets the amount field.
 func (b *MedicationBuilder) WithAmount(v dt.Ratio) *MedicationBuilder {
 	b.resource.Amount = &v
+	b.fieldsSet["amount"] = true
 	return b
 }
 
 // WithBatch sets the batch field.
 func (b *MedicationBuilder) WithBatch(v MedicationBatch) *MedicationBuilder {
 	b.resource.Batch = &v
+	b.fieldsSet["batch"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *MedicationBuilder) WithCode(v dt.CodeableConcept) *MedicationBuilder {
 	b.resource.Code = &v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithForm sets the form field.
 func (b *MedicationBuilder) WithForm(v dt.CodeableConcept) *MedicationBuilder {
 	b.resource.Form = &v
+	b.fieldsSet["form"] = true
 	return b
 }
 
 // WithIngredient adds an item to the ingredient field.
 func (b *MedicationBuilder) WithIngredient(v MedicationIngredient) *MedicationBuilder {
 	b.resource.Ingredient = append(b.resource.Ingredient, v)
+	b.fieldsSet["ingredient"] = true
 	return b
 }
 
 // WithManufacturer sets the manufacturer field.
 func (b *MedicationBuilder) WithManufacturer(v dt.Reference) *MedicationBuilder {
 	b.resource.Manufacturer = &v
+	b.fieldsSet["manufacturer"] = true
 	return b
 }
 
@@ -185,26 +242,36 @@ func (b *MedicationBuilder) Build() (*Medication, error) {
 type MedicationBatch struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// ExpirationDate When this specific batch of product will expire.
 	ExpirationDate *dt.DateTime `json:"expirationDate,omitempty"`
+	// ExpirationDateElement contains element extensions for expirationDate.
+	ExpirationDateElement *dt.Element `json:"_expirationDate,omitempty"`
 	// LotNumber The assigned lot number of a batch of the specified product.
 	LotNumber *string `json:"lotNumber,omitempty"`
+	// LotNumberElement contains element extensions for lotNumber.
+	LotNumberElement *dt.Element `json:"_lotNumber,omitempty"`
 }
 
 // MedicationIngredient This resource is primarily used for the identification and definition of a medication for the purposes of prescribing, dispensing, and administering a medication as well as for making statements ab...
 type MedicationIngredient struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// IsActive Indication of whether this ingredient affects the therapeutic action of the drug.
 	IsActive *bool `json:"isActive,omitempty"`
+	// IsActiveElement contains element extensions for isActive.
+	IsActiveElement *dt.Element `json:"_isActive,omitempty"`
 	// Item The actual ingredient - either a substance (simple ingredient) or another medication of a medication.
 	Item *MedicationIngredientItem `json:"-"` // polymorphic
 	// Strength Specifies how many (or how much) of the items there are in this Medication.  For example, 250 mg per tablet.  This is expressed as a ratio where the numerator is 250mg and the denominator is 1 tablet.

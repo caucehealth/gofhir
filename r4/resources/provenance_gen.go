@@ -18,12 +18,18 @@ type Provenance struct {
 	ResourceType string `json:"resourceType"` // Always "Provenance"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -42,25 +48,47 @@ type Provenance struct {
 	Location *dt.Reference `json:"location,omitempty"`
 	// OccurredDateTime The period during which the activity occurred.
 	OccurredDateTime *string `json:"occurredDateTime,omitempty"`
+	// OccurredDateTimeElement contains element extensions for occurredDateTime.
+	OccurredDateTimeElement *dt.Element `json:"_occurredDateTime,omitempty"`
 	// OccurredPeriod The period during which the activity occurred.
 	OccurredPeriod *dt.Period `json:"occurredPeriod,omitempty"`
 	// Policy Policy or plan the activity was defined by. Typically, a single activity may have multiple applicable policy documents, such as patient consent, guarantor funding, etc.
 	Policy []dt.URI `json:"policy,omitempty"`
+	// PolicyElement contains element extensions for each policy.
+	PolicyElement []dt.Element `json:"_policy,omitempty"`
 	// Reason The reason that the activity was taking place.
 	Reason []dt.CodeableConcept `json:"reason,omitempty"`
 	// Recorded The instant of time at which the activity was recorded.
 	Recorded *dt.Instant `json:"recorded,omitempty"`
+	// RecordedElement contains element extensions for recorded.
+	RecordedElement *dt.Element `json:"_recorded,omitempty"`
 	// Signature A digital signature on the target Reference(s). The signer should match a Provenance.agent. The purpose of the signature is indicated.
 	Signature []dt.Signature `json:"signature,omitempty"`
 	// Target The Reference(s) that were generated or updated by  the activity described in this resource. A provenance can point to more than one target if multiple resources were created/updated by the same ac...
 	Target []dt.Reference `json:"target,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Provenance.
 func (r Provenance) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Provenance"
 	type Alias Provenance
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Provenance.
@@ -71,130 +99,166 @@ func (r *Provenance) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Provenance(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_activity", "_agent", "_contained", "_entity", "_extension", "_id", "_implicitRules", "_language", "_location", "_meta", "_modifierExtension", "_occurredDateTime", "_occurredPeriod", "_policy", "_reason", "_recorded", "_signature", "_target", "_text", "activity", "agent", "contained", "entity", "extension", "id", "implicitRules", "language", "location", "meta", "modifierExtension", "occurredDateTime", "occurredPeriod", "policy", "reason", "recorded", "resourceType", "signature", "target", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ProvenanceBuilder provides a fluent API for constructing Provenance resources.
 type ProvenanceBuilder struct {
-	resource Provenance
+	resource  Provenance
+	fieldsSet map[string]bool
 }
 
 // NewProvenance creates a new ProvenanceBuilder for building a Provenance resource.
 func NewProvenance() *ProvenanceBuilder {
-	return &ProvenanceBuilder{resource: Provenance{ResourceType: "Provenance"}}
+	return &ProvenanceBuilder{resource: Provenance{ResourceType: "Provenance"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ProvenanceBuilder) WithId(v dt.ID) *ProvenanceBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ProvenanceBuilder) WithMeta(v dt.Meta) *ProvenanceBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ProvenanceBuilder) WithImplicitRules(v dt.URI) *ProvenanceBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ProvenanceBuilder) WithLanguage(v dt.Code) *ProvenanceBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ProvenanceBuilder) WithText(v dt.Narrative) *ProvenanceBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ProvenanceBuilder) WithContained(v json.RawMessage) *ProvenanceBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ProvenanceBuilder) WithExtension(v dt.Extension) *ProvenanceBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ProvenanceBuilder) WithModifierExtension(v dt.Extension) *ProvenanceBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithActivity sets the activity field.
 func (b *ProvenanceBuilder) WithActivity(v dt.CodeableConcept) *ProvenanceBuilder {
 	b.resource.Activity = &v
+	b.fieldsSet["activity"] = true
 	return b
 }
 
 // WithAgent adds an item to the agent field.
 func (b *ProvenanceBuilder) WithAgent(v ProvenanceAgent) *ProvenanceBuilder {
 	b.resource.Agent = append(b.resource.Agent, v)
+	b.fieldsSet["agent"] = true
 	return b
 }
 
 // WithEntity adds an item to the entity field.
 func (b *ProvenanceBuilder) WithEntity(v ProvenanceEntity) *ProvenanceBuilder {
 	b.resource.Entity = append(b.resource.Entity, v)
+	b.fieldsSet["entity"] = true
 	return b
 }
 
 // WithLocation sets the location field.
 func (b *ProvenanceBuilder) WithLocation(v dt.Reference) *ProvenanceBuilder {
 	b.resource.Location = &v
+	b.fieldsSet["location"] = true
 	return b
 }
 
 // WithOccurredDateTime sets the occurredDateTime field.
 func (b *ProvenanceBuilder) WithOccurredDateTime(v string) *ProvenanceBuilder {
 	b.resource.OccurredDateTime = &v
+	b.fieldsSet["occurredDateTime"] = true
 	return b
 }
 
 // WithOccurredPeriod sets the occurredPeriod field.
 func (b *ProvenanceBuilder) WithOccurredPeriod(v dt.Period) *ProvenanceBuilder {
 	b.resource.OccurredPeriod = &v
+	b.fieldsSet["occurredPeriod"] = true
 	return b
 }
 
 // WithPolicy adds an item to the policy field.
 func (b *ProvenanceBuilder) WithPolicy(v dt.URI) *ProvenanceBuilder {
 	b.resource.Policy = append(b.resource.Policy, v)
+	b.fieldsSet["policy"] = true
 	return b
 }
 
 // WithReason adds an item to the reason field.
 func (b *ProvenanceBuilder) WithReason(v dt.CodeableConcept) *ProvenanceBuilder {
 	b.resource.Reason = append(b.resource.Reason, v)
+	b.fieldsSet["reason"] = true
 	return b
 }
 
 // WithRecorded sets the recorded field.
 func (b *ProvenanceBuilder) WithRecorded(v dt.Instant) *ProvenanceBuilder {
 	b.resource.Recorded = &v
+	b.fieldsSet["recorded"] = true
 	return b
 }
 
 // WithSignature adds an item to the signature field.
 func (b *ProvenanceBuilder) WithSignature(v dt.Signature) *ProvenanceBuilder {
 	b.resource.Signature = append(b.resource.Signature, v)
+	b.fieldsSet["signature"] = true
 	return b
 }
 
 // WithTarget adds an item to the target field.
 func (b *ProvenanceBuilder) WithTarget(v dt.Reference) *ProvenanceBuilder {
 	b.resource.Target = append(b.resource.Target, v)
+	b.fieldsSet["target"] = true
 	return b
 }
 
@@ -202,10 +266,10 @@ func (b *ProvenanceBuilder) WithTarget(v dt.Reference) *ProvenanceBuilder {
 // field (cardinality 1..1) is not set.
 func (b *ProvenanceBuilder) Build() (*Provenance, error) {
 	var missing []string
-	if len(b.resource.Agent) == 0 {
+	if !b.fieldsSet["agent"] {
 		missing = append(missing, "agent")
 	}
-	if len(b.resource.Target) == 0 {
+	if !b.fieldsSet["target"] {
 		missing = append(missing, "target")
 	}
 	if len(missing) > 0 {
@@ -219,6 +283,8 @@ func (b *ProvenanceBuilder) Build() (*Provenance, error) {
 type ProvenanceAgent struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -237,6 +303,8 @@ type ProvenanceAgent struct {
 type ProvenanceEntity struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -245,6 +313,8 @@ type ProvenanceEntity struct {
 	Agent []ProvenanceAgent `json:"agent,omitempty"`
 	// Role How the entity was used during the activity.
 	Role *ProvenanceEntityRole `json:"role,omitempty"`
+	// RoleElement contains element extensions for role.
+	RoleElement *dt.Element `json:"_role,omitempty"`
 	// What Identity of the  Entity used. May be a logical or physical uri and maybe absolute or relative.
 	What dt.Reference `json:"what"`
 }

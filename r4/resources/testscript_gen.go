@@ -17,12 +17,18 @@ type TestScript struct {
 	ResourceType string `json:"resourceType"` // Always "TestScript"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,18 +41,28 @@ type TestScript struct {
 	Identifier *dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this test script. Enables tracking the life-cycle of the content.
 	Status *TestScriptStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the test script and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the test script.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date  (and optionally time) when the test script was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should chan...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description A free text natural language description of the test script from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Destination An abstract server used in operations within this test script in the destination element.
 	Destination []TestScriptDestination `json:"destination,omitempty"`
 	// Experimental A Boolean value to indicate that this test script is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// Fixture Fixture in the test script - by reference (uri). All fixtures are required for the test script to execute.
 	Fixture []TestScriptFixture `json:"fixture,omitempty"`
 	// Jurisdiction A legal or geographic region in which the test script is intended to be used.
@@ -55,14 +71,20 @@ type TestScript struct {
 	Metadata *TestScriptMetadata `json:"metadata,omitempty"`
 	// Name A natural language name identifying the test script. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Origin An abstract server used in operations within this test script in the origin element.
 	Origin []TestScriptOrigin `json:"origin,omitempty"`
 	// Profile Reference to the profile to be used for validation.
 	Profile []dt.Reference `json:"profile,omitempty"`
 	// Publisher The name of the organization or individual that published the test script.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Purpose Explanation of why this test script is needed and why it has been designed as it has.
 	Purpose *dt.Markdown `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for purpose.
+	PurposeElement *dt.Element `json:"_purpose,omitempty"`
 	// Setup A series of required setup operations before tests are executed.
 	Setup *TestScriptSetup `json:"setup,omitempty"`
 	// Teardown A series of operations required to clean up after all the tests are executed (successfully or otherwise).
@@ -71,21 +93,43 @@ type TestScript struct {
 	Test []TestScriptTest `json:"test,omitempty"`
 	// Title A short, descriptive, user-friendly title for the test script.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Url An absolute URI that is used to identify this test script when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally uniqu...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Variable Variable is set based either on element value in response body or on header field value in the response headers.
 	Variable []TestScriptVariable `json:"variable,omitempty"`
 	// Version The identifier that is used to identify this version of the test script when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the test script au...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for TestScript.
 func (r TestScript) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "TestScript"
 	type Alias TestScript
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for TestScript.
@@ -96,208 +140,257 @@ func (r *TestScript) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = TestScript(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contact", "_contained", "_copyright", "_date", "_description", "_destination", "_experimental", "_extension", "_fixture", "_id", "_identifier", "_implicitRules", "_jurisdiction", "_language", "_meta", "_metadata", "_modifierExtension", "_name", "_origin", "_profile", "_publisher", "_purpose", "_setup", "_status", "_teardown", "_test", "_text", "_title", "_url", "_useContext", "_variable", "_version", "contact", "contained", "copyright", "date", "description", "destination", "experimental", "extension", "fixture", "id", "identifier", "implicitRules", "jurisdiction", "language", "meta", "metadata", "modifierExtension", "name", "origin", "profile", "publisher", "purpose", "resourceType", "setup", "status", "teardown", "test", "text", "title", "url", "useContext", "variable", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // TestScriptBuilder provides a fluent API for constructing TestScript resources.
 type TestScriptBuilder struct {
-	resource TestScript
+	resource  TestScript
+	fieldsSet map[string]bool
 }
 
 // NewTestScript creates a new TestScriptBuilder for building a TestScript resource.
 func NewTestScript() *TestScriptBuilder {
-	return &TestScriptBuilder{resource: TestScript{ResourceType: "TestScript"}}
+	return &TestScriptBuilder{resource: TestScript{ResourceType: "TestScript"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *TestScriptBuilder) WithId(v dt.ID) *TestScriptBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *TestScriptBuilder) WithMeta(v dt.Meta) *TestScriptBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *TestScriptBuilder) WithImplicitRules(v dt.URI) *TestScriptBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *TestScriptBuilder) WithLanguage(v dt.Code) *TestScriptBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *TestScriptBuilder) WithText(v dt.Narrative) *TestScriptBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *TestScriptBuilder) WithContained(v json.RawMessage) *TestScriptBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *TestScriptBuilder) WithExtension(v dt.Extension) *TestScriptBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *TestScriptBuilder) WithModifierExtension(v dt.Extension) *TestScriptBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier sets the identifier field.
 func (b *TestScriptBuilder) WithIdentifier(v dt.Identifier) *TestScriptBuilder {
 	b.resource.Identifier = &v
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *TestScriptBuilder) WithStatus(v TestScriptStatus) *TestScriptBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *TestScriptBuilder) WithContact(v dt.ContactDetail) *TestScriptBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *TestScriptBuilder) WithCopyright(v dt.Markdown) *TestScriptBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *TestScriptBuilder) WithDate(v dt.DateTime) *TestScriptBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *TestScriptBuilder) WithDescription(v dt.Markdown) *TestScriptBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithDestination adds an item to the destination field.
 func (b *TestScriptBuilder) WithDestination(v TestScriptDestination) *TestScriptBuilder {
 	b.resource.Destination = append(b.resource.Destination, v)
+	b.fieldsSet["destination"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *TestScriptBuilder) WithExperimental(v bool) *TestScriptBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithFixture adds an item to the fixture field.
 func (b *TestScriptBuilder) WithFixture(v TestScriptFixture) *TestScriptBuilder {
 	b.resource.Fixture = append(b.resource.Fixture, v)
+	b.fieldsSet["fixture"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *TestScriptBuilder) WithJurisdiction(v dt.CodeableConcept) *TestScriptBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithMetadata sets the metadata field.
 func (b *TestScriptBuilder) WithMetadata(v TestScriptMetadata) *TestScriptBuilder {
 	b.resource.Metadata = &v
+	b.fieldsSet["metadata"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *TestScriptBuilder) WithName(v string) *TestScriptBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithOrigin adds an item to the origin field.
 func (b *TestScriptBuilder) WithOrigin(v TestScriptOrigin) *TestScriptBuilder {
 	b.resource.Origin = append(b.resource.Origin, v)
+	b.fieldsSet["origin"] = true
 	return b
 }
 
 // WithProfile adds an item to the profile field.
 func (b *TestScriptBuilder) WithProfile(v dt.Reference) *TestScriptBuilder {
 	b.resource.Profile = append(b.resource.Profile, v)
+	b.fieldsSet["profile"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *TestScriptBuilder) WithPublisher(v string) *TestScriptBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithPurpose sets the purpose field.
 func (b *TestScriptBuilder) WithPurpose(v dt.Markdown) *TestScriptBuilder {
 	b.resource.Purpose = &v
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
 // WithSetup sets the setup field.
 func (b *TestScriptBuilder) WithSetup(v TestScriptSetup) *TestScriptBuilder {
 	b.resource.Setup = &v
+	b.fieldsSet["setup"] = true
 	return b
 }
 
 // WithTeardown sets the teardown field.
 func (b *TestScriptBuilder) WithTeardown(v TestScriptTeardown) *TestScriptBuilder {
 	b.resource.Teardown = &v
+	b.fieldsSet["teardown"] = true
 	return b
 }
 
 // WithTest adds an item to the test field.
 func (b *TestScriptBuilder) WithTest(v TestScriptTest) *TestScriptBuilder {
 	b.resource.Test = append(b.resource.Test, v)
+	b.fieldsSet["test"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *TestScriptBuilder) WithTitle(v string) *TestScriptBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *TestScriptBuilder) WithUrl(v dt.URI) *TestScriptBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *TestScriptBuilder) WithUseContext(v dt.UsageContext) *TestScriptBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVariable adds an item to the variable field.
 func (b *TestScriptBuilder) WithVariable(v TestScriptVariable) *TestScriptBuilder {
 	b.resource.Variable = append(b.resource.Variable, v)
+	b.fieldsSet["variable"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *TestScriptBuilder) WithVersion(v string) *TestScriptBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -312,6 +405,8 @@ func (b *TestScriptBuilder) Build() (*TestScript, error) {
 type TestScriptAction struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -326,6 +421,8 @@ type TestScriptAction struct {
 type TestScriptAction1 struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -340,6 +437,8 @@ type TestScriptAction1 struct {
 type TestScriptAction2 struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -352,90 +451,156 @@ type TestScriptAction2 struct {
 type TestScriptAssert struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// CompareToSourceExpression The FHIRPath expression to evaluate against the source fixture. When compareToSourceId is defined, either compareToSourceExpression or compareToSourcePath must be defined, but not both.
 	CompareToSourceExpression *string `json:"compareToSourceExpression,omitempty"`
+	// CompareToSourceExpressionElement contains element extensions for compareToSourceExpression.
+	CompareToSourceExpressionElement *dt.Element `json:"_compareToSourceExpression,omitempty"`
 	// CompareToSourceId Id of the source fixture used as the contents to be evaluated by either the "source/expression" or "sourceId/path" definition.
 	CompareToSourceId *string `json:"compareToSourceId,omitempty"`
+	// CompareToSourceIdElement contains element extensions for compareToSourceId.
+	CompareToSourceIdElement *dt.Element `json:"_compareToSourceId,omitempty"`
 	// CompareToSourcePath XPath or JSONPath expression to evaluate against the source fixture. When compareToSourceId is defined, either compareToSourceExpression or compareToSourcePath must be defined, but not both.
 	CompareToSourcePath *string `json:"compareToSourcePath,omitempty"`
+	// CompareToSourcePathElement contains element extensions for compareToSourcePath.
+	CompareToSourcePathElement *dt.Element `json:"_compareToSourcePath,omitempty"`
 	// ContentType The mime-type contents to compare against the request or response message 'Content-Type' header.
 	ContentType *dt.Code `json:"contentType,omitempty"`
+	// ContentTypeElement contains element extensions for contentType.
+	ContentTypeElement *dt.Element `json:"_contentType,omitempty"`
 	// Description The description would be used by test engines for tracking and reporting purposes.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Direction The direction to use for the assertion.
 	Direction *TestScriptAssertDirection `json:"direction,omitempty"`
+	// DirectionElement contains element extensions for direction.
+	DirectionElement *dt.Element `json:"_direction,omitempty"`
 	// Expression The FHIRPath expression to be evaluated against the request or response message contents - HTTP headers and payload.
 	Expression *string `json:"expression,omitempty"`
+	// ExpressionElement contains element extensions for expression.
+	ExpressionElement *dt.Element `json:"_expression,omitempty"`
 	// HeaderField The HTTP header field name e.g. 'Location'.
 	HeaderField *string `json:"headerField,omitempty"`
+	// HeaderFieldElement contains element extensions for headerField.
+	HeaderFieldElement *dt.Element `json:"_headerField,omitempty"`
 	// Label The label would be used for tracking/logging purposes by test engines.
 	Label *string `json:"label,omitempty"`
+	// LabelElement contains element extensions for label.
+	LabelElement *dt.Element `json:"_label,omitempty"`
 	// MinimumId The ID of a fixture.  Asserts that the response contains at a minimum the fixture specified by minimumId.
 	MinimumId *string `json:"minimumId,omitempty"`
+	// MinimumIdElement contains element extensions for minimumId.
+	MinimumIdElement *dt.Element `json:"_minimumId,omitempty"`
 	// NavigationLinks Whether or not the test execution performs validation on the bundle navigation links.
 	NavigationLinks *bool `json:"navigationLinks,omitempty"`
+	// NavigationLinksElement contains element extensions for navigationLinks.
+	NavigationLinksElement *dt.Element `json:"_navigationLinks,omitempty"`
 	// Operator The operator type defines the conditional behavior of the assert. If not defined, the default is equals.
 	Operator *TestScriptAssertOperator `json:"operator,omitempty"`
+	// OperatorElement contains element extensions for operator.
+	OperatorElement *dt.Element `json:"_operator,omitempty"`
 	// Path The XPath or JSONPath expression to be evaluated against the fixture representing the response received from server.
 	Path *string `json:"path,omitempty"`
+	// PathElement contains element extensions for path.
+	PathElement *dt.Element `json:"_path,omitempty"`
 	// RequestMethod The request method or HTTP operation code to compare against that used by the client system under test.
 	RequestMethod *TestScriptAssertRequestMethod `json:"requestMethod,omitempty"`
+	// RequestMethodElement contains element extensions for requestMethod.
+	RequestMethodElement *dt.Element `json:"_requestMethod,omitempty"`
 	// RequestURL The value to use in a comparison against the request URL path string.
 	RequestURL *string `json:"requestURL,omitempty"`
+	// RequestURLElement contains element extensions for requestURL.
+	RequestURLElement *dt.Element `json:"_requestURL,omitempty"`
 	// Resource The type of the resource.  See http://build.fhir.org/resourcelist.html.
 	Resource *dt.Code `json:"resource,omitempty"`
+	// ResourceElement contains element extensions for resource.
+	ResourceElement *dt.Element `json:"_resource,omitempty"`
 	// Response okay | created | noContent | notModified | bad | forbidden | notFound | methodNotAllowed | conflict | gone | preconditionFailed | unprocessable.
 	Response *TestScriptAssertResponse `json:"response,omitempty"`
+	// ResponseElement contains element extensions for response.
+	ResponseElement *dt.Element `json:"_response,omitempty"`
 	// ResponseCode The value of the HTTP response code to be tested.
 	ResponseCode *string `json:"responseCode,omitempty"`
+	// ResponseCodeElement contains element extensions for responseCode.
+	ResponseCodeElement *dt.Element `json:"_responseCode,omitempty"`
 	// SourceId Fixture to evaluate the XPath/JSONPath expression or the headerField  against.
 	SourceId *dt.ID `json:"sourceId,omitempty"`
+	// SourceIdElement contains element extensions for sourceId.
+	SourceIdElement *dt.Element `json:"_sourceId,omitempty"`
 	// ValidateProfileId The ID of the Profile to validate against.
 	ValidateProfileId *dt.ID `json:"validateProfileId,omitempty"`
+	// ValidateProfileIdElement contains element extensions for validateProfileId.
+	ValidateProfileIdElement *dt.Element `json:"_validateProfileId,omitempty"`
 	// Value The value to compare to.
 	Value *string `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *dt.Element `json:"_value,omitempty"`
 	// WarningOnly Whether or not the test execution will produce a warning only on error for this assert.
 	WarningOnly *bool `json:"warningOnly,omitempty"`
+	// WarningOnlyElement contains element extensions for warningOnly.
+	WarningOnlyElement *dt.Element `json:"_warningOnly,omitempty"`
 }
 
 // TestScriptCapability A structured set of tests against a FHIR server or client implementation to determine compliance against the FHIR specification.
 type TestScriptCapability struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Capabilities Minimum capabilities required of server for test script to execute successfully.   If server does not meet at a minimum the referenced capability statement, then all tests in this script are skipped.
 	Capabilities dt.Canonical `json:"capabilities"`
+	// CapabilitiesElement contains element extensions for capabilities.
+	CapabilitiesElement *dt.Element `json:"_capabilities,omitempty"`
 	// Description Description of the capabilities that this test script is requiring the server to support.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Destination Which server these requirements apply to.
 	Destination *int32 `json:"destination,omitempty"`
+	// DestinationElement contains element extensions for destination.
+	DestinationElement *dt.Element `json:"_destination,omitempty"`
 	// Link Links to the FHIR specification that describes this interaction and the resources involved in more detail.
 	Link []dt.URI `json:"link,omitempty"`
+	// LinkElement contains element extensions for each link.
+	LinkElement []dt.Element `json:"_link,omitempty"`
 	// Origin Which origin server these requirements apply to.
 	Origin []int32 `json:"origin,omitempty"`
+	// OriginElement contains element extensions for each origin.
+	OriginElement []dt.Element `json:"_origin,omitempty"`
 	// Required Whether or not the test execution will require the given capabilities of the server in order for this test script to execute.
 	Required *bool `json:"required,omitempty"`
+	// RequiredElement contains element extensions for required.
+	RequiredElement *dt.Element `json:"_required,omitempty"`
 	// Validated Whether or not the test execution will validate the given capabilities of the server in order for this test script to execute.
 	Validated *bool `json:"validated,omitempty"`
+	// ValidatedElement contains element extensions for validated.
+	ValidatedElement *dt.Element `json:"_validated,omitempty"`
 }
 
 // TestScriptDestination A structured set of tests against a FHIR server or client implementation to determine compliance against the FHIR specification.
 type TestScriptDestination struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Index Abstract name given to a destination server in this test script.  The name is provided as a number starting at 1.
 	Index *int32 `json:"index,omitempty"`
+	// IndexElement contains element extensions for index.
+	IndexElement *dt.Element `json:"_index,omitempty"`
 	// Profile The type of destination profile the test system supports.
 	Profile dt.Coding `json:"profile"`
 }
@@ -444,14 +609,20 @@ type TestScriptDestination struct {
 type TestScriptFixture struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Autocreate Whether or not to implicitly create the fixture during setup. If true, the fixture is automatically created on each server being tested during setup, therefore no create operation is required for t...
 	Autocreate *bool `json:"autocreate,omitempty"`
+	// AutocreateElement contains element extensions for autocreate.
+	AutocreateElement *dt.Element `json:"_autocreate,omitempty"`
 	// Autodelete Whether or not to implicitly delete the fixture during teardown. If true, the fixture is automatically deleted on each server being tested during teardown, therefore no delete operation is required...
 	Autodelete *bool `json:"autodelete,omitempty"`
+	// AutodeleteElement contains element extensions for autodelete.
+	AutodeleteElement *dt.Element `json:"_autodelete,omitempty"`
 	// Resource Reference to the resource (containing the contents of the resource needed for operations).
 	Resource *dt.Reference `json:"resource,omitempty"`
 }
@@ -460,20 +631,28 @@ type TestScriptFixture struct {
 type TestScriptLink struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description Short description of the link.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Url URL to a particular requirement or feature within the FHIR specification.
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 }
 
 // TestScriptMetadata A structured set of tests against a FHIR server or client implementation to determine compliance against the FHIR specification.
 type TestScriptMetadata struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -488,56 +667,92 @@ type TestScriptMetadata struct {
 type TestScriptOperation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Accept The mime-type to use for RESTful operation in the 'Accept' header.
 	Accept *dt.Code `json:"accept,omitempty"`
+	// AcceptElement contains element extensions for accept.
+	AcceptElement *dt.Element `json:"_accept,omitempty"`
 	// ContentType The mime-type to use for RESTful operation in the 'Content-Type' header.
 	ContentType *dt.Code `json:"contentType,omitempty"`
+	// ContentTypeElement contains element extensions for contentType.
+	ContentTypeElement *dt.Element `json:"_contentType,omitempty"`
 	// Description The description would be used by test engines for tracking and reporting purposes.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Destination The server where the request message is destined for.  Must be one of the server numbers listed in TestScript.destination section.
 	Destination *int32 `json:"destination,omitempty"`
+	// DestinationElement contains element extensions for destination.
+	DestinationElement *dt.Element `json:"_destination,omitempty"`
 	// EncodeRequestUrl Whether or not to implicitly send the request url in encoded format. The default is true to match the standard RESTful client behavior. Set to false when communicating with a server that does not s...
 	EncodeRequestUrl *bool `json:"encodeRequestUrl,omitempty"`
+	// EncodeRequestUrlElement contains element extensions for encodeRequestUrl.
+	EncodeRequestUrlElement *dt.Element `json:"_encodeRequestUrl,omitempty"`
 	// Label The label would be used for tracking/logging purposes by test engines.
 	Label *string `json:"label,omitempty"`
+	// LabelElement contains element extensions for label.
+	LabelElement *dt.Element `json:"_label,omitempty"`
 	// Method The HTTP method the test engine MUST use for this operation regardless of any other operation details.
 	Method *TestScriptOperationMethod `json:"method,omitempty"`
+	// MethodElement contains element extensions for method.
+	MethodElement *dt.Element `json:"_method,omitempty"`
 	// Origin The server where the request message originates from.  Must be one of the server numbers listed in TestScript.origin section.
 	Origin *int32 `json:"origin,omitempty"`
+	// OriginElement contains element extensions for origin.
+	OriginElement *dt.Element `json:"_origin,omitempty"`
 	// Params Path plus parameters after [type].  Used to set parts of the request URL explicitly.
 	Params *string `json:"params,omitempty"`
+	// ParamsElement contains element extensions for params.
+	ParamsElement *dt.Element `json:"_params,omitempty"`
 	// RequestHeader Header elements would be used to set HTTP headers.
 	RequestHeader []TestScriptRequestHeader `json:"requestHeader,omitempty"`
 	// RequestId The fixture id (maybe new) to map to the request.
 	RequestId *dt.ID `json:"requestId,omitempty"`
+	// RequestIdElement contains element extensions for requestId.
+	RequestIdElement *dt.Element `json:"_requestId,omitempty"`
 	// Resource The type of the resource.  See http://build.fhir.org/resourcelist.html.
 	Resource *dt.Code `json:"resource,omitempty"`
+	// ResourceElement contains element extensions for resource.
+	ResourceElement *dt.Element `json:"_resource,omitempty"`
 	// ResponseId The fixture id (maybe new) to map to the response.
 	ResponseId *dt.ID `json:"responseId,omitempty"`
+	// ResponseIdElement contains element extensions for responseId.
+	ResponseIdElement *dt.Element `json:"_responseId,omitempty"`
 	// SourceId The id of the fixture used as the body of a PUT or POST request.
 	SourceId *dt.ID `json:"sourceId,omitempty"`
+	// SourceIdElement contains element extensions for sourceId.
+	SourceIdElement *dt.Element `json:"_sourceId,omitempty"`
 	// TargetId Id of fixture used for extracting the [id],  [type], and [vid] for GET requests.
 	TargetId *dt.ID `json:"targetId,omitempty"`
+	// TargetIdElement contains element extensions for targetId.
+	TargetIdElement *dt.Element `json:"_targetId,omitempty"`
 	// Type Server interaction or operation type.
 	Type *dt.Coding `json:"type,omitempty"`
 	// Url Complete request URL.
 	Url *string `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 }
 
 // TestScriptOrigin A structured set of tests against a FHIR server or client implementation to determine compliance against the FHIR specification.
 type TestScriptOrigin struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Index Abstract name given to an origin server in this test script.  The name is provided as a number starting at 1.
 	Index *int32 `json:"index,omitempty"`
+	// IndexElement contains element extensions for index.
+	IndexElement *dt.Element `json:"_index,omitempty"`
 	// Profile The type of origin profile the test system supports.
 	Profile dt.Coding `json:"profile"`
 }
@@ -546,20 +761,28 @@ type TestScriptOrigin struct {
 type TestScriptRequestHeader struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Field The HTTP header field e.g. "Accept".
 	Field *string `json:"field,omitempty"`
+	// FieldElement contains element extensions for field.
+	FieldElement *dt.Element `json:"_field,omitempty"`
 	// Value The value of the header e.g. "application/fhir+xml".
 	Value *string `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *dt.Element `json:"_value,omitempty"`
 }
 
 // TestScriptSetup A structured set of tests against a FHIR server or client implementation to determine compliance against the FHIR specification.
 type TestScriptSetup struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -572,6 +795,8 @@ type TestScriptSetup struct {
 type TestScriptTeardown struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -584,6 +809,8 @@ type TestScriptTeardown struct {
 type TestScriptTest struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -592,32 +819,54 @@ type TestScriptTest struct {
 	Action []TestScriptAction1 `json:"action,omitempty"`
 	// Description A short description of the test used by test engines for tracking and reporting purposes.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Name The name of this test used for tracking/logging purposes by test engines.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 }
 
 // TestScriptVariable A structured set of tests against a FHIR server or client implementation to determine compliance against the FHIR specification.
 type TestScriptVariable struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// DefaultValue A default, hard-coded, or user-defined value for this variable.
 	DefaultValue *string `json:"defaultValue,omitempty"`
+	// DefaultValueElement contains element extensions for defaultValue.
+	DefaultValueElement *dt.Element `json:"_defaultValue,omitempty"`
 	// Description A free text natural language description of the variable and its purpose.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Expression The FHIRPath expression to evaluate against the fixture body. When variables are defined, only one of either expression, headerField or path must be specified.
 	Expression *string `json:"expression,omitempty"`
+	// ExpressionElement contains element extensions for expression.
+	ExpressionElement *dt.Element `json:"_expression,omitempty"`
 	// HeaderField Will be used to grab the HTTP header field value from the headers that sourceId is pointing to.
 	HeaderField *string `json:"headerField,omitempty"`
+	// HeaderFieldElement contains element extensions for headerField.
+	HeaderFieldElement *dt.Element `json:"_headerField,omitempty"`
 	// Hint Displayable text string with hint help information to the user when entering a default value.
 	Hint *string `json:"hint,omitempty"`
+	// HintElement contains element extensions for hint.
+	HintElement *dt.Element `json:"_hint,omitempty"`
 	// Name Descriptive name for this variable.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Path XPath or JSONPath to evaluate against the fixture body.  When variables are defined, only one of either expression, headerField or path must be specified.
 	Path *string `json:"path,omitempty"`
+	// PathElement contains element extensions for path.
+	PathElement *dt.Element `json:"_path,omitempty"`
 	// SourceId Fixture to evaluate the XPath/JSONPath expression or the headerField  against within this variable.
 	SourceId *dt.ID `json:"sourceId,omitempty"`
+	// SourceIdElement contains element extensions for sourceId.
+	SourceIdElement *dt.Element `json:"_sourceId,omitempty"`
 }

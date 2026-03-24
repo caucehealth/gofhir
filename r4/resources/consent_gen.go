@@ -18,12 +18,18 @@ type Consent struct {
 	ResourceType string `json:"resourceType"` // Always "Consent"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,10 +42,14 @@ type Consent struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Indicates the current state of this consent.
 	Status *ConsentStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Category A classification of the type of consents found in the statement. This element supports indexing and retrieval of consent statements.
 	Category []dt.CodeableConcept `json:"category,omitempty"`
 	// DateTime When this  Consent was issued / created / indexed.
 	DateTime *dt.DateTime `json:"dateTime,omitempty"`
+	// DateTimeElement contains element extensions for dateTime.
+	DateTimeElement *dt.Element `json:"_dateTime,omitempty"`
 	// Organization The organization that manages the consent, and the framework within which it is executed.
 	Organization []dt.Reference `json:"organization,omitempty"`
 	// Patient The patient/healthcare consumer to whom this consent applies.
@@ -60,13 +70,29 @@ type Consent struct {
 	SourceReference *dt.Reference `json:"sourceReference,omitempty"`
 	// Verification Whether a treatment instruction (e.g. artificial respiration yes or no) was verified with the patient, his/her family or another authorized person.
 	Verification []ConsentVerification `json:"verification,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Consent.
 func (r Consent) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Consent"
 	type Alias Consent
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Consent.
@@ -77,148 +103,187 @@ func (r *Consent) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Consent(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_category", "_contained", "_dateTime", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_modifierExtension", "_organization", "_patient", "_performer", "_policy", "_policyRule", "_provision", "_scope", "_sourceAttachment", "_sourceReference", "_status", "_text", "_verification", "category", "contained", "dateTime", "extension", "id", "identifier", "implicitRules", "language", "meta", "modifierExtension", "organization", "patient", "performer", "policy", "policyRule", "provision", "resourceType", "scope", "sourceAttachment", "sourceReference", "status", "text", "verification":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ConsentBuilder provides a fluent API for constructing Consent resources.
 type ConsentBuilder struct {
-	resource Consent
+	resource  Consent
+	fieldsSet map[string]bool
 }
 
 // NewConsent creates a new ConsentBuilder for building a Consent resource.
 func NewConsent() *ConsentBuilder {
-	return &ConsentBuilder{resource: Consent{ResourceType: "Consent"}}
+	return &ConsentBuilder{resource: Consent{ResourceType: "Consent"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ConsentBuilder) WithId(v dt.ID) *ConsentBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ConsentBuilder) WithMeta(v dt.Meta) *ConsentBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ConsentBuilder) WithImplicitRules(v dt.URI) *ConsentBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ConsentBuilder) WithLanguage(v dt.Code) *ConsentBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ConsentBuilder) WithText(v dt.Narrative) *ConsentBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ConsentBuilder) WithContained(v json.RawMessage) *ConsentBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ConsentBuilder) WithExtension(v dt.Extension) *ConsentBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ConsentBuilder) WithModifierExtension(v dt.Extension) *ConsentBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ConsentBuilder) WithIdentifier(v dt.Identifier) *ConsentBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ConsentBuilder) WithStatus(v ConsentStatus) *ConsentBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithCategory adds an item to the category field.
 func (b *ConsentBuilder) WithCategory(v dt.CodeableConcept) *ConsentBuilder {
 	b.resource.Category = append(b.resource.Category, v)
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithDateTime sets the dateTime field.
 func (b *ConsentBuilder) WithDateTime(v dt.DateTime) *ConsentBuilder {
 	b.resource.DateTime = &v
+	b.fieldsSet["dateTime"] = true
 	return b
 }
 
 // WithOrganization adds an item to the organization field.
 func (b *ConsentBuilder) WithOrganization(v dt.Reference) *ConsentBuilder {
 	b.resource.Organization = append(b.resource.Organization, v)
+	b.fieldsSet["organization"] = true
 	return b
 }
 
 // WithPatient sets the patient field.
 func (b *ConsentBuilder) WithPatient(v dt.Reference) *ConsentBuilder {
 	b.resource.Patient = &v
+	b.fieldsSet["patient"] = true
 	return b
 }
 
 // WithPerformer adds an item to the performer field.
 func (b *ConsentBuilder) WithPerformer(v dt.Reference) *ConsentBuilder {
 	b.resource.Performer = append(b.resource.Performer, v)
+	b.fieldsSet["performer"] = true
 	return b
 }
 
 // WithPolicy adds an item to the policy field.
 func (b *ConsentBuilder) WithPolicy(v ConsentPolicy) *ConsentBuilder {
 	b.resource.Policy = append(b.resource.Policy, v)
+	b.fieldsSet["policy"] = true
 	return b
 }
 
 // WithPolicyRule sets the policyRule field.
 func (b *ConsentBuilder) WithPolicyRule(v dt.CodeableConcept) *ConsentBuilder {
 	b.resource.PolicyRule = &v
+	b.fieldsSet["policyRule"] = true
 	return b
 }
 
 // WithProvision sets the provision field.
 func (b *ConsentBuilder) WithProvision(v ConsentProvision) *ConsentBuilder {
 	b.resource.Provision = &v
+	b.fieldsSet["provision"] = true
 	return b
 }
 
 // WithScope sets the scope field.
 func (b *ConsentBuilder) WithScope(v dt.CodeableConcept) *ConsentBuilder {
 	b.resource.Scope = v
+	b.fieldsSet["scope"] = true
 	return b
 }
 
 // WithSourceAttachment sets the sourceAttachment field.
 func (b *ConsentBuilder) WithSourceAttachment(v dt.Attachment) *ConsentBuilder {
 	b.resource.SourceAttachment = &v
+	b.fieldsSet["sourceAttachment"] = true
 	return b
 }
 
 // WithSourceReference sets the sourceReference field.
 func (b *ConsentBuilder) WithSourceReference(v dt.Reference) *ConsentBuilder {
 	b.resource.SourceReference = &v
+	b.fieldsSet["sourceReference"] = true
 	return b
 }
 
 // WithVerification adds an item to the verification field.
 func (b *ConsentBuilder) WithVerification(v ConsentVerification) *ConsentBuilder {
 	b.resource.Verification = append(b.resource.Verification, v)
+	b.fieldsSet["verification"] = true
 	return b
 }
 
@@ -226,8 +291,11 @@ func (b *ConsentBuilder) WithVerification(v ConsentVerification) *ConsentBuilder
 // field (cardinality 1..1) is not set.
 func (b *ConsentBuilder) Build() (*Consent, error) {
 	var missing []string
-	if len(b.resource.Category) == 0 {
+	if !b.fieldsSet["category"] {
 		missing = append(missing, "category")
+	}
+	if !b.fieldsSet["scope"] {
+		missing = append(missing, "scope")
 	}
 	if len(missing) > 0 {
 		return nil, fmt.Errorf("Consent: required fields missing: %v", missing)
@@ -240,6 +308,8 @@ func (b *ConsentBuilder) Build() (*Consent, error) {
 type ConsentActor struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -254,12 +324,16 @@ type ConsentActor struct {
 type ConsentData struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Meaning How the resource reference is interpreted when testing consent restrictions.
 	Meaning *ConsentDataMeaning `json:"meaning,omitempty"`
+	// MeaningElement contains element extensions for meaning.
+	MeaningElement *dt.Element `json:"_meaning,omitempty"`
 	// Reference A reference to a specific resource that defines which resources are covered by this consent.
 	Reference dt.Reference `json:"reference"`
 }
@@ -268,20 +342,28 @@ type ConsentData struct {
 type ConsentPolicy struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Authority Entity or Organization having regulatory jurisdiction or accountability for  enforcing policies pertaining to Consent Directives.
 	Authority *dt.URI `json:"authority,omitempty"`
+	// AuthorityElement contains element extensions for authority.
+	AuthorityElement *dt.Element `json:"_authority,omitempty"`
 	// Uri The references to the policies that are included in this consent scope. Policies may be organizational, but are often defined jurisdictionally, or in law.
 	Uri *dt.URI `json:"uri,omitempty"`
+	// UriElement contains element extensions for uri.
+	UriElement *dt.Element `json:"_uri,omitempty"`
 }
 
 // ConsentProvision A record of a healthcare consumer’s  choices, which permits or denies identified recipient(s) or recipient role(s) to perform one or more actions within a given policy context, for specific purpo...
 type ConsentProvision struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -308,20 +390,28 @@ type ConsentProvision struct {
 	SecurityLabel []dt.Coding `json:"securityLabel,omitempty"`
 	// Type Action  to take - permit or deny - when the rule conditions are met.  Not permitted in root rule, required in all nested rules.
 	Type *ConsentProvisionType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }
 
 // ConsentVerification A record of a healthcare consumer’s  choices, which permits or denies identified recipient(s) or recipient role(s) to perform one or more actions within a given policy context, for specific purpo...
 type ConsentVerification struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// VerificationDate Date verification was collected.
 	VerificationDate *dt.DateTime `json:"verificationDate,omitempty"`
+	// VerificationDateElement contains element extensions for verificationDate.
+	VerificationDateElement *dt.Element `json:"_verificationDate,omitempty"`
 	// Verified Has the instruction been verified.
 	Verified *bool `json:"verified,omitempty"`
+	// VerifiedElement contains element extensions for verified.
+	VerifiedElement *dt.Element `json:"_verified,omitempty"`
 	// VerifiedWith Who verified the instruction (Patient, Relative or other Authorized Person).
 	VerifiedWith *dt.Reference `json:"verifiedWith,omitempty"`
 }

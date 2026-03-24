@@ -17,12 +17,18 @@ type SubstanceNucleicAcid struct {
 	ResourceType string `json:"resourceType"` // Always "SubstanceNucleicAcid"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -33,21 +39,41 @@ type SubstanceNucleicAcid struct {
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// AreaOfHybridisation The area of hybridisation shall be described if applicable for double stranded RNA or DNA. The number associated with the subunit followed by the number associated to the residue shall be specified...
 	AreaOfHybridisation *string `json:"areaOfHybridisation,omitempty"`
+	// AreaOfHybridisationElement contains element extensions for areaOfHybridisation.
+	AreaOfHybridisationElement *dt.Element `json:"_areaOfHybridisation,omitempty"`
 	// NumberOfSubunits The number of linear sequences of nucleotides linked through phosphodiester bonds shall be described. Subunits would be strands of nucleic acids that are tightly associated typically through Watson...
 	NumberOfSubunits *int32 `json:"numberOfSubunits,omitempty"`
+	// NumberOfSubunitsElement contains element extensions for numberOfSubunits.
+	NumberOfSubunitsElement *dt.Element `json:"_numberOfSubunits,omitempty"`
 	// OligoNucleotideType (TBC).
 	OligoNucleotideType *dt.CodeableConcept `json:"oligoNucleotideType,omitempty"`
 	// SequenceType The type of the sequence shall be specified based on a controlled vocabulary.
 	SequenceType *dt.CodeableConcept `json:"sequenceType,omitempty"`
 	// Subunit Subunits are listed in order of decreasing length; sequences of the same length will be ordered by molecular weight; subunits that have identical sequences will be repeated multiple times.
 	Subunit []SubstanceNucleicAcidSubunit `json:"subunit,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for SubstanceNucleicAcid.
 func (r SubstanceNucleicAcid) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "SubstanceNucleicAcid"
 	type Alias SubstanceNucleicAcid
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for SubstanceNucleicAcid.
@@ -58,94 +84,124 @@ func (r *SubstanceNucleicAcid) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = SubstanceNucleicAcid(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_areaOfHybridisation", "_contained", "_extension", "_id", "_implicitRules", "_language", "_meta", "_modifierExtension", "_numberOfSubunits", "_oligoNucleotideType", "_sequenceType", "_subunit", "_text", "areaOfHybridisation", "contained", "extension", "id", "implicitRules", "language", "meta", "modifierExtension", "numberOfSubunits", "oligoNucleotideType", "resourceType", "sequenceType", "subunit", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // SubstanceNucleicAcidBuilder provides a fluent API for constructing SubstanceNucleicAcid resources.
 type SubstanceNucleicAcidBuilder struct {
-	resource SubstanceNucleicAcid
+	resource  SubstanceNucleicAcid
+	fieldsSet map[string]bool
 }
 
 // NewSubstanceNucleicAcid creates a new SubstanceNucleicAcidBuilder for building a SubstanceNucleicAcid resource.
 func NewSubstanceNucleicAcid() *SubstanceNucleicAcidBuilder {
-	return &SubstanceNucleicAcidBuilder{resource: SubstanceNucleicAcid{ResourceType: "SubstanceNucleicAcid"}}
+	return &SubstanceNucleicAcidBuilder{resource: SubstanceNucleicAcid{ResourceType: "SubstanceNucleicAcid"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *SubstanceNucleicAcidBuilder) WithId(v dt.ID) *SubstanceNucleicAcidBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *SubstanceNucleicAcidBuilder) WithMeta(v dt.Meta) *SubstanceNucleicAcidBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *SubstanceNucleicAcidBuilder) WithImplicitRules(v dt.URI) *SubstanceNucleicAcidBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *SubstanceNucleicAcidBuilder) WithLanguage(v dt.Code) *SubstanceNucleicAcidBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *SubstanceNucleicAcidBuilder) WithText(v dt.Narrative) *SubstanceNucleicAcidBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *SubstanceNucleicAcidBuilder) WithContained(v json.RawMessage) *SubstanceNucleicAcidBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *SubstanceNucleicAcidBuilder) WithExtension(v dt.Extension) *SubstanceNucleicAcidBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *SubstanceNucleicAcidBuilder) WithModifierExtension(v dt.Extension) *SubstanceNucleicAcidBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithAreaOfHybridisation sets the areaOfHybridisation field.
 func (b *SubstanceNucleicAcidBuilder) WithAreaOfHybridisation(v string) *SubstanceNucleicAcidBuilder {
 	b.resource.AreaOfHybridisation = &v
+	b.fieldsSet["areaOfHybridisation"] = true
 	return b
 }
 
 // WithNumberOfSubunits sets the numberOfSubunits field.
 func (b *SubstanceNucleicAcidBuilder) WithNumberOfSubunits(v int32) *SubstanceNucleicAcidBuilder {
 	b.resource.NumberOfSubunits = &v
+	b.fieldsSet["numberOfSubunits"] = true
 	return b
 }
 
 // WithOligoNucleotideType sets the oligoNucleotideType field.
 func (b *SubstanceNucleicAcidBuilder) WithOligoNucleotideType(v dt.CodeableConcept) *SubstanceNucleicAcidBuilder {
 	b.resource.OligoNucleotideType = &v
+	b.fieldsSet["oligoNucleotideType"] = true
 	return b
 }
 
 // WithSequenceType sets the sequenceType field.
 func (b *SubstanceNucleicAcidBuilder) WithSequenceType(v dt.CodeableConcept) *SubstanceNucleicAcidBuilder {
 	b.resource.SequenceType = &v
+	b.fieldsSet["sequenceType"] = true
 	return b
 }
 
 // WithSubunit adds an item to the subunit field.
 func (b *SubstanceNucleicAcidBuilder) WithSubunit(v SubstanceNucleicAcidSubunit) *SubstanceNucleicAcidBuilder {
 	b.resource.Subunit = append(b.resource.Subunit, v)
+	b.fieldsSet["subunit"] = true
 	return b
 }
 
@@ -160,6 +216,8 @@ func (b *SubstanceNucleicAcidBuilder) Build() (*SubstanceNucleicAcid, error) {
 type SubstanceNucleicAcidLinkage struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -168,16 +226,24 @@ type SubstanceNucleicAcidLinkage struct {
 	Identifier *dt.Identifier `json:"identifier,omitempty"`
 	// Connectivity The entity that links the sugar residues together should also be captured for nearly all naturally occurring nucleic acid the linkage is a phosphate group. For many synthetic oligonucleotides phosp...
 	Connectivity *string `json:"connectivity,omitempty"`
+	// ConnectivityElement contains element extensions for connectivity.
+	ConnectivityElement *dt.Element `json:"_connectivity,omitempty"`
 	// Name Each linkage will be registered as a fragment and have at least one name. A single name shall be assigned to each linkage.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// ResidueSite Residues shall be captured as described in 5.3.6.8.3.
 	ResidueSite *string `json:"residueSite,omitempty"`
+	// ResidueSiteElement contains element extensions for residueSite.
+	ResidueSiteElement *dt.Element `json:"_residueSite,omitempty"`
 }
 
 // SubstanceNucleicAcidSubunit Nucleic acids are defined by three distinct elements: the base, sugar and linkage. Individual substance/moiety IDs will be created for each of these elements. The nucleotide sequence will be always...
 type SubstanceNucleicAcidSubunit struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -186,14 +252,20 @@ type SubstanceNucleicAcidSubunit struct {
 	FivePrime *dt.CodeableConcept `json:"fivePrime,omitempty"`
 	// Length The length of the sequence shall be captured.
 	Length *int32 `json:"length,omitempty"`
+	// LengthElement contains element extensions for length.
+	LengthElement *dt.Element `json:"_length,omitempty"`
 	// Linkage The linkages between sugar residues will also be captured.
 	Linkage []SubstanceNucleicAcidLinkage `json:"linkage,omitempty"`
 	// Sequence Actual nucleotide sequence notation from 5' to 3' end using standard single letter codes. In addition to the base sequence, sugar and type of phosphate or non-phosphate linkage should also be captu...
 	Sequence *string `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *dt.Element `json:"_sequence,omitempty"`
 	// SequenceAttachment (TBC).
 	SequenceAttachment *dt.Attachment `json:"sequenceAttachment,omitempty"`
 	// Subunit Index of linear sequences of nucleic acids in order of decreasing length. Sequences of the same length will be ordered by molecular weight. Subunits that have identical sequences will be repeated a...
 	Subunit *int32 `json:"subunit,omitempty"`
+	// SubunitElement contains element extensions for subunit.
+	SubunitElement *dt.Element `json:"_subunit,omitempty"`
 	// Sugar 5.3.6.8.1 Sugar ID (Mandatory).
 	Sugar []SubstanceNucleicAcidSugar `json:"sugar,omitempty"`
 	// ThreePrime The nucleotide present at the 3’ terminal shall be specified based on a controlled vocabulary. Since the sequence is represented from the 5' to the 3' end, the 5’ prime nucleotide is the letter...
@@ -204,6 +276,8 @@ type SubstanceNucleicAcidSubunit struct {
 type SubstanceNucleicAcidSugar struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -212,6 +286,10 @@ type SubstanceNucleicAcidSugar struct {
 	Identifier *dt.Identifier `json:"identifier,omitempty"`
 	// Name The name of the sugar or sugar-like component that make up the nucleotide.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// ResidueSite The residues that contain a given sugar will be captured. The order of given residues will be captured in the 5‘-3‘direction consistent with the base sequences listed above.
 	ResidueSite *string `json:"residueSite,omitempty"`
+	// ResidueSiteElement contains element extensions for residueSite.
+	ResidueSiteElement *dt.Element `json:"_residueSite,omitempty"`
 }

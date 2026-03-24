@@ -18,12 +18,18 @@ type CodeSystem struct {
 	ResourceType string `json:"resourceType"` // Always "CodeSystem"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,61 +42,115 @@ type CodeSystem struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The date (and optionally time) when the code system resource was created or revised.
 	Status *CodeSystemStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// CaseSensitive If code comparison is case sensitive when codes within this system are compared to each other.
 	CaseSensitive *bool `json:"caseSensitive,omitempty"`
+	// CaseSensitiveElement contains element extensions for caseSensitive.
+	CaseSensitiveElement *dt.Element `json:"_caseSensitive,omitempty"`
 	// Compositional The code system defines a compositional (post-coordination) grammar.
 	Compositional *bool `json:"compositional,omitempty"`
+	// CompositionalElement contains element extensions for compositional.
+	CompositionalElement *dt.Element `json:"_compositional,omitempty"`
 	// Concept Concepts that are in the code system. The concept definitions are inherently hierarchical, but the definitions must be consulted to determine what the meanings of the hierarchical relationships are.
 	Concept []CodeSystemConcept `json:"concept,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Content The extent of the content of the code system (the concepts and codes it defines) are represented in this resource instance.
 	Content *CodeSystemContent `json:"content,omitempty"`
+	// ContentElement contains element extensions for content.
+	ContentElement *dt.Element `json:"_content,omitempty"`
 	// Copyright A copyright statement relating to the code system and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the code system.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Count The total number of concepts defined by the code system. Where the code system has a compositional grammar, the basis of this count is defined by the system steward.
 	Count *uint32 `json:"count,omitempty"`
+	// CountElement contains element extensions for count.
+	CountElement *dt.Element `json:"_count,omitempty"`
 	// Date The date  (and optionally time) when the code system was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should chan...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description A free text natural language description of the code system from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Experimental A Boolean value to indicate that this code system is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// Filter A filter that can be used in a value set compose statement when selecting concepts using a filter.
 	Filter []CodeSystemFilter `json:"filter,omitempty"`
 	// HierarchyMeaning The meaning of the hierarchy of concepts as represented in this resource.
 	HierarchyMeaning *CodeSystemHierarchyMeaning `json:"hierarchyMeaning,omitempty"`
+	// HierarchyMeaningElement contains element extensions for hierarchyMeaning.
+	HierarchyMeaningElement *dt.Element `json:"_hierarchyMeaning,omitempty"`
 	// Jurisdiction A legal or geographic region in which the code system is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Name A natural language name identifying the code system. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Property A property defines an additional slot through which additional information can be provided about a concept.
 	Property []CodeSystemProperty `json:"property,omitempty"`
 	// Publisher The name of the organization or individual that published the code system.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Purpose Explanation of why this code system is needed and why it has been designed as it has.
 	Purpose *dt.Markdown `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for purpose.
+	PurposeElement *dt.Element `json:"_purpose,omitempty"`
 	// Supplements The canonical URL of the code system that this code system supplement is adding designations and properties to.
 	Supplements *dt.Canonical `json:"supplements,omitempty"`
+	// SupplementsElement contains element extensions for supplements.
+	SupplementsElement *dt.Element `json:"_supplements,omitempty"`
 	// Title A short, descriptive, user-friendly title for the code system.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Url An absolute URI that is used to identify this code system when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally uniqu...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// ValueSet Canonical reference to the value set that contains the entire code system.
 	ValueSet *dt.Canonical `json:"valueSet,omitempty"`
+	// ValueSetElement contains element extensions for valueSet.
+	ValueSetElement *dt.Element `json:"_valueSet,omitempty"`
 	// Version The identifier that is used to identify this version of the code system when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the code system au...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
 	// VersionNeeded This flag is used to signify that the code system does not commit to concept permanence across versions. If true, a version must be specified when referencing this code system.
 	VersionNeeded *bool `json:"versionNeeded,omitempty"`
+	// VersionNeededElement contains element extensions for versionNeeded.
+	VersionNeededElement *dt.Element `json:"_versionNeeded,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for CodeSystem.
 func (r CodeSystem) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "CodeSystem"
 	type Alias CodeSystem
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for CodeSystem.
@@ -101,220 +161,271 @@ func (r *CodeSystem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = CodeSystem(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_caseSensitive", "_compositional", "_concept", "_contact", "_contained", "_content", "_copyright", "_count", "_date", "_description", "_experimental", "_extension", "_filter", "_hierarchyMeaning", "_id", "_identifier", "_implicitRules", "_jurisdiction", "_language", "_meta", "_modifierExtension", "_name", "_property", "_publisher", "_purpose", "_status", "_supplements", "_text", "_title", "_url", "_useContext", "_valueSet", "_version", "_versionNeeded", "caseSensitive", "compositional", "concept", "contact", "contained", "content", "copyright", "count", "date", "description", "experimental", "extension", "filter", "hierarchyMeaning", "id", "identifier", "implicitRules", "jurisdiction", "language", "meta", "modifierExtension", "name", "property", "publisher", "purpose", "resourceType", "status", "supplements", "text", "title", "url", "useContext", "valueSet", "version", "versionNeeded":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // CodeSystemBuilder provides a fluent API for constructing CodeSystem resources.
 type CodeSystemBuilder struct {
-	resource CodeSystem
+	resource  CodeSystem
+	fieldsSet map[string]bool
 }
 
 // NewCodeSystem creates a new CodeSystemBuilder for building a CodeSystem resource.
 func NewCodeSystem() *CodeSystemBuilder {
-	return &CodeSystemBuilder{resource: CodeSystem{ResourceType: "CodeSystem"}}
+	return &CodeSystemBuilder{resource: CodeSystem{ResourceType: "CodeSystem"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *CodeSystemBuilder) WithId(v dt.ID) *CodeSystemBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *CodeSystemBuilder) WithMeta(v dt.Meta) *CodeSystemBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *CodeSystemBuilder) WithImplicitRules(v dt.URI) *CodeSystemBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *CodeSystemBuilder) WithLanguage(v dt.Code) *CodeSystemBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *CodeSystemBuilder) WithText(v dt.Narrative) *CodeSystemBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *CodeSystemBuilder) WithContained(v json.RawMessage) *CodeSystemBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *CodeSystemBuilder) WithExtension(v dt.Extension) *CodeSystemBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *CodeSystemBuilder) WithModifierExtension(v dt.Extension) *CodeSystemBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *CodeSystemBuilder) WithIdentifier(v dt.Identifier) *CodeSystemBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *CodeSystemBuilder) WithStatus(v CodeSystemStatus) *CodeSystemBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithCaseSensitive sets the caseSensitive field.
 func (b *CodeSystemBuilder) WithCaseSensitive(v bool) *CodeSystemBuilder {
 	b.resource.CaseSensitive = &v
+	b.fieldsSet["caseSensitive"] = true
 	return b
 }
 
 // WithCompositional sets the compositional field.
 func (b *CodeSystemBuilder) WithCompositional(v bool) *CodeSystemBuilder {
 	b.resource.Compositional = &v
+	b.fieldsSet["compositional"] = true
 	return b
 }
 
 // WithConcept adds an item to the concept field.
 func (b *CodeSystemBuilder) WithConcept(v CodeSystemConcept) *CodeSystemBuilder {
 	b.resource.Concept = append(b.resource.Concept, v)
+	b.fieldsSet["concept"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *CodeSystemBuilder) WithContact(v dt.ContactDetail) *CodeSystemBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithContent sets the content field.
 func (b *CodeSystemBuilder) WithContent(v CodeSystemContent) *CodeSystemBuilder {
 	b.resource.Content = &v
+	b.fieldsSet["content"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *CodeSystemBuilder) WithCopyright(v dt.Markdown) *CodeSystemBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithCount sets the count field.
 func (b *CodeSystemBuilder) WithCount(v uint32) *CodeSystemBuilder {
 	b.resource.Count = &v
+	b.fieldsSet["count"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *CodeSystemBuilder) WithDate(v dt.DateTime) *CodeSystemBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *CodeSystemBuilder) WithDescription(v dt.Markdown) *CodeSystemBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *CodeSystemBuilder) WithExperimental(v bool) *CodeSystemBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithFilter adds an item to the filter field.
 func (b *CodeSystemBuilder) WithFilter(v CodeSystemFilter) *CodeSystemBuilder {
 	b.resource.Filter = append(b.resource.Filter, v)
+	b.fieldsSet["filter"] = true
 	return b
 }
 
 // WithHierarchyMeaning sets the hierarchyMeaning field.
 func (b *CodeSystemBuilder) WithHierarchyMeaning(v CodeSystemHierarchyMeaning) *CodeSystemBuilder {
 	b.resource.HierarchyMeaning = &v
+	b.fieldsSet["hierarchyMeaning"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *CodeSystemBuilder) WithJurisdiction(v dt.CodeableConcept) *CodeSystemBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *CodeSystemBuilder) WithName(v string) *CodeSystemBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithProperty adds an item to the property field.
 func (b *CodeSystemBuilder) WithProperty(v CodeSystemProperty) *CodeSystemBuilder {
 	b.resource.Property = append(b.resource.Property, v)
+	b.fieldsSet["property"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *CodeSystemBuilder) WithPublisher(v string) *CodeSystemBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithPurpose sets the purpose field.
 func (b *CodeSystemBuilder) WithPurpose(v dt.Markdown) *CodeSystemBuilder {
 	b.resource.Purpose = &v
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
 // WithSupplements sets the supplements field.
 func (b *CodeSystemBuilder) WithSupplements(v dt.Canonical) *CodeSystemBuilder {
 	b.resource.Supplements = &v
+	b.fieldsSet["supplements"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *CodeSystemBuilder) WithTitle(v string) *CodeSystemBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *CodeSystemBuilder) WithUrl(v dt.URI) *CodeSystemBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *CodeSystemBuilder) WithUseContext(v dt.UsageContext) *CodeSystemBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithValueSet sets the valueSet field.
 func (b *CodeSystemBuilder) WithValueSet(v dt.Canonical) *CodeSystemBuilder {
 	b.resource.ValueSet = &v
+	b.fieldsSet["valueSet"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *CodeSystemBuilder) WithVersion(v string) *CodeSystemBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
 // WithVersionNeeded sets the versionNeeded field.
 func (b *CodeSystemBuilder) WithVersionNeeded(v bool) *CodeSystemBuilder {
 	b.resource.VersionNeeded = &v
+	b.fieldsSet["versionNeeded"] = true
 	return b
 }
 
@@ -329,20 +440,28 @@ func (b *CodeSystemBuilder) Build() (*CodeSystem, error) {
 type CodeSystemConcept struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code A code - a text symbol - that uniquely identifies the concept within the code system.
 	Code *dt.Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Concept Defines children of a concept to produce a hierarchy of concepts. The nature of the relationships is variable (is-a/contains/categorizes) - see hierarchyMeaning.
 	Concept []CodeSystemConcept `json:"concept,omitempty"`
 	// Definition The formal definition of the concept. The code system resource does not make formal definitions required, because of the prevalence of legacy systems. However, they are highly recommended, as witho...
 	Definition *string `json:"definition,omitempty"`
+	// DefinitionElement contains element extensions for definition.
+	DefinitionElement *dt.Element `json:"_definition,omitempty"`
 	// Designation Additional representations for the concept - other languages, aliases, specialized purposes, used for particular purposes, etc.
 	Designation []CodeSystemDesignation `json:"designation,omitempty"`
 	// Display A human readable string that is the recommended default way to present this concept to a user.
 	Display *string `json:"display,omitempty"`
+	// DisplayElement contains element extensions for display.
+	DisplayElement *dt.Element `json:"_display,omitempty"`
 	// Property A property value for this concept.
 	Property []CodeSystemProperty1 `json:"property,omitempty"`
 }
@@ -351,8 +470,12 @@ type CodeSystemConcept struct {
 type CodeSystemDesignation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Language The language this designation is defined for.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -361,54 +484,80 @@ type CodeSystemDesignation struct {
 	Use *dt.Coding `json:"use,omitempty"`
 	// Value The text value for this designation.
 	Value *string `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *dt.Element `json:"_value,omitempty"`
 }
 
 // CodeSystemFilter The CodeSystem resource is used to declare the existence of and describe a code system or code system supplement and its key properties, and optionally define a part or all of its content.
 type CodeSystemFilter struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code The code that identifies this filter when it is used as a filter in [[[ValueSet]]].compose.include.filter.
 	Code *dt.Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Description A description of how or why the filter is used.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Operator A list of operators that can be used with the filter.
 	Operator []dt.Code `json:"operator,omitempty"`
+	// OperatorElement contains element extensions for each operator.
+	OperatorElement []dt.Element `json:"_operator,omitempty"`
 	// Value A description of what the value for the filter should be.
 	Value *string `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *dt.Element `json:"_value,omitempty"`
 }
 
 // CodeSystemProperty The CodeSystem resource is used to declare the existence of and describe a code system or code system supplement and its key properties, and optionally define a part or all of its content.
 type CodeSystemProperty struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code A code that is used to identify the property. The code is used internally (in CodeSystem.concept.property.code) and also externally, such as in property filters.
 	Code *dt.Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Description A description of the property- why it is defined, and how its value might be used.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Type The type of the property value. Properties of type "code" contain a code defined by the code system (e.g. a reference to another defined concept).
 	Type *CodeSystemPropertyType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 	// Uri Reference to the formal meaning of the property. One possible source of meaning is the [Concept Properties](codesystem-concept-properties.html) code system.
 	Uri *dt.URI `json:"uri,omitempty"`
+	// UriElement contains element extensions for uri.
+	UriElement *dt.Element `json:"_uri,omitempty"`
 }
 
 // CodeSystemProperty1 The CodeSystem resource is used to declare the existence of and describe a code system or code system supplement and its key properties, and optionally define a part or all of its content.
 type CodeSystemProperty1 struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code A code that is a reference to CodeSystem.property.code.
 	Code *dt.Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *dt.Element `json:"_code,omitempty"`
 	// Value The value of this property.
 	Value *CodeSystemProperty1Value `json:"-"` // polymorphic
 }

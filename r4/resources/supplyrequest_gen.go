@@ -18,12 +18,18 @@ type SupplyRequest struct {
 	ResourceType string `json:"resourceType"` // Always "SupplyRequest"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,8 +42,12 @@ type SupplyRequest struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Status of the supply request.
 	Status *SupplyRequestStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// AuthoredOn When the request was made.
 	AuthoredOn *dt.DateTime `json:"authoredOn,omitempty"`
+	// AuthoredOnElement contains element extensions for authoredOn.
+	AuthoredOnElement *dt.Element `json:"_authoredOn,omitempty"`
 	// Category Category of supply, e.g.  central, non-stock, etc. This is used to support work flows associated with the supply process.
 	Category *dt.CodeableConcept `json:"category,omitempty"`
 	// DeliverFrom Where the supply is expected to come from.
@@ -52,6 +62,8 @@ type SupplyRequest struct {
 	Parameter []SupplyRequestParameter `json:"parameter,omitempty"`
 	// Priority Indicates how quickly this SupplyRequest should be addressed with respect to other requests.
 	Priority *dt.Code `json:"priority,omitempty"`
+	// PriorityElement contains element extensions for priority.
+	PriorityElement *dt.Element `json:"_priority,omitempty"`
 	// Quantity The amount that is being ordered of the indicated item.
 	Quantity dt.Quantity `json:"quantity"`
 	// ReasonCode The reason why the supply item was requested.
@@ -62,6 +74,8 @@ type SupplyRequest struct {
 	Requester *dt.Reference `json:"requester,omitempty"`
 	// Supplier Who is intended to fulfill the request.
 	Supplier []dt.Reference `json:"supplier,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for SupplyRequest.
@@ -72,7 +86,6 @@ func (r SupplyRequest) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -103,6 +116,9 @@ func (r SupplyRequest) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
 	return json.Marshal(m)
 }
 
@@ -115,13 +131,6 @@ func (r *SupplyRequest) UnmarshalJSON(data []byte) error {
 	}
 	*r = SupplyRequest(alias)
 	// Unmarshal polymorphic fields
-	var occurrenceVal SupplyRequestOccurrence
-	if err := occurrenceVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if occurrenceVal.DateTime != nil || occurrenceVal.Period != nil || occurrenceVal.Timing != nil {
-		r.Occurrence = &occurrenceVal
-	}
 	var itemVal SupplyRequestItem
 	if err := itemVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -129,100 +138,138 @@ func (r *SupplyRequest) UnmarshalJSON(data []byte) error {
 	if itemVal.CodeableConcept != nil || itemVal.Reference != nil {
 		r.Item = &itemVal
 	}
+	var occurrenceVal SupplyRequestOccurrence
+	if err := occurrenceVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if occurrenceVal.DateTime != nil || occurrenceVal.Period != nil || occurrenceVal.Timing != nil {
+		r.Occurrence = &occurrenceVal
+	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_authoredOn", "_category", "_contained", "_deliverFrom", "_deliverTo", "_extension", "_id", "_identifier", "_implicitRules", "_itemCodeableConcept", "_itemReference", "_language", "_meta", "_modifierExtension", "_occurrenceDateTime", "_occurrencePeriod", "_occurrenceTiming", "_parameter", "_priority", "_quantity", "_reasonCode", "_reasonReference", "_requester", "_status", "_supplier", "_text", "authoredOn", "category", "contained", "deliverFrom", "deliverTo", "extension", "id", "identifier", "implicitRules", "itemCodeableConcept", "itemReference", "language", "meta", "modifierExtension", "occurrenceDateTime", "occurrencePeriod", "occurrenceTiming", "parameter", "priority", "quantity", "reasonCode", "reasonReference", "requester", "resourceType", "status", "supplier", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // SupplyRequestBuilder provides a fluent API for constructing SupplyRequest resources.
 type SupplyRequestBuilder struct {
-	resource SupplyRequest
+	resource  SupplyRequest
+	fieldsSet map[string]bool
 }
 
 // NewSupplyRequest creates a new SupplyRequestBuilder for building a SupplyRequest resource.
 func NewSupplyRequest() *SupplyRequestBuilder {
-	return &SupplyRequestBuilder{resource: SupplyRequest{ResourceType: "SupplyRequest"}}
+	return &SupplyRequestBuilder{resource: SupplyRequest{ResourceType: "SupplyRequest"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *SupplyRequestBuilder) WithId(v dt.ID) *SupplyRequestBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *SupplyRequestBuilder) WithMeta(v dt.Meta) *SupplyRequestBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *SupplyRequestBuilder) WithImplicitRules(v dt.URI) *SupplyRequestBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *SupplyRequestBuilder) WithLanguage(v dt.Code) *SupplyRequestBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *SupplyRequestBuilder) WithText(v dt.Narrative) *SupplyRequestBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *SupplyRequestBuilder) WithContained(v json.RawMessage) *SupplyRequestBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *SupplyRequestBuilder) WithExtension(v dt.Extension) *SupplyRequestBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *SupplyRequestBuilder) WithModifierExtension(v dt.Extension) *SupplyRequestBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *SupplyRequestBuilder) WithIdentifier(v dt.Identifier) *SupplyRequestBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *SupplyRequestBuilder) WithStatus(v SupplyRequestStatus) *SupplyRequestBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAuthoredOn sets the authoredOn field.
 func (b *SupplyRequestBuilder) WithAuthoredOn(v dt.DateTime) *SupplyRequestBuilder {
 	b.resource.AuthoredOn = &v
+	b.fieldsSet["authoredOn"] = true
 	return b
 }
 
 // WithCategory sets the category field.
 func (b *SupplyRequestBuilder) WithCategory(v dt.CodeableConcept) *SupplyRequestBuilder {
 	b.resource.Category = &v
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithDeliverFrom sets the deliverFrom field.
 func (b *SupplyRequestBuilder) WithDeliverFrom(v dt.Reference) *SupplyRequestBuilder {
 	b.resource.DeliverFrom = &v
+	b.fieldsSet["deliverFrom"] = true
 	return b
 }
 
 // WithDeliverTo sets the deliverTo field.
 func (b *SupplyRequestBuilder) WithDeliverTo(v dt.Reference) *SupplyRequestBuilder {
 	b.resource.DeliverTo = &v
+	b.fieldsSet["deliverTo"] = true
 	return b
 }
 
@@ -232,6 +279,7 @@ func (b *SupplyRequestBuilder) WithItemCodeableConcept(v dt.CodeableConcept) *Su
 		b.resource.Item = &SupplyRequestItem{}
 	}
 	b.resource.Item.CodeableConcept = &v
+	b.fieldsSet["item"] = true
 	return b
 }
 
@@ -241,6 +289,7 @@ func (b *SupplyRequestBuilder) WithItemReference(v dt.Reference) *SupplyRequestB
 		b.resource.Item = &SupplyRequestItem{}
 	}
 	b.resource.Item.Reference = &v
+	b.fieldsSet["item"] = true
 	return b
 }
 
@@ -250,6 +299,7 @@ func (b *SupplyRequestBuilder) WithOccurrenceDateTime(v string) *SupplyRequestBu
 		b.resource.Occurrence = &SupplyRequestOccurrence{}
 	}
 	b.resource.Occurrence.DateTime = &v
+	b.fieldsSet["occurrence"] = true
 	return b
 }
 
@@ -259,6 +309,7 @@ func (b *SupplyRequestBuilder) WithOccurrencePeriod(v dt.Period) *SupplyRequestB
 		b.resource.Occurrence = &SupplyRequestOccurrence{}
 	}
 	b.resource.Occurrence.Period = &v
+	b.fieldsSet["occurrence"] = true
 	return b
 }
 
@@ -268,54 +319,69 @@ func (b *SupplyRequestBuilder) WithOccurrenceTiming(v dt.Timing) *SupplyRequestB
 		b.resource.Occurrence = &SupplyRequestOccurrence{}
 	}
 	b.resource.Occurrence.Timing = &v
+	b.fieldsSet["occurrence"] = true
 	return b
 }
 
 // WithParameter adds an item to the parameter field.
 func (b *SupplyRequestBuilder) WithParameter(v SupplyRequestParameter) *SupplyRequestBuilder {
 	b.resource.Parameter = append(b.resource.Parameter, v)
+	b.fieldsSet["parameter"] = true
 	return b
 }
 
 // WithPriority sets the priority field.
 func (b *SupplyRequestBuilder) WithPriority(v dt.Code) *SupplyRequestBuilder {
 	b.resource.Priority = &v
+	b.fieldsSet["priority"] = true
 	return b
 }
 
 // WithQuantity sets the quantity field.
 func (b *SupplyRequestBuilder) WithQuantity(v dt.Quantity) *SupplyRequestBuilder {
 	b.resource.Quantity = v
+	b.fieldsSet["quantity"] = true
 	return b
 }
 
 // WithReasonCode adds an item to the reasonCode field.
 func (b *SupplyRequestBuilder) WithReasonCode(v dt.CodeableConcept) *SupplyRequestBuilder {
 	b.resource.ReasonCode = append(b.resource.ReasonCode, v)
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithReasonReference adds an item to the reasonReference field.
 func (b *SupplyRequestBuilder) WithReasonReference(v dt.Reference) *SupplyRequestBuilder {
 	b.resource.ReasonReference = append(b.resource.ReasonReference, v)
+	b.fieldsSet["reasonReference"] = true
 	return b
 }
 
 // WithRequester sets the requester field.
 func (b *SupplyRequestBuilder) WithRequester(v dt.Reference) *SupplyRequestBuilder {
 	b.resource.Requester = &v
+	b.fieldsSet["requester"] = true
 	return b
 }
 
 // WithSupplier adds an item to the supplier field.
 func (b *SupplyRequestBuilder) WithSupplier(v dt.Reference) *SupplyRequestBuilder {
 	b.resource.Supplier = append(b.resource.Supplier, v)
+	b.fieldsSet["supplier"] = true
 	return b
 }
 
 // Build returns the constructed SupplyRequest. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *SupplyRequestBuilder) Build() (*SupplyRequest, error) {
+	var missing []string
+	if !b.fieldsSet["quantity"] {
+		missing = append(missing, "quantity")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("SupplyRequest: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -324,6 +390,8 @@ func (b *SupplyRequestBuilder) Build() (*SupplyRequest, error) {
 type SupplyRequestParameter struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

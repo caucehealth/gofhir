@@ -18,12 +18,18 @@ type Contract struct {
 	ResourceType string `json:"resourceType"` // Always "Contract"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,8 +42,12 @@ type Contract struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the resource instance.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Alias Alternative representation of the title for this Contract definition, derivative, or instance in any legal state., e.g., a domain specific contract number related to legislation.
 	Alias []string `json:"alias,omitempty"`
+	// AliasElement contains element extensions for each alias.
+	AliasElement []dt.Element `json:"_alias,omitempty"`
 	// Applies Relevant time or time-period when this Contract is applicable.
 	Applies *dt.Period `json:"applies,omitempty"`
 	// Author The individual or organization that authored the Contract definition, derivative, or instance in any legal state.
@@ -58,8 +68,12 @@ type Contract struct {
 	InstantiatesCanonical *dt.Reference `json:"instantiatesCanonical,omitempty"`
 	// InstantiatesUri The URL pointing to an externally maintained definition that is adhered to in whole or in part by this Contract.
 	InstantiatesUri *dt.URI `json:"instantiatesUri,omitempty"`
+	// InstantiatesUriElement contains element extensions for instantiatesUri.
+	InstantiatesUriElement *dt.Element `json:"_instantiatesUri,omitempty"`
 	// Issued When this  Contract was issued.
 	Issued *dt.DateTime `json:"issued,omitempty"`
+	// IssuedElement contains element extensions for issued.
+	IssuedElement *dt.Element `json:"_issued,omitempty"`
 	// Legal List of Legal expressions or representations of this Contract.
 	Legal []ContractLegal `json:"legal,omitempty"`
 	// LegalState Legal states of the formation of a legal instrument, which is a formally executed written document that can be formally attributed to its author, records and formally expresses a legally enforceabl...
@@ -70,6 +84,8 @@ type Contract struct {
 	LegallyBindingReference *dt.Reference `json:"legallyBindingReference,omitempty"`
 	// Name A natural language name identifying this Contract definition, derivative, or instance in any legal state. Provides additional information about its content. This name should be usable as an identif...
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// RelevantHistory Links to Provenance records for past versions of this Contract definition, derivative, or instance, which identify key state transitions or updates that are likely to be relevant to a user looking ...
 	RelevantHistory []dt.Reference `json:"relevantHistory,omitempty"`
 	// Rule List of Computable Policy Rule Language Representations of this Contract.
@@ -86,12 +102,16 @@ type Contract struct {
 	Subject []dt.Reference `json:"subject,omitempty"`
 	// Subtitle An explanatory or alternate user-friendly title for this Contract definition, derivative, or instance in any legal state.t giving additional information about its content.
 	Subtitle *string `json:"subtitle,omitempty"`
+	// SubtitleElement contains element extensions for subtitle.
+	SubtitleElement *dt.Element `json:"_subtitle,omitempty"`
 	// SupportingInfo Information that may be needed by/relevant to the performer in their execution of this term action.
 	SupportingInfo []dt.Reference `json:"supportingInfo,omitempty"`
 	// Term One or more Contract Provisions, which may be related and conveyed as a group, and may contain nested groups.
 	Term []ContractTerm `json:"term,omitempty"`
 	// Title A short, descriptive, user-friendly title for this Contract definition, derivative, or instance in any legal state.t giving additional information about its content.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// TopicCodeableConcept Narrows the range of legal concerns to focus on the achievement of specific contractual objectives.
 	TopicCodeableConcept *dt.CodeableConcept `json:"topicCodeableConcept,omitempty"`
 	// TopicReference Narrows the range of legal concerns to focus on the achievement of specific contractual objectives.
@@ -100,15 +120,35 @@ type Contract struct {
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 	// Url Canonical identifier for this contract, represented as a URI (globally unique).
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// Version An edition identifier used for business purposes to label business significant variants.
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Contract.
 func (r Contract) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Contract"
 	type Alias Contract
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Contract.
@@ -119,274 +159,334 @@ func (r *Contract) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Contract(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_alias", "_applies", "_author", "_authority", "_contained", "_contentDefinition", "_contentDerivative", "_domain", "_expirationType", "_extension", "_friendly", "_id", "_identifier", "_implicitRules", "_instantiatesCanonical", "_instantiatesUri", "_issued", "_language", "_legal", "_legalState", "_legallyBindingAttachment", "_legallyBindingReference", "_meta", "_modifierExtension", "_name", "_relevantHistory", "_rule", "_scope", "_signer", "_site", "_status", "_subType", "_subject", "_subtitle", "_supportingInfo", "_term", "_text", "_title", "_topicCodeableConcept", "_topicReference", "_type", "_url", "_version", "alias", "applies", "author", "authority", "contained", "contentDefinition", "contentDerivative", "domain", "expirationType", "extension", "friendly", "id", "identifier", "implicitRules", "instantiatesCanonical", "instantiatesUri", "issued", "language", "legal", "legalState", "legallyBindingAttachment", "legallyBindingReference", "meta", "modifierExtension", "name", "relevantHistory", "resourceType", "rule", "scope", "signer", "site", "status", "subType", "subject", "subtitle", "supportingInfo", "term", "text", "title", "topicCodeableConcept", "topicReference", "type", "url", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ContractBuilder provides a fluent API for constructing Contract resources.
 type ContractBuilder struct {
-	resource Contract
+	resource  Contract
+	fieldsSet map[string]bool
 }
 
 // NewContract creates a new ContractBuilder for building a Contract resource.
 func NewContract() *ContractBuilder {
-	return &ContractBuilder{resource: Contract{ResourceType: "Contract"}}
+	return &ContractBuilder{resource: Contract{ResourceType: "Contract"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ContractBuilder) WithId(v dt.ID) *ContractBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ContractBuilder) WithMeta(v dt.Meta) *ContractBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ContractBuilder) WithImplicitRules(v dt.URI) *ContractBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ContractBuilder) WithLanguage(v dt.Code) *ContractBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ContractBuilder) WithText(v dt.Narrative) *ContractBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ContractBuilder) WithContained(v json.RawMessage) *ContractBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ContractBuilder) WithExtension(v dt.Extension) *ContractBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ContractBuilder) WithModifierExtension(v dt.Extension) *ContractBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ContractBuilder) WithIdentifier(v dt.Identifier) *ContractBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ContractBuilder) WithStatus(v dt.Code) *ContractBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAlias adds an item to the alias field.
 func (b *ContractBuilder) WithAlias(v string) *ContractBuilder {
 	b.resource.Alias = append(b.resource.Alias, v)
+	b.fieldsSet["alias"] = true
 	return b
 }
 
 // WithApplies sets the applies field.
 func (b *ContractBuilder) WithApplies(v dt.Period) *ContractBuilder {
 	b.resource.Applies = &v
+	b.fieldsSet["applies"] = true
 	return b
 }
 
 // WithAuthor sets the author field.
 func (b *ContractBuilder) WithAuthor(v dt.Reference) *ContractBuilder {
 	b.resource.Author = &v
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithAuthority adds an item to the authority field.
 func (b *ContractBuilder) WithAuthority(v dt.Reference) *ContractBuilder {
 	b.resource.Authority = append(b.resource.Authority, v)
+	b.fieldsSet["authority"] = true
 	return b
 }
 
 // WithContentDefinition sets the contentDefinition field.
 func (b *ContractBuilder) WithContentDefinition(v ContractContentDefinition) *ContractBuilder {
 	b.resource.ContentDefinition = &v
+	b.fieldsSet["contentDefinition"] = true
 	return b
 }
 
 // WithContentDerivative sets the contentDerivative field.
 func (b *ContractBuilder) WithContentDerivative(v dt.CodeableConcept) *ContractBuilder {
 	b.resource.ContentDerivative = &v
+	b.fieldsSet["contentDerivative"] = true
 	return b
 }
 
 // WithDomain adds an item to the domain field.
 func (b *ContractBuilder) WithDomain(v dt.Reference) *ContractBuilder {
 	b.resource.Domain = append(b.resource.Domain, v)
+	b.fieldsSet["domain"] = true
 	return b
 }
 
 // WithExpirationType sets the expirationType field.
 func (b *ContractBuilder) WithExpirationType(v dt.CodeableConcept) *ContractBuilder {
 	b.resource.ExpirationType = &v
+	b.fieldsSet["expirationType"] = true
 	return b
 }
 
 // WithFriendly adds an item to the friendly field.
 func (b *ContractBuilder) WithFriendly(v ContractFriendly) *ContractBuilder {
 	b.resource.Friendly = append(b.resource.Friendly, v)
+	b.fieldsSet["friendly"] = true
 	return b
 }
 
 // WithInstantiatesCanonical sets the instantiatesCanonical field.
 func (b *ContractBuilder) WithInstantiatesCanonical(v dt.Reference) *ContractBuilder {
 	b.resource.InstantiatesCanonical = &v
+	b.fieldsSet["instantiatesCanonical"] = true
 	return b
 }
 
 // WithInstantiatesUri sets the instantiatesUri field.
 func (b *ContractBuilder) WithInstantiatesUri(v dt.URI) *ContractBuilder {
 	b.resource.InstantiatesUri = &v
+	b.fieldsSet["instantiatesUri"] = true
 	return b
 }
 
 // WithIssued sets the issued field.
 func (b *ContractBuilder) WithIssued(v dt.DateTime) *ContractBuilder {
 	b.resource.Issued = &v
+	b.fieldsSet["issued"] = true
 	return b
 }
 
 // WithLegal adds an item to the legal field.
 func (b *ContractBuilder) WithLegal(v ContractLegal) *ContractBuilder {
 	b.resource.Legal = append(b.resource.Legal, v)
+	b.fieldsSet["legal"] = true
 	return b
 }
 
 // WithLegalState sets the legalState field.
 func (b *ContractBuilder) WithLegalState(v dt.CodeableConcept) *ContractBuilder {
 	b.resource.LegalState = &v
+	b.fieldsSet["legalState"] = true
 	return b
 }
 
 // WithLegallyBindingAttachment sets the legallyBindingAttachment field.
 func (b *ContractBuilder) WithLegallyBindingAttachment(v dt.Attachment) *ContractBuilder {
 	b.resource.LegallyBindingAttachment = &v
+	b.fieldsSet["legallyBindingAttachment"] = true
 	return b
 }
 
 // WithLegallyBindingReference sets the legallyBindingReference field.
 func (b *ContractBuilder) WithLegallyBindingReference(v dt.Reference) *ContractBuilder {
 	b.resource.LegallyBindingReference = &v
+	b.fieldsSet["legallyBindingReference"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *ContractBuilder) WithName(v string) *ContractBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithRelevantHistory adds an item to the relevantHistory field.
 func (b *ContractBuilder) WithRelevantHistory(v dt.Reference) *ContractBuilder {
 	b.resource.RelevantHistory = append(b.resource.RelevantHistory, v)
+	b.fieldsSet["relevantHistory"] = true
 	return b
 }
 
 // WithRule adds an item to the rule field.
 func (b *ContractBuilder) WithRule(v ContractRule) *ContractBuilder {
 	b.resource.Rule = append(b.resource.Rule, v)
+	b.fieldsSet["rule"] = true
 	return b
 }
 
 // WithScope sets the scope field.
 func (b *ContractBuilder) WithScope(v dt.CodeableConcept) *ContractBuilder {
 	b.resource.Scope = &v
+	b.fieldsSet["scope"] = true
 	return b
 }
 
 // WithSigner adds an item to the signer field.
 func (b *ContractBuilder) WithSigner(v ContractSigner) *ContractBuilder {
 	b.resource.Signer = append(b.resource.Signer, v)
+	b.fieldsSet["signer"] = true
 	return b
 }
 
 // WithSite adds an item to the site field.
 func (b *ContractBuilder) WithSite(v dt.Reference) *ContractBuilder {
 	b.resource.Site = append(b.resource.Site, v)
+	b.fieldsSet["site"] = true
 	return b
 }
 
 // WithSubType adds an item to the subType field.
 func (b *ContractBuilder) WithSubType(v dt.CodeableConcept) *ContractBuilder {
 	b.resource.SubType = append(b.resource.SubType, v)
+	b.fieldsSet["subType"] = true
 	return b
 }
 
 // WithSubject adds an item to the subject field.
 func (b *ContractBuilder) WithSubject(v dt.Reference) *ContractBuilder {
 	b.resource.Subject = append(b.resource.Subject, v)
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithSubtitle sets the subtitle field.
 func (b *ContractBuilder) WithSubtitle(v string) *ContractBuilder {
 	b.resource.Subtitle = &v
+	b.fieldsSet["subtitle"] = true
 	return b
 }
 
 // WithSupportingInfo adds an item to the supportingInfo field.
 func (b *ContractBuilder) WithSupportingInfo(v dt.Reference) *ContractBuilder {
 	b.resource.SupportingInfo = append(b.resource.SupportingInfo, v)
+	b.fieldsSet["supportingInfo"] = true
 	return b
 }
 
 // WithTerm adds an item to the term field.
 func (b *ContractBuilder) WithTerm(v ContractTerm) *ContractBuilder {
 	b.resource.Term = append(b.resource.Term, v)
+	b.fieldsSet["term"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *ContractBuilder) WithTitle(v string) *ContractBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithTopicCodeableConcept sets the topicCodeableConcept field.
 func (b *ContractBuilder) WithTopicCodeableConcept(v dt.CodeableConcept) *ContractBuilder {
 	b.resource.TopicCodeableConcept = &v
+	b.fieldsSet["topicCodeableConcept"] = true
 	return b
 }
 
 // WithTopicReference sets the topicReference field.
 func (b *ContractBuilder) WithTopicReference(v dt.Reference) *ContractBuilder {
 	b.resource.TopicReference = &v
+	b.fieldsSet["topicReference"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *ContractBuilder) WithType(v dt.CodeableConcept) *ContractBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *ContractBuilder) WithUrl(v dt.URI) *ContractBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *ContractBuilder) WithVersion(v string) *ContractBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -401,6 +501,8 @@ func (b *ContractBuilder) Build() (*Contract, error) {
 type ContractAction struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -411,12 +513,18 @@ type ContractAction struct {
 	Context *dt.Reference `json:"context,omitempty"`
 	// ContextLinkId Id [identifier??] of the clause or question text related to the requester of this action in the referenced form or QuestionnaireResponse.
 	ContextLinkId []string `json:"contextLinkId,omitempty"`
+	// ContextLinkIdElement contains element extensions for each contextLinkId.
+	ContextLinkIdElement []dt.Element `json:"_contextLinkId,omitempty"`
 	// DoNotPerform True if the term prohibits the  action.
 	DoNotPerform *bool `json:"doNotPerform,omitempty"`
+	// DoNotPerformElement contains element extensions for doNotPerform.
+	DoNotPerformElement *dt.Element `json:"_doNotPerform,omitempty"`
 	// Intent Reason or purpose for the action stipulated by this Contract Provision.
 	Intent dt.CodeableConcept `json:"intent"`
 	// LinkId Id [identifier??] of the clause or question text related to this action in the referenced form or QuestionnaireResponse.
 	LinkId []string `json:"linkId,omitempty"`
+	// LinkIdElement contains element extensions for each linkId.
+	LinkIdElement []dt.Element `json:"_linkId,omitempty"`
 	// Note Comments made about the term action made by the requester, performer, subject or other participants.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// Occurrence When action happens.
@@ -425,24 +533,34 @@ type ContractAction struct {
 	Performer *dt.Reference `json:"performer,omitempty"`
 	// PerformerLinkId Id [identifier??] of the clause or question text related to the reason type or reference of this  action in the referenced form or QuestionnaireResponse.
 	PerformerLinkId []string `json:"performerLinkId,omitempty"`
+	// PerformerLinkIdElement contains element extensions for each performerLinkId.
+	PerformerLinkIdElement []dt.Element `json:"_performerLinkId,omitempty"`
 	// PerformerRole The type of role or competency of an individual desired or required to perform or not perform the action.
 	PerformerRole *dt.CodeableConcept `json:"performerRole,omitempty"`
 	// PerformerType The type of individual that is desired or required to perform or not perform the action.
 	PerformerType []dt.CodeableConcept `json:"performerType,omitempty"`
 	// Reason Describes why the action is to be performed or not performed in textual form.
 	Reason []string `json:"reason,omitempty"`
+	// ReasonElement contains element extensions for each reason.
+	ReasonElement []dt.Element `json:"_reason,omitempty"`
 	// ReasonCode Rationale for the action to be performed or not performed. Describes why the action is permitted or prohibited.
 	ReasonCode []dt.CodeableConcept `json:"reasonCode,omitempty"`
 	// ReasonLinkId Id [identifier??] of the clause or question text related to the reason type or reference of this  action in the referenced form or QuestionnaireResponse.
 	ReasonLinkId []string `json:"reasonLinkId,omitempty"`
+	// ReasonLinkIdElement contains element extensions for each reasonLinkId.
+	ReasonLinkIdElement []dt.Element `json:"_reasonLinkId,omitempty"`
 	// ReasonReference Indicates another resource whose existence justifies permitting or not permitting this action.
 	ReasonReference []dt.Reference `json:"reasonReference,omitempty"`
 	// Requester Who or what initiated the action and has responsibility for its activation.
 	Requester []dt.Reference `json:"requester,omitempty"`
 	// RequesterLinkId Id [identifier??] of the clause or question text related to the requester of this action in the referenced form or QuestionnaireResponse.
 	RequesterLinkId []string `json:"requesterLinkId,omitempty"`
+	// RequesterLinkIdElement contains element extensions for each requesterLinkId.
+	RequesterLinkIdElement []dt.Element `json:"_requesterLinkId,omitempty"`
 	// SecurityLabelNumber Security labels that protects the action.
 	SecurityLabelNumber []uint32 `json:"securityLabelNumber,omitempty"`
+	// SecurityLabelNumberElement contains element extensions for each securityLabelNumber.
+	SecurityLabelNumberElement []dt.Element `json:"_securityLabelNumber,omitempty"`
 	// Subject Entity of the action.
 	Subject []ContractSubject `json:"subject,omitempty"`
 	// Type Activity or service obligation to be done or not done, performed or not performed, effectuated or not by this Contract term.
@@ -550,6 +668,8 @@ func (v *ContractActionOccurrence) UnmarshalJSON(data []byte) error {
 type ContractAnswer struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -758,8 +878,12 @@ func (v *ContractAnswerValue) UnmarshalJSON(data []byte) error {
 type ContractAsset struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Text Clause or question text (Prose Object) concerning the asset in a linked form, such as a QuestionnaireResponse used in the formation of the contract.
 	Text *string `json:"text,omitempty"`
+	// TextElement contains element extensions for text.
+	TextElement *dt.Element `json:"_text,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -768,10 +892,14 @@ type ContractAsset struct {
 	Answer []ContractAnswer `json:"answer,omitempty"`
 	// Condition Description of the quality and completeness of the asset that imay be a factor in its valuation.
 	Condition *string `json:"condition,omitempty"`
+	// ConditionElement contains element extensions for condition.
+	ConditionElement *dt.Element `json:"_condition,omitempty"`
 	// Context Circumstance of the asset.
 	Context []ContractContext `json:"context,omitempty"`
 	// LinkId Id [identifier??] of the clause or question text about the asset in the referenced form or QuestionnaireResponse.
 	LinkId []string `json:"linkId,omitempty"`
+	// LinkIdElement contains element extensions for each linkId.
+	LinkIdElement []dt.Element `json:"_linkId,omitempty"`
 	// Period Asset relevant contractual time period.
 	Period []dt.Period `json:"period,omitempty"`
 	// PeriodType Type of Asset availability for use or ownership.
@@ -782,6 +910,8 @@ type ContractAsset struct {
 	Scope *dt.CodeableConcept `json:"scope,omitempty"`
 	// SecurityLabelNumber Security labels that protects the asset.
 	SecurityLabelNumber []uint32 `json:"securityLabelNumber,omitempty"`
+	// SecurityLabelNumberElement contains element extensions for each securityLabelNumber.
+	SecurityLabelNumberElement []dt.Element `json:"_securityLabelNumber,omitempty"`
 	// Subtype May be a subtype or part of an offered asset.
 	Subtype []dt.CodeableConcept `json:"subtype,omitempty"`
 	// Type Target entity type about which the term may be concerned.
@@ -798,16 +928,24 @@ type ContractAsset struct {
 type ContractContentDefinition struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Copyright A copyright statement relating to Contract precursor content. Copyright statements are generally legal restrictions on the use and publishing of the Contract precursor content.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// PublicationDate The date (and optionally time) when the contract was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should change w...
 	PublicationDate *dt.DateTime `json:"publicationDate,omitempty"`
+	// PublicationDateElement contains element extensions for publicationDate.
+	PublicationDateElement *dt.Element `json:"_publicationDate,omitempty"`
 	// PublicationStatus amended | appended | cancelled | disputed | entered-in-error | executable | executed | negotiable | offered | policy | rejected | renewed | revoked | resolved | terminated.
 	PublicationStatus *dt.Code `json:"publicationStatus,omitempty"`
+	// PublicationStatusElement contains element extensions for publicationStatus.
+	PublicationStatusElement *dt.Element `json:"_publicationStatus,omitempty"`
 	// Publisher The  individual or organization that published the Contract precursor content.
 	Publisher *dt.Reference `json:"publisher,omitempty"`
 	// SubType Detailed Precusory content type.
@@ -820,8 +958,12 @@ type ContractContentDefinition struct {
 type ContractContext struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Text Context description.
 	Text *string `json:"text,omitempty"`
+	// TextElement contains element extensions for text.
+	TextElement *dt.Element `json:"_text,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -836,6 +978,8 @@ type ContractContext struct {
 type ContractFriendly struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -850,6 +994,8 @@ type ContractFriendly struct {
 type ContractLegal struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -864,8 +1010,12 @@ type ContractLegal struct {
 type ContractOffer struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Text Human readable form of this Contract Offer.
 	Text *string `json:"text,omitempty"`
+	// TextElement contains element extensions for text.
+	TextElement *dt.Element `json:"_text,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -880,10 +1030,14 @@ type ContractOffer struct {
 	DecisionMode []dt.CodeableConcept `json:"decisionMode,omitempty"`
 	// LinkId The id of the clause or question text of the offer in the referenced questionnaire/response.
 	LinkId []string `json:"linkId,omitempty"`
+	// LinkIdElement contains element extensions for each linkId.
+	LinkIdElement []dt.Element `json:"_linkId,omitempty"`
 	// Party Offer Recipient.
 	Party []ContractParty `json:"party,omitempty"`
 	// SecurityLabelNumber Security labels that protects the offer.
 	SecurityLabelNumber []uint32 `json:"securityLabelNumber,omitempty"`
+	// SecurityLabelNumberElement contains element extensions for each securityLabelNumber.
+	SecurityLabelNumberElement []dt.Element `json:"_securityLabelNumber,omitempty"`
 	// Topic The owner of an asset has the residual control rights over the asset: the right to decide all usages of the asset in any way not inconsistent with a prior contract, custom, or law (Hart, 1995, p. 30).
 	Topic *dt.Reference `json:"topic,omitempty"`
 	// Type Type of Contract Provision such as specific requirements, purposes for actions, obligations, prohibitions, e.g. life time maximum benefit.
@@ -894,6 +1048,8 @@ type ContractOffer struct {
 type ContractParty struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -908,6 +1064,8 @@ type ContractParty struct {
 type ContractRule struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -922,6 +1080,8 @@ type ContractRule struct {
 type ContractSecurityLabel struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -934,12 +1094,16 @@ type ContractSecurityLabel struct {
 	Control []dt.Coding `json:"control,omitempty"`
 	// Number Number used to link this term or term element to the applicable Security Label.
 	Number []uint32 `json:"number,omitempty"`
+	// NumberElement contains element extensions for each number.
+	NumberElement []dt.Element `json:"_number,omitempty"`
 }
 
 // ContractSigner Legally enforceable, formally recorded unilateral or bilateral directive i.e., a policy or agreement.
 type ContractSigner struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -956,6 +1120,8 @@ type ContractSigner struct {
 type ContractSubject struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -970,8 +1136,12 @@ type ContractSubject struct {
 type ContractTerm struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Text Statement of a provision in a policy or a contract.
 	Text *string `json:"text,omitempty"`
+	// TextElement contains element extensions for text.
+	TextElement *dt.Element `json:"_text,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -988,6 +1158,8 @@ type ContractTerm struct {
 	Group []ContractTerm `json:"group,omitempty"`
 	// Issued When this Contract Provision was issued.
 	Issued *dt.DateTime `json:"issued,omitempty"`
+	// IssuedElement contains element extensions for issued.
+	IssuedElement *dt.Element `json:"_issued,omitempty"`
 	// Offer The matter of concern in the context of this provision of the agrement.
 	Offer ContractOffer `json:"offer"`
 	// SecurityLabel Security labels that protect the handling of information about the term and its elements, which may be specifically identified..
@@ -1006,6 +1178,8 @@ type ContractTerm struct {
 type ContractValuedItem struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1014,20 +1188,32 @@ type ContractValuedItem struct {
 	Identifier *dt.Identifier `json:"identifier,omitempty"`
 	// EffectiveTime Indicates the time during which this Contract ValuedItem information is effective.
 	EffectiveTime *dt.DateTime `json:"effectiveTime,omitempty"`
+	// EffectiveTimeElement contains element extensions for effectiveTime.
+	EffectiveTimeElement *dt.Element `json:"_effectiveTime,omitempty"`
 	// Entity Specific type of Contract Valued Item that may be priced.
 	Entity *ContractValuedItemEntity `json:"-"` // polymorphic
 	// Factor A real number that represents a multiplier used in determining the overall value of the Contract Valued Item delivered. The concept of a Factor allows for a discount or surcharge multiplier to be a...
 	Factor *float64 `json:"factor,omitempty"`
+	// FactorElement contains element extensions for factor.
+	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// LinkId Id  of the clause or question text related to the context of this valuedItem in the referenced form or QuestionnaireResponse.
 	LinkId []string `json:"linkId,omitempty"`
+	// LinkIdElement contains element extensions for each linkId.
+	LinkIdElement []dt.Element `json:"_linkId,omitempty"`
 	// Net Expresses the product of the Contract Valued Item unitQuantity and the unitPriceAmt. For example, the formula: unit Quantity * unit Price (Cost per Point) * factor Number  * points = net Amount. Qu...
 	Net *dt.Money `json:"net,omitempty"`
 	// Payment Terms of valuation.
 	Payment *string `json:"payment,omitempty"`
+	// PaymentElement contains element extensions for payment.
+	PaymentElement *dt.Element `json:"_payment,omitempty"`
 	// PaymentDate When payment is due.
 	PaymentDate *dt.DateTime `json:"paymentDate,omitempty"`
+	// PaymentDateElement contains element extensions for paymentDate.
+	PaymentDateElement *dt.Element `json:"_paymentDate,omitempty"`
 	// Points An amount that expresses the weighting (based on difficulty, cost and/or resource intensiveness) associated with the Contract Valued Item delivered. The concept of Points allows for assignment of p...
 	Points *float64 `json:"points,omitempty"`
+	// PointsElement contains element extensions for points.
+	PointsElement *dt.Element `json:"_points,omitempty"`
 	// Quantity Specifies the units by which the Contract Valued Item is measured or counted, and quantifies the countable or measurable Contract Valued Item instances.
 	Quantity *dt.Quantity `json:"quantity,omitempty"`
 	// Recipient Who will receive payment.
@@ -1036,6 +1222,8 @@ type ContractValuedItem struct {
 	Responsible *dt.Reference `json:"responsible,omitempty"`
 	// SecurityLabelNumber A set of security labels that define which terms are controlled by this condition.
 	SecurityLabelNumber []uint32 `json:"securityLabelNumber,omitempty"`
+	// SecurityLabelNumberElement contains element extensions for each securityLabelNumber.
+	SecurityLabelNumberElement []dt.Element `json:"_securityLabelNumber,omitempty"`
 	// UnitPrice A Contract Valued Item unit valuation measure.
 	UnitPrice *dt.Money `json:"unitPrice,omitempty"`
 }

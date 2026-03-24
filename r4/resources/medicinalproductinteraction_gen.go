@@ -18,12 +18,18 @@ type MedicinalProductInteraction struct {
 	ResourceType string `json:"resourceType"` // Always "MedicinalProductInteraction"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -34,6 +40,8 @@ type MedicinalProductInteraction struct {
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description The interaction described.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Effect The effect of the interaction, for example "reduced gastric absorption of primary medication".
 	Effect *dt.CodeableConcept `json:"effect,omitempty"`
 	// Incidence The incidence of the interaction, e.g. theoretical, observed.
@@ -46,13 +54,29 @@ type MedicinalProductInteraction struct {
 	Subject []dt.Reference `json:"subject,omitempty"`
 	// Type The type of the interaction e.g. drug-drug interaction, drug-food interaction, drug-lab test interaction.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for MedicinalProductInteraction.
 func (r MedicinalProductInteraction) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "MedicinalProductInteraction"
 	type Alias MedicinalProductInteraction
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for MedicinalProductInteraction.
@@ -63,106 +87,138 @@ func (r *MedicinalProductInteraction) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = MedicinalProductInteraction(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contained", "_description", "_effect", "_extension", "_id", "_implicitRules", "_incidence", "_interactant", "_language", "_management", "_meta", "_modifierExtension", "_subject", "_text", "_type", "contained", "description", "effect", "extension", "id", "implicitRules", "incidence", "interactant", "language", "management", "meta", "modifierExtension", "resourceType", "subject", "text", "type":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // MedicinalProductInteractionBuilder provides a fluent API for constructing MedicinalProductInteraction resources.
 type MedicinalProductInteractionBuilder struct {
-	resource MedicinalProductInteraction
+	resource  MedicinalProductInteraction
+	fieldsSet map[string]bool
 }
 
 // NewMedicinalProductInteraction creates a new MedicinalProductInteractionBuilder for building a MedicinalProductInteraction resource.
 func NewMedicinalProductInteraction() *MedicinalProductInteractionBuilder {
-	return &MedicinalProductInteractionBuilder{resource: MedicinalProductInteraction{ResourceType: "MedicinalProductInteraction"}}
+	return &MedicinalProductInteractionBuilder{resource: MedicinalProductInteraction{ResourceType: "MedicinalProductInteraction"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *MedicinalProductInteractionBuilder) WithId(v dt.ID) *MedicinalProductInteractionBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *MedicinalProductInteractionBuilder) WithMeta(v dt.Meta) *MedicinalProductInteractionBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *MedicinalProductInteractionBuilder) WithImplicitRules(v dt.URI) *MedicinalProductInteractionBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *MedicinalProductInteractionBuilder) WithLanguage(v dt.Code) *MedicinalProductInteractionBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *MedicinalProductInteractionBuilder) WithText(v dt.Narrative) *MedicinalProductInteractionBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *MedicinalProductInteractionBuilder) WithContained(v json.RawMessage) *MedicinalProductInteractionBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *MedicinalProductInteractionBuilder) WithExtension(v dt.Extension) *MedicinalProductInteractionBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *MedicinalProductInteractionBuilder) WithModifierExtension(v dt.Extension) *MedicinalProductInteractionBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *MedicinalProductInteractionBuilder) WithDescription(v string) *MedicinalProductInteractionBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithEffect sets the effect field.
 func (b *MedicinalProductInteractionBuilder) WithEffect(v dt.CodeableConcept) *MedicinalProductInteractionBuilder {
 	b.resource.Effect = &v
+	b.fieldsSet["effect"] = true
 	return b
 }
 
 // WithIncidence sets the incidence field.
 func (b *MedicinalProductInteractionBuilder) WithIncidence(v dt.CodeableConcept) *MedicinalProductInteractionBuilder {
 	b.resource.Incidence = &v
+	b.fieldsSet["incidence"] = true
 	return b
 }
 
 // WithInteractant adds an item to the interactant field.
 func (b *MedicinalProductInteractionBuilder) WithInteractant(v MedicinalProductInteractionInteractant) *MedicinalProductInteractionBuilder {
 	b.resource.Interactant = append(b.resource.Interactant, v)
+	b.fieldsSet["interactant"] = true
 	return b
 }
 
 // WithManagement sets the management field.
 func (b *MedicinalProductInteractionBuilder) WithManagement(v dt.CodeableConcept) *MedicinalProductInteractionBuilder {
 	b.resource.Management = &v
+	b.fieldsSet["management"] = true
 	return b
 }
 
 // WithSubject adds an item to the subject field.
 func (b *MedicinalProductInteractionBuilder) WithSubject(v dt.Reference) *MedicinalProductInteractionBuilder {
 	b.resource.Subject = append(b.resource.Subject, v)
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *MedicinalProductInteractionBuilder) WithType(v dt.CodeableConcept) *MedicinalProductInteractionBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
@@ -177,6 +233,8 @@ func (b *MedicinalProductInteractionBuilder) Build() (*MedicinalProductInteracti
 type MedicinalProductInteractionInteractant struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

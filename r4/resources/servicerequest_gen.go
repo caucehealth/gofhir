@@ -18,12 +18,18 @@ type ServiceRequest struct {
 	ResourceType string `json:"resourceType"` // Always "ServiceRequest"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,10 +42,14 @@ type ServiceRequest struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the order.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// AsNeeded If a CodeableConcept is present, it indicates the pre-condition for performing the service.  For example "pain", "on flare-up", etc.
 	AsNeeded *ServiceRequestAsNeeded `json:"-"` // polymorphic
 	// AuthoredOn When the request transitioned to being actionable.
 	AuthoredOn *dt.DateTime `json:"authoredOn,omitempty"`
+	// AuthoredOnElement contains element extensions for authoredOn.
+	AuthoredOnElement *dt.Element `json:"_authoredOn,omitempty"`
 	// BasedOn Plan/proposal/order fulfilled by this request.
 	BasedOn []dt.Reference `json:"basedOn,omitempty"`
 	// BodySite Anatomic location where the procedure should be performed. This is the target site.
@@ -50,16 +60,24 @@ type ServiceRequest struct {
 	Code *dt.CodeableConcept `json:"code,omitempty"`
 	// DoNotPerform Set this to true if the record is saying that the service/procedure should NOT be performed.
 	DoNotPerform *bool `json:"doNotPerform,omitempty"`
+	// DoNotPerformElement contains element extensions for doNotPerform.
+	DoNotPerformElement *dt.Element `json:"_doNotPerform,omitempty"`
 	// Encounter An encounter that provides additional information about the healthcare context in which this request is made.
 	Encounter *dt.Reference `json:"encounter,omitempty"`
 	// InstantiatesCanonical The URL pointing to a FHIR-defined protocol, guideline, orderset or other definition that is adhered to in whole or in part by this ServiceRequest.
 	InstantiatesCanonical []dt.Canonical `json:"instantiatesCanonical,omitempty"`
+	// InstantiatesCanonicalElement contains element extensions for each instantiatesCanonical.
+	InstantiatesCanonicalElement []dt.Element `json:"_instantiatesCanonical,omitempty"`
 	// InstantiatesUri The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this ServiceRequest.
 	InstantiatesUri []dt.URI `json:"instantiatesUri,omitempty"`
+	// InstantiatesUriElement contains element extensions for each instantiatesUri.
+	InstantiatesUriElement []dt.Element `json:"_instantiatesUri,omitempty"`
 	// Insurance Insurance plans, coverage extensions, pre-authorizations and/or pre-determinations that may be needed for delivering the requested service.
 	Insurance []dt.Reference `json:"insurance,omitempty"`
 	// Intent Whether the request is a proposal, plan, an original order or a reflex order.
 	Intent *dt.Code `json:"intent,omitempty"`
+	// IntentElement contains element extensions for intent.
+	IntentElement *dt.Element `json:"_intent,omitempty"`
 	// Location The preferred location(s) where the procedure should actually happen in coded or free text form. E.g. at home or nursing day care center.
 	Location *ServiceRequestLocation `json:"-"` // polymorphic
 	// Note Any other notes and comments made about the service request. For example, internal billing notes.
@@ -70,12 +88,16 @@ type ServiceRequest struct {
 	OrderDetail []dt.CodeableConcept `json:"orderDetail,omitempty"`
 	// PatientInstruction Instructions in terms that are understood by the patient or consumer.
 	PatientInstruction *string `json:"patientInstruction,omitempty"`
+	// PatientInstructionElement contains element extensions for patientInstruction.
+	PatientInstructionElement *dt.Element `json:"_patientInstruction,omitempty"`
 	// Performer The desired performer for doing the requested service.  For example, the surgeon, dermatopathologist, endoscopist, etc.
 	Performer []dt.Reference `json:"performer,omitempty"`
 	// PerformerType Desired type of performer for doing the requested service.
 	PerformerType *dt.CodeableConcept `json:"performerType,omitempty"`
 	// Priority Indicates how quickly the ServiceRequest should be addressed with respect to other requests.
 	Priority *dt.Code `json:"priority,omitempty"`
+	// PriorityElement contains element extensions for priority.
+	PriorityElement *dt.Element `json:"_priority,omitempty"`
 	// QuantityQuantity An amount of service being requested which can be a quantity ( for example $1,500 home modification), a ratio ( for example, 20 half day visits per month), or a range (2.0 to 1.8 Gy per fraction).
 	QuantityQuantity *dt.Quantity `json:"quantityQuantity,omitempty"`
 	// QuantityRange An amount of service being requested which can be a quantity ( for example $1,500 home modification), a ratio ( for example, 20 half day visits per month), or a range (2.0 to 1.8 Gy per fraction).
@@ -100,6 +122,8 @@ type ServiceRequest struct {
 	Subject dt.Reference `json:"subject"`
 	// SupportingInfo Additional clinical information about the patient or specimen that may influence the services or their interpretations.     This information includes diagnosis, clinical findings and other observat...
 	SupportingInfo []dt.Reference `json:"supportingInfo,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for ServiceRequest.
@@ -110,7 +134,6 @@ func (r ServiceRequest) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -154,6 +177,9 @@ func (r ServiceRequest) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
 	return json.Marshal(m)
 }
 
@@ -166,13 +192,6 @@ func (r *ServiceRequest) UnmarshalJSON(data []byte) error {
 	}
 	*r = ServiceRequest(alias)
 	// Unmarshal polymorphic fields
-	var occurrenceVal ServiceRequestOccurrence
-	if err := occurrenceVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if occurrenceVal.DateTime != nil || occurrenceVal.Period != nil || occurrenceVal.Timing != nil {
-		r.Occurrence = &occurrenceVal
-	}
 	var asNeededVal ServiceRequestAsNeeded
 	if err := asNeededVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -187,76 +206,110 @@ func (r *ServiceRequest) UnmarshalJSON(data []byte) error {
 	if locationVal.Code != nil || locationVal.Reference != nil {
 		r.Location = &locationVal
 	}
+	var occurrenceVal ServiceRequestOccurrence
+	if err := occurrenceVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if occurrenceVal.DateTime != nil || occurrenceVal.Period != nil || occurrenceVal.Timing != nil {
+		r.Occurrence = &occurrenceVal
+	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_asNeededBoolean", "_asNeededCodeableConcept", "_authoredOn", "_basedOn", "_bodySite", "_category", "_code", "_contained", "_doNotPerform", "_encounter", "_extension", "_id", "_identifier", "_implicitRules", "_instantiatesCanonical", "_instantiatesUri", "_insurance", "_intent", "_language", "_locationCode", "_locationReference", "_meta", "_modifierExtension", "_note", "_occurrenceDateTime", "_occurrencePeriod", "_occurrenceTiming", "_orderDetail", "_patientInstruction", "_performer", "_performerType", "_priority", "_quantityQuantity", "_quantityRange", "_quantityRatio", "_reasonCode", "_reasonReference", "_relevantHistory", "_replaces", "_requester", "_requisition", "_specimen", "_status", "_subject", "_supportingInfo", "_text", "asNeededBoolean", "asNeededCodeableConcept", "authoredOn", "basedOn", "bodySite", "category", "code", "contained", "doNotPerform", "encounter", "extension", "id", "identifier", "implicitRules", "instantiatesCanonical", "instantiatesUri", "insurance", "intent", "language", "locationCode", "locationReference", "meta", "modifierExtension", "note", "occurrenceDateTime", "occurrencePeriod", "occurrenceTiming", "orderDetail", "patientInstruction", "performer", "performerType", "priority", "quantityQuantity", "quantityRange", "quantityRatio", "reasonCode", "reasonReference", "relevantHistory", "replaces", "requester", "requisition", "resourceType", "specimen", "status", "subject", "supportingInfo", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // ServiceRequestBuilder provides a fluent API for constructing ServiceRequest resources.
 type ServiceRequestBuilder struct {
-	resource ServiceRequest
+	resource  ServiceRequest
+	fieldsSet map[string]bool
 }
 
 // NewServiceRequest creates a new ServiceRequestBuilder for building a ServiceRequest resource.
 func NewServiceRequest() *ServiceRequestBuilder {
-	return &ServiceRequestBuilder{resource: ServiceRequest{ResourceType: "ServiceRequest"}}
+	return &ServiceRequestBuilder{resource: ServiceRequest{ResourceType: "ServiceRequest"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *ServiceRequestBuilder) WithId(v dt.ID) *ServiceRequestBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *ServiceRequestBuilder) WithMeta(v dt.Meta) *ServiceRequestBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *ServiceRequestBuilder) WithImplicitRules(v dt.URI) *ServiceRequestBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *ServiceRequestBuilder) WithLanguage(v dt.Code) *ServiceRequestBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *ServiceRequestBuilder) WithText(v dt.Narrative) *ServiceRequestBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *ServiceRequestBuilder) WithContained(v json.RawMessage) *ServiceRequestBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *ServiceRequestBuilder) WithExtension(v dt.Extension) *ServiceRequestBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *ServiceRequestBuilder) WithModifierExtension(v dt.Extension) *ServiceRequestBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *ServiceRequestBuilder) WithIdentifier(v dt.Identifier) *ServiceRequestBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *ServiceRequestBuilder) WithStatus(v dt.Code) *ServiceRequestBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
@@ -266,6 +319,7 @@ func (b *ServiceRequestBuilder) WithAsNeededBoolean(v bool) *ServiceRequestBuild
 		b.resource.AsNeeded = &ServiceRequestAsNeeded{}
 	}
 	b.resource.AsNeeded.Boolean = &v
+	b.fieldsSet["asNeeded"] = true
 	return b
 }
 
@@ -275,72 +329,84 @@ func (b *ServiceRequestBuilder) WithAsNeededCodeableConcept(v dt.CodeableConcept
 		b.resource.AsNeeded = &ServiceRequestAsNeeded{}
 	}
 	b.resource.AsNeeded.CodeableConcept = &v
+	b.fieldsSet["asNeeded"] = true
 	return b
 }
 
 // WithAuthoredOn sets the authoredOn field.
 func (b *ServiceRequestBuilder) WithAuthoredOn(v dt.DateTime) *ServiceRequestBuilder {
 	b.resource.AuthoredOn = &v
+	b.fieldsSet["authoredOn"] = true
 	return b
 }
 
 // WithBasedOn adds an item to the basedOn field.
 func (b *ServiceRequestBuilder) WithBasedOn(v dt.Reference) *ServiceRequestBuilder {
 	b.resource.BasedOn = append(b.resource.BasedOn, v)
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithBodySite adds an item to the bodySite field.
 func (b *ServiceRequestBuilder) WithBodySite(v dt.CodeableConcept) *ServiceRequestBuilder {
 	b.resource.BodySite = append(b.resource.BodySite, v)
+	b.fieldsSet["bodySite"] = true
 	return b
 }
 
 // WithCategory adds an item to the category field.
 func (b *ServiceRequestBuilder) WithCategory(v dt.CodeableConcept) *ServiceRequestBuilder {
 	b.resource.Category = append(b.resource.Category, v)
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithCode sets the code field.
 func (b *ServiceRequestBuilder) WithCode(v dt.CodeableConcept) *ServiceRequestBuilder {
 	b.resource.Code = &v
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithDoNotPerform sets the doNotPerform field.
 func (b *ServiceRequestBuilder) WithDoNotPerform(v bool) *ServiceRequestBuilder {
 	b.resource.DoNotPerform = &v
+	b.fieldsSet["doNotPerform"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *ServiceRequestBuilder) WithEncounter(v dt.Reference) *ServiceRequestBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithInstantiatesCanonical adds an item to the instantiatesCanonical field.
 func (b *ServiceRequestBuilder) WithInstantiatesCanonical(v dt.Canonical) *ServiceRequestBuilder {
 	b.resource.InstantiatesCanonical = append(b.resource.InstantiatesCanonical, v)
+	b.fieldsSet["instantiatesCanonical"] = true
 	return b
 }
 
 // WithInstantiatesUri adds an item to the instantiatesUri field.
 func (b *ServiceRequestBuilder) WithInstantiatesUri(v dt.URI) *ServiceRequestBuilder {
 	b.resource.InstantiatesUri = append(b.resource.InstantiatesUri, v)
+	b.fieldsSet["instantiatesUri"] = true
 	return b
 }
 
 // WithInsurance adds an item to the insurance field.
 func (b *ServiceRequestBuilder) WithInsurance(v dt.Reference) *ServiceRequestBuilder {
 	b.resource.Insurance = append(b.resource.Insurance, v)
+	b.fieldsSet["insurance"] = true
 	return b
 }
 
 // WithIntent sets the intent field.
 func (b *ServiceRequestBuilder) WithIntent(v dt.Code) *ServiceRequestBuilder {
 	b.resource.Intent = &v
+	b.fieldsSet["intent"] = true
 	return b
 }
 
@@ -350,6 +416,7 @@ func (b *ServiceRequestBuilder) WithLocationCode(v []dt.CodeableConcept) *Servic
 		b.resource.Location = &ServiceRequestLocation{}
 	}
 	b.resource.Location.Code = v
+	b.fieldsSet["location"] = true
 	return b
 }
 
@@ -359,12 +426,14 @@ func (b *ServiceRequestBuilder) WithLocationReference(v []dt.Reference) *Service
 		b.resource.Location = &ServiceRequestLocation{}
 	}
 	b.resource.Location.Reference = v
+	b.fieldsSet["location"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *ServiceRequestBuilder) WithNote(v dt.Annotation) *ServiceRequestBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
@@ -374,6 +443,7 @@ func (b *ServiceRequestBuilder) WithOccurrenceDateTime(v string) *ServiceRequest
 		b.resource.Occurrence = &ServiceRequestOccurrence{}
 	}
 	b.resource.Occurrence.DateTime = &v
+	b.fieldsSet["occurrence"] = true
 	return b
 }
 
@@ -383,6 +453,7 @@ func (b *ServiceRequestBuilder) WithOccurrencePeriod(v dt.Period) *ServiceReques
 		b.resource.Occurrence = &ServiceRequestOccurrence{}
 	}
 	b.resource.Occurrence.Period = &v
+	b.fieldsSet["occurrence"] = true
 	return b
 }
 
@@ -392,168 +463,141 @@ func (b *ServiceRequestBuilder) WithOccurrenceTiming(v dt.Timing) *ServiceReques
 		b.resource.Occurrence = &ServiceRequestOccurrence{}
 	}
 	b.resource.Occurrence.Timing = &v
+	b.fieldsSet["occurrence"] = true
 	return b
 }
 
 // WithOrderDetail adds an item to the orderDetail field.
 func (b *ServiceRequestBuilder) WithOrderDetail(v dt.CodeableConcept) *ServiceRequestBuilder {
 	b.resource.OrderDetail = append(b.resource.OrderDetail, v)
+	b.fieldsSet["orderDetail"] = true
 	return b
 }
 
 // WithPatientInstruction sets the patientInstruction field.
 func (b *ServiceRequestBuilder) WithPatientInstruction(v string) *ServiceRequestBuilder {
 	b.resource.PatientInstruction = &v
+	b.fieldsSet["patientInstruction"] = true
 	return b
 }
 
 // WithPerformer adds an item to the performer field.
 func (b *ServiceRequestBuilder) WithPerformer(v dt.Reference) *ServiceRequestBuilder {
 	b.resource.Performer = append(b.resource.Performer, v)
+	b.fieldsSet["performer"] = true
 	return b
 }
 
 // WithPerformerType sets the performerType field.
 func (b *ServiceRequestBuilder) WithPerformerType(v dt.CodeableConcept) *ServiceRequestBuilder {
 	b.resource.PerformerType = &v
+	b.fieldsSet["performerType"] = true
 	return b
 }
 
 // WithPriority sets the priority field.
 func (b *ServiceRequestBuilder) WithPriority(v dt.Code) *ServiceRequestBuilder {
 	b.resource.Priority = &v
+	b.fieldsSet["priority"] = true
 	return b
 }
 
 // WithQuantityQuantity sets the quantityQuantity field.
 func (b *ServiceRequestBuilder) WithQuantityQuantity(v dt.Quantity) *ServiceRequestBuilder {
 	b.resource.QuantityQuantity = &v
+	b.fieldsSet["quantityQuantity"] = true
 	return b
 }
 
 // WithQuantityRange sets the quantityRange field.
 func (b *ServiceRequestBuilder) WithQuantityRange(v dt.Range) *ServiceRequestBuilder {
 	b.resource.QuantityRange = &v
+	b.fieldsSet["quantityRange"] = true
 	return b
 }
 
 // WithQuantityRatio sets the quantityRatio field.
 func (b *ServiceRequestBuilder) WithQuantityRatio(v dt.Ratio) *ServiceRequestBuilder {
 	b.resource.QuantityRatio = &v
+	b.fieldsSet["quantityRatio"] = true
 	return b
 }
 
 // WithReasonCode adds an item to the reasonCode field.
 func (b *ServiceRequestBuilder) WithReasonCode(v dt.CodeableConcept) *ServiceRequestBuilder {
 	b.resource.ReasonCode = append(b.resource.ReasonCode, v)
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithReasonReference adds an item to the reasonReference field.
 func (b *ServiceRequestBuilder) WithReasonReference(v dt.Reference) *ServiceRequestBuilder {
 	b.resource.ReasonReference = append(b.resource.ReasonReference, v)
+	b.fieldsSet["reasonReference"] = true
 	return b
 }
 
 // WithRelevantHistory adds an item to the relevantHistory field.
 func (b *ServiceRequestBuilder) WithRelevantHistory(v dt.Reference) *ServiceRequestBuilder {
 	b.resource.RelevantHistory = append(b.resource.RelevantHistory, v)
+	b.fieldsSet["relevantHistory"] = true
 	return b
 }
 
 // WithReplaces adds an item to the replaces field.
 func (b *ServiceRequestBuilder) WithReplaces(v dt.Reference) *ServiceRequestBuilder {
 	b.resource.Replaces = append(b.resource.Replaces, v)
+	b.fieldsSet["replaces"] = true
 	return b
 }
 
 // WithRequester sets the requester field.
 func (b *ServiceRequestBuilder) WithRequester(v dt.Reference) *ServiceRequestBuilder {
 	b.resource.Requester = &v
+	b.fieldsSet["requester"] = true
 	return b
 }
 
 // WithRequisition sets the requisition field.
 func (b *ServiceRequestBuilder) WithRequisition(v dt.Identifier) *ServiceRequestBuilder {
 	b.resource.Requisition = &v
+	b.fieldsSet["requisition"] = true
 	return b
 }
 
 // WithSpecimen adds an item to the specimen field.
 func (b *ServiceRequestBuilder) WithSpecimen(v dt.Reference) *ServiceRequestBuilder {
 	b.resource.Specimen = append(b.resource.Specimen, v)
+	b.fieldsSet["specimen"] = true
 	return b
 }
 
 // WithSubject sets the subject field.
 func (b *ServiceRequestBuilder) WithSubject(v dt.Reference) *ServiceRequestBuilder {
 	b.resource.Subject = v
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithSupportingInfo adds an item to the supportingInfo field.
 func (b *ServiceRequestBuilder) WithSupportingInfo(v dt.Reference) *ServiceRequestBuilder {
 	b.resource.SupportingInfo = append(b.resource.SupportingInfo, v)
+	b.fieldsSet["supportingInfo"] = true
 	return b
 }
 
 // Build returns the constructed ServiceRequest. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *ServiceRequestBuilder) Build() (*ServiceRequest, error) {
+	var missing []string
+	if !b.fieldsSet["subject"] {
+		missing = append(missing, "subject")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("ServiceRequest: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
-}
-
-// ServiceRequestOccurrence represents a polymorphic choice type in FHIR.
-type ServiceRequestOccurrence struct {
-	DateTime *string    `json:"occurrenceDateTime,omitempty"` // The date/time at which the requested service should occur.
-	Period   *dt.Period `json:"occurrencePeriod,omitempty"`   // The date/time at which the requested service should occur.
-	Timing   *dt.Timing `json:"occurrenceTiming,omitempty"`   // The date/time at which the requested service should occur.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ServiceRequestOccurrence.
-func (v ServiceRequestOccurrence) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.DateTime != nil {
-		m["occurrenceDateTime"] = v.DateTime
-	}
-	if v.Period != nil {
-		m["occurrencePeriod"] = v.Period
-	}
-	if v.Timing != nil {
-		m["occurrenceTiming"] = v.Timing
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ServiceRequestOccurrence.
-func (v *ServiceRequestOccurrence) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["occurrenceDateTime"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling occurrenceDateTime: %w", err)
-		}
-		v.DateTime = &val
-	}
-	if d, ok := raw["occurrencePeriod"]; ok {
-		var val dt.Period
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling occurrencePeriod: %w", err)
-		}
-		v.Period = &val
-	}
-	if d, ok := raw["occurrenceTiming"]; ok {
-		var val dt.Timing
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling occurrenceTiming: %w", err)
-		}
-		v.Timing = &val
-	}
-	return nil
 }
 
 // ServiceRequestAsNeeded represents a polymorphic choice type in FHIR.
@@ -634,6 +678,58 @@ func (v *ServiceRequestLocation) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling locationReference: %w", err)
 		}
 		v.Reference = val
+	}
+	return nil
+}
+
+// ServiceRequestOccurrence represents a polymorphic choice type in FHIR.
+type ServiceRequestOccurrence struct {
+	DateTime *string    `json:"occurrenceDateTime,omitempty"` // The date/time at which the requested service should occur.
+	Period   *dt.Period `json:"occurrencePeriod,omitempty"`   // The date/time at which the requested service should occur.
+	Timing   *dt.Timing `json:"occurrenceTiming,omitempty"`   // The date/time at which the requested service should occur.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ServiceRequestOccurrence.
+func (v ServiceRequestOccurrence) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.DateTime != nil {
+		m["occurrenceDateTime"] = v.DateTime
+	}
+	if v.Period != nil {
+		m["occurrencePeriod"] = v.Period
+	}
+	if v.Timing != nil {
+		m["occurrenceTiming"] = v.Timing
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ServiceRequestOccurrence.
+func (v *ServiceRequestOccurrence) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["occurrenceDateTime"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling occurrenceDateTime: %w", err)
+		}
+		v.DateTime = &val
+	}
+	if d, ok := raw["occurrencePeriod"]; ok {
+		var val dt.Period
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling occurrencePeriod: %w", err)
+		}
+		v.Period = &val
+	}
+	if d, ok := raw["occurrenceTiming"]; ok {
+		var val dt.Timing
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling occurrenceTiming: %w", err)
+		}
+		v.Timing = &val
 	}
 	return nil
 }

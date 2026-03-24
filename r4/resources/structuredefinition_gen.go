@@ -17,12 +17,18 @@ type StructureDefinition struct {
 	ResourceType string `json:"resourceType"` // Always "StructureDefinition"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,63 +41,115 @@ type StructureDefinition struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this structure definition. Enables tracking the life-cycle of the content.
 	Status *StructureDefinitionStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Abstract Whether structure this definition describes is abstract or not  - that is, whether the structure is not intended to be instantiated. For Resources and Data types, abstract types will never be excha...
 	Abstract *bool `json:"abstract,omitempty"`
+	// AbstractElement contains element extensions for abstract.
+	AbstractElement *dt.Element `json:"_abstract,omitempty"`
 	// BaseDefinition An absolute URI that is the base structure from which this type is derived, either by specialization or constraint.
 	BaseDefinition *dt.Canonical `json:"baseDefinition,omitempty"`
+	// BaseDefinitionElement contains element extensions for baseDefinition.
+	BaseDefinitionElement *dt.Element `json:"_baseDefinition,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Context Identifies the types of resource or data type elements to which the extension can be applied.
 	Context []StructureDefinitionContext `json:"context,omitempty"`
 	// ContextInvariant A set of rules as FHIRPath Invariants about when the extension can be used (e.g. co-occurrence variants for the extension). All the rules must be true.
 	ContextInvariant []string `json:"contextInvariant,omitempty"`
+	// ContextInvariantElement contains element extensions for each contextInvariant.
+	ContextInvariantElement []dt.Element `json:"_contextInvariant,omitempty"`
 	// Copyright A copyright statement relating to the structure definition and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the structure definition.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date  (and optionally time) when the structure definition was published. The date must change when the business version changes and it must change if the status code changes. In addition, it sh...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Derivation How the type relates to the baseDefinition.
 	Derivation *StructureDefinitionDerivation `json:"derivation,omitempty"`
+	// DerivationElement contains element extensions for derivation.
+	DerivationElement *dt.Element `json:"_derivation,omitempty"`
 	// Description A free text natural language description of the structure definition from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Differential A differential view is expressed relative to the base StructureDefinition - a statement of differences that it applies.
 	Differential *StructureDefinitionDifferential `json:"differential,omitempty"`
 	// Experimental A Boolean value to indicate that this structure definition is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
+	// ExperimentalElement contains element extensions for experimental.
+	ExperimentalElement *dt.Element `json:"_experimental,omitempty"`
 	// FhirVersion The version of the FHIR specification on which this StructureDefinition is based - this is the formal version of the specification, without the revision number, e.g. [publication].[major].[minor], ...
 	FhirVersion *StructureDefinitionFhirVersion `json:"fhirVersion,omitempty"`
+	// FhirVersionElement contains element extensions for fhirVersion.
+	FhirVersionElement *dt.Element `json:"_fhirVersion,omitempty"`
 	// Jurisdiction A legal or geographic region in which the structure definition is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Keyword A set of key words or terms from external terminologies that may be used to assist with indexing and searching of templates nby describing the use of this structure definition, or the content it de...
 	Keyword []dt.Coding `json:"keyword,omitempty"`
 	// Kind Defines the kind of structure that this definition is describing.
 	Kind *StructureDefinitionKind `json:"kind,omitempty"`
+	// KindElement contains element extensions for kind.
+	KindElement *dt.Element `json:"_kind,omitempty"`
 	// Mapping An external specification that the content is mapped to.
 	Mapping []StructureDefinitionMapping `json:"mapping,omitempty"`
 	// Name A natural language name identifying the structure definition. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Publisher The name of the organization or individual that published the structure definition.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Purpose Explanation of why this structure definition is needed and why it has been designed as it has.
 	Purpose *dt.Markdown `json:"purpose,omitempty"`
+	// PurposeElement contains element extensions for purpose.
+	PurposeElement *dt.Element `json:"_purpose,omitempty"`
 	// Snapshot A snapshot view is expressed in a standalone form that can be used and interpreted without considering the base StructureDefinition.
 	Snapshot *StructureDefinitionSnapshot `json:"snapshot,omitempty"`
 	// Title A short, descriptive, user-friendly title for the structure definition.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Type The type this structure describes. If the derivation kind is 'specialization' then this is the master definition for a type, and there is always one of these (a data type, an extension, a resource,...
 	Type *dt.URI `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 	// Url An absolute URI that is used to identify this structure definition when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globa...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the structure definition when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the struc...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for StructureDefinition.
 func (r StructureDefinition) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "StructureDefinition"
 	type Alias StructureDefinition
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for StructureDefinition.
@@ -102,226 +160,278 @@ func (r *StructureDefinition) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = StructureDefinition(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_abstract", "_baseDefinition", "_contact", "_contained", "_context", "_contextInvariant", "_copyright", "_date", "_derivation", "_description", "_differential", "_experimental", "_extension", "_fhirVersion", "_id", "_identifier", "_implicitRules", "_jurisdiction", "_keyword", "_kind", "_language", "_mapping", "_meta", "_modifierExtension", "_name", "_publisher", "_purpose", "_snapshot", "_status", "_text", "_title", "_type", "_url", "_useContext", "_version", "abstract", "baseDefinition", "contact", "contained", "context", "contextInvariant", "copyright", "date", "derivation", "description", "differential", "experimental", "extension", "fhirVersion", "id", "identifier", "implicitRules", "jurisdiction", "keyword", "kind", "language", "mapping", "meta", "modifierExtension", "name", "publisher", "purpose", "resourceType", "snapshot", "status", "text", "title", "type", "url", "useContext", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // StructureDefinitionBuilder provides a fluent API for constructing StructureDefinition resources.
 type StructureDefinitionBuilder struct {
-	resource StructureDefinition
+	resource  StructureDefinition
+	fieldsSet map[string]bool
 }
 
 // NewStructureDefinition creates a new StructureDefinitionBuilder for building a StructureDefinition resource.
 func NewStructureDefinition() *StructureDefinitionBuilder {
-	return &StructureDefinitionBuilder{resource: StructureDefinition{ResourceType: "StructureDefinition"}}
+	return &StructureDefinitionBuilder{resource: StructureDefinition{ResourceType: "StructureDefinition"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *StructureDefinitionBuilder) WithId(v dt.ID) *StructureDefinitionBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *StructureDefinitionBuilder) WithMeta(v dt.Meta) *StructureDefinitionBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *StructureDefinitionBuilder) WithImplicitRules(v dt.URI) *StructureDefinitionBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *StructureDefinitionBuilder) WithLanguage(v dt.Code) *StructureDefinitionBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *StructureDefinitionBuilder) WithText(v dt.Narrative) *StructureDefinitionBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *StructureDefinitionBuilder) WithContained(v json.RawMessage) *StructureDefinitionBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *StructureDefinitionBuilder) WithExtension(v dt.Extension) *StructureDefinitionBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *StructureDefinitionBuilder) WithModifierExtension(v dt.Extension) *StructureDefinitionBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *StructureDefinitionBuilder) WithIdentifier(v dt.Identifier) *StructureDefinitionBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *StructureDefinitionBuilder) WithStatus(v StructureDefinitionStatus) *StructureDefinitionBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAbstract sets the abstract field.
 func (b *StructureDefinitionBuilder) WithAbstract(v bool) *StructureDefinitionBuilder {
 	b.resource.Abstract = &v
+	b.fieldsSet["abstract"] = true
 	return b
 }
 
 // WithBaseDefinition sets the baseDefinition field.
 func (b *StructureDefinitionBuilder) WithBaseDefinition(v dt.Canonical) *StructureDefinitionBuilder {
 	b.resource.BaseDefinition = &v
+	b.fieldsSet["baseDefinition"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *StructureDefinitionBuilder) WithContact(v dt.ContactDetail) *StructureDefinitionBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithContext adds an item to the context field.
 func (b *StructureDefinitionBuilder) WithContext(v StructureDefinitionContext) *StructureDefinitionBuilder {
 	b.resource.Context = append(b.resource.Context, v)
+	b.fieldsSet["context"] = true
 	return b
 }
 
 // WithContextInvariant adds an item to the contextInvariant field.
 func (b *StructureDefinitionBuilder) WithContextInvariant(v string) *StructureDefinitionBuilder {
 	b.resource.ContextInvariant = append(b.resource.ContextInvariant, v)
+	b.fieldsSet["contextInvariant"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *StructureDefinitionBuilder) WithCopyright(v dt.Markdown) *StructureDefinitionBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *StructureDefinitionBuilder) WithDate(v dt.DateTime) *StructureDefinitionBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDerivation sets the derivation field.
 func (b *StructureDefinitionBuilder) WithDerivation(v StructureDefinitionDerivation) *StructureDefinitionBuilder {
 	b.resource.Derivation = &v
+	b.fieldsSet["derivation"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *StructureDefinitionBuilder) WithDescription(v dt.Markdown) *StructureDefinitionBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithDifferential sets the differential field.
 func (b *StructureDefinitionBuilder) WithDifferential(v StructureDefinitionDifferential) *StructureDefinitionBuilder {
 	b.resource.Differential = &v
+	b.fieldsSet["differential"] = true
 	return b
 }
 
 // WithExperimental sets the experimental field.
 func (b *StructureDefinitionBuilder) WithExperimental(v bool) *StructureDefinitionBuilder {
 	b.resource.Experimental = &v
+	b.fieldsSet["experimental"] = true
 	return b
 }
 
 // WithFhirVersion sets the fhirVersion field.
 func (b *StructureDefinitionBuilder) WithFhirVersion(v StructureDefinitionFhirVersion) *StructureDefinitionBuilder {
 	b.resource.FhirVersion = &v
+	b.fieldsSet["fhirVersion"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *StructureDefinitionBuilder) WithJurisdiction(v dt.CodeableConcept) *StructureDefinitionBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithKeyword adds an item to the keyword field.
 func (b *StructureDefinitionBuilder) WithKeyword(v dt.Coding) *StructureDefinitionBuilder {
 	b.resource.Keyword = append(b.resource.Keyword, v)
+	b.fieldsSet["keyword"] = true
 	return b
 }
 
 // WithKind sets the kind field.
 func (b *StructureDefinitionBuilder) WithKind(v StructureDefinitionKind) *StructureDefinitionBuilder {
 	b.resource.Kind = &v
+	b.fieldsSet["kind"] = true
 	return b
 }
 
 // WithMapping adds an item to the mapping field.
 func (b *StructureDefinitionBuilder) WithMapping(v StructureDefinitionMapping) *StructureDefinitionBuilder {
 	b.resource.Mapping = append(b.resource.Mapping, v)
+	b.fieldsSet["mapping"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *StructureDefinitionBuilder) WithName(v string) *StructureDefinitionBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *StructureDefinitionBuilder) WithPublisher(v string) *StructureDefinitionBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithPurpose sets the purpose field.
 func (b *StructureDefinitionBuilder) WithPurpose(v dt.Markdown) *StructureDefinitionBuilder {
 	b.resource.Purpose = &v
+	b.fieldsSet["purpose"] = true
 	return b
 }
 
 // WithSnapshot sets the snapshot field.
 func (b *StructureDefinitionBuilder) WithSnapshot(v StructureDefinitionSnapshot) *StructureDefinitionBuilder {
 	b.resource.Snapshot = &v
+	b.fieldsSet["snapshot"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *StructureDefinitionBuilder) WithTitle(v string) *StructureDefinitionBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *StructureDefinitionBuilder) WithType(v dt.URI) *StructureDefinitionBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *StructureDefinitionBuilder) WithUrl(v dt.URI) *StructureDefinitionBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *StructureDefinitionBuilder) WithUseContext(v dt.UsageContext) *StructureDefinitionBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *StructureDefinitionBuilder) WithVersion(v string) *StructureDefinitionBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
@@ -336,20 +446,28 @@ func (b *StructureDefinitionBuilder) Build() (*StructureDefinition, error) {
 type StructureDefinitionContext struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Expression An expression that defines where an extension can be used in resources.
 	Expression *string `json:"expression,omitempty"`
+	// ExpressionElement contains element extensions for expression.
+	ExpressionElement *dt.Element `json:"_expression,omitempty"`
 	// Type Defines how to interpret the expression that defines what the context of the extension is.
 	Type *StructureDefinitionContextType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 }
 
 // StructureDefinitionDifferential A definition of a FHIR structure. This resource is used to describe the underlying resources, data types defined in FHIR, and also for describing extensions and constraints on resources and data ty...
 type StructureDefinitionDifferential struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -362,24 +480,36 @@ type StructureDefinitionDifferential struct {
 type StructureDefinitionMapping struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Comment Comments about this mapping, including version notes, issues, scope limitations, and other important notes for usage.
 	Comment *string `json:"comment,omitempty"`
+	// CommentElement contains element extensions for comment.
+	CommentElement *dt.Element `json:"_comment,omitempty"`
 	// Identity An Internal id that is used to identify this mapping set when specific mappings are made.
 	Identity *dt.ID `json:"identity,omitempty"`
+	// IdentityElement contains element extensions for identity.
+	IdentityElement *dt.Element `json:"_identity,omitempty"`
 	// Name A name for the specification that is being mapped to.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Uri An absolute URI that identifies the specification that this mapping is expressed to.
 	Uri *dt.URI `json:"uri,omitempty"`
+	// UriElement contains element extensions for uri.
+	UriElement *dt.Element `json:"_uri,omitempty"`
 }
 
 // StructureDefinitionSnapshot A definition of a FHIR structure. This resource is used to describe the underlying resources, data types defined in FHIR, and also for describing extensions and constraints on resources and data ty...
 type StructureDefinitionSnapshot struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

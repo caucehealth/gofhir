@@ -17,12 +17,18 @@ type Practitioner struct {
 	ResourceType string `json:"resourceType"` // Always "Practitioner"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,14 +41,20 @@ type Practitioner struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Active Whether this practitioner's record is in active use.
 	Active *bool `json:"active,omitempty"`
+	// ActiveElement contains element extensions for active.
+	ActiveElement *dt.Element `json:"_active,omitempty"`
 	// Address Address(es) of the practitioner that are not role specific (typically home address). Work addresses are not typically entered in this property as they are usually role dependent.
 	Address []dt.Address `json:"address,omitempty"`
 	// BirthDate The date of birth for the practitioner.
 	BirthDate *dt.Date `json:"birthDate,omitempty"`
+	// BirthDateElement contains element extensions for birthDate.
+	BirthDateElement *dt.Element `json:"_birthDate,omitempty"`
 	// Communication A language the practitioner can use in patient communication.
 	Communication []dt.CodeableConcept `json:"communication,omitempty"`
 	// Gender Administrative Gender - the gender that the person is considered to have for administration and record keeping purposes.
 	Gender *AdministrativeGender `json:"gender,omitempty"`
+	// GenderElement contains element extensions for gender.
+	GenderElement *dt.Element `json:"_gender,omitempty"`
 	// Name The name(s) associated with the practitioner.
 	Name []dt.HumanName `json:"name,omitempty"`
 	// Photo Image of the person.
@@ -51,13 +63,29 @@ type Practitioner struct {
 	Qualification []PractitionerQualification `json:"qualification,omitempty"`
 	// Telecom A contact detail for the practitioner, e.g. a telephone number or an email address.
 	Telecom []dt.ContactPoint `json:"telecom,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Practitioner.
 func (r Practitioner) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Practitioner"
 	type Alias Practitioner
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Practitioner.
@@ -68,17 +96,34 @@ func (r *Practitioner) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Practitioner(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_active", "_address", "_birthDate", "_communication", "_contained", "_extension", "_gender", "_id", "_identifier", "_implicitRules", "_language", "_meta", "_modifierExtension", "_name", "_photo", "_qualification", "_telecom", "_text", "active", "address", "birthDate", "communication", "contained", "extension", "gender", "id", "identifier", "implicitRules", "language", "meta", "modifierExtension", "name", "photo", "qualification", "resourceType", "telecom", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // PractitionerBuilder provides a fluent API for constructing Practitioner resources.
 type PractitionerBuilder struct {
-	resource Practitioner
+	resource  Practitioner
+	fieldsSet map[string]bool
 }
 
 // NewPractitioner creates a new PractitionerBuilder for building a Practitioner resource.
 func NewPractitioner() *PractitionerBuilder {
-	return &PractitionerBuilder{resource: Practitioner{ResourceType: "Practitioner"}}
+	return &PractitionerBuilder{resource: Practitioner{ResourceType: "Practitioner"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithName adds a human name to the practitioner.
@@ -88,108 +133,126 @@ func (b *PractitionerBuilder) WithName(given, family string) *PractitionerBuilde
 		Family: &family,
 	}
 	b.resource.Name = append(b.resource.Name, name)
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithId sets the id field.
 func (b *PractitionerBuilder) WithId(v dt.ID) *PractitionerBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *PractitionerBuilder) WithMeta(v dt.Meta) *PractitionerBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *PractitionerBuilder) WithImplicitRules(v dt.URI) *PractitionerBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *PractitionerBuilder) WithLanguage(v dt.Code) *PractitionerBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *PractitionerBuilder) WithText(v dt.Narrative) *PractitionerBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *PractitionerBuilder) WithContained(v json.RawMessage) *PractitionerBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *PractitionerBuilder) WithExtension(v dt.Extension) *PractitionerBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *PractitionerBuilder) WithModifierExtension(v dt.Extension) *PractitionerBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *PractitionerBuilder) WithIdentifier(v dt.Identifier) *PractitionerBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithActive sets the active field.
 func (b *PractitionerBuilder) WithActive(v bool) *PractitionerBuilder {
 	b.resource.Active = &v
+	b.fieldsSet["active"] = true
 	return b
 }
 
 // WithAddress adds an item to the address field.
 func (b *PractitionerBuilder) WithAddress(v dt.Address) *PractitionerBuilder {
 	b.resource.Address = append(b.resource.Address, v)
+	b.fieldsSet["address"] = true
 	return b
 }
 
 // WithBirthDate sets the birthDate field.
 func (b *PractitionerBuilder) WithBirthDate(v dt.Date) *PractitionerBuilder {
 	b.resource.BirthDate = &v
+	b.fieldsSet["birthDate"] = true
 	return b
 }
 
 // WithCommunication adds an item to the communication field.
 func (b *PractitionerBuilder) WithCommunication(v dt.CodeableConcept) *PractitionerBuilder {
 	b.resource.Communication = append(b.resource.Communication, v)
+	b.fieldsSet["communication"] = true
 	return b
 }
 
 // WithGender sets the gender field.
 func (b *PractitionerBuilder) WithGender(v AdministrativeGender) *PractitionerBuilder {
 	b.resource.Gender = &v
+	b.fieldsSet["gender"] = true
 	return b
 }
 
 // WithPhoto adds an item to the photo field.
 func (b *PractitionerBuilder) WithPhoto(v dt.Attachment) *PractitionerBuilder {
 	b.resource.Photo = append(b.resource.Photo, v)
+	b.fieldsSet["photo"] = true
 	return b
 }
 
 // WithQualification adds an item to the qualification field.
 func (b *PractitionerBuilder) WithQualification(v PractitionerQualification) *PractitionerBuilder {
 	b.resource.Qualification = append(b.resource.Qualification, v)
+	b.fieldsSet["qualification"] = true
 	return b
 }
 
 // WithTelecom adds an item to the telecom field.
 func (b *PractitionerBuilder) WithTelecom(v dt.ContactPoint) *PractitionerBuilder {
 	b.resource.Telecom = append(b.resource.Telecom, v)
+	b.fieldsSet["telecom"] = true
 	return b
 }
 
@@ -204,6 +267,8 @@ func (b *PractitionerBuilder) Build() (*Practitioner, error) {
 type PractitionerQualification struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

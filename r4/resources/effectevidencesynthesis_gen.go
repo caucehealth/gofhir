@@ -7,6 +7,7 @@ package resources
 
 import (
 	"encoding/json"
+	"fmt"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
@@ -17,12 +18,18 @@ type EffectEvidenceSynthesis struct {
 	ResourceType string `json:"resourceType"` // Always "EffectEvidenceSynthesis"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,8 +42,12 @@ type EffectEvidenceSynthesis struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this effect evidence synthesis. Enables tracking the life-cycle of the content.
 	Status *EffectEvidenceSynthesisStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
+	// ApprovalDateElement contains element extensions for approvalDate.
+	ApprovalDateElement *dt.Element `json:"_approvalDate,omitempty"`
 	// Author An individiual or organization primarily involved in the creation and maintenance of the content.
 	Author []dt.ContactDetail `json:"author,omitempty"`
 	// Certainty A description of the certainty of the effect estimate.
@@ -45,10 +56,16 @@ type EffectEvidenceSynthesis struct {
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the effect evidence synthesis and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the effect evidence synthesis.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
+	// CopyrightElement contains element extensions for copyright.
+	CopyrightElement *dt.Element `json:"_copyright,omitempty"`
 	// Date The date  (and optionally time) when the effect evidence synthesis was published. The date must change when the business version changes and it must change if the status code changes. In addition, ...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description A free text natural language description of the effect evidence synthesis from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Editor An individual or organization primarily responsible for internal coherence of the content.
 	Editor []dt.ContactDetail `json:"editor,omitempty"`
 	// EffectEstimate The estimated effect of the exposure variant.
@@ -65,8 +82,12 @@ type EffectEvidenceSynthesis struct {
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// LastReviewDate The date on which the resource content was last reviewed. Review happens periodically after approval but does not change the original approval date.
 	LastReviewDate *dt.Date `json:"lastReviewDate,omitempty"`
+	// LastReviewDateElement contains element extensions for lastReviewDate.
+	LastReviewDateElement *dt.Element `json:"_lastReviewDate,omitempty"`
 	// Name A natural language name identifying the effect evidence synthesis. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Note A human-readable string to clarify or explain concepts about the resource.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// Outcome A reference to a EvidenceVariable resomece that defines the outcome for the research.
@@ -75,6 +96,8 @@ type EffectEvidenceSynthesis struct {
 	Population dt.Reference `json:"population"`
 	// Publisher The name of the organization or individual that published the effect evidence synthesis.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// RelatedArtifact Related artifacts such as additional documentation, justification, or bibliographic references.
 	RelatedArtifact []dt.RelatedArtifact `json:"relatedArtifact,omitempty"`
 	// ResultsByExposure A description of the results for each exposure considered in the effect estimate.
@@ -89,21 +112,43 @@ type EffectEvidenceSynthesis struct {
 	SynthesisType *dt.CodeableConcept `json:"synthesisType,omitempty"`
 	// Title A short, descriptive, user-friendly title for the effect evidence synthesis.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *dt.Element `json:"_title,omitempty"`
 	// Topic Descriptive topics related to the content of the EffectEvidenceSynthesis. Topics provide a high-level categorization grouping types of EffectEvidenceSynthesiss that can be useful for filtering and ...
 	Topic []dt.CodeableConcept `json:"topic,omitempty"`
 	// Url An absolute URI that is used to identify this effect evidence synthesis when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be ...
 	Url *dt.URI `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *dt.Element `json:"_url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// Version The identifier that is used to identify this version of the effect evidence synthesis when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the ...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *dt.Element `json:"_version,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for EffectEvidenceSynthesis.
 func (r EffectEvidenceSynthesis) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "EffectEvidenceSynthesis"
 	type Alias EffectEvidenceSynthesis
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for EffectEvidenceSynthesis.
@@ -114,268 +159,342 @@ func (r *EffectEvidenceSynthesis) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = EffectEvidenceSynthesis(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_approvalDate", "_author", "_certainty", "_contact", "_contained", "_copyright", "_date", "_description", "_editor", "_effectEstimate", "_effectivePeriod", "_endorser", "_exposure", "_exposureAlternative", "_extension", "_id", "_identifier", "_implicitRules", "_jurisdiction", "_language", "_lastReviewDate", "_meta", "_modifierExtension", "_name", "_note", "_outcome", "_population", "_publisher", "_relatedArtifact", "_resultsByExposure", "_reviewer", "_sampleSize", "_status", "_studyType", "_synthesisType", "_text", "_title", "_topic", "_url", "_useContext", "_version", "approvalDate", "author", "certainty", "contact", "contained", "copyright", "date", "description", "editor", "effectEstimate", "effectivePeriod", "endorser", "exposure", "exposureAlternative", "extension", "id", "identifier", "implicitRules", "jurisdiction", "language", "lastReviewDate", "meta", "modifierExtension", "name", "note", "outcome", "population", "publisher", "relatedArtifact", "resourceType", "resultsByExposure", "reviewer", "sampleSize", "status", "studyType", "synthesisType", "text", "title", "topic", "url", "useContext", "version":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // EffectEvidenceSynthesisBuilder provides a fluent API for constructing EffectEvidenceSynthesis resources.
 type EffectEvidenceSynthesisBuilder struct {
-	resource EffectEvidenceSynthesis
+	resource  EffectEvidenceSynthesis
+	fieldsSet map[string]bool
 }
 
 // NewEffectEvidenceSynthesis creates a new EffectEvidenceSynthesisBuilder for building a EffectEvidenceSynthesis resource.
 func NewEffectEvidenceSynthesis() *EffectEvidenceSynthesisBuilder {
-	return &EffectEvidenceSynthesisBuilder{resource: EffectEvidenceSynthesis{ResourceType: "EffectEvidenceSynthesis"}}
+	return &EffectEvidenceSynthesisBuilder{resource: EffectEvidenceSynthesis{ResourceType: "EffectEvidenceSynthesis"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *EffectEvidenceSynthesisBuilder) WithId(v dt.ID) *EffectEvidenceSynthesisBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *EffectEvidenceSynthesisBuilder) WithMeta(v dt.Meta) *EffectEvidenceSynthesisBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *EffectEvidenceSynthesisBuilder) WithImplicitRules(v dt.URI) *EffectEvidenceSynthesisBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *EffectEvidenceSynthesisBuilder) WithLanguage(v dt.Code) *EffectEvidenceSynthesisBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *EffectEvidenceSynthesisBuilder) WithText(v dt.Narrative) *EffectEvidenceSynthesisBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *EffectEvidenceSynthesisBuilder) WithContained(v json.RawMessage) *EffectEvidenceSynthesisBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *EffectEvidenceSynthesisBuilder) WithExtension(v dt.Extension) *EffectEvidenceSynthesisBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *EffectEvidenceSynthesisBuilder) WithModifierExtension(v dt.Extension) *EffectEvidenceSynthesisBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *EffectEvidenceSynthesisBuilder) WithIdentifier(v dt.Identifier) *EffectEvidenceSynthesisBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *EffectEvidenceSynthesisBuilder) WithStatus(v EffectEvidenceSynthesisStatus) *EffectEvidenceSynthesisBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithApprovalDate sets the approvalDate field.
 func (b *EffectEvidenceSynthesisBuilder) WithApprovalDate(v dt.Date) *EffectEvidenceSynthesisBuilder {
 	b.resource.ApprovalDate = &v
+	b.fieldsSet["approvalDate"] = true
 	return b
 }
 
 // WithAuthor adds an item to the author field.
 func (b *EffectEvidenceSynthesisBuilder) WithAuthor(v dt.ContactDetail) *EffectEvidenceSynthesisBuilder {
 	b.resource.Author = append(b.resource.Author, v)
+	b.fieldsSet["author"] = true
 	return b
 }
 
 // WithCertainty adds an item to the certainty field.
 func (b *EffectEvidenceSynthesisBuilder) WithCertainty(v EffectEvidenceSynthesisCertainty) *EffectEvidenceSynthesisBuilder {
 	b.resource.Certainty = append(b.resource.Certainty, v)
+	b.fieldsSet["certainty"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *EffectEvidenceSynthesisBuilder) WithContact(v dt.ContactDetail) *EffectEvidenceSynthesisBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithCopyright sets the copyright field.
 func (b *EffectEvidenceSynthesisBuilder) WithCopyright(v dt.Markdown) *EffectEvidenceSynthesisBuilder {
 	b.resource.Copyright = &v
+	b.fieldsSet["copyright"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *EffectEvidenceSynthesisBuilder) WithDate(v dt.DateTime) *EffectEvidenceSynthesisBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *EffectEvidenceSynthesisBuilder) WithDescription(v dt.Markdown) *EffectEvidenceSynthesisBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithEditor adds an item to the editor field.
 func (b *EffectEvidenceSynthesisBuilder) WithEditor(v dt.ContactDetail) *EffectEvidenceSynthesisBuilder {
 	b.resource.Editor = append(b.resource.Editor, v)
+	b.fieldsSet["editor"] = true
 	return b
 }
 
 // WithEffectEstimate adds an item to the effectEstimate field.
 func (b *EffectEvidenceSynthesisBuilder) WithEffectEstimate(v EffectEvidenceSynthesisEffectEstimate) *EffectEvidenceSynthesisBuilder {
 	b.resource.EffectEstimate = append(b.resource.EffectEstimate, v)
+	b.fieldsSet["effectEstimate"] = true
 	return b
 }
 
 // WithEffectivePeriod sets the effectivePeriod field.
 func (b *EffectEvidenceSynthesisBuilder) WithEffectivePeriod(v dt.Period) *EffectEvidenceSynthesisBuilder {
 	b.resource.EffectivePeriod = &v
+	b.fieldsSet["effectivePeriod"] = true
 	return b
 }
 
 // WithEndorser adds an item to the endorser field.
 func (b *EffectEvidenceSynthesisBuilder) WithEndorser(v dt.ContactDetail) *EffectEvidenceSynthesisBuilder {
 	b.resource.Endorser = append(b.resource.Endorser, v)
+	b.fieldsSet["endorser"] = true
 	return b
 }
 
 // WithExposure sets the exposure field.
 func (b *EffectEvidenceSynthesisBuilder) WithExposure(v dt.Reference) *EffectEvidenceSynthesisBuilder {
 	b.resource.Exposure = v
+	b.fieldsSet["exposure"] = true
 	return b
 }
 
 // WithExposureAlternative sets the exposureAlternative field.
 func (b *EffectEvidenceSynthesisBuilder) WithExposureAlternative(v dt.Reference) *EffectEvidenceSynthesisBuilder {
 	b.resource.ExposureAlternative = v
+	b.fieldsSet["exposureAlternative"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *EffectEvidenceSynthesisBuilder) WithJurisdiction(v dt.CodeableConcept) *EffectEvidenceSynthesisBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithLastReviewDate sets the lastReviewDate field.
 func (b *EffectEvidenceSynthesisBuilder) WithLastReviewDate(v dt.Date) *EffectEvidenceSynthesisBuilder {
 	b.resource.LastReviewDate = &v
+	b.fieldsSet["lastReviewDate"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *EffectEvidenceSynthesisBuilder) WithName(v string) *EffectEvidenceSynthesisBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *EffectEvidenceSynthesisBuilder) WithNote(v dt.Annotation) *EffectEvidenceSynthesisBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithOutcome sets the outcome field.
 func (b *EffectEvidenceSynthesisBuilder) WithOutcome(v dt.Reference) *EffectEvidenceSynthesisBuilder {
 	b.resource.Outcome = v
+	b.fieldsSet["outcome"] = true
 	return b
 }
 
 // WithPopulation sets the population field.
 func (b *EffectEvidenceSynthesisBuilder) WithPopulation(v dt.Reference) *EffectEvidenceSynthesisBuilder {
 	b.resource.Population = v
+	b.fieldsSet["population"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *EffectEvidenceSynthesisBuilder) WithPublisher(v string) *EffectEvidenceSynthesisBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithRelatedArtifact adds an item to the relatedArtifact field.
 func (b *EffectEvidenceSynthesisBuilder) WithRelatedArtifact(v dt.RelatedArtifact) *EffectEvidenceSynthesisBuilder {
 	b.resource.RelatedArtifact = append(b.resource.RelatedArtifact, v)
+	b.fieldsSet["relatedArtifact"] = true
 	return b
 }
 
 // WithResultsByExposure adds an item to the resultsByExposure field.
 func (b *EffectEvidenceSynthesisBuilder) WithResultsByExposure(v EffectEvidenceSynthesisResultsByExposure) *EffectEvidenceSynthesisBuilder {
 	b.resource.ResultsByExposure = append(b.resource.ResultsByExposure, v)
+	b.fieldsSet["resultsByExposure"] = true
 	return b
 }
 
 // WithReviewer adds an item to the reviewer field.
 func (b *EffectEvidenceSynthesisBuilder) WithReviewer(v dt.ContactDetail) *EffectEvidenceSynthesisBuilder {
 	b.resource.Reviewer = append(b.resource.Reviewer, v)
+	b.fieldsSet["reviewer"] = true
 	return b
 }
 
 // WithSampleSize sets the sampleSize field.
 func (b *EffectEvidenceSynthesisBuilder) WithSampleSize(v EffectEvidenceSynthesisSampleSize) *EffectEvidenceSynthesisBuilder {
 	b.resource.SampleSize = &v
+	b.fieldsSet["sampleSize"] = true
 	return b
 }
 
 // WithStudyType sets the studyType field.
 func (b *EffectEvidenceSynthesisBuilder) WithStudyType(v dt.CodeableConcept) *EffectEvidenceSynthesisBuilder {
 	b.resource.StudyType = &v
+	b.fieldsSet["studyType"] = true
 	return b
 }
 
 // WithSynthesisType sets the synthesisType field.
 func (b *EffectEvidenceSynthesisBuilder) WithSynthesisType(v dt.CodeableConcept) *EffectEvidenceSynthesisBuilder {
 	b.resource.SynthesisType = &v
+	b.fieldsSet["synthesisType"] = true
 	return b
 }
 
 // WithTitle sets the title field.
 func (b *EffectEvidenceSynthesisBuilder) WithTitle(v string) *EffectEvidenceSynthesisBuilder {
 	b.resource.Title = &v
+	b.fieldsSet["title"] = true
 	return b
 }
 
 // WithTopic adds an item to the topic field.
 func (b *EffectEvidenceSynthesisBuilder) WithTopic(v dt.CodeableConcept) *EffectEvidenceSynthesisBuilder {
 	b.resource.Topic = append(b.resource.Topic, v)
+	b.fieldsSet["topic"] = true
 	return b
 }
 
 // WithUrl sets the url field.
 func (b *EffectEvidenceSynthesisBuilder) WithUrl(v dt.URI) *EffectEvidenceSynthesisBuilder {
 	b.resource.Url = &v
+	b.fieldsSet["url"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *EffectEvidenceSynthesisBuilder) WithUseContext(v dt.UsageContext) *EffectEvidenceSynthesisBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
 // WithVersion sets the version field.
 func (b *EffectEvidenceSynthesisBuilder) WithVersion(v string) *EffectEvidenceSynthesisBuilder {
 	b.resource.Version = &v
+	b.fieldsSet["version"] = true
 	return b
 }
 
 // Build returns the constructed EffectEvidenceSynthesis. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *EffectEvidenceSynthesisBuilder) Build() (*EffectEvidenceSynthesis, error) {
+	var missing []string
+	if !b.fieldsSet["exposure"] {
+		missing = append(missing, "exposure")
+	}
+	if !b.fieldsSet["exposureAlternative"] {
+		missing = append(missing, "exposureAlternative")
+	}
+	if !b.fieldsSet["outcome"] {
+		missing = append(missing, "outcome")
+	}
+	if !b.fieldsSet["population"] {
+		missing = append(missing, "population")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("EffectEvidenceSynthesis: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -384,6 +503,8 @@ func (b *EffectEvidenceSynthesisBuilder) Build() (*EffectEvidenceSynthesis, erro
 type EffectEvidenceSynthesisCertainty struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -400,6 +521,8 @@ type EffectEvidenceSynthesisCertainty struct {
 type EffectEvidenceSynthesisCertaintySubcomponent struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -416,12 +539,16 @@ type EffectEvidenceSynthesisCertaintySubcomponent struct {
 type EffectEvidenceSynthesisEffectEstimate struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description Human-readable summary of effect estimate.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// PrecisionEstimate A description of the precision of the estimate for the effect.
 	PrecisionEstimate []EffectEvidenceSynthesisPrecisionEstimate `json:"precisionEstimate,omitempty"`
 	// Type Examples include relative risk and mean difference.
@@ -430,6 +557,8 @@ type EffectEvidenceSynthesisEffectEstimate struct {
 	UnitOfMeasure *dt.CodeableConcept `json:"unitOfMeasure,omitempty"`
 	// Value The point estimate of the effect estimate.
 	Value *float64 `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *dt.Element `json:"_value,omitempty"`
 	// VariantState Used to define variant exposure states such as low-risk state.
 	VariantState *dt.CodeableConcept `json:"variantState,omitempty"`
 }
@@ -438,16 +567,24 @@ type EffectEvidenceSynthesisEffectEstimate struct {
 type EffectEvidenceSynthesisPrecisionEstimate struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// From Lower bound of confidence interval.
 	From *float64 `json:"from,omitempty"`
+	// FromElement contains element extensions for from.
+	FromElement *dt.Element `json:"_from,omitempty"`
 	// Level Use 95 for a 95% confidence interval.
 	Level *float64 `json:"level,omitempty"`
+	// LevelElement contains element extensions for level.
+	LevelElement *dt.Element `json:"_level,omitempty"`
 	// To Upper bound of confidence interval.
 	To *float64 `json:"to,omitempty"`
+	// ToElement contains element extensions for to.
+	ToElement *dt.Element `json:"_to,omitempty"`
 	// Type Examples include confidence interval and interquartile range.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 }
@@ -456,14 +593,20 @@ type EffectEvidenceSynthesisPrecisionEstimate struct {
 type EffectEvidenceSynthesisResultsByExposure struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description Human-readable summary of results by exposure state.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// ExposureState Whether these results are for the exposure state or alternative exposure state.
 	ExposureState *EffectEvidenceSynthesisResultsByExposureExposureState `json:"exposureState,omitempty"`
+	// ExposureStateElement contains element extensions for exposureState.
+	ExposureStateElement *dt.Element `json:"_exposureState,omitempty"`
 	// RiskEvidenceSynthesis Reference to a RiskEvidenceSynthesis resource.
 	RiskEvidenceSynthesis dt.Reference `json:"riskEvidenceSynthesis"`
 	// VariantState Used to define variant exposure states such as low-risk state.
@@ -474,14 +617,22 @@ type EffectEvidenceSynthesisResultsByExposure struct {
 type EffectEvidenceSynthesisSampleSize struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Description Human-readable summary of sample size.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// NumberOfParticipants Number of participants included in this evidence synthesis.
 	NumberOfParticipants *int32 `json:"numberOfParticipants,omitempty"`
+	// NumberOfParticipantsElement contains element extensions for numberOfParticipants.
+	NumberOfParticipantsElement *dt.Element `json:"_numberOfParticipants,omitempty"`
 	// NumberOfStudies Number of studies included in this evidence synthesis.
 	NumberOfStudies *int32 `json:"numberOfStudies,omitempty"`
+	// NumberOfStudiesElement contains element extensions for numberOfStudies.
+	NumberOfStudiesElement *dt.Element `json:"_numberOfStudies,omitempty"`
 }

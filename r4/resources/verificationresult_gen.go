@@ -17,12 +17,18 @@ type VerificationResult struct {
 	ResourceType string `json:"resourceType"` // Always "VerificationResult"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -33,6 +39,8 @@ type VerificationResult struct {
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The validation status of the target (attested; validated; in process; requires revalidation; validation failed; revalidation failed).
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Attestation Information about the entity attesting to information.
 	Attestation *VerificationResultAttestation `json:"attestation,omitempty"`
 	// FailureAction The result if validation fails (fatal; warning; record only; none).
@@ -41,31 +49,55 @@ type VerificationResult struct {
 	Frequency *dt.Timing `json:"frequency,omitempty"`
 	// LastPerformed The date/time validation was last completed (including failed validations).
 	LastPerformed *dt.DateTime `json:"lastPerformed,omitempty"`
+	// LastPerformedElement contains element extensions for lastPerformed.
+	LastPerformedElement *dt.Element `json:"_lastPerformed,omitempty"`
 	// Need The frequency with which the target must be validated (none; initial; periodic).
 	Need *dt.CodeableConcept `json:"need,omitempty"`
 	// NextScheduled The date when target is next validated, if appropriate.
 	NextScheduled *dt.Date `json:"nextScheduled,omitempty"`
+	// NextScheduledElement contains element extensions for nextScheduled.
+	NextScheduledElement *dt.Element `json:"_nextScheduled,omitempty"`
 	// PrimarySource Information about the primary source(s) involved in validation.
 	PrimarySource []VerificationResultPrimarySource `json:"primarySource,omitempty"`
 	// StatusDate When the validation status was updated.
 	StatusDate *dt.DateTime `json:"statusDate,omitempty"`
+	// StatusDateElement contains element extensions for statusDate.
+	StatusDateElement *dt.Element `json:"_statusDate,omitempty"`
 	// Target A resource that was validated.
 	Target []dt.Reference `json:"target,omitempty"`
 	// TargetLocation The fhirpath location(s) within the resource that was validated.
 	TargetLocation []string `json:"targetLocation,omitempty"`
+	// TargetLocationElement contains element extensions for each targetLocation.
+	TargetLocationElement []dt.Element `json:"_targetLocation,omitempty"`
 	// ValidationProcess The primary process by which the target is validated (edit check; value set; primary source; multiple sources; standalone; in context).
 	ValidationProcess []dt.CodeableConcept `json:"validationProcess,omitempty"`
 	// ValidationType What the target is validated against (nothing; primary source; multiple sources).
 	ValidationType *dt.CodeableConcept `json:"validationType,omitempty"`
 	// Validator Information about the entity validating information.
 	Validator []VerificationResultValidator `json:"validator,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for VerificationResult.
 func (r VerificationResult) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "VerificationResult"
 	type Alias VerificationResult
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for VerificationResult.
@@ -76,148 +108,187 @@ func (r *VerificationResult) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = VerificationResult(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_attestation", "_contained", "_extension", "_failureAction", "_frequency", "_id", "_implicitRules", "_language", "_lastPerformed", "_meta", "_modifierExtension", "_need", "_nextScheduled", "_primarySource", "_status", "_statusDate", "_target", "_targetLocation", "_text", "_validationProcess", "_validationType", "_validator", "attestation", "contained", "extension", "failureAction", "frequency", "id", "implicitRules", "language", "lastPerformed", "meta", "modifierExtension", "need", "nextScheduled", "primarySource", "resourceType", "status", "statusDate", "target", "targetLocation", "text", "validationProcess", "validationType", "validator":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // VerificationResultBuilder provides a fluent API for constructing VerificationResult resources.
 type VerificationResultBuilder struct {
-	resource VerificationResult
+	resource  VerificationResult
+	fieldsSet map[string]bool
 }
 
 // NewVerificationResult creates a new VerificationResultBuilder for building a VerificationResult resource.
 func NewVerificationResult() *VerificationResultBuilder {
-	return &VerificationResultBuilder{resource: VerificationResult{ResourceType: "VerificationResult"}}
+	return &VerificationResultBuilder{resource: VerificationResult{ResourceType: "VerificationResult"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *VerificationResultBuilder) WithId(v dt.ID) *VerificationResultBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *VerificationResultBuilder) WithMeta(v dt.Meta) *VerificationResultBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *VerificationResultBuilder) WithImplicitRules(v dt.URI) *VerificationResultBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *VerificationResultBuilder) WithLanguage(v dt.Code) *VerificationResultBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *VerificationResultBuilder) WithText(v dt.Narrative) *VerificationResultBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *VerificationResultBuilder) WithContained(v json.RawMessage) *VerificationResultBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *VerificationResultBuilder) WithExtension(v dt.Extension) *VerificationResultBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *VerificationResultBuilder) WithModifierExtension(v dt.Extension) *VerificationResultBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *VerificationResultBuilder) WithStatus(v dt.Code) *VerificationResultBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithAttestation sets the attestation field.
 func (b *VerificationResultBuilder) WithAttestation(v VerificationResultAttestation) *VerificationResultBuilder {
 	b.resource.Attestation = &v
+	b.fieldsSet["attestation"] = true
 	return b
 }
 
 // WithFailureAction sets the failureAction field.
 func (b *VerificationResultBuilder) WithFailureAction(v dt.CodeableConcept) *VerificationResultBuilder {
 	b.resource.FailureAction = &v
+	b.fieldsSet["failureAction"] = true
 	return b
 }
 
 // WithFrequency sets the frequency field.
 func (b *VerificationResultBuilder) WithFrequency(v dt.Timing) *VerificationResultBuilder {
 	b.resource.Frequency = &v
+	b.fieldsSet["frequency"] = true
 	return b
 }
 
 // WithLastPerformed sets the lastPerformed field.
 func (b *VerificationResultBuilder) WithLastPerformed(v dt.DateTime) *VerificationResultBuilder {
 	b.resource.LastPerformed = &v
+	b.fieldsSet["lastPerformed"] = true
 	return b
 }
 
 // WithNeed sets the need field.
 func (b *VerificationResultBuilder) WithNeed(v dt.CodeableConcept) *VerificationResultBuilder {
 	b.resource.Need = &v
+	b.fieldsSet["need"] = true
 	return b
 }
 
 // WithNextScheduled sets the nextScheduled field.
 func (b *VerificationResultBuilder) WithNextScheduled(v dt.Date) *VerificationResultBuilder {
 	b.resource.NextScheduled = &v
+	b.fieldsSet["nextScheduled"] = true
 	return b
 }
 
 // WithPrimarySource adds an item to the primarySource field.
 func (b *VerificationResultBuilder) WithPrimarySource(v VerificationResultPrimarySource) *VerificationResultBuilder {
 	b.resource.PrimarySource = append(b.resource.PrimarySource, v)
+	b.fieldsSet["primarySource"] = true
 	return b
 }
 
 // WithStatusDate sets the statusDate field.
 func (b *VerificationResultBuilder) WithStatusDate(v dt.DateTime) *VerificationResultBuilder {
 	b.resource.StatusDate = &v
+	b.fieldsSet["statusDate"] = true
 	return b
 }
 
 // WithTarget adds an item to the target field.
 func (b *VerificationResultBuilder) WithTarget(v dt.Reference) *VerificationResultBuilder {
 	b.resource.Target = append(b.resource.Target, v)
+	b.fieldsSet["target"] = true
 	return b
 }
 
 // WithTargetLocation adds an item to the targetLocation field.
 func (b *VerificationResultBuilder) WithTargetLocation(v string) *VerificationResultBuilder {
 	b.resource.TargetLocation = append(b.resource.TargetLocation, v)
+	b.fieldsSet["targetLocation"] = true
 	return b
 }
 
 // WithValidationProcess adds an item to the validationProcess field.
 func (b *VerificationResultBuilder) WithValidationProcess(v dt.CodeableConcept) *VerificationResultBuilder {
 	b.resource.ValidationProcess = append(b.resource.ValidationProcess, v)
+	b.fieldsSet["validationProcess"] = true
 	return b
 }
 
 // WithValidationType sets the validationType field.
 func (b *VerificationResultBuilder) WithValidationType(v dt.CodeableConcept) *VerificationResultBuilder {
 	b.resource.ValidationType = &v
+	b.fieldsSet["validationType"] = true
 	return b
 }
 
 // WithValidator adds an item to the validator field.
 func (b *VerificationResultBuilder) WithValidator(v VerificationResultValidator) *VerificationResultBuilder {
 	b.resource.Validator = append(b.resource.Validator, v)
+	b.fieldsSet["validator"] = true
 	return b
 }
 
@@ -232,6 +303,8 @@ func (b *VerificationResultBuilder) Build() (*VerificationResult, error) {
 type VerificationResultAttestation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -240,14 +313,20 @@ type VerificationResultAttestation struct {
 	CommunicationMethod *dt.CodeableConcept `json:"communicationMethod,omitempty"`
 	// Date The date the information was attested to.
 	Date *dt.Date `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// OnBehalfOf When the who is asserting on behalf of another (organization or individual).
 	OnBehalfOf *dt.Reference `json:"onBehalfOf,omitempty"`
 	// ProxyIdentityCertificate A digital identity certificate associated with the proxy entity submitting attested information on behalf of the attestation source.
 	ProxyIdentityCertificate *string `json:"proxyIdentityCertificate,omitempty"`
+	// ProxyIdentityCertificateElement contains element extensions for proxyIdentityCertificate.
+	ProxyIdentityCertificateElement *dt.Element `json:"_proxyIdentityCertificate,omitempty"`
 	// ProxySignature Signed assertion by the proxy entity indicating that they have the right to submit attested information on behalf of the attestation source.
 	ProxySignature *dt.Signature `json:"proxySignature,omitempty"`
 	// SourceIdentityCertificate A digital identity certificate associated with the attestation source.
 	SourceIdentityCertificate *string `json:"sourceIdentityCertificate,omitempty"`
+	// SourceIdentityCertificateElement contains element extensions for sourceIdentityCertificate.
+	SourceIdentityCertificateElement *dt.Element `json:"_sourceIdentityCertificate,omitempty"`
 	// SourceSignature Signed assertion by the attestation source that they have attested to the information.
 	SourceSignature *dt.Signature `json:"sourceSignature,omitempty"`
 	// Who The individual or organization attesting to information.
@@ -258,6 +337,8 @@ type VerificationResultAttestation struct {
 type VerificationResultPrimarySource struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -272,6 +353,8 @@ type VerificationResultPrimarySource struct {
 	Type []dt.CodeableConcept `json:"type,omitempty"`
 	// ValidationDate When the target was validated against the primary source.
 	ValidationDate *dt.DateTime `json:"validationDate,omitempty"`
+	// ValidationDateElement contains element extensions for validationDate.
+	ValidationDateElement *dt.Element `json:"_validationDate,omitempty"`
 	// ValidationStatus Status of the validation of the target against the primary source (successful; failed; unknown).
 	ValidationStatus *dt.CodeableConcept `json:"validationStatus,omitempty"`
 	// Who Reference to the primary source.
@@ -282,6 +365,8 @@ type VerificationResultPrimarySource struct {
 type VerificationResultValidator struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -290,6 +375,8 @@ type VerificationResultValidator struct {
 	AttestationSignature *dt.Signature `json:"attestationSignature,omitempty"`
 	// IdentityCertificate A digital identity certificate associated with the validator.
 	IdentityCertificate *string `json:"identityCertificate,omitempty"`
+	// IdentityCertificateElement contains element extensions for identityCertificate.
+	IdentityCertificateElement *dt.Element `json:"_identityCertificate,omitempty"`
 	// Organization Reference to the organization validating information.
 	Organization dt.Reference `json:"organization"`
 }

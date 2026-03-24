@@ -18,12 +18,18 @@ type DiagnosticReport struct {
 	ResourceType string `json:"resourceType"` // Always "DiagnosticReport"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,6 +42,8 @@ type DiagnosticReport struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the diagnostic report.
 	Status *DiagnosticReportStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// BasedOn Details concerning a service requested.
 	BasedOn []dt.Reference `json:"basedOn,omitempty"`
 	// Category A code that classifies the clinical discipline, department or diagnostic service that created the report (e.g. cardiology, biochemistry, hematology, MRI). This is used for searching, sorting and di...
@@ -44,6 +52,8 @@ type DiagnosticReport struct {
 	Code dt.CodeableConcept `json:"code"`
 	// Conclusion Concise and clinically contextualized summary conclusion (interpretation/impression) of the diagnostic report.
 	Conclusion *string `json:"conclusion,omitempty"`
+	// ConclusionElement contains element extensions for conclusion.
+	ConclusionElement *dt.Element `json:"_conclusion,omitempty"`
 	// ConclusionCode One or more codes that represent the summary conclusion (interpretation/impression) of the diagnostic report.
 	ConclusionCode []dt.CodeableConcept `json:"conclusionCode,omitempty"`
 	// Effective The time or time-period the observed values are related to. When the subject of the report is a patient, this is usually either the time of the procedure or of specimen collection(s), but very ofte...
@@ -54,6 +64,8 @@ type DiagnosticReport struct {
 	ImagingStudy []dt.Reference `json:"imagingStudy,omitempty"`
 	// Issued The date and time that this version of the report was made available to providers, typically after the report was reviewed and verified.
 	Issued *dt.Instant `json:"issued,omitempty"`
+	// IssuedElement contains element extensions for issued.
+	IssuedElement *dt.Element `json:"_issued,omitempty"`
 	// Media A list of key images associated with this report. The images are generally created during the diagnostic process, and may be directly of the patient, or of treated specimens (i.e. slides of interest).
 	Media []DiagnosticReportMedia `json:"media,omitempty"`
 	// Performer The diagnostic service that is responsible for issuing the report.
@@ -68,6 +80,8 @@ type DiagnosticReport struct {
 	Specimen []dt.Reference `json:"specimen,omitempty"`
 	// Subject The subject of the report. Usually, but not always, this is a patient. However, diagnostic services also perform analyses on specimens collected from a variety of other sources.
 	Subject *dt.Reference `json:"subject,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for DiagnosticReport.
@@ -78,7 +92,6 @@ func (r DiagnosticReport) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -95,6 +108,9 @@ func (r DiagnosticReport) MarshalJSON() ([]byte, error) {
 		for k, v := range vm {
 			m[k] = v
 		}
+	}
+	for k, v := range r.Extra {
+		m[k] = v
 	}
 	return json.Marshal(m)
 }
@@ -115,22 +131,40 @@ func (r *DiagnosticReport) UnmarshalJSON(data []byte) error {
 	if effectiveVal.DateTime != nil || effectiveVal.Period != nil {
 		r.Effective = &effectiveVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_basedOn", "_category", "_code", "_conclusion", "_conclusionCode", "_contained", "_effectiveDateTime", "_effectivePeriod", "_encounter", "_extension", "_id", "_identifier", "_imagingStudy", "_implicitRules", "_issued", "_language", "_media", "_meta", "_modifierExtension", "_performer", "_presentedForm", "_result", "_resultsInterpreter", "_specimen", "_status", "_subject", "_text", "basedOn", "category", "code", "conclusion", "conclusionCode", "contained", "effectiveDateTime", "effectivePeriod", "encounter", "extension", "id", "identifier", "imagingStudy", "implicitRules", "issued", "language", "media", "meta", "modifierExtension", "performer", "presentedForm", "resourceType", "result", "resultsInterpreter", "specimen", "status", "subject", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // DiagnosticReportBuilder provides a fluent API for constructing DiagnosticReport resources.
 type DiagnosticReportBuilder struct {
-	resource DiagnosticReport
+	resource  DiagnosticReport
+	fieldsSet map[string]bool
 }
 
 // NewDiagnosticReport creates a new DiagnosticReportBuilder for building a DiagnosticReport resource.
 func NewDiagnosticReport() *DiagnosticReportBuilder {
-	return &DiagnosticReportBuilder{resource: DiagnosticReport{ResourceType: "DiagnosticReport"}}
+	return &DiagnosticReportBuilder{resource: DiagnosticReport{ResourceType: "DiagnosticReport"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithStatus sets the diagnostic report status.
 func (b *DiagnosticReportBuilder) WithStatus(status DiagnosticReportStatus) *DiagnosticReportBuilder {
 	b.resource.Status = &status
+	b.fieldsSet["status"] = true
 	return b
 }
 
@@ -145,90 +179,105 @@ func (b *DiagnosticReportBuilder) WithCode(system, code, display string) *Diagno
 			Display: &display,
 		}},
 	}
+	b.fieldsSet["code"] = true
 	return b
 }
 
 // WithSubject sets the diagnostic report subject reference.
 func (b *DiagnosticReportBuilder) WithSubject(reference string) *DiagnosticReportBuilder {
 	b.resource.Subject = &dt.Reference{Reference: &reference}
+	b.fieldsSet["subject"] = true
 	return b
 }
 
 // WithId sets the id field.
 func (b *DiagnosticReportBuilder) WithId(v dt.ID) *DiagnosticReportBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *DiagnosticReportBuilder) WithMeta(v dt.Meta) *DiagnosticReportBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *DiagnosticReportBuilder) WithImplicitRules(v dt.URI) *DiagnosticReportBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *DiagnosticReportBuilder) WithLanguage(v dt.Code) *DiagnosticReportBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *DiagnosticReportBuilder) WithText(v dt.Narrative) *DiagnosticReportBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *DiagnosticReportBuilder) WithContained(v json.RawMessage) *DiagnosticReportBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *DiagnosticReportBuilder) WithExtension(v dt.Extension) *DiagnosticReportBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *DiagnosticReportBuilder) WithModifierExtension(v dt.Extension) *DiagnosticReportBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *DiagnosticReportBuilder) WithIdentifier(v dt.Identifier) *DiagnosticReportBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithBasedOn adds an item to the basedOn field.
 func (b *DiagnosticReportBuilder) WithBasedOn(v dt.Reference) *DiagnosticReportBuilder {
 	b.resource.BasedOn = append(b.resource.BasedOn, v)
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithCategory adds an item to the category field.
 func (b *DiagnosticReportBuilder) WithCategory(v dt.CodeableConcept) *DiagnosticReportBuilder {
 	b.resource.Category = append(b.resource.Category, v)
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithConclusion sets the conclusion field.
 func (b *DiagnosticReportBuilder) WithConclusion(v string) *DiagnosticReportBuilder {
 	b.resource.Conclusion = &v
+	b.fieldsSet["conclusion"] = true
 	return b
 }
 
 // WithConclusionCode adds an item to the conclusionCode field.
 func (b *DiagnosticReportBuilder) WithConclusionCode(v dt.CodeableConcept) *DiagnosticReportBuilder {
 	b.resource.ConclusionCode = append(b.resource.ConclusionCode, v)
+	b.fieldsSet["conclusionCode"] = true
 	return b
 }
 
@@ -238,6 +287,7 @@ func (b *DiagnosticReportBuilder) WithEffectiveDateTime(v string) *DiagnosticRep
 		b.resource.Effective = &DiagnosticReportEffective{}
 	}
 	b.resource.Effective.DateTime = &v
+	b.fieldsSet["effective"] = true
 	return b
 }
 
@@ -247,66 +297,83 @@ func (b *DiagnosticReportBuilder) WithEffectivePeriod(v dt.Period) *DiagnosticRe
 		b.resource.Effective = &DiagnosticReportEffective{}
 	}
 	b.resource.Effective.Period = &v
+	b.fieldsSet["effective"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *DiagnosticReportBuilder) WithEncounter(v dt.Reference) *DiagnosticReportBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithImagingStudy adds an item to the imagingStudy field.
 func (b *DiagnosticReportBuilder) WithImagingStudy(v dt.Reference) *DiagnosticReportBuilder {
 	b.resource.ImagingStudy = append(b.resource.ImagingStudy, v)
+	b.fieldsSet["imagingStudy"] = true
 	return b
 }
 
 // WithIssued sets the issued field.
 func (b *DiagnosticReportBuilder) WithIssued(v dt.Instant) *DiagnosticReportBuilder {
 	b.resource.Issued = &v
+	b.fieldsSet["issued"] = true
 	return b
 }
 
 // WithMedia adds an item to the media field.
 func (b *DiagnosticReportBuilder) WithMedia(v DiagnosticReportMedia) *DiagnosticReportBuilder {
 	b.resource.Media = append(b.resource.Media, v)
+	b.fieldsSet["media"] = true
 	return b
 }
 
 // WithPerformer adds an item to the performer field.
 func (b *DiagnosticReportBuilder) WithPerformer(v dt.Reference) *DiagnosticReportBuilder {
 	b.resource.Performer = append(b.resource.Performer, v)
+	b.fieldsSet["performer"] = true
 	return b
 }
 
 // WithPresentedForm adds an item to the presentedForm field.
 func (b *DiagnosticReportBuilder) WithPresentedForm(v dt.Attachment) *DiagnosticReportBuilder {
 	b.resource.PresentedForm = append(b.resource.PresentedForm, v)
+	b.fieldsSet["presentedForm"] = true
 	return b
 }
 
 // WithResult adds an item to the result field.
 func (b *DiagnosticReportBuilder) WithResult(v dt.Reference) *DiagnosticReportBuilder {
 	b.resource.Result = append(b.resource.Result, v)
+	b.fieldsSet["result"] = true
 	return b
 }
 
 // WithResultsInterpreter adds an item to the resultsInterpreter field.
 func (b *DiagnosticReportBuilder) WithResultsInterpreter(v dt.Reference) *DiagnosticReportBuilder {
 	b.resource.ResultsInterpreter = append(b.resource.ResultsInterpreter, v)
+	b.fieldsSet["resultsInterpreter"] = true
 	return b
 }
 
 // WithSpecimen adds an item to the specimen field.
 func (b *DiagnosticReportBuilder) WithSpecimen(v dt.Reference) *DiagnosticReportBuilder {
 	b.resource.Specimen = append(b.resource.Specimen, v)
+	b.fieldsSet["specimen"] = true
 	return b
 }
 
 // Build returns the constructed DiagnosticReport. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *DiagnosticReportBuilder) Build() (*DiagnosticReport, error) {
+	var missing []string
+	if !b.fieldsSet["code"] {
+		missing = append(missing, "code")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("DiagnosticReport: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -315,12 +382,16 @@ func (b *DiagnosticReportBuilder) Build() (*DiagnosticReport, error) {
 type DiagnosticReportMedia struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Comment A comment about the image. Typically, this is used to provide an explanation for why the image is included, or to draw the viewer's attention to important features.
 	Comment *string `json:"comment,omitempty"`
+	// CommentElement contains element extensions for comment.
+	CommentElement *dt.Element `json:"_comment,omitempty"`
 	// Link Reference to the image source.
 	Link dt.Reference `json:"link"`
 }

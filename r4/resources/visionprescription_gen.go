@@ -18,12 +18,18 @@ type VisionPrescription struct {
 	ResourceType string `json:"resourceType"` // Always "VisionPrescription"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,10 +42,16 @@ type VisionPrescription struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the resource instance.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Created The date this resource was created.
 	Created *dt.DateTime `json:"created,omitempty"`
+	// CreatedElement contains element extensions for created.
+	CreatedElement *dt.Element `json:"_created,omitempty"`
 	// DateWritten The date (and perhaps time) when the prescription was written.
 	DateWritten *dt.DateTime `json:"dateWritten,omitempty"`
+	// DateWrittenElement contains element extensions for dateWritten.
+	DateWrittenElement *dt.Element `json:"_dateWritten,omitempty"`
 	// Encounter A reference to a resource that identifies the particular occurrence of contact between patient and health care provider during which the prescription was issued.
 	Encounter *dt.Reference `json:"encounter,omitempty"`
 	// LensSpecification Contain the details of  the individual lens specifications and serves as the authorization for the fullfillment by certified professionals.
@@ -48,13 +60,29 @@ type VisionPrescription struct {
 	Patient dt.Reference `json:"patient"`
 	// Prescriber The healthcare professional responsible for authorizing the prescription.
 	Prescriber dt.Reference `json:"prescriber"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for VisionPrescription.
 func (r VisionPrescription) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "VisionPrescription"
 	type Alias VisionPrescription
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for VisionPrescription.
@@ -65,112 +93,145 @@ func (r *VisionPrescription) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = VisionPrescription(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contained", "_created", "_dateWritten", "_encounter", "_extension", "_id", "_identifier", "_implicitRules", "_language", "_lensSpecification", "_meta", "_modifierExtension", "_patient", "_prescriber", "_status", "_text", "contained", "created", "dateWritten", "encounter", "extension", "id", "identifier", "implicitRules", "language", "lensSpecification", "meta", "modifierExtension", "patient", "prescriber", "resourceType", "status", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // VisionPrescriptionBuilder provides a fluent API for constructing VisionPrescription resources.
 type VisionPrescriptionBuilder struct {
-	resource VisionPrescription
+	resource  VisionPrescription
+	fieldsSet map[string]bool
 }
 
 // NewVisionPrescription creates a new VisionPrescriptionBuilder for building a VisionPrescription resource.
 func NewVisionPrescription() *VisionPrescriptionBuilder {
-	return &VisionPrescriptionBuilder{resource: VisionPrescription{ResourceType: "VisionPrescription"}}
+	return &VisionPrescriptionBuilder{resource: VisionPrescription{ResourceType: "VisionPrescription"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *VisionPrescriptionBuilder) WithId(v dt.ID) *VisionPrescriptionBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *VisionPrescriptionBuilder) WithMeta(v dt.Meta) *VisionPrescriptionBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *VisionPrescriptionBuilder) WithImplicitRules(v dt.URI) *VisionPrescriptionBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *VisionPrescriptionBuilder) WithLanguage(v dt.Code) *VisionPrescriptionBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *VisionPrescriptionBuilder) WithText(v dt.Narrative) *VisionPrescriptionBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *VisionPrescriptionBuilder) WithContained(v json.RawMessage) *VisionPrescriptionBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *VisionPrescriptionBuilder) WithExtension(v dt.Extension) *VisionPrescriptionBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *VisionPrescriptionBuilder) WithModifierExtension(v dt.Extension) *VisionPrescriptionBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *VisionPrescriptionBuilder) WithIdentifier(v dt.Identifier) *VisionPrescriptionBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *VisionPrescriptionBuilder) WithStatus(v dt.Code) *VisionPrescriptionBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithCreated sets the created field.
 func (b *VisionPrescriptionBuilder) WithCreated(v dt.DateTime) *VisionPrescriptionBuilder {
 	b.resource.Created = &v
+	b.fieldsSet["created"] = true
 	return b
 }
 
 // WithDateWritten sets the dateWritten field.
 func (b *VisionPrescriptionBuilder) WithDateWritten(v dt.DateTime) *VisionPrescriptionBuilder {
 	b.resource.DateWritten = &v
+	b.fieldsSet["dateWritten"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *VisionPrescriptionBuilder) WithEncounter(v dt.Reference) *VisionPrescriptionBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithLensSpecification adds an item to the lensSpecification field.
 func (b *VisionPrescriptionBuilder) WithLensSpecification(v VisionPrescriptionLensSpecification) *VisionPrescriptionBuilder {
 	b.resource.LensSpecification = append(b.resource.LensSpecification, v)
+	b.fieldsSet["lensSpecification"] = true
 	return b
 }
 
 // WithPatient sets the patient field.
 func (b *VisionPrescriptionBuilder) WithPatient(v dt.Reference) *VisionPrescriptionBuilder {
 	b.resource.Patient = v
+	b.fieldsSet["patient"] = true
 	return b
 }
 
 // WithPrescriber sets the prescriber field.
 func (b *VisionPrescriptionBuilder) WithPrescriber(v dt.Reference) *VisionPrescriptionBuilder {
 	b.resource.Prescriber = v
+	b.fieldsSet["prescriber"] = true
 	return b
 }
 
@@ -178,8 +239,14 @@ func (b *VisionPrescriptionBuilder) WithPrescriber(v dt.Reference) *VisionPrescr
 // field (cardinality 1..1) is not set.
 func (b *VisionPrescriptionBuilder) Build() (*VisionPrescription, error) {
 	var missing []string
-	if len(b.resource.LensSpecification) == 0 {
+	if !b.fieldsSet["lensSpecification"] {
 		missing = append(missing, "lensSpecification")
+	}
+	if !b.fieldsSet["patient"] {
+		missing = append(missing, "patient")
+	}
+	if !b.fieldsSet["prescriber"] {
+		missing = append(missing, "prescriber")
 	}
 	if len(missing) > 0 {
 		return nil, fmt.Errorf("VisionPrescription: required fields missing: %v", missing)
@@ -192,50 +259,78 @@ func (b *VisionPrescriptionBuilder) Build() (*VisionPrescription, error) {
 type VisionPrescriptionLensSpecification struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Add Power adjustment for multifocal lenses measured in dioptres (0.25 units).
 	Add *float64 `json:"add,omitempty"`
+	// AddElement contains element extensions for add.
+	AddElement *dt.Element `json:"_add,omitempty"`
 	// Axis Adjustment for astigmatism measured in integer degrees.
 	Axis *int32 `json:"axis,omitempty"`
+	// AxisElement contains element extensions for axis.
+	AxisElement *dt.Element `json:"_axis,omitempty"`
 	// BackCurve Back curvature measured in millimetres.
 	BackCurve *float64 `json:"backCurve,omitempty"`
+	// BackCurveElement contains element extensions for backCurve.
+	BackCurveElement *dt.Element `json:"_backCurve,omitempty"`
 	// Brand Brand recommendations or restrictions.
 	Brand *string `json:"brand,omitempty"`
+	// BrandElement contains element extensions for brand.
+	BrandElement *dt.Element `json:"_brand,omitempty"`
 	// Color Special color or pattern.
 	Color *string `json:"color,omitempty"`
+	// ColorElement contains element extensions for color.
+	ColorElement *dt.Element `json:"_color,omitempty"`
 	// Cylinder Power adjustment for astigmatism measured in dioptres (0.25 units).
 	Cylinder *float64 `json:"cylinder,omitempty"`
+	// CylinderElement contains element extensions for cylinder.
+	CylinderElement *dt.Element `json:"_cylinder,omitempty"`
 	// Diameter Contact lens diameter measured in millimetres.
 	Diameter *float64 `json:"diameter,omitempty"`
+	// DiameterElement contains element extensions for diameter.
+	DiameterElement *dt.Element `json:"_diameter,omitempty"`
 	// Duration The recommended maximum wear period for the lens.
 	Duration *dt.Quantity `json:"duration,omitempty"`
 	// Eye The eye for which the lens specification applies.
 	Eye *VisionPrescriptionLensSpecificationEye `json:"eye,omitempty"`
+	// EyeElement contains element extensions for eye.
+	EyeElement *dt.Element `json:"_eye,omitempty"`
 	// Note Notes for special requirements such as coatings and lens materials.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// Power Contact lens power measured in dioptres (0.25 units).
 	Power *float64 `json:"power,omitempty"`
+	// PowerElement contains element extensions for power.
+	PowerElement *dt.Element `json:"_power,omitempty"`
 	// Prism Allows for adjustment on two axis.
 	Prism []VisionPrescriptionPrism `json:"prism,omitempty"`
 	// Product Identifies the type of vision correction product which is required for the patient.
 	Product dt.CodeableConcept `json:"product"`
 	// Sphere Lens power measured in dioptres (0.25 units).
 	Sphere *float64 `json:"sphere,omitempty"`
+	// SphereElement contains element extensions for sphere.
+	SphereElement *dt.Element `json:"_sphere,omitempty"`
 }
 
 // VisionPrescriptionPrism An authorization for the provision of glasses and/or contact lenses to a patient.
 type VisionPrescriptionPrism struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Amount Amount of prism to compensate for eye alignment in fractional units.
 	Amount *float64 `json:"amount,omitempty"`
+	// AmountElement contains element extensions for amount.
+	AmountElement *dt.Element `json:"_amount,omitempty"`
 	// Base The relative base, or reference lens edge, for the prism.
 	Base *VisionPrescriptionPrismBase `json:"base,omitempty"`
+	// BaseElement contains element extensions for base.
+	BaseElement *dt.Element `json:"_base,omitempty"`
 }

@@ -17,12 +17,18 @@ type Person struct {
 	ResourceType string `json:"resourceType"` // Always "Person"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -35,12 +41,18 @@ type Person struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Active Whether this person's record is in active use.
 	Active *bool `json:"active,omitempty"`
+	// ActiveElement contains element extensions for active.
+	ActiveElement *dt.Element `json:"_active,omitempty"`
 	// Address One or more addresses for the person.
 	Address []dt.Address `json:"address,omitempty"`
 	// BirthDate The birth date for the person.
 	BirthDate *dt.Date `json:"birthDate,omitempty"`
+	// BirthDateElement contains element extensions for birthDate.
+	BirthDateElement *dt.Element `json:"_birthDate,omitempty"`
 	// Gender Administrative Gender.
 	Gender *AdministrativeGender `json:"gender,omitempty"`
+	// GenderElement contains element extensions for gender.
+	GenderElement *dt.Element `json:"_gender,omitempty"`
 	// Link Link to a resource that concerns the same actual person.
 	Link []PersonLink `json:"link,omitempty"`
 	// ManagingOrganization The organization that is the custodian of the person record.
@@ -51,13 +63,29 @@ type Person struct {
 	Photo *dt.Attachment `json:"photo,omitempty"`
 	// Telecom A contact detail for the person, e.g. a telephone number or an email address.
 	Telecom []dt.ContactPoint `json:"telecom,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Person.
 func (r Person) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "Person"
 	type Alias Person
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Person.
@@ -68,124 +96,159 @@ func (r *Person) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = Person(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_active", "_address", "_birthDate", "_contained", "_extension", "_gender", "_id", "_identifier", "_implicitRules", "_language", "_link", "_managingOrganization", "_meta", "_modifierExtension", "_name", "_photo", "_telecom", "_text", "active", "address", "birthDate", "contained", "extension", "gender", "id", "identifier", "implicitRules", "language", "link", "managingOrganization", "meta", "modifierExtension", "name", "photo", "resourceType", "telecom", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // PersonBuilder provides a fluent API for constructing Person resources.
 type PersonBuilder struct {
-	resource Person
+	resource  Person
+	fieldsSet map[string]bool
 }
 
 // NewPerson creates a new PersonBuilder for building a Person resource.
 func NewPerson() *PersonBuilder {
-	return &PersonBuilder{resource: Person{ResourceType: "Person"}}
+	return &PersonBuilder{resource: Person{ResourceType: "Person"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *PersonBuilder) WithId(v dt.ID) *PersonBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *PersonBuilder) WithMeta(v dt.Meta) *PersonBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *PersonBuilder) WithImplicitRules(v dt.URI) *PersonBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *PersonBuilder) WithLanguage(v dt.Code) *PersonBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *PersonBuilder) WithText(v dt.Narrative) *PersonBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *PersonBuilder) WithContained(v json.RawMessage) *PersonBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *PersonBuilder) WithExtension(v dt.Extension) *PersonBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *PersonBuilder) WithModifierExtension(v dt.Extension) *PersonBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *PersonBuilder) WithIdentifier(v dt.Identifier) *PersonBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithActive sets the active field.
 func (b *PersonBuilder) WithActive(v bool) *PersonBuilder {
 	b.resource.Active = &v
+	b.fieldsSet["active"] = true
 	return b
 }
 
 // WithAddress adds an item to the address field.
 func (b *PersonBuilder) WithAddress(v dt.Address) *PersonBuilder {
 	b.resource.Address = append(b.resource.Address, v)
+	b.fieldsSet["address"] = true
 	return b
 }
 
 // WithBirthDate sets the birthDate field.
 func (b *PersonBuilder) WithBirthDate(v dt.Date) *PersonBuilder {
 	b.resource.BirthDate = &v
+	b.fieldsSet["birthDate"] = true
 	return b
 }
 
 // WithGender sets the gender field.
 func (b *PersonBuilder) WithGender(v AdministrativeGender) *PersonBuilder {
 	b.resource.Gender = &v
+	b.fieldsSet["gender"] = true
 	return b
 }
 
 // WithLink adds an item to the link field.
 func (b *PersonBuilder) WithLink(v PersonLink) *PersonBuilder {
 	b.resource.Link = append(b.resource.Link, v)
+	b.fieldsSet["link"] = true
 	return b
 }
 
 // WithManagingOrganization sets the managingOrganization field.
 func (b *PersonBuilder) WithManagingOrganization(v dt.Reference) *PersonBuilder {
 	b.resource.ManagingOrganization = &v
+	b.fieldsSet["managingOrganization"] = true
 	return b
 }
 
 // WithName adds an item to the name field.
 func (b *PersonBuilder) WithName(v dt.HumanName) *PersonBuilder {
 	b.resource.Name = append(b.resource.Name, v)
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithPhoto sets the photo field.
 func (b *PersonBuilder) WithPhoto(v dt.Attachment) *PersonBuilder {
 	b.resource.Photo = &v
+	b.fieldsSet["photo"] = true
 	return b
 }
 
 // WithTelecom adds an item to the telecom field.
 func (b *PersonBuilder) WithTelecom(v dt.ContactPoint) *PersonBuilder {
 	b.resource.Telecom = append(b.resource.Telecom, v)
+	b.fieldsSet["telecom"] = true
 	return b
 }
 
@@ -200,12 +263,16 @@ func (b *PersonBuilder) Build() (*Person, error) {
 type PersonLink struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Assurance Level of assurance that this link is associated with the target resource.
 	Assurance *PersonLinkAssurance `json:"assurance,omitempty"`
+	// AssuranceElement contains element extensions for assurance.
+	AssuranceElement *dt.Element `json:"_assurance,omitempty"`
 	// Target The resource to which this actual person is associated.
 	Target dt.Reference `json:"target"`
 }

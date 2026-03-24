@@ -18,12 +18,18 @@ type MedicationRequest struct {
 	ResourceType string `json:"resourceType"` // Always "MedicationRequest"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -36,8 +42,12 @@ type MedicationRequest struct {
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status A code specifying the current state of the order.  Generally, this will be active or completed state.
 	Status *dt.Code `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// AuthoredOn The date (and perhaps time) when the prescription was initially written or authored on.
 	AuthoredOn *dt.DateTime `json:"authoredOn,omitempty"`
+	// AuthoredOnElement contains element extensions for authoredOn.
+	AuthoredOnElement *dt.Element `json:"_authoredOn,omitempty"`
 	// BasedOn A plan or request that is fulfilled in whole or in part by this medication request.
 	BasedOn []dt.Reference `json:"basedOn,omitempty"`
 	// Category Indicates the type of medication request (for example, where the medication is expected to be consumed or administered (i.e. inpatient or outpatient)).
@@ -50,6 +60,8 @@ type MedicationRequest struct {
 	DispenseRequest *MedicationRequestDispenseRequest `json:"dispenseRequest,omitempty"`
 	// DoNotPerform If true indicates that the provider is asking for the medication request not to occur.
 	DoNotPerform *bool `json:"doNotPerform,omitempty"`
+	// DoNotPerformElement contains element extensions for doNotPerform.
+	DoNotPerformElement *dt.Element `json:"_doNotPerform,omitempty"`
 	// DosageInstruction Indicates how the medication is to be used by the patient.
 	DosageInstruction []dt.Dosage `json:"dosageInstruction,omitempty"`
 	// Encounter The Encounter during which this [x] was created or to which the creation of this record is tightly associated.
@@ -60,12 +72,18 @@ type MedicationRequest struct {
 	GroupIdentifier *dt.Identifier `json:"groupIdentifier,omitempty"`
 	// InstantiatesCanonical The URL pointing to a protocol, guideline, orderset, or other definition that is adhered to in whole or in part by this MedicationRequest.
 	InstantiatesCanonical []dt.Canonical `json:"instantiatesCanonical,omitempty"`
+	// InstantiatesCanonicalElement contains element extensions for each instantiatesCanonical.
+	InstantiatesCanonicalElement []dt.Element `json:"_instantiatesCanonical,omitempty"`
 	// InstantiatesUri The URL pointing to an externally maintained protocol, guideline, orderset or other definition that is adhered to in whole or in part by this MedicationRequest.
 	InstantiatesUri []dt.URI `json:"instantiatesUri,omitempty"`
+	// InstantiatesUriElement contains element extensions for each instantiatesUri.
+	InstantiatesUriElement []dt.Element `json:"_instantiatesUri,omitempty"`
 	// Insurance Insurance plans, coverage extensions, pre-authorizations and/or pre-determinations that may be required for delivering the requested service.
 	Insurance []dt.Reference `json:"insurance,omitempty"`
 	// Intent Whether the request is a proposal, plan, or an original order.
 	Intent *dt.Code `json:"intent,omitempty"`
+	// IntentElement contains element extensions for intent.
+	IntentElement *dt.Element `json:"_intent,omitempty"`
 	// Medication Identifies the medication being requested. This is a link to a resource that represents the medication which may be the details of the medication or simply an attribute carrying a code that identif...
 	Medication *MedicationRequestMedication `json:"-"` // polymorphic
 	// Note Extra information about the prescription that could not be conveyed by the other attributes.
@@ -78,6 +96,8 @@ type MedicationRequest struct {
 	PriorPrescription *dt.Reference `json:"priorPrescription,omitempty"`
 	// Priority Indicates how quickly the Medication Request should be addressed with respect to other requests.
 	Priority *dt.Code `json:"priority,omitempty"`
+	// PriorityElement contains element extensions for priority.
+	PriorityElement *dt.Element `json:"_priority,omitempty"`
 	// ReasonCode The reason or the indication for ordering or not ordering the medication.
 	ReasonCode []dt.CodeableConcept `json:"reasonCode,omitempty"`
 	// ReasonReference Condition or observation that supports why the medication was ordered.
@@ -96,6 +116,8 @@ type MedicationRequest struct {
 	Substitution *MedicationRequestSubstitution `json:"substitution,omitempty"`
 	// SupportingInformation Include additional information (for example, patient height and weight) that supports the ordering of the medication.
 	SupportingInformation []dt.Reference `json:"supportingInformation,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for MedicationRequest.
@@ -106,7 +128,6 @@ func (r MedicationRequest) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Merge polymorphic fields into the JSON object
 	var m map[string]json.RawMessage
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -137,6 +158,9 @@ func (r MedicationRequest) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
 	return json.Marshal(m)
 }
 
@@ -163,34 +187,54 @@ func (r *MedicationRequest) UnmarshalJSON(data []byte) error {
 	if reportedVal.Boolean != nil || reportedVal.Reference != nil {
 		r.Reported = &reportedVal
 	}
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_authoredOn", "_basedOn", "_category", "_contained", "_courseOfTherapyType", "_detectedIssue", "_dispenseRequest", "_doNotPerform", "_dosageInstruction", "_encounter", "_eventHistory", "_extension", "_groupIdentifier", "_id", "_identifier", "_implicitRules", "_instantiatesCanonical", "_instantiatesUri", "_insurance", "_intent", "_language", "_medicationCodeableConcept", "_medicationReference", "_meta", "_modifierExtension", "_note", "_performer", "_performerType", "_priorPrescription", "_priority", "_reasonCode", "_reasonReference", "_recorder", "_reportedBoolean", "_reportedReference", "_requester", "_status", "_statusReason", "_subject", "_substitution", "_supportingInformation", "_text", "authoredOn", "basedOn", "category", "contained", "courseOfTherapyType", "detectedIssue", "dispenseRequest", "doNotPerform", "dosageInstruction", "encounter", "eventHistory", "extension", "groupIdentifier", "id", "identifier", "implicitRules", "instantiatesCanonical", "instantiatesUri", "insurance", "intent", "language", "medicationCodeableConcept", "medicationReference", "meta", "modifierExtension", "note", "performer", "performerType", "priorPrescription", "priority", "reasonCode", "reasonReference", "recorder", "reportedBoolean", "reportedReference", "requester", "resourceType", "status", "statusReason", "subject", "substitution", "supportingInformation", "text":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // MedicationRequestBuilder provides a fluent API for constructing MedicationRequest resources.
 type MedicationRequestBuilder struct {
-	resource MedicationRequest
+	resource  MedicationRequest
+	fieldsSet map[string]bool
 }
 
 // NewMedicationRequest creates a new MedicationRequestBuilder for building a MedicationRequest resource.
 func NewMedicationRequest() *MedicationRequestBuilder {
-	return &MedicationRequestBuilder{resource: MedicationRequest{ResourceType: "MedicationRequest"}}
+	return &MedicationRequestBuilder{resource: MedicationRequest{ResourceType: "MedicationRequest"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithStatus sets the medication request status.
 func (b *MedicationRequestBuilder) WithStatus(status dt.Code) *MedicationRequestBuilder {
 	b.resource.Status = &status
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithIntent sets the medication request intent.
 func (b *MedicationRequestBuilder) WithIntent(intent dt.Code) *MedicationRequestBuilder {
 	b.resource.Intent = &intent
+	b.fieldsSet["intent"] = true
 	return b
 }
 
 // WithSubject sets the medication request subject reference.
 func (b *MedicationRequestBuilder) WithSubject(reference string) *MedicationRequestBuilder {
 	b.resource.Subject = dt.Reference{Reference: &reference}
+	b.fieldsSet["subject"] = true
 	return b
 }
 
@@ -209,144 +253,168 @@ func (b *MedicationRequestBuilder) WithMedicationCodeableConcept(system, code, d
 		b.resource.Medication = &MedicationRequestMedication{}
 	}
 	b.resource.Medication.CodeableConcept = &cc
+	b.fieldsSet["medication"] = true
 	return b
 }
 
 // WithId sets the id field.
 func (b *MedicationRequestBuilder) WithId(v dt.ID) *MedicationRequestBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *MedicationRequestBuilder) WithMeta(v dt.Meta) *MedicationRequestBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *MedicationRequestBuilder) WithImplicitRules(v dt.URI) *MedicationRequestBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *MedicationRequestBuilder) WithLanguage(v dt.Code) *MedicationRequestBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *MedicationRequestBuilder) WithText(v dt.Narrative) *MedicationRequestBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *MedicationRequestBuilder) WithContained(v json.RawMessage) *MedicationRequestBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *MedicationRequestBuilder) WithExtension(v dt.Extension) *MedicationRequestBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *MedicationRequestBuilder) WithModifierExtension(v dt.Extension) *MedicationRequestBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithIdentifier adds an item to the identifier field.
 func (b *MedicationRequestBuilder) WithIdentifier(v dt.Identifier) *MedicationRequestBuilder {
 	b.resource.Identifier = append(b.resource.Identifier, v)
+	b.fieldsSet["identifier"] = true
 	return b
 }
 
 // WithAuthoredOn sets the authoredOn field.
 func (b *MedicationRequestBuilder) WithAuthoredOn(v dt.DateTime) *MedicationRequestBuilder {
 	b.resource.AuthoredOn = &v
+	b.fieldsSet["authoredOn"] = true
 	return b
 }
 
 // WithBasedOn adds an item to the basedOn field.
 func (b *MedicationRequestBuilder) WithBasedOn(v dt.Reference) *MedicationRequestBuilder {
 	b.resource.BasedOn = append(b.resource.BasedOn, v)
+	b.fieldsSet["basedOn"] = true
 	return b
 }
 
 // WithCategory adds an item to the category field.
 func (b *MedicationRequestBuilder) WithCategory(v dt.CodeableConcept) *MedicationRequestBuilder {
 	b.resource.Category = append(b.resource.Category, v)
+	b.fieldsSet["category"] = true
 	return b
 }
 
 // WithCourseOfTherapyType sets the courseOfTherapyType field.
 func (b *MedicationRequestBuilder) WithCourseOfTherapyType(v dt.CodeableConcept) *MedicationRequestBuilder {
 	b.resource.CourseOfTherapyType = &v
+	b.fieldsSet["courseOfTherapyType"] = true
 	return b
 }
 
 // WithDetectedIssue adds an item to the detectedIssue field.
 func (b *MedicationRequestBuilder) WithDetectedIssue(v dt.Reference) *MedicationRequestBuilder {
 	b.resource.DetectedIssue = append(b.resource.DetectedIssue, v)
+	b.fieldsSet["detectedIssue"] = true
 	return b
 }
 
 // WithDispenseRequest sets the dispenseRequest field.
 func (b *MedicationRequestBuilder) WithDispenseRequest(v MedicationRequestDispenseRequest) *MedicationRequestBuilder {
 	b.resource.DispenseRequest = &v
+	b.fieldsSet["dispenseRequest"] = true
 	return b
 }
 
 // WithDoNotPerform sets the doNotPerform field.
 func (b *MedicationRequestBuilder) WithDoNotPerform(v bool) *MedicationRequestBuilder {
 	b.resource.DoNotPerform = &v
+	b.fieldsSet["doNotPerform"] = true
 	return b
 }
 
 // WithDosageInstruction adds an item to the dosageInstruction field.
 func (b *MedicationRequestBuilder) WithDosageInstruction(v dt.Dosage) *MedicationRequestBuilder {
 	b.resource.DosageInstruction = append(b.resource.DosageInstruction, v)
+	b.fieldsSet["dosageInstruction"] = true
 	return b
 }
 
 // WithEncounter sets the encounter field.
 func (b *MedicationRequestBuilder) WithEncounter(v dt.Reference) *MedicationRequestBuilder {
 	b.resource.Encounter = &v
+	b.fieldsSet["encounter"] = true
 	return b
 }
 
 // WithEventHistory adds an item to the eventHistory field.
 func (b *MedicationRequestBuilder) WithEventHistory(v dt.Reference) *MedicationRequestBuilder {
 	b.resource.EventHistory = append(b.resource.EventHistory, v)
+	b.fieldsSet["eventHistory"] = true
 	return b
 }
 
 // WithGroupIdentifier sets the groupIdentifier field.
 func (b *MedicationRequestBuilder) WithGroupIdentifier(v dt.Identifier) *MedicationRequestBuilder {
 	b.resource.GroupIdentifier = &v
+	b.fieldsSet["groupIdentifier"] = true
 	return b
 }
 
 // WithInstantiatesCanonical adds an item to the instantiatesCanonical field.
 func (b *MedicationRequestBuilder) WithInstantiatesCanonical(v dt.Canonical) *MedicationRequestBuilder {
 	b.resource.InstantiatesCanonical = append(b.resource.InstantiatesCanonical, v)
+	b.fieldsSet["instantiatesCanonical"] = true
 	return b
 }
 
 // WithInstantiatesUri adds an item to the instantiatesUri field.
 func (b *MedicationRequestBuilder) WithInstantiatesUri(v dt.URI) *MedicationRequestBuilder {
 	b.resource.InstantiatesUri = append(b.resource.InstantiatesUri, v)
+	b.fieldsSet["instantiatesUri"] = true
 	return b
 }
 
 // WithInsurance adds an item to the insurance field.
 func (b *MedicationRequestBuilder) WithInsurance(v dt.Reference) *MedicationRequestBuilder {
 	b.resource.Insurance = append(b.resource.Insurance, v)
+	b.fieldsSet["insurance"] = true
 	return b
 }
 
@@ -356,54 +424,63 @@ func (b *MedicationRequestBuilder) WithMedicationReference(v dt.Reference) *Medi
 		b.resource.Medication = &MedicationRequestMedication{}
 	}
 	b.resource.Medication.Reference = &v
+	b.fieldsSet["medication"] = true
 	return b
 }
 
 // WithNote adds an item to the note field.
 func (b *MedicationRequestBuilder) WithNote(v dt.Annotation) *MedicationRequestBuilder {
 	b.resource.Note = append(b.resource.Note, v)
+	b.fieldsSet["note"] = true
 	return b
 }
 
 // WithPerformer sets the performer field.
 func (b *MedicationRequestBuilder) WithPerformer(v dt.Reference) *MedicationRequestBuilder {
 	b.resource.Performer = &v
+	b.fieldsSet["performer"] = true
 	return b
 }
 
 // WithPerformerType sets the performerType field.
 func (b *MedicationRequestBuilder) WithPerformerType(v dt.CodeableConcept) *MedicationRequestBuilder {
 	b.resource.PerformerType = &v
+	b.fieldsSet["performerType"] = true
 	return b
 }
 
 // WithPriorPrescription sets the priorPrescription field.
 func (b *MedicationRequestBuilder) WithPriorPrescription(v dt.Reference) *MedicationRequestBuilder {
 	b.resource.PriorPrescription = &v
+	b.fieldsSet["priorPrescription"] = true
 	return b
 }
 
 // WithPriority sets the priority field.
 func (b *MedicationRequestBuilder) WithPriority(v dt.Code) *MedicationRequestBuilder {
 	b.resource.Priority = &v
+	b.fieldsSet["priority"] = true
 	return b
 }
 
 // WithReasonCode adds an item to the reasonCode field.
 func (b *MedicationRequestBuilder) WithReasonCode(v dt.CodeableConcept) *MedicationRequestBuilder {
 	b.resource.ReasonCode = append(b.resource.ReasonCode, v)
+	b.fieldsSet["reasonCode"] = true
 	return b
 }
 
 // WithReasonReference adds an item to the reasonReference field.
 func (b *MedicationRequestBuilder) WithReasonReference(v dt.Reference) *MedicationRequestBuilder {
 	b.resource.ReasonReference = append(b.resource.ReasonReference, v)
+	b.fieldsSet["reasonReference"] = true
 	return b
 }
 
 // WithRecorder sets the recorder field.
 func (b *MedicationRequestBuilder) WithRecorder(v dt.Reference) *MedicationRequestBuilder {
 	b.resource.Recorder = &v
+	b.fieldsSet["recorder"] = true
 	return b
 }
 
@@ -413,6 +490,7 @@ func (b *MedicationRequestBuilder) WithReportedBoolean(v bool) *MedicationReques
 		b.resource.Reported = &MedicationRequestReported{}
 	}
 	b.resource.Reported.Boolean = &v
+	b.fieldsSet["reported"] = true
 	return b
 }
 
@@ -422,36 +500,48 @@ func (b *MedicationRequestBuilder) WithReportedReference(v dt.Reference) *Medica
 		b.resource.Reported = &MedicationRequestReported{}
 	}
 	b.resource.Reported.Reference = &v
+	b.fieldsSet["reported"] = true
 	return b
 }
 
 // WithRequester sets the requester field.
 func (b *MedicationRequestBuilder) WithRequester(v dt.Reference) *MedicationRequestBuilder {
 	b.resource.Requester = &v
+	b.fieldsSet["requester"] = true
 	return b
 }
 
 // WithStatusReason sets the statusReason field.
 func (b *MedicationRequestBuilder) WithStatusReason(v dt.CodeableConcept) *MedicationRequestBuilder {
 	b.resource.StatusReason = &v
+	b.fieldsSet["statusReason"] = true
 	return b
 }
 
 // WithSubstitution sets the substitution field.
 func (b *MedicationRequestBuilder) WithSubstitution(v MedicationRequestSubstitution) *MedicationRequestBuilder {
 	b.resource.Substitution = &v
+	b.fieldsSet["substitution"] = true
 	return b
 }
 
 // WithSupportingInformation adds an item to the supportingInformation field.
 func (b *MedicationRequestBuilder) WithSupportingInformation(v dt.Reference) *MedicationRequestBuilder {
 	b.resource.SupportingInformation = append(b.resource.SupportingInformation, v)
+	b.fieldsSet["supportingInformation"] = true
 	return b
 }
 
 // Build returns the constructed MedicationRequest. It returns an error if any required
 // field (cardinality 1..1) is not set.
 func (b *MedicationRequestBuilder) Build() (*MedicationRequest, error) {
+	var missing []string
+	if !b.fieldsSet["subject"] {
+		missing = append(missing, "subject")
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("MedicationRequest: required fields missing: %v", missing)
+	}
 	r := b.resource
 	return &r, nil
 }
@@ -460,6 +550,8 @@ func (b *MedicationRequestBuilder) Build() (*MedicationRequest, error) {
 type MedicationRequestDispenseRequest struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -472,6 +564,8 @@ type MedicationRequestDispenseRequest struct {
 	InitialFill *MedicationRequestInitialFill `json:"initialFill,omitempty"`
 	// NumberOfRepeatsAllowed An integer indicating the number of times, in addition to the original dispense, (aka refills or repeats) that the patient can receive the prescribed medication. Usage Notes: This integer does not ...
 	NumberOfRepeatsAllowed *uint32 `json:"numberOfRepeatsAllowed,omitempty"`
+	// NumberOfRepeatsAllowedElement contains element extensions for numberOfRepeatsAllowed.
+	NumberOfRepeatsAllowedElement *dt.Element `json:"_numberOfRepeatsAllowed,omitempty"`
 	// Performer Indicates the intended dispensing Organization specified by the prescriber.
 	Performer *dt.Reference `json:"performer,omitempty"`
 	// Quantity The amount that is to be dispensed for one fill.
@@ -484,6 +578,8 @@ type MedicationRequestDispenseRequest struct {
 type MedicationRequestInitialFill struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -498,6 +594,8 @@ type MedicationRequestInitialFill struct {
 type MedicationRequestSubstitution struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...

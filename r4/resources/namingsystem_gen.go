@@ -18,12 +18,18 @@ type NamingSystem struct {
 	ResourceType string `json:"resourceType"` // Always "NamingSystem"
 	// Id The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes.
 	Id *dt.ID `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Meta The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 	Meta *dt.Meta `json:"meta,omitempty"`
 	// ImplicitRules A reference to a set of rules that were followed when the resource was constructed, and which must be understood when processing the content. Often, this is a reference to an implementation guide t...
 	ImplicitRules *dt.URI `json:"implicitRules,omitempty"`
+	// ImplicitRulesElement contains element extensions for implicitRules.
+	ImplicitRulesElement *dt.Element `json:"_implicitRules,omitempty"`
 	// Language The base language in which the resource is written.
 	Language *dt.Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *dt.Element `json:"_language,omitempty"`
 	// Text A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is...
 	Text *dt.Narrative `json:"text,omitempty"`
 	// Contained These resources do not have an independent existence apart from the resource that contains them - they cannot be identified independently, and nor can they have their own independent transaction sc...
@@ -34,37 +40,69 @@ type NamingSystem struct {
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The status of this naming system. Enables tracking the life-cycle of the content.
 	Status *NamingSystemStatus `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *dt.Element `json:"_status,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Date The date  (and optionally time) when the naming system was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should ch...
 	Date *dt.DateTime `json:"date,omitempty"`
+	// DateElement contains element extensions for date.
+	DateElement *dt.Element `json:"_date,omitempty"`
 	// Description A free text natural language description of the naming system from a consumer's perspective. Details about what the namespace identifies including scope, granularity, version labeling, etc.
 	Description *dt.Markdown `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *dt.Element `json:"_description,omitempty"`
 	// Jurisdiction A legal or geographic region in which the naming system is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Kind Indicates the purpose for the naming system - what kinds of things does it make unique?
 	Kind *NamingSystemKind `json:"kind,omitempty"`
+	// KindElement contains element extensions for kind.
+	KindElement *dt.Element `json:"_kind,omitempty"`
 	// Name A natural language name identifying the naming system. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *dt.Element `json:"_name,omitempty"`
 	// Publisher The name of the organization or individual that published the naming system.
 	Publisher *string `json:"publisher,omitempty"`
+	// PublisherElement contains element extensions for publisher.
+	PublisherElement *dt.Element `json:"_publisher,omitempty"`
 	// Responsible The name of the organization that is responsible for issuing identifiers or codes for this namespace and ensuring their non-collision.
 	Responsible *string `json:"responsible,omitempty"`
+	// ResponsibleElement contains element extensions for responsible.
+	ResponsibleElement *dt.Element `json:"_responsible,omitempty"`
 	// Type Categorizes a naming system for easier search by grouping related naming systems.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 	// UniqueId Indicates how the system may be identified when referenced in electronic exchange.
 	UniqueId []NamingSystemUniqueId `json:"uniqueId,omitempty"`
 	// Usage Provides guidance on the use of the namespace, including the handling of formatting characters, use of upper vs. lower case, etc.
 	Usage *string `json:"usage,omitempty"`
+	// UsageElement contains element extensions for usage.
+	UsageElement *dt.Element `json:"_usage,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
+	// Extra contains any JSON fields not recognized by this resource type.
+	Extra map[string]json.RawMessage `json:"-"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for NamingSystem.
 func (r NamingSystem) MarshalJSON() ([]byte, error) {
 	r.ResourceType = "NamingSystem"
 	type Alias NamingSystem
-	return json.Marshal((Alias)(r))
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	if len(r.Extra) == 0 {
+		return data, nil
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	for k, v := range r.Extra {
+		m[k] = v
+	}
+	return json.Marshal(m)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for NamingSystem.
@@ -75,142 +113,180 @@ func (r *NamingSystem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = NamingSystem(alias)
+	// Capture unknown fields
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		switch k {
+		case "_contact", "_contained", "_date", "_description", "_extension", "_id", "_implicitRules", "_jurisdiction", "_kind", "_language", "_meta", "_modifierExtension", "_name", "_publisher", "_responsible", "_status", "_text", "_type", "_uniqueId", "_usage", "_useContext", "contact", "contained", "date", "description", "extension", "id", "implicitRules", "jurisdiction", "kind", "language", "meta", "modifierExtension", "name", "publisher", "resourceType", "responsible", "status", "text", "type", "uniqueId", "usage", "useContext":
+			// known field
+		default:
+			if r.Extra == nil {
+				r.Extra = make(map[string]json.RawMessage)
+			}
+			r.Extra[k] = v
+		}
+	}
 	return nil
 }
 
 // NamingSystemBuilder provides a fluent API for constructing NamingSystem resources.
 type NamingSystemBuilder struct {
-	resource NamingSystem
+	resource  NamingSystem
+	fieldsSet map[string]bool
 }
 
 // NewNamingSystem creates a new NamingSystemBuilder for building a NamingSystem resource.
 func NewNamingSystem() *NamingSystemBuilder {
-	return &NamingSystemBuilder{resource: NamingSystem{ResourceType: "NamingSystem"}}
+	return &NamingSystemBuilder{resource: NamingSystem{ResourceType: "NamingSystem"}, fieldsSet: make(map[string]bool)}
 }
 
 // WithId sets the id field.
 func (b *NamingSystemBuilder) WithId(v dt.ID) *NamingSystemBuilder {
 	b.resource.Id = &v
+	b.fieldsSet["id"] = true
 	return b
 }
 
 // WithMeta sets the meta field.
 func (b *NamingSystemBuilder) WithMeta(v dt.Meta) *NamingSystemBuilder {
 	b.resource.Meta = &v
+	b.fieldsSet["meta"] = true
 	return b
 }
 
 // WithImplicitRules sets the implicitRules field.
 func (b *NamingSystemBuilder) WithImplicitRules(v dt.URI) *NamingSystemBuilder {
 	b.resource.ImplicitRules = &v
+	b.fieldsSet["implicitRules"] = true
 	return b
 }
 
 // WithLanguage sets the language field.
 func (b *NamingSystemBuilder) WithLanguage(v dt.Code) *NamingSystemBuilder {
 	b.resource.Language = &v
+	b.fieldsSet["language"] = true
 	return b
 }
 
 // WithText sets the text field.
 func (b *NamingSystemBuilder) WithText(v dt.Narrative) *NamingSystemBuilder {
 	b.resource.Text = &v
+	b.fieldsSet["text"] = true
 	return b
 }
 
 // WithContained adds an item to the contained field.
 func (b *NamingSystemBuilder) WithContained(v json.RawMessage) *NamingSystemBuilder {
 	b.resource.Contained = append(b.resource.Contained, v)
+	b.fieldsSet["contained"] = true
 	return b
 }
 
 // WithExtension adds an item to the extension field.
 func (b *NamingSystemBuilder) WithExtension(v dt.Extension) *NamingSystemBuilder {
 	b.resource.Extension = append(b.resource.Extension, v)
+	b.fieldsSet["extension"] = true
 	return b
 }
 
 // WithModifierExtension adds an item to the modifierExtension field.
 func (b *NamingSystemBuilder) WithModifierExtension(v dt.Extension) *NamingSystemBuilder {
 	b.resource.ModifierExtension = append(b.resource.ModifierExtension, v)
+	b.fieldsSet["modifierExtension"] = true
 	return b
 }
 
 // WithStatus sets the status field.
 func (b *NamingSystemBuilder) WithStatus(v NamingSystemStatus) *NamingSystemBuilder {
 	b.resource.Status = &v
+	b.fieldsSet["status"] = true
 	return b
 }
 
 // WithContact adds an item to the contact field.
 func (b *NamingSystemBuilder) WithContact(v dt.ContactDetail) *NamingSystemBuilder {
 	b.resource.Contact = append(b.resource.Contact, v)
+	b.fieldsSet["contact"] = true
 	return b
 }
 
 // WithDate sets the date field.
 func (b *NamingSystemBuilder) WithDate(v dt.DateTime) *NamingSystemBuilder {
 	b.resource.Date = &v
+	b.fieldsSet["date"] = true
 	return b
 }
 
 // WithDescription sets the description field.
 func (b *NamingSystemBuilder) WithDescription(v dt.Markdown) *NamingSystemBuilder {
 	b.resource.Description = &v
+	b.fieldsSet["description"] = true
 	return b
 }
 
 // WithJurisdiction adds an item to the jurisdiction field.
 func (b *NamingSystemBuilder) WithJurisdiction(v dt.CodeableConcept) *NamingSystemBuilder {
 	b.resource.Jurisdiction = append(b.resource.Jurisdiction, v)
+	b.fieldsSet["jurisdiction"] = true
 	return b
 }
 
 // WithKind sets the kind field.
 func (b *NamingSystemBuilder) WithKind(v NamingSystemKind) *NamingSystemBuilder {
 	b.resource.Kind = &v
+	b.fieldsSet["kind"] = true
 	return b
 }
 
 // WithName sets the name field.
 func (b *NamingSystemBuilder) WithName(v string) *NamingSystemBuilder {
 	b.resource.Name = &v
+	b.fieldsSet["name"] = true
 	return b
 }
 
 // WithPublisher sets the publisher field.
 func (b *NamingSystemBuilder) WithPublisher(v string) *NamingSystemBuilder {
 	b.resource.Publisher = &v
+	b.fieldsSet["publisher"] = true
 	return b
 }
 
 // WithResponsible sets the responsible field.
 func (b *NamingSystemBuilder) WithResponsible(v string) *NamingSystemBuilder {
 	b.resource.Responsible = &v
+	b.fieldsSet["responsible"] = true
 	return b
 }
 
 // WithType sets the type field.
 func (b *NamingSystemBuilder) WithType(v dt.CodeableConcept) *NamingSystemBuilder {
 	b.resource.Type = &v
+	b.fieldsSet["type"] = true
 	return b
 }
 
 // WithUniqueId adds an item to the uniqueId field.
 func (b *NamingSystemBuilder) WithUniqueId(v NamingSystemUniqueId) *NamingSystemBuilder {
 	b.resource.UniqueId = append(b.resource.UniqueId, v)
+	b.fieldsSet["uniqueId"] = true
 	return b
 }
 
 // WithUsage sets the usage field.
 func (b *NamingSystemBuilder) WithUsage(v string) *NamingSystemBuilder {
 	b.resource.Usage = &v
+	b.fieldsSet["usage"] = true
 	return b
 }
 
 // WithUseContext adds an item to the useContext field.
 func (b *NamingSystemBuilder) WithUseContext(v dt.UsageContext) *NamingSystemBuilder {
 	b.resource.UseContext = append(b.resource.UseContext, v)
+	b.fieldsSet["useContext"] = true
 	return b
 }
 
@@ -218,7 +294,7 @@ func (b *NamingSystemBuilder) WithUseContext(v dt.UsageContext) *NamingSystemBui
 // field (cardinality 1..1) is not set.
 func (b *NamingSystemBuilder) Build() (*NamingSystem, error) {
 	var missing []string
-	if len(b.resource.UniqueId) == 0 {
+	if !b.fieldsSet["uniqueId"] {
 		missing = append(missing, "uniqueId")
 	}
 	if len(missing) > 0 {
@@ -232,18 +308,28 @@ func (b *NamingSystemBuilder) Build() (*NamingSystem, error) {
 type NamingSystemUniqueId struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *dt.Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []dt.Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Comment Notes about the past or intended usage of this identifier.
 	Comment *string `json:"comment,omitempty"`
+	// CommentElement contains element extensions for comment.
+	CommentElement *dt.Element `json:"_comment,omitempty"`
 	// Period Identifies the period of time over which this identifier is considered appropriate to refer to the naming system.  Outside of this window, the identifier might be non-deterministic.
 	Period *dt.Period `json:"period,omitempty"`
 	// Preferred Indicates whether this identifier is the "preferred" identifier of this type.
 	Preferred *bool `json:"preferred,omitempty"`
+	// PreferredElement contains element extensions for preferred.
+	PreferredElement *dt.Element `json:"_preferred,omitempty"`
 	// Type Identifies the unique identifier scheme used for this particular identifier.
 	Type *NamingSystemUniqueIdType `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *dt.Element `json:"_type,omitempty"`
 	// Value The string that should be sent over the wire to identify the code system or identifier system.
 	Value *string `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *dt.Element `json:"_value,omitempty"`
 }

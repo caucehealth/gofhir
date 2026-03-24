@@ -48,6 +48,16 @@ type Time string
 // UUID represents a FHIR uuid value — a UUID represented as a URI.
 type UUID string
 
+// Element holds the id and extensions for a FHIR primitive element.
+// In the FHIR JSON representation, primitive fields like "birthDate" can have
+// a companion "_birthDate" object containing an id and/or extensions.
+type Element struct {
+	// Id is the unique id for the element within a resource.
+	Id *string `json:"id,omitempty"`
+	// Extension contains additional information for the element.
+	Extension []Extension `json:"extension,omitempty"`
+}
+
 // ParseInstant parses a FHIR instant string (RFC3339 with mandatory timezone)
 // into a time.Time value. It returns an error if the string is not a valid
 // FHIR instant format.
@@ -68,94 +78,156 @@ func ParseInstant(s string) (time.Time, error) {
 type Address struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Text Specifies the entire address as it should be displayed e.g. on a postal label. This may be provided instead of or as well as the specific parts.
 	Text *string `json:"text,omitempty"`
+	// TextElement contains element extensions for text.
+	TextElement *Element `json:"_text,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// City The name of the city, town, suburb, village or other community or delivery center.
 	City *string `json:"city,omitempty"`
+	// CityElement contains element extensions for city.
+	CityElement *Element `json:"_city,omitempty"`
 	// Country Country - a nation as commonly understood or generally accepted.
 	Country *string `json:"country,omitempty"`
+	// CountryElement contains element extensions for country.
+	CountryElement *Element `json:"_country,omitempty"`
 	// District The name of the administrative area (county).
 	District *string `json:"district,omitempty"`
+	// DistrictElement contains element extensions for district.
+	DistrictElement *Element `json:"_district,omitempty"`
 	// Line This component contains the house number, apartment number, street name, street direction,  P.O. Box number, delivery hints, and similar address information.
 	Line []string `json:"line,omitempty"`
+	// LineElement contains element extensions for each line.
+	LineElement []Element `json:"_line,omitempty"`
 	// Period Time period when address was/is in use.
 	Period *Period `json:"period,omitempty"`
 	// PostalCode A postal code designating a region defined by the postal service.
 	PostalCode *string `json:"postalCode,omitempty"`
+	// PostalCodeElement contains element extensions for postalCode.
+	PostalCodeElement *Element `json:"_postalCode,omitempty"`
 	// State Sub-unit of a country with limited sovereignty in a federally organized country. A code may be used if codes are in common use (e.g. US 2 letter state codes).
 	State *string `json:"state,omitempty"`
+	// StateElement contains element extensions for state.
+	StateElement *Element `json:"_state,omitempty"`
 	// Type Distinguishes between physical addresses (those you can visit) and mailing addresses (e.g. PO Boxes and care-of addresses). Most addresses are both.
 	Type *string `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *Element `json:"_type,omitempty"`
 	// Use The purpose of this address.
 	Use *string `json:"use,omitempty"`
+	// UseElement contains element extensions for use.
+	UseElement *Element `json:"_use,omitempty"`
 }
 
 // Age A duration of time during which an organism (or a process) has existed.
 type Age struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Code A computer processable form of the unit in some unit representation system.
 	Code *Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *Element `json:"_code,omitempty"`
 	// Comparator How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value...
 	Comparator *string `json:"comparator,omitempty"`
+	// ComparatorElement contains element extensions for comparator.
+	ComparatorElement *Element `json:"_comparator,omitempty"`
 	// System The identification of the system that provides the coded form of the unit.
 	System *URI `json:"system,omitempty"`
+	// SystemElement contains element extensions for system.
+	SystemElement *Element `json:"_system,omitempty"`
 	// Unit A human-readable form of the unit.
 	Unit *string `json:"unit,omitempty"`
+	// UnitElement contains element extensions for unit.
+	UnitElement *Element `json:"_unit,omitempty"`
 	// Value The value of the measured amount. The value includes an implicit precision in the presentation of the value.
 	Value *float64 `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *Element `json:"_value,omitempty"`
 }
 
 // Annotation A  text note which also  contains information about who made the statement and when.
 type Annotation struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Text The text of the annotation in markdown format.
 	Text *Markdown `json:"text,omitempty"`
+	// TextElement contains element extensions for text.
+	TextElement *Element `json:"_text,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// AuthorReference The individual responsible for making the annotation.
 	AuthorReference *Reference `json:"authorReference,omitempty"`
 	// AuthorString The individual responsible for making the annotation.
 	AuthorString *string `json:"authorString,omitempty"`
+	// AuthorStringElement contains element extensions for authorString.
+	AuthorStringElement *Element `json:"_authorString,omitempty"`
 	// Time Indicates when this particular annotation was made.
 	Time *DateTime `json:"time,omitempty"`
+	// TimeElement contains element extensions for time.
+	TimeElement *Element `json:"_time,omitempty"`
 }
 
 // Attachment For referring to data content defined in other formats.
 type Attachment struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Language The human language of the content. The value can be any valid value according to BCP 47.
 	Language *Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *Element `json:"_language,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ContentType Identifies the type of the data in the attachment and allows a method to be chosen to interpret or render the data. Includes mime type parameters such as charset where appropriate.
 	ContentType *Code `json:"contentType,omitempty"`
+	// ContentTypeElement contains element extensions for contentType.
+	ContentTypeElement *Element `json:"_contentType,omitempty"`
 	// Creation The date that the attachment was first created.
 	Creation *DateTime `json:"creation,omitempty"`
+	// CreationElement contains element extensions for creation.
+	CreationElement *Element `json:"_creation,omitempty"`
 	// Data The actual data of the attachment - a sequence of bytes, base64 encoded.
 	Data []byte `json:"data,omitempty"`
+	// DataElement contains element extensions for data.
+	DataElement *Element `json:"_data,omitempty"`
 	// Hash The calculated hash of the data using SHA-1. Represented using base64.
 	Hash []byte `json:"hash,omitempty"`
+	// HashElement contains element extensions for hash.
+	HashElement *Element `json:"_hash,omitempty"`
 	// Size The number of bytes of data that make up this attachment (before base64 encoding, if that is done).
 	Size *uint32 `json:"size,omitempty"`
+	// SizeElement contains element extensions for size.
+	SizeElement *Element `json:"_size,omitempty"`
 	// Title A label or set of text to display in place of the data.
 	Title *string `json:"title,omitempty"`
+	// TitleElement contains element extensions for title.
+	TitleElement *Element `json:"_title,omitempty"`
 	// Url A location where the data can be accessed.
 	Url *URL `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *Element `json:"_url,omitempty"`
 }
 
 // CodeableConcept A concept that may be defined by a formal reference to a terminology or ontology or may be provided by text.
 type CodeableConcept struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Text A human language representation of the concept as seen/selected/uttered by the user who entered the data and/or which represents the intended meaning of the user.
 	Text *string `json:"text,omitempty"`
+	// TextElement contains element extensions for text.
+	TextElement *Element `json:"_text,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Coding A reference to a code defined by a terminology system.
@@ -166,28 +238,44 @@ type CodeableConcept struct {
 type Coding struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Code A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).
 	Code *Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *Element `json:"_code,omitempty"`
 	// Display A representation of the meaning of the code in the system, following the rules of the system.
 	Display *string `json:"display,omitempty"`
+	// DisplayElement contains element extensions for display.
+	DisplayElement *Element `json:"_display,omitempty"`
 	// System The identification of the code system that defines the meaning of the symbol in the code.
 	System *URI `json:"system,omitempty"`
+	// SystemElement contains element extensions for system.
+	SystemElement *Element `json:"_system,omitempty"`
 	// UserSelected Indicates that this coding was chosen by a user directly - e.g. off a pick list of available items (codes or displays).
 	UserSelected *bool `json:"userSelected,omitempty"`
+	// UserSelectedElement contains element extensions for userSelected.
+	UserSelectedElement *Element `json:"_userSelected,omitempty"`
 	// Version The version of the code system which was used when choosing this code. Note that a well-maintained code system does not need the version reported, because the meaning of codes is consistent across ...
 	Version *string `json:"version,omitempty"`
+	// VersionElement contains element extensions for version.
+	VersionElement *Element `json:"_version,omitempty"`
 }
 
 // ContactDetail Specifies contact information for a person or organization.
 type ContactDetail struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Name The name of an individual to contact.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *Element `json:"_name,omitempty"`
 	// Telecom The contact details for the individual (if a name was provided) or the organization.
 	Telecom []ContactPoint `json:"telecom,omitempty"`
 }
@@ -196,56 +284,86 @@ type ContactDetail struct {
 type ContactPoint struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Period Time period when the contact point was/is in use.
 	Period *Period `json:"period,omitempty"`
 	// Rank Specifies a preferred order in which to use a set of contacts. ContactPoints with lower rank values are more preferred than those with higher rank values.
 	Rank *uint32 `json:"rank,omitempty"`
+	// RankElement contains element extensions for rank.
+	RankElement *Element `json:"_rank,omitempty"`
 	// System Telecommunications form for contact point - what communications system is required to make use of the contact.
 	System *string `json:"system,omitempty"`
+	// SystemElement contains element extensions for system.
+	SystemElement *Element `json:"_system,omitempty"`
 	// Use Identifies the purpose for the contact point.
 	Use *string `json:"use,omitempty"`
+	// UseElement contains element extensions for use.
+	UseElement *Element `json:"_use,omitempty"`
 	// Value The actual contact point details, in a form that is meaningful to the designated communication system (i.e. phone number or email address).
 	Value *string `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *Element `json:"_value,omitempty"`
 }
 
 // Contributor A contributor to the content of a knowledge asset, including authors, editors, reviewers, and endorsers.
 type Contributor struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the contributor.
 	Contact []ContactDetail `json:"contact,omitempty"`
 	// Name The name of the individual or organization responsible for the contribution.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *Element `json:"_name,omitempty"`
 	// Type The type of contributor.
 	Type *string `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *Element `json:"_type,omitempty"`
 }
 
 // Count A measured amount (or an amount that can potentially be measured). Note that measured amounts include amounts that are not precisely quantified, including amounts involving arbitrary units and floa...
 type Count struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Code A computer processable form of the unit in some unit representation system.
 	Code *Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *Element `json:"_code,omitempty"`
 	// Comparator How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value...
 	Comparator *string `json:"comparator,omitempty"`
+	// ComparatorElement contains element extensions for comparator.
+	ComparatorElement *Element `json:"_comparator,omitempty"`
 	// System The identification of the system that provides the coded form of the unit.
 	System *URI `json:"system,omitempty"`
+	// SystemElement contains element extensions for system.
+	SystemElement *Element `json:"_system,omitempty"`
 	// Unit A human-readable form of the unit.
 	Unit *string `json:"unit,omitempty"`
+	// UnitElement contains element extensions for unit.
+	UnitElement *Element `json:"_unit,omitempty"`
 	// Value The value of the measured amount. The value includes an implicit precision in the presentation of the value.
 	Value *float64 `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *Element `json:"_value,omitempty"`
 }
 
 // DataRequirement Describes a required data item for evaluation in terms of the type of data, and optional code or date-based filters of the data.
 type DataRequirement struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// CodeFilter Code filters specify additional constraints on the data, specifying the value set of interest for a particular element of the data. Each code filter defines an additional constraint on the data, i....
@@ -254,10 +372,16 @@ type DataRequirement struct {
 	DateFilter []DataRequirementDateFilter `json:"dateFilter,omitempty"`
 	// Limit Specifies a maximum number of results that are required (uses the _count search parameter).
 	Limit *uint32 `json:"limit,omitempty"`
+	// LimitElement contains element extensions for limit.
+	LimitElement *Element `json:"_limit,omitempty"`
 	// MustSupport Indicates that specific elements of the type are referenced by the knowledge module and must be supported by the consumer in order to obtain an effective evaluation. This does not mean that a value...
 	MustSupport []string `json:"mustSupport,omitempty"`
+	// MustSupportElement contains element extensions for each mustSupport.
+	MustSupportElement []Element `json:"_mustSupport,omitempty"`
 	// Profile The profile of the required data, specified as the uri of the profile definition.
 	Profile []Canonical `json:"profile,omitempty"`
+	// ProfileElement contains element extensions for each profile.
+	ProfileElement []Element `json:"_profile,omitempty"`
 	// Sort Specifies the order of the results to be returned.
 	Sort []DataRequirementSort `json:"sort,omitempty"`
 	// SubjectCodeableConcept The intended subjects of the data requirement. If this element is not provided, a Patient subject is assumed.
@@ -266,32 +390,50 @@ type DataRequirement struct {
 	SubjectReference *Reference `json:"subjectReference,omitempty"`
 	// Type The type of the required data, specified as the type name of a resource. For profiles, this value is set to the type of the base resource of the profile.
 	Type *Code `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *Element `json:"_type,omitempty"`
 }
 
 // Distance A length - a value with a unit that is a physical distance.
 type Distance struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Code A computer processable form of the unit in some unit representation system.
 	Code *Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *Element `json:"_code,omitempty"`
 	// Comparator How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value...
 	Comparator *string `json:"comparator,omitempty"`
+	// ComparatorElement contains element extensions for comparator.
+	ComparatorElement *Element `json:"_comparator,omitempty"`
 	// System The identification of the system that provides the coded form of the unit.
 	System *URI `json:"system,omitempty"`
+	// SystemElement contains element extensions for system.
+	SystemElement *Element `json:"_system,omitempty"`
 	// Unit A human-readable form of the unit.
 	Unit *string `json:"unit,omitempty"`
+	// UnitElement contains element extensions for unit.
+	UnitElement *Element `json:"_unit,omitempty"`
 	// Value The value of the measured amount. The value includes an implicit precision in the presentation of the value.
 	Value *float64 `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *Element `json:"_value,omitempty"`
 }
 
 // Dosage Indicates how the medication is/was taken or should be taken by the patient.
 type Dosage struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Text Free text dosage instructions e.g. SIG.
 	Text *string `json:"text,omitempty"`
+	// TextElement contains element extensions for text.
+	TextElement *Element `json:"_text,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -300,6 +442,8 @@ type Dosage struct {
 	AdditionalInstruction []CodeableConcept `json:"additionalInstruction,omitempty"`
 	// AsNeededBoolean Indicates whether the Medication is only taken when needed within a specific dosing schedule (Boolean option), or it indicates the precondition for taking the Medication (CodeableConcept).
 	AsNeededBoolean *bool `json:"asNeededBoolean,omitempty"`
+	// AsNeededBooleanElement contains element extensions for asNeededBoolean.
+	AsNeededBooleanElement *Element `json:"_asNeededBoolean,omitempty"`
 	// AsNeededCodeableConcept Indicates whether the Medication is only taken when needed within a specific dosing schedule (Boolean option), or it indicates the precondition for taking the Medication (CodeableConcept).
 	AsNeededCodeableConcept *CodeableConcept `json:"asNeededCodeableConcept,omitempty"`
 	// DoseAndRate The amount of medication administered.
@@ -314,10 +458,14 @@ type Dosage struct {
 	Method *CodeableConcept `json:"method,omitempty"`
 	// PatientInstruction Instructions in terms that are understood by the patient or consumer.
 	PatientInstruction *string `json:"patientInstruction,omitempty"`
+	// PatientInstructionElement contains element extensions for patientInstruction.
+	PatientInstructionElement *Element `json:"_patientInstruction,omitempty"`
 	// Route How drug should enter body.
 	Route *CodeableConcept `json:"route,omitempty"`
 	// Sequence Indicates the order in which the dosage instructions should be applied or interpreted.
 	Sequence *int32 `json:"sequence,omitempty"`
+	// SequenceElement contains element extensions for sequence.
+	SequenceElement *Element `json:"_sequence,omitempty"`
 	// Site Body site to administer to.
 	Site *CodeableConcept `json:"site,omitempty"`
 	// Timing When medication should be administered.
@@ -328,30 +476,46 @@ type Dosage struct {
 type Duration struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Code A computer processable form of the unit in some unit representation system.
 	Code *Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *Element `json:"_code,omitempty"`
 	// Comparator How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value...
 	Comparator *string `json:"comparator,omitempty"`
+	// ComparatorElement contains element extensions for comparator.
+	ComparatorElement *Element `json:"_comparator,omitempty"`
 	// System The identification of the system that provides the coded form of the unit.
 	System *URI `json:"system,omitempty"`
+	// SystemElement contains element extensions for system.
+	SystemElement *Element `json:"_system,omitempty"`
 	// Unit A human-readable form of the unit.
 	Unit *string `json:"unit,omitempty"`
+	// UnitElement contains element extensions for unit.
+	UnitElement *Element `json:"_unit,omitempty"`
 	// Value The value of the measured amount. The value includes an implicit precision in the presentation of the value.
 	Value *float64 `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *Element `json:"_value,omitempty"`
 }
 
 // ElementDefinition Captures constraints on each element within the resource, profile, or extension.
 type ElementDefinition struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []Extension `json:"modifierExtension,omitempty"`
 	// Alias Identifies additional names by which this element might also be known.
 	Alias []string `json:"alias,omitempty"`
+	// AliasElement contains element extensions for each alias.
+	AliasElement []Element `json:"_alias,omitempty"`
 	// Base Information about the base definition of the element, provided to make it unnecessary for tools to trace the deviation of the element through the derived and related profiles. When the element defi...
 	Base *ElementDefinitionBase `json:"base,omitempty"`
 	// Binding Binds to a value set if this element is coded (code, Coding, CodeableConcept, Quantity), or the data types (string, uri).
@@ -360,12 +524,18 @@ type ElementDefinition struct {
 	Code []Coding `json:"code,omitempty"`
 	// Comment Explanatory notes and implementation guidance about the data element, including notes about how to use the data properly, exceptions to proper use, etc. (Note: The text you are reading is specified...
 	Comment *Markdown `json:"comment,omitempty"`
+	// CommentElement contains element extensions for comment.
+	CommentElement *Element `json:"_comment,omitempty"`
 	// Condition A reference to an invariant that may make additional statements about the cardinality or value in the instance.
 	Condition []ID `json:"condition,omitempty"`
+	// ConditionElement contains element extensions for each condition.
+	ConditionElement []Element `json:"_condition,omitempty"`
 	// Constraint Formal constraints such as co-occurrence and other constraints that can be computationally evaluated within the context of the instance.
 	Constraint []ElementDefinitionConstraint `json:"constraint,omitempty"`
 	// ContentReference Identifies an element defined elsewhere in the definition whose content rules should be applied to the current element. ContentReferences bring across all the rules that are in the ElementDefinitio...
 	ContentReference *URI `json:"contentReference,omitempty"`
+	// ContentReferenceElement contains element extensions for contentReference.
+	ContentReferenceElement *Element `json:"_contentReference,omitempty"`
 	// DefaultValueAddress The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueAddress *Address `json:"defaultValueAddress,omitempty"`
 	// DefaultValueAge The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
@@ -376,12 +546,20 @@ type ElementDefinition struct {
 	DefaultValueAttachment *Attachment `json:"defaultValueAttachment,omitempty"`
 	// DefaultValueBase64Binary The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueBase64Binary *string `json:"defaultValueBase64Binary,omitempty"`
+	// DefaultValueBase64BinaryElement contains element extensions for defaultValueBase64Binary.
+	DefaultValueBase64BinaryElement *Element `json:"_defaultValueBase64Binary,omitempty"`
 	// DefaultValueBoolean The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueBoolean *bool `json:"defaultValueBoolean,omitempty"`
+	// DefaultValueBooleanElement contains element extensions for defaultValueBoolean.
+	DefaultValueBooleanElement *Element `json:"_defaultValueBoolean,omitempty"`
 	// DefaultValueCanonical The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueCanonical *string `json:"defaultValueCanonical,omitempty"`
+	// DefaultValueCanonicalElement contains element extensions for defaultValueCanonical.
+	DefaultValueCanonicalElement *Element `json:"_defaultValueCanonical,omitempty"`
 	// DefaultValueCode The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueCode *string `json:"defaultValueCode,omitempty"`
+	// DefaultValueCodeElement contains element extensions for defaultValueCode.
+	DefaultValueCodeElement *Element `json:"_defaultValueCode,omitempty"`
 	// DefaultValueCodeableConcept The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueCodeableConcept *CodeableConcept `json:"defaultValueCodeableConcept,omitempty"`
 	// DefaultValueCoding The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
@@ -398,10 +576,16 @@ type ElementDefinition struct {
 	DefaultValueDataRequirement *DataRequirement `json:"defaultValueDataRequirement,omitempty"`
 	// DefaultValueDate The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueDate *string `json:"defaultValueDate,omitempty"`
+	// DefaultValueDateElement contains element extensions for defaultValueDate.
+	DefaultValueDateElement *Element `json:"_defaultValueDate,omitempty"`
 	// DefaultValueDateTime The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueDateTime *string `json:"defaultValueDateTime,omitempty"`
+	// DefaultValueDateTimeElement contains element extensions for defaultValueDateTime.
+	DefaultValueDateTimeElement *Element `json:"_defaultValueDateTime,omitempty"`
 	// DefaultValueDecimal The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueDecimal *float64 `json:"defaultValueDecimal,omitempty"`
+	// DefaultValueDecimalElement contains element extensions for defaultValueDecimal.
+	DefaultValueDecimalElement *Element `json:"_defaultValueDecimal,omitempty"`
 	// DefaultValueDistance The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueDistance *Distance `json:"defaultValueDistance,omitempty"`
 	// DefaultValueDosage The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
@@ -414,26 +598,38 @@ type ElementDefinition struct {
 	DefaultValueHumanName *HumanName `json:"defaultValueHumanName,omitempty"`
 	// DefaultValueId The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueId *string `json:"defaultValueId,omitempty"`
+	// DefaultValueIdElement contains element extensions for defaultValueId.
+	DefaultValueIdElement *Element `json:"_defaultValueId,omitempty"`
 	// DefaultValueIdentifier The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueIdentifier *Identifier `json:"defaultValueIdentifier,omitempty"`
 	// DefaultValueInstant The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueInstant *string `json:"defaultValueInstant,omitempty"`
+	// DefaultValueInstantElement contains element extensions for defaultValueInstant.
+	DefaultValueInstantElement *Element `json:"_defaultValueInstant,omitempty"`
 	// DefaultValueInteger The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueInteger *float64 `json:"defaultValueInteger,omitempty"`
+	// DefaultValueIntegerElement contains element extensions for defaultValueInteger.
+	DefaultValueIntegerElement *Element `json:"_defaultValueInteger,omitempty"`
 	// DefaultValueMarkdown The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueMarkdown *string `json:"defaultValueMarkdown,omitempty"`
+	// DefaultValueMarkdownElement contains element extensions for defaultValueMarkdown.
+	DefaultValueMarkdownElement *Element `json:"_defaultValueMarkdown,omitempty"`
 	// DefaultValueMeta The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueMeta *Meta `json:"defaultValueMeta,omitempty"`
 	// DefaultValueMoney The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueMoney *Money `json:"defaultValueMoney,omitempty"`
 	// DefaultValueOid The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueOid *string `json:"defaultValueOid,omitempty"`
+	// DefaultValueOidElement contains element extensions for defaultValueOid.
+	DefaultValueOidElement *Element `json:"_defaultValueOid,omitempty"`
 	// DefaultValueParameterDefinition The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueParameterDefinition *ParameterDefinition `json:"defaultValueParameterDefinition,omitempty"`
 	// DefaultValuePeriod The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValuePeriod *Period `json:"defaultValuePeriod,omitempty"`
 	// DefaultValuePositiveInt The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValuePositiveInt *float64 `json:"defaultValuePositiveInt,omitempty"`
+	// DefaultValuePositiveIntElement contains element extensions for defaultValuePositiveInt.
+	DefaultValuePositiveIntElement *Element `json:"_defaultValuePositiveInt,omitempty"`
 	// DefaultValueQuantity The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueQuantity *Quantity `json:"defaultValueQuantity,omitempty"`
 	// DefaultValueRange The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
@@ -450,24 +646,38 @@ type ElementDefinition struct {
 	DefaultValueSignature *Signature `json:"defaultValueSignature,omitempty"`
 	// DefaultValueString The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueString *string `json:"defaultValueString,omitempty"`
+	// DefaultValueStringElement contains element extensions for defaultValueString.
+	DefaultValueStringElement *Element `json:"_defaultValueString,omitempty"`
 	// DefaultValueTime The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueTime *string `json:"defaultValueTime,omitempty"`
+	// DefaultValueTimeElement contains element extensions for defaultValueTime.
+	DefaultValueTimeElement *Element `json:"_defaultValueTime,omitempty"`
 	// DefaultValueTiming The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueTiming *Timing `json:"defaultValueTiming,omitempty"`
 	// DefaultValueTriggerDefinition The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueTriggerDefinition *TriggerDefinition `json:"defaultValueTriggerDefinition,omitempty"`
 	// DefaultValueUnsignedInt The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueUnsignedInt *float64 `json:"defaultValueUnsignedInt,omitempty"`
+	// DefaultValueUnsignedIntElement contains element extensions for defaultValueUnsignedInt.
+	DefaultValueUnsignedIntElement *Element `json:"_defaultValueUnsignedInt,omitempty"`
 	// DefaultValueUri The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueUri *string `json:"defaultValueUri,omitempty"`
+	// DefaultValueUriElement contains element extensions for defaultValueUri.
+	DefaultValueUriElement *Element `json:"_defaultValueUri,omitempty"`
 	// DefaultValueUrl The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueUrl *string `json:"defaultValueUrl,omitempty"`
+	// DefaultValueUrlElement contains element extensions for defaultValueUrl.
+	DefaultValueUrlElement *Element `json:"_defaultValueUrl,omitempty"`
 	// DefaultValueUsageContext The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueUsageContext *UsageContext `json:"defaultValueUsageContext,omitempty"`
 	// DefaultValueUuid The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueUuid *string `json:"defaultValueUuid,omitempty"`
+	// DefaultValueUuidElement contains element extensions for defaultValueUuid.
+	DefaultValueUuidElement *Element `json:"_defaultValueUuid,omitempty"`
 	// Definition Provides a complete explanation of the meaning of the data element for human readability.  For the case of elements derived from existing elements (e.g. constraints), the definition SHALL be consis...
 	Definition *Markdown `json:"definition,omitempty"`
+	// DefinitionElement contains element extensions for definition.
+	DefinitionElement *Element `json:"_definition,omitempty"`
 	// Example A sample value for this element demonstrating the type of information that would typically be found in the element.
 	Example []ElementDefinitionExample `json:"example,omitempty"`
 	// FixedAddress Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
@@ -480,12 +690,20 @@ type ElementDefinition struct {
 	FixedAttachment *Attachment `json:"fixedAttachment,omitempty"`
 	// FixedBase64Binary Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedBase64Binary *string `json:"fixedBase64Binary,omitempty"`
+	// FixedBase64BinaryElement contains element extensions for fixedBase64Binary.
+	FixedBase64BinaryElement *Element `json:"_fixedBase64Binary,omitempty"`
 	// FixedBoolean Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedBoolean *bool `json:"fixedBoolean,omitempty"`
+	// FixedBooleanElement contains element extensions for fixedBoolean.
+	FixedBooleanElement *Element `json:"_fixedBoolean,omitempty"`
 	// FixedCanonical Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedCanonical *string `json:"fixedCanonical,omitempty"`
+	// FixedCanonicalElement contains element extensions for fixedCanonical.
+	FixedCanonicalElement *Element `json:"_fixedCanonical,omitempty"`
 	// FixedCode Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedCode *string `json:"fixedCode,omitempty"`
+	// FixedCodeElement contains element extensions for fixedCode.
+	FixedCodeElement *Element `json:"_fixedCode,omitempty"`
 	// FixedCodeableConcept Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedCodeableConcept *CodeableConcept `json:"fixedCodeableConcept,omitempty"`
 	// FixedCoding Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
@@ -502,10 +720,16 @@ type ElementDefinition struct {
 	FixedDataRequirement *DataRequirement `json:"fixedDataRequirement,omitempty"`
 	// FixedDate Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedDate *string `json:"fixedDate,omitempty"`
+	// FixedDateElement contains element extensions for fixedDate.
+	FixedDateElement *Element `json:"_fixedDate,omitempty"`
 	// FixedDateTime Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedDateTime *string `json:"fixedDateTime,omitempty"`
+	// FixedDateTimeElement contains element extensions for fixedDateTime.
+	FixedDateTimeElement *Element `json:"_fixedDateTime,omitempty"`
 	// FixedDecimal Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedDecimal *float64 `json:"fixedDecimal,omitempty"`
+	// FixedDecimalElement contains element extensions for fixedDecimal.
+	FixedDecimalElement *Element `json:"_fixedDecimal,omitempty"`
 	// FixedDistance Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedDistance *Distance `json:"fixedDistance,omitempty"`
 	// FixedDosage Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
@@ -518,26 +742,38 @@ type ElementDefinition struct {
 	FixedHumanName *HumanName `json:"fixedHumanName,omitempty"`
 	// FixedId Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedId *string `json:"fixedId,omitempty"`
+	// FixedIdElement contains element extensions for fixedId.
+	FixedIdElement *Element `json:"_fixedId,omitempty"`
 	// FixedIdentifier Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedIdentifier *Identifier `json:"fixedIdentifier,omitempty"`
 	// FixedInstant Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedInstant *string `json:"fixedInstant,omitempty"`
+	// FixedInstantElement contains element extensions for fixedInstant.
+	FixedInstantElement *Element `json:"_fixedInstant,omitempty"`
 	// FixedInteger Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedInteger *float64 `json:"fixedInteger,omitempty"`
+	// FixedIntegerElement contains element extensions for fixedInteger.
+	FixedIntegerElement *Element `json:"_fixedInteger,omitempty"`
 	// FixedMarkdown Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedMarkdown *string `json:"fixedMarkdown,omitempty"`
+	// FixedMarkdownElement contains element extensions for fixedMarkdown.
+	FixedMarkdownElement *Element `json:"_fixedMarkdown,omitempty"`
 	// FixedMeta Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedMeta *Meta `json:"fixedMeta,omitempty"`
 	// FixedMoney Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedMoney *Money `json:"fixedMoney,omitempty"`
 	// FixedOid Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedOid *string `json:"fixedOid,omitempty"`
+	// FixedOidElement contains element extensions for fixedOid.
+	FixedOidElement *Element `json:"_fixedOid,omitempty"`
 	// FixedParameterDefinition Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedParameterDefinition *ParameterDefinition `json:"fixedParameterDefinition,omitempty"`
 	// FixedPeriod Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedPeriod *Period `json:"fixedPeriod,omitempty"`
 	// FixedPositiveInt Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedPositiveInt *float64 `json:"fixedPositiveInt,omitempty"`
+	// FixedPositiveIntElement contains element extensions for fixedPositiveInt.
+	FixedPositiveIntElement *Element `json:"_fixedPositiveInt,omitempty"`
 	// FixedQuantity Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedQuantity *Quantity `json:"fixedQuantity,omitempty"`
 	// FixedRange Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
@@ -554,82 +790,148 @@ type ElementDefinition struct {
 	FixedSignature *Signature `json:"fixedSignature,omitempty"`
 	// FixedString Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedString *string `json:"fixedString,omitempty"`
+	// FixedStringElement contains element extensions for fixedString.
+	FixedStringElement *Element `json:"_fixedString,omitempty"`
 	// FixedTime Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedTime *string `json:"fixedTime,omitempty"`
+	// FixedTimeElement contains element extensions for fixedTime.
+	FixedTimeElement *Element `json:"_fixedTime,omitempty"`
 	// FixedTiming Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedTiming *Timing `json:"fixedTiming,omitempty"`
 	// FixedTriggerDefinition Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedTriggerDefinition *TriggerDefinition `json:"fixedTriggerDefinition,omitempty"`
 	// FixedUnsignedInt Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedUnsignedInt *float64 `json:"fixedUnsignedInt,omitempty"`
+	// FixedUnsignedIntElement contains element extensions for fixedUnsignedInt.
+	FixedUnsignedIntElement *Element `json:"_fixedUnsignedInt,omitempty"`
 	// FixedUri Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedUri *string `json:"fixedUri,omitempty"`
+	// FixedUriElement contains element extensions for fixedUri.
+	FixedUriElement *Element `json:"_fixedUri,omitempty"`
 	// FixedUrl Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedUrl *string `json:"fixedUrl,omitempty"`
+	// FixedUrlElement contains element extensions for fixedUrl.
+	FixedUrlElement *Element `json:"_fixedUrl,omitempty"`
 	// FixedUsageContext Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedUsageContext *UsageContext `json:"fixedUsageContext,omitempty"`
 	// FixedUuid Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedUuid *string `json:"fixedUuid,omitempty"`
+	// FixedUuidElement contains element extensions for fixedUuid.
+	FixedUuidElement *Element `json:"_fixedUuid,omitempty"`
 	// IsModifier If true, the value of this element affects the interpretation of the element or resource that contains it, and the value of the element cannot be ignored. Typically, this is used for status, negati...
 	IsModifier *bool `json:"isModifier,omitempty"`
+	// IsModifierElement contains element extensions for isModifier.
+	IsModifierElement *Element `json:"_isModifier,omitempty"`
 	// IsModifierReason Explains how that element affects the interpretation of the resource or element that contains it.
 	IsModifierReason *string `json:"isModifierReason,omitempty"`
+	// IsModifierReasonElement contains element extensions for isModifierReason.
+	IsModifierReasonElement *Element `json:"_isModifierReason,omitempty"`
 	// IsSummary Whether the element should be included if a client requests a search with the parameter _summary=true.
 	IsSummary *bool `json:"isSummary,omitempty"`
+	// IsSummaryElement contains element extensions for isSummary.
+	IsSummaryElement *Element `json:"_isSummary,omitempty"`
 	// Label A single preferred label which is the text to display beside the element indicating its meaning or to use to prompt for the element in a user display or form.
 	Label *string `json:"label,omitempty"`
+	// LabelElement contains element extensions for label.
+	LabelElement *Element `json:"_label,omitempty"`
 	// Mapping Identifies a concept from an external specification that roughly corresponds to this element.
 	Mapping []ElementDefinitionMapping `json:"mapping,omitempty"`
 	// Max The maximum number of times this element is permitted to appear in the instance.
 	Max *string `json:"max,omitempty"`
+	// MaxElement contains element extensions for max.
+	MaxElement *Element `json:"_max,omitempty"`
 	// MaxLength Indicates the maximum length in characters that is permitted to be present in conformant instances and which is expected to be supported by conformant consumers that support the element.
 	MaxLength *int32 `json:"maxLength,omitempty"`
+	// MaxLengthElement contains element extensions for maxLength.
+	MaxLengthElement *Element `json:"_maxLength,omitempty"`
 	// MaxValueDate The maximum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
 	MaxValueDate *string `json:"maxValueDate,omitempty"`
+	// MaxValueDateElement contains element extensions for maxValueDate.
+	MaxValueDateElement *Element `json:"_maxValueDate,omitempty"`
 	// MaxValueDateTime The maximum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
 	MaxValueDateTime *string `json:"maxValueDateTime,omitempty"`
+	// MaxValueDateTimeElement contains element extensions for maxValueDateTime.
+	MaxValueDateTimeElement *Element `json:"_maxValueDateTime,omitempty"`
 	// MaxValueDecimal The maximum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
 	MaxValueDecimal *float64 `json:"maxValueDecimal,omitempty"`
+	// MaxValueDecimalElement contains element extensions for maxValueDecimal.
+	MaxValueDecimalElement *Element `json:"_maxValueDecimal,omitempty"`
 	// MaxValueInstant The maximum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
 	MaxValueInstant *string `json:"maxValueInstant,omitempty"`
+	// MaxValueInstantElement contains element extensions for maxValueInstant.
+	MaxValueInstantElement *Element `json:"_maxValueInstant,omitempty"`
 	// MaxValueInteger The maximum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
 	MaxValueInteger *float64 `json:"maxValueInteger,omitempty"`
+	// MaxValueIntegerElement contains element extensions for maxValueInteger.
+	MaxValueIntegerElement *Element `json:"_maxValueInteger,omitempty"`
 	// MaxValuePositiveInt The maximum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
 	MaxValuePositiveInt *float64 `json:"maxValuePositiveInt,omitempty"`
+	// MaxValuePositiveIntElement contains element extensions for maxValuePositiveInt.
+	MaxValuePositiveIntElement *Element `json:"_maxValuePositiveInt,omitempty"`
 	// MaxValueQuantity The maximum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
 	MaxValueQuantity *Quantity `json:"maxValueQuantity,omitempty"`
 	// MaxValueTime The maximum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
 	MaxValueTime *string `json:"maxValueTime,omitempty"`
+	// MaxValueTimeElement contains element extensions for maxValueTime.
+	MaxValueTimeElement *Element `json:"_maxValueTime,omitempty"`
 	// MaxValueUnsignedInt The maximum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
 	MaxValueUnsignedInt *float64 `json:"maxValueUnsignedInt,omitempty"`
+	// MaxValueUnsignedIntElement contains element extensions for maxValueUnsignedInt.
+	MaxValueUnsignedIntElement *Element `json:"_maxValueUnsignedInt,omitempty"`
 	// MeaningWhenMissing The Implicit meaning that is to be understood when this element is missing (e.g. 'when this element is missing, the period is ongoing').
 	MeaningWhenMissing *Markdown `json:"meaningWhenMissing,omitempty"`
+	// MeaningWhenMissingElement contains element extensions for meaningWhenMissing.
+	MeaningWhenMissingElement *Element `json:"_meaningWhenMissing,omitempty"`
 	// Min The minimum number of times this element SHALL appear in the instance.
 	Min *uint32 `json:"min,omitempty"`
+	// MinElement contains element extensions for min.
+	MinElement *Element `json:"_min,omitempty"`
 	// MinValueDate The minimum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
 	MinValueDate *string `json:"minValueDate,omitempty"`
+	// MinValueDateElement contains element extensions for minValueDate.
+	MinValueDateElement *Element `json:"_minValueDate,omitempty"`
 	// MinValueDateTime The minimum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
 	MinValueDateTime *string `json:"minValueDateTime,omitempty"`
+	// MinValueDateTimeElement contains element extensions for minValueDateTime.
+	MinValueDateTimeElement *Element `json:"_minValueDateTime,omitempty"`
 	// MinValueDecimal The minimum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
 	MinValueDecimal *float64 `json:"minValueDecimal,omitempty"`
+	// MinValueDecimalElement contains element extensions for minValueDecimal.
+	MinValueDecimalElement *Element `json:"_minValueDecimal,omitempty"`
 	// MinValueInstant The minimum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
 	MinValueInstant *string `json:"minValueInstant,omitempty"`
+	// MinValueInstantElement contains element extensions for minValueInstant.
+	MinValueInstantElement *Element `json:"_minValueInstant,omitempty"`
 	// MinValueInteger The minimum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
 	MinValueInteger *float64 `json:"minValueInteger,omitempty"`
+	// MinValueIntegerElement contains element extensions for minValueInteger.
+	MinValueIntegerElement *Element `json:"_minValueInteger,omitempty"`
 	// MinValuePositiveInt The minimum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
 	MinValuePositiveInt *float64 `json:"minValuePositiveInt,omitempty"`
+	// MinValuePositiveIntElement contains element extensions for minValuePositiveInt.
+	MinValuePositiveIntElement *Element `json:"_minValuePositiveInt,omitempty"`
 	// MinValueQuantity The minimum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
 	MinValueQuantity *Quantity `json:"minValueQuantity,omitempty"`
 	// MinValueTime The minimum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
 	MinValueTime *string `json:"minValueTime,omitempty"`
+	// MinValueTimeElement contains element extensions for minValueTime.
+	MinValueTimeElement *Element `json:"_minValueTime,omitempty"`
 	// MinValueUnsignedInt The minimum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
 	MinValueUnsignedInt *float64 `json:"minValueUnsignedInt,omitempty"`
+	// MinValueUnsignedIntElement contains element extensions for minValueUnsignedInt.
+	MinValueUnsignedIntElement *Element `json:"_minValueUnsignedInt,omitempty"`
 	// MustSupport If true, implementations that produce or consume resources SHALL provide "support" for the element in some meaningful way.  If false, the element may be ignored and not supported. If false, whether...
 	MustSupport *bool `json:"mustSupport,omitempty"`
+	// MustSupportElement contains element extensions for mustSupport.
+	MustSupportElement *Element `json:"_mustSupport,omitempty"`
 	// OrderMeaning If present, indicates that the order of the repeating element has meaning and describes what that meaning is.  If absent, it means that the order of the element has no meaning.
 	OrderMeaning *string `json:"orderMeaning,omitempty"`
+	// OrderMeaningElement contains element extensions for orderMeaning.
+	OrderMeaningElement *Element `json:"_orderMeaning,omitempty"`
 	// Path The path identifies the element and is expressed as a "."-separated list of ancestor elements, beginning with the name of the resource or extension.
 	Path *string `json:"path,omitempty"`
+	// PathElement contains element extensions for path.
+	PathElement *Element `json:"_path,omitempty"`
 	// PatternAddress Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternAddress *Address `json:"patternAddress,omitempty"`
 	// PatternAge Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
@@ -640,12 +942,20 @@ type ElementDefinition struct {
 	PatternAttachment *Attachment `json:"patternAttachment,omitempty"`
 	// PatternBase64Binary Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternBase64Binary *string `json:"patternBase64Binary,omitempty"`
+	// PatternBase64BinaryElement contains element extensions for patternBase64Binary.
+	PatternBase64BinaryElement *Element `json:"_patternBase64Binary,omitempty"`
 	// PatternBoolean Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternBoolean *bool `json:"patternBoolean,omitempty"`
+	// PatternBooleanElement contains element extensions for patternBoolean.
+	PatternBooleanElement *Element `json:"_patternBoolean,omitempty"`
 	// PatternCanonical Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternCanonical *string `json:"patternCanonical,omitempty"`
+	// PatternCanonicalElement contains element extensions for patternCanonical.
+	PatternCanonicalElement *Element `json:"_patternCanonical,omitempty"`
 	// PatternCode Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternCode *string `json:"patternCode,omitempty"`
+	// PatternCodeElement contains element extensions for patternCode.
+	PatternCodeElement *Element `json:"_patternCode,omitempty"`
 	// PatternCodeableConcept Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternCodeableConcept *CodeableConcept `json:"patternCodeableConcept,omitempty"`
 	// PatternCoding Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
@@ -662,10 +972,16 @@ type ElementDefinition struct {
 	PatternDataRequirement *DataRequirement `json:"patternDataRequirement,omitempty"`
 	// PatternDate Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternDate *string `json:"patternDate,omitempty"`
+	// PatternDateElement contains element extensions for patternDate.
+	PatternDateElement *Element `json:"_patternDate,omitempty"`
 	// PatternDateTime Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternDateTime *string `json:"patternDateTime,omitempty"`
+	// PatternDateTimeElement contains element extensions for patternDateTime.
+	PatternDateTimeElement *Element `json:"_patternDateTime,omitempty"`
 	// PatternDecimal Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternDecimal *float64 `json:"patternDecimal,omitempty"`
+	// PatternDecimalElement contains element extensions for patternDecimal.
+	PatternDecimalElement *Element `json:"_patternDecimal,omitempty"`
 	// PatternDistance Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternDistance *Distance `json:"patternDistance,omitempty"`
 	// PatternDosage Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
@@ -678,26 +994,38 @@ type ElementDefinition struct {
 	PatternHumanName *HumanName `json:"patternHumanName,omitempty"`
 	// PatternId Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternId *string `json:"patternId,omitempty"`
+	// PatternIdElement contains element extensions for patternId.
+	PatternIdElement *Element `json:"_patternId,omitempty"`
 	// PatternIdentifier Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternIdentifier *Identifier `json:"patternIdentifier,omitempty"`
 	// PatternInstant Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternInstant *string `json:"patternInstant,omitempty"`
+	// PatternInstantElement contains element extensions for patternInstant.
+	PatternInstantElement *Element `json:"_patternInstant,omitempty"`
 	// PatternInteger Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternInteger *float64 `json:"patternInteger,omitempty"`
+	// PatternIntegerElement contains element extensions for patternInteger.
+	PatternIntegerElement *Element `json:"_patternInteger,omitempty"`
 	// PatternMarkdown Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternMarkdown *string `json:"patternMarkdown,omitempty"`
+	// PatternMarkdownElement contains element extensions for patternMarkdown.
+	PatternMarkdownElement *Element `json:"_patternMarkdown,omitempty"`
 	// PatternMeta Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternMeta *Meta `json:"patternMeta,omitempty"`
 	// PatternMoney Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternMoney *Money `json:"patternMoney,omitempty"`
 	// PatternOid Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternOid *string `json:"patternOid,omitempty"`
+	// PatternOidElement contains element extensions for patternOid.
+	PatternOidElement *Element `json:"_patternOid,omitempty"`
 	// PatternParameterDefinition Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternParameterDefinition *ParameterDefinition `json:"patternParameterDefinition,omitempty"`
 	// PatternPeriod Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternPeriod *Period `json:"patternPeriod,omitempty"`
 	// PatternPositiveInt Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternPositiveInt *float64 `json:"patternPositiveInt,omitempty"`
+	// PatternPositiveIntElement contains element extensions for patternPositiveInt.
+	PatternPositiveIntElement *Element `json:"_patternPositiveInt,omitempty"`
 	// PatternQuantity Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternQuantity *Quantity `json:"patternQuantity,omitempty"`
 	// PatternRange Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
@@ -714,32 +1042,54 @@ type ElementDefinition struct {
 	PatternSignature *Signature `json:"patternSignature,omitempty"`
 	// PatternString Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternString *string `json:"patternString,omitempty"`
+	// PatternStringElement contains element extensions for patternString.
+	PatternStringElement *Element `json:"_patternString,omitempty"`
 	// PatternTime Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternTime *string `json:"patternTime,omitempty"`
+	// PatternTimeElement contains element extensions for patternTime.
+	PatternTimeElement *Element `json:"_patternTime,omitempty"`
 	// PatternTiming Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternTiming *Timing `json:"patternTiming,omitempty"`
 	// PatternTriggerDefinition Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternTriggerDefinition *TriggerDefinition `json:"patternTriggerDefinition,omitempty"`
 	// PatternUnsignedInt Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternUnsignedInt *float64 `json:"patternUnsignedInt,omitempty"`
+	// PatternUnsignedIntElement contains element extensions for patternUnsignedInt.
+	PatternUnsignedIntElement *Element `json:"_patternUnsignedInt,omitempty"`
 	// PatternUri Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternUri *string `json:"patternUri,omitempty"`
+	// PatternUriElement contains element extensions for patternUri.
+	PatternUriElement *Element `json:"_patternUri,omitempty"`
 	// PatternUrl Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternUrl *string `json:"patternUrl,omitempty"`
+	// PatternUrlElement contains element extensions for patternUrl.
+	PatternUrlElement *Element `json:"_patternUrl,omitempty"`
 	// PatternUsageContext Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternUsageContext *UsageContext `json:"patternUsageContext,omitempty"`
 	// PatternUuid Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternUuid *string `json:"patternUuid,omitempty"`
+	// PatternUuidElement contains element extensions for patternUuid.
+	PatternUuidElement *Element `json:"_patternUuid,omitempty"`
 	// Representation Codes that define how this element is represented in instances, when the deviation varies from the normal case.
 	Representation []string `json:"representation,omitempty"`
+	// RepresentationElement contains element extensions for each representation.
+	RepresentationElement []Element `json:"_representation,omitempty"`
 	// Requirements This element is for traceability of why the element was created and why the constraints exist as they do. This may be used to point to source materials or specifications that drove the structure of...
 	Requirements *Markdown `json:"requirements,omitempty"`
+	// RequirementsElement contains element extensions for requirements.
+	RequirementsElement *Element `json:"_requirements,omitempty"`
 	// Short A concise description of what this element means (e.g. for use in autogenerated summaries).
 	Short *string `json:"short,omitempty"`
+	// ShortElement contains element extensions for short.
+	ShortElement *Element `json:"_short,omitempty"`
 	// SliceIsConstraining If true, indicates that this slice definition is constraining a slice definition with the same name in an inherited profile. If false, the slice is not overriding any slice in an inherited profile....
 	SliceIsConstraining *bool `json:"sliceIsConstraining,omitempty"`
+	// SliceIsConstrainingElement contains element extensions for sliceIsConstraining.
+	SliceIsConstrainingElement *Element `json:"_sliceIsConstraining,omitempty"`
 	// SliceName The name of this element definition slice, when slicing is working. The name must be a token with no dots or spaces. This is a unique name referring to a specific set of constraints applied to this...
 	SliceName *string `json:"sliceName,omitempty"`
+	// SliceNameElement contains element extensions for sliceName.
+	SliceNameElement *Element `json:"_sliceName,omitempty"`
 	// Slicing Indicates that the element is sliced into a set of alternative definitions (i.e. in a structure definition, there are multiple different constraints on a single element in the base resource). Slici...
 	Slicing *ElementDefinitionSlicing `json:"slicing,omitempty"`
 	// Type The data type or resource that the value of this element is permitted to be.
@@ -750,28 +1100,44 @@ type ElementDefinition struct {
 type Expression struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Language The media type of the language for the expression.
 	Language *string `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *Element `json:"_language,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Description A brief, natural language description of the condition that effectively communicates the intended semantics.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *Element `json:"_description,omitempty"`
 	// Expression An expression in the specified language that returns a value.
 	Expression *string `json:"expression,omitempty"`
+	// ExpressionElement contains element extensions for expression.
+	ExpressionElement *Element `json:"_expression,omitempty"`
 	// Name A short name assigned to the expression to allow for multiple reuse of the expression in the context where it is defined.
 	Name *ID `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *Element `json:"_name,omitempty"`
 	// Reference A URI that defines where the expression is found.
 	Reference *URI `json:"reference,omitempty"`
+	// ReferenceElement contains element extensions for reference.
+	ReferenceElement *Element `json:"_reference,omitempty"`
 }
 
 // Extension Optional Extension Element - found in all resources.
 type Extension struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Url Source of the definition for the extension code - a logical name or a URL.
 	Url URI `json:"url"`
+	// UrlElement contains element extensions for url.
+	UrlElement *Element `json:"_url,omitempty"`
 	// ValueAddress Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueAddress *Address `json:"valueAddress,omitempty"`
 	// ValueAge Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
@@ -782,12 +1148,20 @@ type Extension struct {
 	ValueAttachment *Attachment `json:"valueAttachment,omitempty"`
 	// ValueBase64Binary Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueBase64Binary *string `json:"valueBase64Binary,omitempty"`
+	// ValueBase64BinaryElement contains element extensions for valueBase64Binary.
+	ValueBase64BinaryElement *Element `json:"_valueBase64Binary,omitempty"`
 	// ValueBoolean Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueBoolean *bool `json:"valueBoolean,omitempty"`
+	// ValueBooleanElement contains element extensions for valueBoolean.
+	ValueBooleanElement *Element `json:"_valueBoolean,omitempty"`
 	// ValueCanonical Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueCanonical *Canonical `json:"valueCanonical,omitempty"`
+	// ValueCanonicalElement contains element extensions for valueCanonical.
+	ValueCanonicalElement *Element `json:"_valueCanonical,omitempty"`
 	// ValueCode Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueCode *Code `json:"valueCode,omitempty"`
+	// ValueCodeElement contains element extensions for valueCode.
+	ValueCodeElement *Element `json:"_valueCode,omitempty"`
 	// ValueCodeableConcept Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueCodeableConcept *CodeableConcept `json:"valueCodeableConcept,omitempty"`
 	// ValueCoding Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
@@ -804,10 +1178,16 @@ type Extension struct {
 	ValueDataRequirement *DataRequirement `json:"valueDataRequirement,omitempty"`
 	// ValueDate Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueDate *Date `json:"valueDate,omitempty"`
+	// ValueDateElement contains element extensions for valueDate.
+	ValueDateElement *Element `json:"_valueDate,omitempty"`
 	// ValueDateTime Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueDateTime *DateTime `json:"valueDateTime,omitempty"`
+	// ValueDateTimeElement contains element extensions for valueDateTime.
+	ValueDateTimeElement *Element `json:"_valueDateTime,omitempty"`
 	// ValueDecimal Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueDecimal *float64 `json:"valueDecimal,omitempty"`
+	// ValueDecimalElement contains element extensions for valueDecimal.
+	ValueDecimalElement *Element `json:"_valueDecimal,omitempty"`
 	// ValueDistance Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueDistance *Distance `json:"valueDistance,omitempty"`
 	// ValueDosage Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
@@ -820,26 +1200,38 @@ type Extension struct {
 	ValueHumanName *HumanName `json:"valueHumanName,omitempty"`
 	// ValueId Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueId *ID `json:"valueId,omitempty"`
+	// ValueIdElement contains element extensions for valueId.
+	ValueIdElement *Element `json:"_valueId,omitempty"`
 	// ValueIdentifier Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueIdentifier *Identifier `json:"valueIdentifier,omitempty"`
 	// ValueInstant Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueInstant *Instant `json:"valueInstant,omitempty"`
+	// ValueInstantElement contains element extensions for valueInstant.
+	ValueInstantElement *Element `json:"_valueInstant,omitempty"`
 	// ValueInteger Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueInteger *int32 `json:"valueInteger,omitempty"`
+	// ValueIntegerElement contains element extensions for valueInteger.
+	ValueIntegerElement *Element `json:"_valueInteger,omitempty"`
 	// ValueMarkdown Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueMarkdown *Markdown `json:"valueMarkdown,omitempty"`
+	// ValueMarkdownElement contains element extensions for valueMarkdown.
+	ValueMarkdownElement *Element `json:"_valueMarkdown,omitempty"`
 	// ValueMeta Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueMeta *Meta `json:"valueMeta,omitempty"`
 	// ValueMoney Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueMoney *Money `json:"valueMoney,omitempty"`
 	// ValueOid Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueOid *OID `json:"valueOid,omitempty"`
+	// ValueOidElement contains element extensions for valueOid.
+	ValueOidElement *Element `json:"_valueOid,omitempty"`
 	// ValueParameterDefinition Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueParameterDefinition *ParameterDefinition `json:"valueParameterDefinition,omitempty"`
 	// ValuePeriod Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValuePeriod *Period `json:"valuePeriod,omitempty"`
 	// ValuePositiveInt Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValuePositiveInt *uint32 `json:"valuePositiveInt,omitempty"`
+	// ValuePositiveIntElement contains element extensions for valuePositiveInt.
+	ValuePositiveIntElement *Element `json:"_valuePositiveInt,omitempty"`
 	// ValueQuantity Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueQuantity *Quantity `json:"valueQuantity,omitempty"`
 	// ValueRange Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
@@ -856,50 +1248,78 @@ type Extension struct {
 	ValueSignature *Signature `json:"valueSignature,omitempty"`
 	// ValueString Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueString *string `json:"valueString,omitempty"`
+	// ValueStringElement contains element extensions for valueString.
+	ValueStringElement *Element `json:"_valueString,omitempty"`
 	// ValueTime Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueTime *Time `json:"valueTime,omitempty"`
+	// ValueTimeElement contains element extensions for valueTime.
+	ValueTimeElement *Element `json:"_valueTime,omitempty"`
 	// ValueTiming Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueTiming *Timing `json:"valueTiming,omitempty"`
 	// ValueTriggerDefinition Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueTriggerDefinition *TriggerDefinition `json:"valueTriggerDefinition,omitempty"`
 	// ValueUnsignedInt Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueUnsignedInt *uint32 `json:"valueUnsignedInt,omitempty"`
+	// ValueUnsignedIntElement contains element extensions for valueUnsignedInt.
+	ValueUnsignedIntElement *Element `json:"_valueUnsignedInt,omitempty"`
 	// ValueUri Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueUri *URI `json:"valueUri,omitempty"`
+	// ValueUriElement contains element extensions for valueUri.
+	ValueUriElement *Element `json:"_valueUri,omitempty"`
 	// ValueUrl Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueUrl *URL `json:"valueUrl,omitempty"`
+	// ValueUrlElement contains element extensions for valueUrl.
+	ValueUrlElement *Element `json:"_valueUrl,omitempty"`
 	// ValueUsageContext Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueUsageContext *UsageContext `json:"valueUsageContext,omitempty"`
 	// ValueUuid Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
 	ValueUuid *UUID `json:"valueUuid,omitempty"`
+	// ValueUuidElement contains element extensions for valueUuid.
+	ValueUuidElement *Element `json:"_valueUuid,omitempty"`
 }
 
 // HumanName A human's name with the ability to identify parts and usage.
 type HumanName struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Text Specifies the entire name as it should be displayed e.g. on an application UI. This may be provided instead of or as well as the specific parts.
 	Text *string `json:"text,omitempty"`
+	// TextElement contains element extensions for text.
+	TextElement *Element `json:"_text,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Family The part of a name that links to the genealogy. In some cultures (e.g. Eritrea) the family name of a son is the first name of his father.
 	Family *string `json:"family,omitempty"`
+	// FamilyElement contains element extensions for family.
+	FamilyElement *Element `json:"_family,omitempty"`
 	// Given Given name.
 	Given []string `json:"given,omitempty"`
+	// GivenElement contains element extensions for each given.
+	GivenElement []Element `json:"_given,omitempty"`
 	// Period Indicates the period of time when this name was valid for the named person.
 	Period *Period `json:"period,omitempty"`
 	// Prefix Part of the name that is acquired as a title due to academic, legal, employment or nobility status, etc. and that appears at the start of the name.
 	Prefix []string `json:"prefix,omitempty"`
+	// PrefixElement contains element extensions for each prefix.
+	PrefixElement []Element `json:"_prefix,omitempty"`
 	// Suffix Part of the name that is acquired as a title due to academic, legal, employment or nobility status, etc. and that appears at the end of the name.
 	Suffix []string `json:"suffix,omitempty"`
+	// SuffixElement contains element extensions for each suffix.
+	SuffixElement []Element `json:"_suffix,omitempty"`
 	// Use Identifies the purpose for this name.
 	Use *string `json:"use,omitempty"`
+	// UseElement contains element extensions for use.
+	UseElement *Element `json:"_use,omitempty"`
 }
 
 // Identifier An identifier - identifies some entity uniquely and unambiguously. Typically this is used for business identifiers.
 type Identifier struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Assigner Organization that issued/manages the identifier.
@@ -908,18 +1328,26 @@ type Identifier struct {
 	Period *Period `json:"period,omitempty"`
 	// System Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
 	System *URI `json:"system,omitempty"`
+	// SystemElement contains element extensions for system.
+	SystemElement *Element `json:"_system,omitempty"`
 	// Type A coded type for the identifier that can be used to determine which identifier to use for a specific purpose.
 	Type *CodeableConcept `json:"type,omitempty"`
 	// Use The purpose of this identifier.
 	Use *string `json:"use,omitempty"`
+	// UseElement contains element extensions for use.
+	UseElement *Element `json:"_use,omitempty"`
 	// Value The portion of the identifier typically relevant to the user and which is unique within the context of the system.
 	Value *string `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *Element `json:"_value,omitempty"`
 }
 
 // MarketingStatus The marketing status describes the date when a medicinal product is actually put on the market or the date as of which it is no longer available.
 type MarketingStatus struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -934,90 +1362,138 @@ type MarketingStatus struct {
 	Jurisdiction *CodeableConcept `json:"jurisdiction,omitempty"`
 	// RestoreDate The date when the Medicinal Product is placed on the market by the Marketing Authorisation Holder (or where applicable, the manufacturer/distributor) in a country and/or jurisdiction shall be provi...
 	RestoreDate *DateTime `json:"restoreDate,omitempty"`
+	// RestoreDateElement contains element extensions for restoreDate.
+	RestoreDateElement *Element `json:"_restoreDate,omitempty"`
 }
 
 // Meta The metadata about a resource. This is content in the resource that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.
 type Meta struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// LastUpdated When the resource last changed - e.g. when the version changed.
 	LastUpdated *Instant `json:"lastUpdated,omitempty"`
+	// LastUpdatedElement contains element extensions for lastUpdated.
+	LastUpdatedElement *Element `json:"_lastUpdated,omitempty"`
 	// Profile A list of profiles (references to [[[StructureDefinition]]] resources) that this resource claims to conform to. The URL is a reference to [[[StructureDefinition.url]]].
 	Profile []Canonical `json:"profile,omitempty"`
+	// ProfileElement contains element extensions for each profile.
+	ProfileElement []Element `json:"_profile,omitempty"`
 	// Security Security labels applied to this resource. These tags connect specific resources to the overall security policy and infrastructure.
 	Security []Coding `json:"security,omitempty"`
 	// Source A uri that identifies the source system of the resource. This provides a minimal amount of [[[Provenance]]] information that can be used to track or differentiate the source of information in the r...
 	Source *URI `json:"source,omitempty"`
+	// SourceElement contains element extensions for source.
+	SourceElement *Element `json:"_source,omitempty"`
 	// Tag Tags applied to this resource. Tags are intended to be used to identify and relate resources to process and workflow, and applications are not required to consider the tags when interpreting the me...
 	Tag []Coding `json:"tag,omitempty"`
 	// VersionId The version specific identifier, as it appears in the version portion of the URL. This value changes when the resource is created, updated, or deleted.
 	VersionId *ID `json:"versionId,omitempty"`
+	// VersionIdElement contains element extensions for versionId.
+	VersionIdElement *Element `json:"_versionId,omitempty"`
 }
 
 // Money An amount of economic utility in some recognized currency.
 type Money struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Currency ISO 4217 Currency Code.
 	Currency *Code `json:"currency,omitempty"`
+	// CurrencyElement contains element extensions for currency.
+	CurrencyElement *Element `json:"_currency,omitempty"`
 	// Value Numerical value (with implicit precision).
 	Value *float64 `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *Element `json:"_value,omitempty"`
 }
 
 // Narrative A human-readable summary of the resource conveying the essential clinical and business information for the resource.
 type Narrative struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Status The status of the narrative - whether it's entirely generated (from just the defined data or the extensions too), or whether a human authored it and it may contain additional data.
 	Status *string `json:"status,omitempty"`
+	// StatusElement contains element extensions for status.
+	StatusElement *Element `json:"_status,omitempty"`
 	// Div The actual narrative content, a stripped down version of XHTML.
 	Div string `json:"div"`
+	// DivElement contains element extensions for div.
+	DivElement *Element `json:"_div,omitempty"`
 }
 
 // ParameterDefinition The parameters to the module. This collection specifies both the input and output parameters. Input parameters are provided by the caller as part of the $evaluate operation. Output parameters are i...
 type ParameterDefinition struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Documentation A brief discussion of what the parameter is for and how it is used by the module.
 	Documentation *string `json:"documentation,omitempty"`
+	// DocumentationElement contains element extensions for documentation.
+	DocumentationElement *Element `json:"_documentation,omitempty"`
 	// Max The maximum number of times this element is permitted to appear in the request or response.
 	Max *string `json:"max,omitempty"`
+	// MaxElement contains element extensions for max.
+	MaxElement *Element `json:"_max,omitempty"`
 	// Min The minimum number of times this parameter SHALL appear in the request or response.
 	Min *int32 `json:"min,omitempty"`
+	// MinElement contains element extensions for min.
+	MinElement *Element `json:"_min,omitempty"`
 	// Name The name of the parameter used to allow access to the value of the parameter in evaluation contexts.
 	Name *Code `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *Element `json:"_name,omitempty"`
 	// Profile If specified, this indicates a profile that the input data must conform to, or that the output data will conform to.
 	Profile *Canonical `json:"profile,omitempty"`
+	// ProfileElement contains element extensions for profile.
+	ProfileElement *Element `json:"_profile,omitempty"`
 	// Type The type of the parameter.
 	Type *Code `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *Element `json:"_type,omitempty"`
 	// Use Whether the parameter is input or output for the module.
 	Use *Code `json:"use,omitempty"`
+	// UseElement contains element extensions for use.
+	UseElement *Element `json:"_use,omitempty"`
 }
 
 // Period A time period defined by a start and end date and optionally time.
 type Period struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// End The end of the period. If the end of the period is missing, it means no end was known or planned at the time the instance was created. The start may be in the past, and the end date in the future, ...
 	End *DateTime `json:"end,omitempty"`
+	// EndElement contains element extensions for end.
+	EndElement *Element `json:"_end,omitempty"`
 	// Start The start of the period. The boundary is inclusive.
 	Start *DateTime `json:"start,omitempty"`
+	// StartElement contains element extensions for start.
+	StartElement *Element `json:"_start,omitempty"`
 }
 
 // Population A populatioof people with some set of grouping criteria.
 type Population struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1038,12 +1514,16 @@ type Population struct {
 type ProdCharacteristic struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []Extension `json:"modifierExtension,omitempty"`
 	// Color Where applicable, the color can be specified An appropriate controlled vocabulary shall be used The term and the term identifier shall be used.
 	Color []string `json:"color,omitempty"`
+	// ColorElement contains element extensions for each color.
+	ColorElement []Element `json:"_color,omitempty"`
 	// Depth Where applicable, the depth can be specified using a numerical value and its unit of measurement The unit of measurement shall be specified in accordance with ISO 11240 and the resulting terminolog...
 	Depth *Quantity `json:"depth,omitempty"`
 	// ExternalDiameter Where applicable, the external diameter can be specified using a numerical value and its unit of measurement The unit of measurement shall be specified in accordance with ISO 11240 and the resultin...
@@ -1054,12 +1534,16 @@ type ProdCharacteristic struct {
 	Image []Attachment `json:"image,omitempty"`
 	// Imprint Where applicable, the imprint can be specified as text.
 	Imprint []string `json:"imprint,omitempty"`
+	// ImprintElement contains element extensions for each imprint.
+	ImprintElement []Element `json:"_imprint,omitempty"`
 	// NominalVolume Where applicable, the nominal volume can be specified using a numerical value and its unit of measurement The unit of measurement shall be specified in accordance with ISO 11240 and the resulting t...
 	NominalVolume *Quantity `json:"nominalVolume,omitempty"`
 	// Scoring Where applicable, the scoring can be specified An appropriate controlled vocabulary shall be used The term and the term identifier shall be used.
 	Scoring *CodeableConcept `json:"scoring,omitempty"`
 	// Shape Where applicable, the shape can be specified An appropriate controlled vocabulary shall be used The term and the term identifier shall be used.
 	Shape *string `json:"shape,omitempty"`
+	// ShapeElement contains element extensions for shape.
+	ShapeElement *Element `json:"_shape,omitempty"`
 	// Weight Where applicable, the weight can be specified using a numerical value and its unit of measurement The unit of measurement shall be specified in accordance with ISO 11240 and the resulting terminolo...
 	Weight *Quantity `json:"weight,omitempty"`
 	// Width Where applicable, the width can be specified using a numerical value and its unit of measurement The unit of measurement shall be specified in accordance with ISO 11240 and the resulting terminolog...
@@ -1070,6 +1554,8 @@ type ProdCharacteristic struct {
 type ProductShelfLife struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1088,24 +1574,38 @@ type ProductShelfLife struct {
 type Quantity struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Code A computer processable form of the unit in some unit representation system.
 	Code *Code `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *Element `json:"_code,omitempty"`
 	// Comparator How the value should be understood and represented - whether the actual value is greater or less than the stated value due to measurement issues; e.g. if the comparator is "<" , then the real value...
 	Comparator *string `json:"comparator,omitempty"`
+	// ComparatorElement contains element extensions for comparator.
+	ComparatorElement *Element `json:"_comparator,omitempty"`
 	// System The identification of the system that provides the coded form of the unit.
 	System *URI `json:"system,omitempty"`
+	// SystemElement contains element extensions for system.
+	SystemElement *Element `json:"_system,omitempty"`
 	// Unit A human-readable form of the unit.
 	Unit *string `json:"unit,omitempty"`
+	// UnitElement contains element extensions for unit.
+	UnitElement *Element `json:"_unit,omitempty"`
 	// Value The value of the measured amount. The value includes an implicit precision in the presentation of the value.
 	Value *float64 `json:"value,omitempty"`
+	// ValueElement contains element extensions for value.
+	ValueElement *Element `json:"_value,omitempty"`
 }
 
 // Range A set of ordered Quantities defined by a low and high limit.
 type Range struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// High The high limit. The boundary is inclusive.
@@ -1118,6 +1618,8 @@ type Range struct {
 type Ratio struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Denominator The value of the denominator.
@@ -1130,80 +1632,126 @@ type Ratio struct {
 type Reference struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Identifier An identifier for the target resource. This is used when there is no way to reference the other resource directly, either because the entity it represents is not available through a FHIR server, or...
 	Identifier *Identifier `json:"identifier,omitempty"`
 	// Display Plain text narrative that identifies the resource in addition to the resource reference.
 	Display *string `json:"display,omitempty"`
+	// DisplayElement contains element extensions for display.
+	DisplayElement *Element `json:"_display,omitempty"`
 	// Reference A reference to a location at which the other resource is found. The reference may be a relative reference, in which case it is relative to the service base URL, or an absolute URL that resolves to ...
 	Reference *string `json:"reference,omitempty"`
+	// ReferenceElement contains element extensions for reference.
+	ReferenceElement *Element `json:"_reference,omitempty"`
 	// Type The expected type of the target of the reference. If both Reference.type and Reference.reference are populated and Reference.reference is a FHIR URL, both SHALL be consistent.  The type is the Cano...
 	Type *URI `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *Element `json:"_type,omitempty"`
 }
 
 // RelatedArtifact Related artifacts such as additional documentation, justification, or bibliographic references.
 type RelatedArtifact struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Citation A bibliographic citation for the related artifact. This text SHOULD be formatted according to an accepted citation format.
 	Citation *Markdown `json:"citation,omitempty"`
+	// CitationElement contains element extensions for citation.
+	CitationElement *Element `json:"_citation,omitempty"`
 	// Display A brief description of the document or knowledge resource being referenced, suitable for display to a consumer.
 	Display *string `json:"display,omitempty"`
+	// DisplayElement contains element extensions for display.
+	DisplayElement *Element `json:"_display,omitempty"`
 	// Document The document being referenced, represented as an attachment. This is exclusive with the resource element.
 	Document *Attachment `json:"document,omitempty"`
 	// Label A short label that can be used to reference the citation from elsewhere in the containing artifact, such as a footnote index.
 	Label *string `json:"label,omitempty"`
+	// LabelElement contains element extensions for label.
+	LabelElement *Element `json:"_label,omitempty"`
 	// Resource The related resource, such as a library, value set, profile, or other knowledge resource.
 	Resource *Canonical `json:"resource,omitempty"`
+	// ResourceElement contains element extensions for resource.
+	ResourceElement *Element `json:"_resource,omitempty"`
 	// Type The type of relationship to the related artifact.
 	Type *string `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *Element `json:"_type,omitempty"`
 	// Url A url for the artifact that can be followed to access the actual content.
 	Url *URL `json:"url,omitempty"`
+	// UrlElement contains element extensions for url.
+	UrlElement *Element `json:"_url,omitempty"`
 }
 
 // SampledData A series of measurements taken by a device, with upper and lower limits. There may be more than one dimension in the data.
 type SampledData struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Data A series of data points which are decimal values separated by a single space (character u20). The special values "E" (error), "L" (below detection limit) and "U" (above detection limit) can also be...
 	Data *string `json:"data,omitempty"`
+	// DataElement contains element extensions for data.
+	DataElement *Element `json:"_data,omitempty"`
 	// Dimensions The number of sample points at each time point. If this value is greater than one, then the dimensions will be interlaced - all the sample points for a point in time will be recorded at once.
 	Dimensions *uint32 `json:"dimensions,omitempty"`
+	// DimensionsElement contains element extensions for dimensions.
+	DimensionsElement *Element `json:"_dimensions,omitempty"`
 	// Factor A correction factor that is applied to the sampled data points before they are added to the origin.
 	Factor *float64 `json:"factor,omitempty"`
+	// FactorElement contains element extensions for factor.
+	FactorElement *Element `json:"_factor,omitempty"`
 	// LowerLimit The lower limit of detection of the measured points. This is needed if any of the data points have the value "L" (lower than detection limit).
 	LowerLimit *float64 `json:"lowerLimit,omitempty"`
+	// LowerLimitElement contains element extensions for lowerLimit.
+	LowerLimitElement *Element `json:"_lowerLimit,omitempty"`
 	// Origin The base quantity that a measured value of zero represents. In addition, this provides the units of the entire measurement series.
 	Origin Quantity `json:"origin"`
 	// Period The length of time between sampling times, measured in milliseconds.
 	Period *float64 `json:"period,omitempty"`
+	// PeriodElement contains element extensions for period.
+	PeriodElement *Element `json:"_period,omitempty"`
 	// UpperLimit The upper limit of detection of the measured points. This is needed if any of the data points have the value "U" (higher than detection limit).
 	UpperLimit *float64 `json:"upperLimit,omitempty"`
+	// UpperLimitElement contains element extensions for upperLimit.
+	UpperLimitElement *Element `json:"_upperLimit,omitempty"`
 }
 
 // Signature A signature along with supporting context. The signature may be a digital signature that is cryptographic in nature, or some other signature acceptable to the domain. This other signature may be as...
 type Signature struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Data The base64 encoding of the Signature content. When signature is not recorded electronically this element would be empty.
 	Data []byte `json:"data,omitempty"`
+	// DataElement contains element extensions for data.
+	DataElement *Element `json:"_data,omitempty"`
 	// OnBehalfOf A reference to an application-usable description of the identity that is represented by the signature.
 	OnBehalfOf *Reference `json:"onBehalfOf,omitempty"`
 	// SigFormat A mime type that indicates the technical format of the signature. Important mime types are application/signature+xml for X ML DigSig, application/jose for JWS, and image/* for a graphical image of ...
 	SigFormat *Code `json:"sigFormat,omitempty"`
+	// SigFormatElement contains element extensions for sigFormat.
+	SigFormatElement *Element `json:"_sigFormat,omitempty"`
 	// TargetFormat A mime type that indicates the technical format of the target resources signed by the signature.
 	TargetFormat *Code `json:"targetFormat,omitempty"`
+	// TargetFormatElement contains element extensions for targetFormat.
+	TargetFormatElement *Element `json:"_targetFormat,omitempty"`
 	// Type An indication of the reason that the entity signed this document. This may be explicitly included as part of the signature information and can be used when determining accountability for various ac...
 	Type []Coding `json:"type,omitempty"`
 	// When When the digital signature was signed.
 	When *Instant `json:"when,omitempty"`
+	// WhenElement contains element extensions for when.
+	WhenElement *Element `json:"_when,omitempty"`
 	// Who A reference to an application-usable description of the identity that signed  (e.g. the signature used their private key).
 	Who Reference `json:"who"`
 }
@@ -1212,6 +1760,8 @@ type Signature struct {
 type SubstanceAmount struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1222,8 +1772,12 @@ type SubstanceAmount struct {
 	AmountRange *Range `json:"amountRange,omitempty"`
 	// AmountString Used to capture quantitative values for a variety of elements. If only limits are given, the arithmetic mean would be the average. If only a single definite value for a given element is given, it w...
 	AmountString *string `json:"amountString,omitempty"`
+	// AmountStringElement contains element extensions for amountString.
+	AmountStringElement *Element `json:"_amountString,omitempty"`
 	// AmountText A textual comment on a numeric value.
 	AmountText *string `json:"amountText,omitempty"`
+	// AmountTextElement contains element extensions for amountText.
+	AmountTextElement *Element `json:"_amountText,omitempty"`
 	// AmountType Most elements that require a quantitative value will also have a field called amount type. Amount type should always be specified because the actual value of the amount is often dependent on it. EX...
 	AmountType *CodeableConcept `json:"amountType,omitempty"`
 	// ReferenceRange Reference range of possible or expected values.
@@ -1234,6 +1788,8 @@ type SubstanceAmount struct {
 type Timing struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1242,6 +1798,8 @@ type Timing struct {
 	Code *CodeableConcept `json:"code,omitempty"`
 	// Event Identifies specific times when the event occurs.
 	Event []DateTime `json:"event,omitempty"`
+	// EventElement contains element extensions for each event.
+	EventElement []Element `json:"_event,omitempty"`
 	// Repeat A set of rules that describe when the event is scheduled.
 	Repeat *TimingRepeat `json:"repeat,omitempty"`
 }
@@ -1250,6 +1808,8 @@ type Timing struct {
 type TriggerDefinition struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Condition A boolean-valued expression that is evaluated in the context of the container of the trigger definition and returns whether or not the trigger fires.
@@ -1258,22 +1818,32 @@ type TriggerDefinition struct {
 	Data []DataRequirement `json:"data,omitempty"`
 	// Name A formal name for the event. This may be an absolute URI that identifies the event formally (e.g. from a trigger registry), or a simple relative URI that identifies the event in a local context.
 	Name *string `json:"name,omitempty"`
+	// NameElement contains element extensions for name.
+	NameElement *Element `json:"_name,omitempty"`
 	// TimingDate The timing of the event (if this is a periodic trigger).
 	TimingDate *string `json:"timingDate,omitempty"`
+	// TimingDateElement contains element extensions for timingDate.
+	TimingDateElement *Element `json:"_timingDate,omitempty"`
 	// TimingDateTime The timing of the event (if this is a periodic trigger).
 	TimingDateTime *string `json:"timingDateTime,omitempty"`
+	// TimingDateTimeElement contains element extensions for timingDateTime.
+	TimingDateTimeElement *Element `json:"_timingDateTime,omitempty"`
 	// TimingReference The timing of the event (if this is a periodic trigger).
 	TimingReference *Reference `json:"timingReference,omitempty"`
 	// TimingTiming The timing of the event (if this is a periodic trigger).
 	TimingTiming *Timing `json:"timingTiming,omitempty"`
 	// Type The type of triggering event.
 	Type *string `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *Element `json:"_type,omitempty"`
 }
 
 // UsageContext Specifies clinical/business/etc. metadata that can be used to retrieve, index and/or categorize an artifact. This metadata can either be specific to the applicable population (e.g., age category, D...
 type UsageContext struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Code A code that identifies the type of context being specified by this usage context.
@@ -1292,6 +1862,8 @@ type UsageContext struct {
 type DataRequirementCodeFilter struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1300,26 +1872,40 @@ type DataRequirementCodeFilter struct {
 	Code []Coding `json:"code,omitempty"`
 	// Path The code-valued attribute of the filter. The specified path SHALL be a FHIRPath resolveable on the specified type of the DataRequirement, and SHALL consist only of identifiers, constant indexers, a...
 	Path *string `json:"path,omitempty"`
+	// PathElement contains element extensions for path.
+	PathElement *Element `json:"_path,omitempty"`
 	// SearchParam A token parameter that refers to a search parameter defined on the specified type of the DataRequirement, and which searches on elements of type code, Coding, or CodeableConcept.
 	SearchParam *string `json:"searchParam,omitempty"`
+	// SearchParamElement contains element extensions for searchParam.
+	SearchParamElement *Element `json:"_searchParam,omitempty"`
 	// ValueSet The valueset for the code filter. The valueSet and code elements are additive. If valueSet is specified, the filter will return only those data items for which the value of the code-valued element ...
 	ValueSet *Canonical `json:"valueSet,omitempty"`
+	// ValueSetElement contains element extensions for valueSet.
+	ValueSetElement *Element `json:"_valueSet,omitempty"`
 }
 
 // DataRequirementDateFilter Describes a required data item for evaluation in terms of the type of data, and optional code or date-based filters of the data.
 type DataRequirementDateFilter struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []Extension `json:"modifierExtension,omitempty"`
 	// Path The date-valued attribute of the filter. The specified path SHALL be a FHIRPath resolveable on the specified type of the DataRequirement, and SHALL consist only of identifiers, constant indexers, a...
 	Path *string `json:"path,omitempty"`
+	// PathElement contains element extensions for path.
+	PathElement *Element `json:"_path,omitempty"`
 	// SearchParam A date parameter that refers to a search parameter defined on the specified type of the DataRequirement, and which searches on elements of type date, dateTime, Period, Schedule, or Timing.
 	SearchParam *string `json:"searchParam,omitempty"`
+	// SearchParamElement contains element extensions for searchParam.
+	SearchParamElement *Element `json:"_searchParam,omitempty"`
 	// ValueDateTime The value of the filter. If period is specified, the filter will return only those data items that fall within the bounds determined by the Period, inclusive of the period boundaries. If dateTime i...
 	ValueDateTime *string `json:"valueDateTime,omitempty"`
+	// ValueDateTimeElement contains element extensions for valueDateTime.
+	ValueDateTimeElement *Element `json:"_valueDateTime,omitempty"`
 	// ValueDuration The value of the filter. If period is specified, the filter will return only those data items that fall within the bounds determined by the Period, inclusive of the period boundaries. If dateTime i...
 	ValueDuration *Duration `json:"valueDuration,omitempty"`
 	// ValuePeriod The value of the filter. If period is specified, the filter will return only those data items that fall within the bounds determined by the Period, inclusive of the period boundaries. If dateTime i...
@@ -1330,20 +1916,28 @@ type DataRequirementDateFilter struct {
 type DataRequirementSort struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []Extension `json:"modifierExtension,omitempty"`
 	// Direction The direction of the sort, ascending or descending.
 	Direction *string `json:"direction,omitempty"`
+	// DirectionElement contains element extensions for direction.
+	DirectionElement *Element `json:"_direction,omitempty"`
 	// Path The attribute of the sort. The specified path must be resolvable from the type of the required data. The path is allowed to contain qualifiers (.) to traverse sub-elements, as well as indexers ([x]...
 	Path *string `json:"path,omitempty"`
+	// PathElement contains element extensions for path.
+	PathElement *Element `json:"_path,omitempty"`
 }
 
 // DosageDoseAndRate Indicates how the medication is/was taken or should be taken by the patient.
 type DosageDoseAndRate struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1366,82 +1960,124 @@ type DosageDoseAndRate struct {
 type ElementDefinitionBase struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []Extension `json:"modifierExtension,omitempty"`
 	// Max Maximum cardinality of the base element identified by the path.
 	Max *string `json:"max,omitempty"`
+	// MaxElement contains element extensions for max.
+	MaxElement *Element `json:"_max,omitempty"`
 	// Min Minimum cardinality of the base element identified by the path.
 	Min *uint32 `json:"min,omitempty"`
+	// MinElement contains element extensions for min.
+	MinElement *Element `json:"_min,omitempty"`
 	// Path The Path that identifies the base element - this matches the ElementDefinition.path for that element. Across FHIR, there is only one base definition of any element - that is, an element definition ...
 	Path *string `json:"path,omitempty"`
+	// PathElement contains element extensions for path.
+	PathElement *Element `json:"_path,omitempty"`
 }
 
 // ElementDefinitionBinding Captures constraints on each element within the resource, profile, or extension.
 type ElementDefinitionBinding struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []Extension `json:"modifierExtension,omitempty"`
 	// Description Describes the intended use of this particular set of codes.
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *Element `json:"_description,omitempty"`
 	// Strength Indicates the degree of conformance expectations associated with this binding - that is, the degree to which the provided value set must be adhered to in the instances.
 	Strength *string `json:"strength,omitempty"`
+	// StrengthElement contains element extensions for strength.
+	StrengthElement *Element `json:"_strength,omitempty"`
 	// ValueSet Refers to the value set that identifies the set of codes the binding refers to.
 	ValueSet *Canonical `json:"valueSet,omitempty"`
+	// ValueSetElement contains element extensions for valueSet.
+	ValueSetElement *Element `json:"_valueSet,omitempty"`
 }
 
 // ElementDefinitionConstraint Captures constraints on each element within the resource, profile, or extension.
 type ElementDefinitionConstraint struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []Extension `json:"modifierExtension,omitempty"`
 	// Expression A [FHIRPath](fhirpath.html) expression of constraint that can be executed to see if this constraint is met.
 	Expression *string `json:"expression,omitempty"`
+	// ExpressionElement contains element extensions for expression.
+	ExpressionElement *Element `json:"_expression,omitempty"`
 	// Human Text that can be used to describe the constraint in messages identifying that the constraint has been violated.
 	Human *string `json:"human,omitempty"`
+	// HumanElement contains element extensions for human.
+	HumanElement *Element `json:"_human,omitempty"`
 	// Key Allows identification of which elements have their cardinalities impacted by the constraint.  Will not be referenced for constraints that do not affect cardinality.
 	Key *ID `json:"key,omitempty"`
+	// KeyElement contains element extensions for key.
+	KeyElement *Element `json:"_key,omitempty"`
 	// Requirements Description of why this constraint is necessary or appropriate.
 	Requirements *string `json:"requirements,omitempty"`
+	// RequirementsElement contains element extensions for requirements.
+	RequirementsElement *Element `json:"_requirements,omitempty"`
 	// Severity Identifies the impact constraint violation has on the conformance of the instance.
 	Severity *string `json:"severity,omitempty"`
+	// SeverityElement contains element extensions for severity.
+	SeverityElement *Element `json:"_severity,omitempty"`
 	// Source A reference to the original source of the constraint, for traceability purposes.
 	Source *Canonical `json:"source,omitempty"`
+	// SourceElement contains element extensions for source.
+	SourceElement *Element `json:"_source,omitempty"`
 	// Xpath An XPath expression of constraint that can be executed to see if this constraint is met.
 	Xpath *string `json:"xpath,omitempty"`
+	// XpathElement contains element extensions for xpath.
+	XpathElement *Element `json:"_xpath,omitempty"`
 }
 
 // ElementDefinitionDiscriminator Captures constraints on each element within the resource, profile, or extension.
 type ElementDefinitionDiscriminator struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []Extension `json:"modifierExtension,omitempty"`
 	// Path A FHIRPath expression, using [the simple subset of FHIRPath](fhirpath.html#simple), that is used to identify the element on which discrimination is based.
 	Path *string `json:"path,omitempty"`
+	// PathElement contains element extensions for path.
+	PathElement *Element `json:"_path,omitempty"`
 	// Type How the element value is interpreted when discrimination is evaluated.
 	Type *string `json:"type,omitempty"`
+	// TypeElement contains element extensions for type.
+	TypeElement *Element `json:"_type,omitempty"`
 }
 
 // ElementDefinitionExample Captures constraints on each element within the resource, profile, or extension.
 type ElementDefinitionExample struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []Extension `json:"modifierExtension,omitempty"`
 	// Label Describes the purpose of this example amoung the set of examples.
 	Label *string `json:"label,omitempty"`
+	// LabelElement contains element extensions for label.
+	LabelElement *Element `json:"_label,omitempty"`
 	// ValueAddress The actual value for the element, which must be one of the types allowed for this element.
 	ValueAddress *Address `json:"valueAddress,omitempty"`
 	// ValueAge The actual value for the element, which must be one of the types allowed for this element.
@@ -1452,12 +2088,20 @@ type ElementDefinitionExample struct {
 	ValueAttachment *Attachment `json:"valueAttachment,omitempty"`
 	// ValueBase64Binary The actual value for the element, which must be one of the types allowed for this element.
 	ValueBase64Binary *string `json:"valueBase64Binary,omitempty"`
+	// ValueBase64BinaryElement contains element extensions for valueBase64Binary.
+	ValueBase64BinaryElement *Element `json:"_valueBase64Binary,omitempty"`
 	// ValueBoolean The actual value for the element, which must be one of the types allowed for this element.
 	ValueBoolean *bool `json:"valueBoolean,omitempty"`
+	// ValueBooleanElement contains element extensions for valueBoolean.
+	ValueBooleanElement *Element `json:"_valueBoolean,omitempty"`
 	// ValueCanonical The actual value for the element, which must be one of the types allowed for this element.
 	ValueCanonical *string `json:"valueCanonical,omitempty"`
+	// ValueCanonicalElement contains element extensions for valueCanonical.
+	ValueCanonicalElement *Element `json:"_valueCanonical,omitempty"`
 	// ValueCode The actual value for the element, which must be one of the types allowed for this element.
 	ValueCode *string `json:"valueCode,omitempty"`
+	// ValueCodeElement contains element extensions for valueCode.
+	ValueCodeElement *Element `json:"_valueCode,omitempty"`
 	// ValueCodeableConcept The actual value for the element, which must be one of the types allowed for this element.
 	ValueCodeableConcept *CodeableConcept `json:"valueCodeableConcept,omitempty"`
 	// ValueCoding The actual value for the element, which must be one of the types allowed for this element.
@@ -1474,10 +2118,16 @@ type ElementDefinitionExample struct {
 	ValueDataRequirement *DataRequirement `json:"valueDataRequirement,omitempty"`
 	// ValueDate The actual value for the element, which must be one of the types allowed for this element.
 	ValueDate *string `json:"valueDate,omitempty"`
+	// ValueDateElement contains element extensions for valueDate.
+	ValueDateElement *Element `json:"_valueDate,omitempty"`
 	// ValueDateTime The actual value for the element, which must be one of the types allowed for this element.
 	ValueDateTime *string `json:"valueDateTime,omitempty"`
+	// ValueDateTimeElement contains element extensions for valueDateTime.
+	ValueDateTimeElement *Element `json:"_valueDateTime,omitempty"`
 	// ValueDecimal The actual value for the element, which must be one of the types allowed for this element.
 	ValueDecimal *float64 `json:"valueDecimal,omitempty"`
+	// ValueDecimalElement contains element extensions for valueDecimal.
+	ValueDecimalElement *Element `json:"_valueDecimal,omitempty"`
 	// ValueDistance The actual value for the element, which must be one of the types allowed for this element.
 	ValueDistance *Distance `json:"valueDistance,omitempty"`
 	// ValueDosage The actual value for the element, which must be one of the types allowed for this element.
@@ -1490,26 +2140,38 @@ type ElementDefinitionExample struct {
 	ValueHumanName *HumanName `json:"valueHumanName,omitempty"`
 	// ValueId The actual value for the element, which must be one of the types allowed for this element.
 	ValueId *string `json:"valueId,omitempty"`
+	// ValueIdElement contains element extensions for valueId.
+	ValueIdElement *Element `json:"_valueId,omitempty"`
 	// ValueIdentifier The actual value for the element, which must be one of the types allowed for this element.
 	ValueIdentifier *Identifier `json:"valueIdentifier,omitempty"`
 	// ValueInstant The actual value for the element, which must be one of the types allowed for this element.
 	ValueInstant *string `json:"valueInstant,omitempty"`
+	// ValueInstantElement contains element extensions for valueInstant.
+	ValueInstantElement *Element `json:"_valueInstant,omitempty"`
 	// ValueInteger The actual value for the element, which must be one of the types allowed for this element.
 	ValueInteger *float64 `json:"valueInteger,omitempty"`
+	// ValueIntegerElement contains element extensions for valueInteger.
+	ValueIntegerElement *Element `json:"_valueInteger,omitempty"`
 	// ValueMarkdown The actual value for the element, which must be one of the types allowed for this element.
 	ValueMarkdown *string `json:"valueMarkdown,omitempty"`
+	// ValueMarkdownElement contains element extensions for valueMarkdown.
+	ValueMarkdownElement *Element `json:"_valueMarkdown,omitempty"`
 	// ValueMeta The actual value for the element, which must be one of the types allowed for this element.
 	ValueMeta *Meta `json:"valueMeta,omitempty"`
 	// ValueMoney The actual value for the element, which must be one of the types allowed for this element.
 	ValueMoney *Money `json:"valueMoney,omitempty"`
 	// ValueOid The actual value for the element, which must be one of the types allowed for this element.
 	ValueOid *string `json:"valueOid,omitempty"`
+	// ValueOidElement contains element extensions for valueOid.
+	ValueOidElement *Element `json:"_valueOid,omitempty"`
 	// ValueParameterDefinition The actual value for the element, which must be one of the types allowed for this element.
 	ValueParameterDefinition *ParameterDefinition `json:"valueParameterDefinition,omitempty"`
 	// ValuePeriod The actual value for the element, which must be one of the types allowed for this element.
 	ValuePeriod *Period `json:"valuePeriod,omitempty"`
 	// ValuePositiveInt The actual value for the element, which must be one of the types allowed for this element.
 	ValuePositiveInt *float64 `json:"valuePositiveInt,omitempty"`
+	// ValuePositiveIntElement contains element extensions for valuePositiveInt.
+	ValuePositiveIntElement *Element `json:"_valuePositiveInt,omitempty"`
 	// ValueQuantity The actual value for the element, which must be one of the types allowed for this element.
 	ValueQuantity *Quantity `json:"valueQuantity,omitempty"`
 	// ValueRange The actual value for the element, which must be one of the types allowed for this element.
@@ -1526,84 +2188,128 @@ type ElementDefinitionExample struct {
 	ValueSignature *Signature `json:"valueSignature,omitempty"`
 	// ValueString The actual value for the element, which must be one of the types allowed for this element.
 	ValueString *string `json:"valueString,omitempty"`
+	// ValueStringElement contains element extensions for valueString.
+	ValueStringElement *Element `json:"_valueString,omitempty"`
 	// ValueTime The actual value for the element, which must be one of the types allowed for this element.
 	ValueTime *string `json:"valueTime,omitempty"`
+	// ValueTimeElement contains element extensions for valueTime.
+	ValueTimeElement *Element `json:"_valueTime,omitempty"`
 	// ValueTiming The actual value for the element, which must be one of the types allowed for this element.
 	ValueTiming *Timing `json:"valueTiming,omitempty"`
 	// ValueTriggerDefinition The actual value for the element, which must be one of the types allowed for this element.
 	ValueTriggerDefinition *TriggerDefinition `json:"valueTriggerDefinition,omitempty"`
 	// ValueUnsignedInt The actual value for the element, which must be one of the types allowed for this element.
 	ValueUnsignedInt *float64 `json:"valueUnsignedInt,omitempty"`
+	// ValueUnsignedIntElement contains element extensions for valueUnsignedInt.
+	ValueUnsignedIntElement *Element `json:"_valueUnsignedInt,omitempty"`
 	// ValueUri The actual value for the element, which must be one of the types allowed for this element.
 	ValueUri *string `json:"valueUri,omitempty"`
+	// ValueUriElement contains element extensions for valueUri.
+	ValueUriElement *Element `json:"_valueUri,omitempty"`
 	// ValueUrl The actual value for the element, which must be one of the types allowed for this element.
 	ValueUrl *string `json:"valueUrl,omitempty"`
+	// ValueUrlElement contains element extensions for valueUrl.
+	ValueUrlElement *Element `json:"_valueUrl,omitempty"`
 	// ValueUsageContext The actual value for the element, which must be one of the types allowed for this element.
 	ValueUsageContext *UsageContext `json:"valueUsageContext,omitempty"`
 	// ValueUuid The actual value for the element, which must be one of the types allowed for this element.
 	ValueUuid *string `json:"valueUuid,omitempty"`
+	// ValueUuidElement contains element extensions for valueUuid.
+	ValueUuidElement *Element `json:"_valueUuid,omitempty"`
 }
 
 // ElementDefinitionMapping Captures constraints on each element within the resource, profile, or extension.
 type ElementDefinitionMapping struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Language Identifies the computable language in which mapping.map is expressed.
 	Language *Code `json:"language,omitempty"`
+	// LanguageElement contains element extensions for language.
+	LanguageElement *Element `json:"_language,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []Extension `json:"modifierExtension,omitempty"`
 	// Comment Comments that provide information about the mapping or its use.
 	Comment *string `json:"comment,omitempty"`
+	// CommentElement contains element extensions for comment.
+	CommentElement *Element `json:"_comment,omitempty"`
 	// Identity An internal reference to the definition of a mapping.
 	Identity *ID `json:"identity,omitempty"`
+	// IdentityElement contains element extensions for identity.
+	IdentityElement *Element `json:"_identity,omitempty"`
 	// Map Expresses what part of the target specification corresponds to this element.
 	Map *string `json:"map,omitempty"`
+	// MapElement contains element extensions for map.
+	MapElement *Element `json:"_map,omitempty"`
 }
 
 // ElementDefinitionSlicing Captures constraints on each element within the resource, profile, or extension.
 type ElementDefinitionSlicing struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []Extension `json:"modifierExtension,omitempty"`
 	// Description A human-readable text description of how the slicing works. If there is no discriminator, this is required to be present to provide whatever information is possible about how the slices can be diff...
 	Description *string `json:"description,omitempty"`
+	// DescriptionElement contains element extensions for description.
+	DescriptionElement *Element `json:"_description,omitempty"`
 	// Discriminator Designates which child elements are used to discriminate between the slices when processing an instance. If one or more discriminators are provided, the value of the child elements in the instance ...
 	Discriminator []ElementDefinitionDiscriminator `json:"discriminator,omitempty"`
 	// Ordered If the matching elements have to occur in the same order as defined in the profile.
 	Ordered *bool `json:"ordered,omitempty"`
+	// OrderedElement contains element extensions for ordered.
+	OrderedElement *Element `json:"_ordered,omitempty"`
 	// Rules Whether additional slices are allowed or not. When the slices are ordered, profile authors can also say that additional slices are only allowed at the end.
 	Rules *string `json:"rules,omitempty"`
+	// RulesElement contains element extensions for rules.
+	RulesElement *Element `json:"_rules,omitempty"`
 }
 
 // ElementDefinitionType Captures constraints on each element within the resource, profile, or extension.
 type ElementDefinitionType struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []Extension `json:"modifierExtension,omitempty"`
 	// Aggregation If the type is a reference to another resource, how the resource is or can be aggregated - is it a contained resource, or a reference, and if the context is a bundle, is it included in the bundle.
 	Aggregation []string `json:"aggregation,omitempty"`
+	// AggregationElement contains element extensions for each aggregation.
+	AggregationElement []Element `json:"_aggregation,omitempty"`
 	// Code URL of Data type or Resource that is a(or the) type used for this element. References are URLs that are relative to http://hl7.org/fhir/StructureDefinition e.g. "string" is a reference to http://hl...
 	Code *URI `json:"code,omitempty"`
+	// CodeElement contains element extensions for code.
+	CodeElement *Element `json:"_code,omitempty"`
 	// Profile Identifies a profile structure or implementation Guide that applies to the datatype this element refers to. If any profiles are specified, then the content must conform to at least one of them. The...
 	Profile []Canonical `json:"profile,omitempty"`
+	// ProfileElement contains element extensions for each profile.
+	ProfileElement []Element `json:"_profile,omitempty"`
 	// TargetProfile Used when the type is "Reference" or "canonical", and identifies a profile structure or implementation Guide that applies to the target of the reference this element refers to. If any profiles are ...
 	TargetProfile []Canonical `json:"targetProfile,omitempty"`
+	// TargetProfileElement contains element extensions for each targetProfile.
+	TargetProfileElement []Element `json:"_targetProfile,omitempty"`
 	// Versioning Whether this reference needs to be version specific or version independent, or whether either can be used.
 	Versioning *string `json:"versioning,omitempty"`
+	// VersioningElement contains element extensions for versioning.
+	VersioningElement *Element `json:"_versioning,omitempty"`
 }
 
 // SubstanceAmountReferenceRange Chemical substances are a single substance type whose primary defining element is the molecular structure. Chemical substances shall be defined on the basis of their complete covalent molecular str...
 type SubstanceAmountReferenceRange struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1618,6 +2324,8 @@ type SubstanceAmountReferenceRange struct {
 type TimingRepeat struct {
 	// Id Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
 	Id *string `json:"id,omitempty"`
+	// IdElement contains element extensions for id.
+	IdElement *Element `json:"_id,omitempty"`
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
@@ -1630,30 +2338,58 @@ type TimingRepeat struct {
 	BoundsRange *Range `json:"boundsRange,omitempty"`
 	// Count A total count of the desired number of repetitions across the duration of the entire timing specification. If countMax is present, this element indicates the lower bound of the allowed range of cou...
 	Count *uint32 `json:"count,omitempty"`
+	// CountElement contains element extensions for count.
+	CountElement *Element `json:"_count,omitempty"`
 	// CountMax If present, indicates that the count is a range - so to perform the action between [count] and [countMax] times.
 	CountMax *uint32 `json:"countMax,omitempty"`
+	// CountMaxElement contains element extensions for countMax.
+	CountMaxElement *Element `json:"_countMax,omitempty"`
 	// DayOfWeek If one or more days of week is provided, then the action happens only on the specified day(s).
 	DayOfWeek []Code `json:"dayOfWeek,omitempty"`
+	// DayOfWeekElement contains element extensions for each dayOfWeek.
+	DayOfWeekElement []Element `json:"_dayOfWeek,omitempty"`
 	// Duration How long this thing happens for when it happens. If durationMax is present, this element indicates the lower bound of the allowed range of the duration.
 	Duration *float64 `json:"duration,omitempty"`
+	// DurationElement contains element extensions for duration.
+	DurationElement *Element `json:"_duration,omitempty"`
 	// DurationMax If present, indicates that the duration is a range - so to perform the action between [duration] and [durationMax] time length.
 	DurationMax *float64 `json:"durationMax,omitempty"`
+	// DurationMaxElement contains element extensions for durationMax.
+	DurationMaxElement *Element `json:"_durationMax,omitempty"`
 	// DurationUnit The units of time for the duration, in UCUM units.
 	DurationUnit *string `json:"durationUnit,omitempty"`
+	// DurationUnitElement contains element extensions for durationUnit.
+	DurationUnitElement *Element `json:"_durationUnit,omitempty"`
 	// Frequency The number of times to repeat the action within the specified period. If frequencyMax is present, this element indicates the lower bound of the allowed range of the frequency.
 	Frequency *uint32 `json:"frequency,omitempty"`
+	// FrequencyElement contains element extensions for frequency.
+	FrequencyElement *Element `json:"_frequency,omitempty"`
 	// FrequencyMax If present, indicates that the frequency is a range - so to repeat between [frequency] and [frequencyMax] times within the period or period range.
 	FrequencyMax *uint32 `json:"frequencyMax,omitempty"`
+	// FrequencyMaxElement contains element extensions for frequencyMax.
+	FrequencyMaxElement *Element `json:"_frequencyMax,omitempty"`
 	// Offset The number of minutes from the event. If the event code does not indicate whether the minutes is before or after the event, then the offset is assumed to be after the event.
 	Offset *uint32 `json:"offset,omitempty"`
+	// OffsetElement contains element extensions for offset.
+	OffsetElement *Element `json:"_offset,omitempty"`
 	// Period Indicates the duration of time over which repetitions are to occur; e.g. to express "3 times per day", 3 would be the frequency and "1 day" would be the period. If periodMax is present, this elemen...
 	Period *float64 `json:"period,omitempty"`
+	// PeriodElement contains element extensions for period.
+	PeriodElement *Element `json:"_period,omitempty"`
 	// PeriodMax If present, indicates that the period is a range from [period] to [periodMax], allowing expressing concepts such as "do this once every 3-5 days.
 	PeriodMax *float64 `json:"periodMax,omitempty"`
+	// PeriodMaxElement contains element extensions for periodMax.
+	PeriodMaxElement *Element `json:"_periodMax,omitempty"`
 	// PeriodUnit The units of time for the period in UCUM units.
 	PeriodUnit *string `json:"periodUnit,omitempty"`
+	// PeriodUnitElement contains element extensions for periodUnit.
+	PeriodUnitElement *Element `json:"_periodUnit,omitempty"`
 	// TimeOfDay Specified time of day for action to take place.
 	TimeOfDay []Time `json:"timeOfDay,omitempty"`
+	// TimeOfDayElement contains element extensions for each timeOfDay.
+	TimeOfDayElement []Element `json:"_timeOfDay,omitempty"`
 	// When An approximate time period during the day, potentially linked to an event of daily living that indicates when the action should occur.
 	When []string `json:"when,omitempty"`
+	// WhenElement contains element extensions for each when.
+	WhenElement []Element `json:"_when,omitempty"`
 }
