@@ -530,47 +530,6 @@ type ChargeItemPerformer struct {
 	Function *dt.CodeableConcept `json:"function,omitempty"`
 }
 
-// ChargeItemDefinitionChoice represents a polymorphic choice type in FHIR.
-type ChargeItemDefinitionChoice struct {
-	Canonical []dt.Canonical `json:"definitionCanonical,omitempty"` // References the source of pricing information, rules of application for the code this ChargeItem uses.
-	Uri       []dt.URI       `json:"definitionUri,omitempty"`       // References the (external) source of pricing information, rules of application for the code this ChargeItem uses.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ChargeItemDefinitionChoice.
-func (v ChargeItemDefinitionChoice) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Canonical != nil {
-		m["definitionCanonical"] = v.Canonical
-	}
-	if v.Uri != nil {
-		m["definitionUri"] = v.Uri
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ChargeItemDefinitionChoice.
-func (v *ChargeItemDefinitionChoice) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["definitionCanonical"]; ok {
-		var val []dt.Canonical
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling definitionCanonical: %w", err)
-		}
-		v.Canonical = val
-	}
-	if d, ok := raw["definitionUri"]; ok {
-		var val []dt.URI
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling definitionUri: %w", err)
-		}
-		v.Uri = val
-	}
-	return nil
-}
-
 // ChargeItemOccurrence represents a polymorphic choice type in FHIR.
 type ChargeItemOccurrence struct {
 	DateTime *string    `json:"occurrenceDateTime,omitempty"` // Date/time(s) or duration when the charged service was applied.
@@ -660,6 +619,47 @@ func (v *ChargeItemProduct) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling productReference: %w", err)
 		}
 		v.Reference = &val
+	}
+	return nil
+}
+
+// ChargeItemDefinitionChoice represents a polymorphic choice type in FHIR.
+type ChargeItemDefinitionChoice struct {
+	Canonical []dt.Canonical `json:"definitionCanonical,omitempty"` // References the source of pricing information, rules of application for the code this ChargeItem uses.
+	Uri       []dt.URI       `json:"definitionUri,omitempty"`       // References the (external) source of pricing information, rules of application for the code this ChargeItem uses.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ChargeItemDefinitionChoice.
+func (v ChargeItemDefinitionChoice) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Canonical != nil {
+		m["definitionCanonical"] = v.Canonical
+	}
+	if v.Uri != nil {
+		m["definitionUri"] = v.Uri
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ChargeItemDefinitionChoice.
+func (v *ChargeItemDefinitionChoice) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["definitionCanonical"]; ok {
+		var val []dt.Canonical
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling definitionCanonical: %w", err)
+		}
+		v.Canonical = val
+	}
+	if d, ok := raw["definitionUri"]; ok {
+		var val []dt.URI
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling definitionUri: %w", err)
+		}
+		v.Uri = val
 	}
 	return nil
 }

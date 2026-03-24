@@ -118,44 +118,15 @@ func fixArrayFields(m map[string]any, typeName string) {
 	}
 }
 
-// inferChildType guesses the FHIR type name for a nested element.
+// inferChildType returns the FHIR type name for a nested element using
+// schema-generated metadata. Falls back to a heuristic if no metadata found.
 func inferChildType(parentType, fieldName string) string {
-	// Common complex types
-	switch fieldName {
-	case "name":
-		return "HumanName"
-	case "telecom":
-		return "ContactPoint"
-	case "address":
-		return "Address"
-	case "identifier":
-		return "Identifier"
-	case "coding":
-		return "Coding"
-	case "code":
-		if parentType != "" {
-			return "CodeableConcept"
-		}
-	case "meta":
-		return "Meta"
-	case "text":
-		return "Narrative"
-	case "period":
-		return "Period"
-	case "quantity", "valueQuantity":
-		return "Quantity"
+	// Use schema-generated field type map
+	if ft := FieldType(parentType, fieldName); ft != "" {
+		return ft
 	}
-	// Default: try ParentFieldName pattern
-	return parentType + exportFieldName(fieldName)
-}
-
-func exportFieldName(s string) string {
-	if s == "" {
-		return ""
-	}
-	r := []rune(s)
-	r[0] = []rune(strings.ToUpper(string(r[0])))[0]
-	return string(r)
+	// Fallback for backbone elements: ParentFieldName
+	return ""
 }
 
 type xmlEncoder struct {
@@ -215,10 +186,12 @@ func (e *xmlEncoder) writeValueElement(name, value string) {
 }
 
 func (e *xmlEncoder) encodeMap(m map[string]any) {
-	// FHIR XML field order matters less, but we process in insertion order
 	for key, val := range m {
 		if strings.HasPrefix(key, "_") {
-			continue // element extensions handled alongside their primitive
+			continue // handled alongside their primitive via m["_"+key]
+		}
+		if key == "resourceType" {
+			continue // already emitted as root element name
 		}
 		e.encodeField(key, val, m["_"+key])
 	}
@@ -229,14 +202,40 @@ func (e *xmlEncoder) encodeField(name string, val any, elemExt any) {
 	case nil:
 		// skip
 	case string:
-		e.writeValueElement(name, v)
-	case float64:
-		e.writeValueElement(name, fmt.Sprintf("%v", v))
-	case bool:
-		if v {
-			e.writeValueElement(name, "true")
+		if elemExt != nil {
+			// Primitive with element extensions — container element
+			e.writeStart(name, map[string]string{"value": v})
+			if ext, ok := elemExt.(map[string]any); ok {
+				e.encodeElementExtensions(ext)
+			}
+			e.writeEnd(name)
 		} else {
-			e.writeValueElement(name, "false")
+			e.writeValueElement(name, v)
+		}
+	case float64:
+		s := fmt.Sprintf("%v", v)
+		if elemExt != nil {
+			e.writeStart(name, map[string]string{"value": s})
+			if ext, ok := elemExt.(map[string]any); ok {
+				e.encodeElementExtensions(ext)
+			}
+			e.writeEnd(name)
+		} else {
+			e.writeValueElement(name, s)
+		}
+	case bool:
+		s := "false"
+		if v {
+			s = "true"
+		}
+		if elemExt != nil {
+			e.writeStart(name, map[string]string{"value": s})
+			if ext, ok := elemExt.(map[string]any); ok {
+				e.encodeElementExtensions(ext)
+			}
+			e.writeEnd(name)
+		} else {
+			e.writeValueElement(name, s)
 		}
 	case map[string]any:
 		e.writeStart(name, nil)
@@ -246,6 +245,18 @@ func (e *xmlEncoder) encodeField(name string, val any, elemExt any) {
 		for _, item := range v {
 			e.encodeField(name, item, nil)
 		}
+	}
+}
+
+// encodeElementExtensions writes the id and extension children of an element extension.
+func (e *xmlEncoder) encodeElementExtensions(ext map[string]any) {
+	if id, ok := ext["id"]; ok {
+		if idStr, ok := id.(string); ok {
+			e.writeValueElement("id", idStr)
+		}
+	}
+	if exts, ok := ext["extension"]; ok {
+		e.encodeField("extension", exts, nil)
 	}
 }
 
@@ -310,10 +321,11 @@ func decodeXMLElement(decoder *xml.Decoder) (any, error) {
 			if hasValue {
 				// Self-closing primitive element
 				decoder.Skip()
-				addToMap(m, name, coerceXMLValue(name, valueAttr))
+				addToMap(m, name, coerceXMLValue(resourceType, name, valueAttr))
 			} else {
 				// Complex child element
-				child, err := decodeXMLChild(decoder)
+				childType := inferChildType(resourceType, name)
+				child, err := decodeXMLChild(decoder, childType)
 				if err != nil {
 					return nil, err
 				}
@@ -326,7 +338,7 @@ func decodeXMLElement(decoder *xml.Decoder) (any, error) {
 	}
 }
 
-func decodeXMLChild(decoder *xml.Decoder) (any, error) {
+func decodeXMLChild(decoder *xml.Decoder, typeName string) (any, error) {
 	m := make(map[string]any)
 
 	for {
@@ -350,9 +362,10 @@ func decodeXMLChild(decoder *xml.Decoder) (any, error) {
 
 			if hasValue {
 				decoder.Skip()
-				addToMap(m, name, coerceXMLValue(name, valueAttr))
+				addToMap(m, name, coerceXMLValue(typeName, name, valueAttr))
 			} else {
-				child, err := decodeXMLChild(decoder)
+				childType := inferChildType(typeName, name)
+				child, err := decodeXMLChild(decoder, childType)
 				if err != nil {
 					return nil, err
 				}
@@ -372,28 +385,25 @@ func decodeXMLChild(decoder *xml.Decoder) (any, error) {
 	}
 }
 
-// coerceXMLValue attempts to convert string values from XML attributes to
-// their appropriate JSON types based on field name and value content.
-// FHIR XML stores all primitive values as strings in value="" attributes.
-func coerceXMLValue(fieldName, s string) any {
+// coerceXMLValue converts string values from XML value="" attributes to
+// their appropriate JSON types using schema-generated metadata.
+func coerceXMLValue(parentType, fieldName, s string) any {
 	// Boolean fields
 	if s == "true" || s == "false" {
 		return s == "true"
 	}
-	// Known numeric field names in FHIR
-	numericFields := map[string]bool{
-		"value": true, "rank": true, "total": true, "score": true,
-		"factor": true, "net": true, "amount": true, "count": true,
-		"number": true, "quantity": true, "length": true, "offset": true,
-		"size": true, "limit": true, "min": true, "max": true,
-		"doseNumber": true, "seriesDoses": true, "numberOfRepeats": true,
-		"frequency": true, "frequencyMax": true, "period": true,
-		"periodMax": true, "duration": true, "durationMax": true,
-		"timeOffset": true, "lowerLimit": true, "upperLimit": true,
-		"dimensions": true, "positiveInt": true, "unsignedInt": true,
+	// Use schema-generated numeric field metadata
+	if IsNumericField(parentType, fieldName) {
+		if len(s) > 0 && (s[0] == '-' || s[0] == '.' || (s[0] >= '0' && s[0] <= '9')) {
+			var f float64
+			if _, err := fmt.Sscanf(s, "%g", &f); err == nil {
+				return f
+			}
+		}
 	}
-	if numericFields[fieldName] {
-		if len(s) > 0 && (s[0] == '-' || (s[0] >= '0' && s[0] <= '9')) {
+	// Fallback: try numeric coercion for "value" field (common in Quantity, etc.)
+	if fieldName == "value" {
+		if len(s) > 0 && (s[0] == '-' || s[0] == '.' || (s[0] >= '0' && s[0] <= '9')) {
 			var f float64
 			if _, err := fmt.Sscanf(s, "%g", &f); err == nil {
 				return f

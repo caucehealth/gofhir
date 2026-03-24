@@ -155,6 +155,27 @@ func TestXMLObservationWithValueQuantity(t *testing.T) {
 	}
 }
 
+func TestXMLElementExtensions(t *testing.T) {
+	// Patient with _birthDate element extension
+	input := `{"resourceType":"Patient","id":"1","birthDate":"1974-12-25","_birthDate":{"extension":[{"url":"http://hl7.org/fhir/StructureDefinition/patient-birthTime","valueDateTime":"1974-12-25T14:35:45-05:00"}]}}`
+	var p resources.Patient
+	parser.Unmarshal([]byte(input), &p)
+
+	xmlData, err := parser.MarshalXML(&p, parser.Options{PrettyPrint: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	xml := string(xmlData)
+	// birthDate should have value attribute AND nested extension
+	if !strings.Contains(xml, `birthDate`) {
+		t.Error("should contain birthDate element")
+	}
+	if !strings.Contains(xml, `patient-birthTime`) {
+		t.Error("should contain element extension URL in XML output")
+	}
+}
+
 func TestXMLObservation(t *testing.T) {
 	obs, _ := resources.NewObservation().
 		WithStatus(resources.ObservationStatusFinal).

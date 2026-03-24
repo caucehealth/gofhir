@@ -572,10 +572,115 @@ func generateSchemaMetadata(fhirSpec *spec.FHIRSpec, skip map[string]bool) error
 
 	buf.WriteString("}\n\n")
 
-	// IsArrayField checks if a field is an array type for XML parsing.
 	buf.WriteString("// IsArrayField returns true if the given field on the given type is an array.\n")
 	buf.WriteString("func IsArrayField(typeName, fieldName string) bool {\n")
 	buf.WriteString("\tif fields, ok := arrayFields[typeName]; ok {\n")
+	buf.WriteString("\t\treturn fields[fieldName]\n")
+	buf.WriteString("\t}\n")
+	buf.WriteString("\treturn false\n")
+	buf.WriteString("}\n\n")
+
+	// Generate field→type mappings for XML child type inference
+	buf.WriteString("// fieldTypes maps parent type + field name to the FHIR type of that field.\n")
+	buf.WriteString("// Used by XML parser for correct child type inference.\n")
+	buf.WriteString("var fieldTypes = map[string]map[string]string{\n")
+
+	allTypes := make(map[string][]*spec.FieldDef)
+	for _, name := range fhirSpec.ResourceNames {
+		if skip[name] {
+			continue
+		}
+		allTypes[name] = fhirSpec.Resources[name].Fields
+	}
+	for name, ct := range fhirSpec.ComplexTypes {
+		allTypes[name] = ct.Fields
+	}
+	for name, be := range fhirSpec.BackboneElements {
+		goName := strings.ReplaceAll(name, "_", "")
+		allTypes[goName] = be.Fields
+	}
+
+	var allTypeNames []string
+	for name := range allTypes {
+		allTypeNames = append(allTypeNames, name)
+	}
+	sort.Strings(allTypeNames)
+
+	for _, typeName := range allTypeNames {
+		fields := allTypes[typeName]
+		typeMap := make(map[string]string)
+		for _, f := range fields {
+			refType := f.FHIRType
+			if f.IsRef {
+				refType = f.RefTarget
+			}
+			// Map to the Go-visible type name
+			if sharedComplexTypes[refType] {
+				typeMap[f.JSONName] = refType
+			} else if _, ok := fhirSpec.BackboneElements[refType]; ok {
+				typeMap[f.JSONName] = strings.ReplaceAll(refType, "_", "")
+			}
+		}
+		if len(typeMap) > 0 {
+			fmt.Fprintf(&buf, "\t%q: {\n", typeName)
+			var fieldNames []string
+			for fn := range typeMap {
+				fieldNames = append(fieldNames, fn)
+			}
+			sort.Strings(fieldNames)
+			for _, fn := range fieldNames {
+				fmt.Fprintf(&buf, "\t\t%q: %q,\n", fn, typeMap[fn])
+			}
+			buf.WriteString("\t},\n")
+		}
+	}
+	buf.WriteString("}\n\n")
+
+	buf.WriteString("// FieldType returns the FHIR type name for a field on a given parent type.\n")
+	buf.WriteString("func FieldType(parentType, fieldName string) string {\n")
+	buf.WriteString("\tif fields, ok := fieldTypes[parentType]; ok {\n")
+	buf.WriteString("\t\treturn fields[fieldName]\n")
+	buf.WriteString("\t}\n")
+	buf.WriteString("\treturn \"\"\n")
+	buf.WriteString("}\n\n")
+
+	// Generate numeric field metadata
+	numericFHIRTypes := map[string]bool{
+		"integer": true, "decimal": true, "positiveInt": true,
+		"unsignedInt": true, "number": true,
+	}
+	buf.WriteString("// numericFields maps parent type to fields that hold numeric values.\n")
+	buf.WriteString("var numericFields = map[string]map[string]bool{\n")
+	for _, typeName := range allTypeNames {
+		fields := allTypes[typeName]
+		numFields := make(map[string]bool)
+		for _, f := range fields {
+			fhirType := f.FHIRType
+			if f.IsRef {
+				fhirType = f.RefTarget
+			}
+			if numericFHIRTypes[fhirType] {
+				numFields[f.JSONName] = true
+			}
+		}
+		if len(numFields) > 0 {
+			fmt.Fprintf(&buf, "\t%q: {\n", typeName)
+			var fnames []string
+			for fn := range numFields {
+				fnames = append(fnames, fn)
+			}
+			sort.Strings(fnames)
+			for _, fn := range fnames {
+				fmt.Fprintf(&buf, "\t\t%q: true,\n", fn)
+			}
+			buf.WriteString("\t},\n")
+		}
+	}
+	buf.WriteString("}\n\n")
+
+	buf.WriteString("// IsNumericField returns true if the given field holds a numeric value.\n")
+	buf.WriteString("func IsNumericField(parentType, fieldName string) bool {\n")
+	buf.WriteString("\tif fields, ok := numericFields[parentType]; ok {\n")
 	buf.WriteString("\t\treturn fields[fieldName]\n")
 	buf.WriteString("\t}\n")
 	buf.WriteString("\treturn false\n")

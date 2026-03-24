@@ -624,19 +624,19 @@ func (r *PlanDefinitionAction) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = PlanDefinitionAction(alias)
-	var timingVal PlanDefinitionActionTiming
-	if err := timingVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if timingVal.Age != nil || timingVal.DateTime != nil || timingVal.Duration != nil || timingVal.Period != nil || timingVal.Range != nil || timingVal.Timing != nil {
-		r.Timing = &timingVal
-	}
 	var definitionVal PlanDefinitionActionDefinition
 	if err := definitionVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if definitionVal.Canonical != nil || definitionVal.Uri != nil {
 		r.Definition = &definitionVal
+	}
+	var timingVal PlanDefinitionActionTiming
+	if err := timingVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if timingVal.Age != nil || timingVal.DateTime != nil || timingVal.Duration != nil || timingVal.Period != nil || timingVal.Range != nil || timingVal.Timing != nil {
+		r.Timing = &timingVal
 	}
 	return nil
 }
