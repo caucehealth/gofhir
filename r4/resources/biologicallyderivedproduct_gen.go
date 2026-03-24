@@ -35,7 +35,7 @@ type BiologicallyDerivedProduct struct {
 	// Identifier This records identifiers associated with this biologically derived product instance that are defined by business processes and/or used to refer to it when a direct URL reference to the resource its...
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Whether the product is currently available.
-	Status *string `json:"status,omitempty"`
+	Status *BiologicallyDerivedProductStatus `json:"status,omitempty"`
 	// Collection How this product was collected.
 	Collection *BiologicallyDerivedProductCollection `json:"collection,omitempty"`
 	// Manipulation Any manipulation of product post-collection that is intended to alter the product.  For example a buffy-coat enrichment or CD8 reduction of Peripheral Blood Stem Cells to make it more suitable for ...
@@ -167,7 +167,7 @@ func (b *BiologicallyDerivedProductBuilder) WithIdentifier(v dt.Identifier) *Bio
 }
 
 // WithStatus sets the status field.
-func (b *BiologicallyDerivedProductBuilder) WithStatus(v string) *BiologicallyDerivedProductBuilder {
+func (b *BiologicallyDerivedProductBuilder) WithStatus(v BiologicallyDerivedProductStatus) *BiologicallyDerivedProductBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -306,7 +306,7 @@ type BiologicallyDerivedProductStorage struct {
 	// Duration Storage timeperiod.
 	Duration *dt.Period `json:"duration,omitempty"`
 	// Scale Temperature scale used.
-	Scale *string `json:"scale,omitempty"`
+	Scale *BiologicallyDerivedProductStorageScale `json:"scale,omitempty"`
 	// Temperature Storage temperature.
 	Temperature *float64 `json:"temperature,omitempty"`
 }

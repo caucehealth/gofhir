@@ -35,7 +35,7 @@ type FamilyMemberHistory struct {
 	// Identifier Business identifiers assigned to this family member history by the performer or other systems which remain constant as the resource is updated and propagates from server to server.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status A code specifying the status of the record of the family history of a specific family member.
-	Status *string `json:"status,omitempty"`
+	Status *FamilyMemberHistoryStatus `json:"status,omitempty"`
 	// Age The age of the relative at the time the family member history is recorded.
 	Age *FamilyMemberHistoryAge `json:"-"` // polymorphic
 	// Born The actual or approximate date of birth of the relative.
@@ -83,19 +83,6 @@ func (r FamilyMemberHistory) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Deceased != nil {
-		vData, err := json.Marshal(r.Deceased)
-		if err != nil {
-			return nil, err
-		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
-		}
-	}
 	if r.Age != nil {
 		vData, err := json.Marshal(r.Age)
 		if err != nil {
@@ -122,6 +109,19 @@ func (r FamilyMemberHistory) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
+	if r.Deceased != nil {
+		vData, err := json.Marshal(r.Deceased)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
 	return json.Marshal(m)
 }
 
@@ -134,6 +134,13 @@ func (r *FamilyMemberHistory) UnmarshalJSON(data []byte) error {
 	}
 	*r = FamilyMemberHistory(alias)
 	// Unmarshal polymorphic fields
+	var ageVal FamilyMemberHistoryAge
+	if err := ageVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if ageVal.Age != nil || ageVal.Range != nil || ageVal.String != nil {
+		r.Age = &ageVal
+	}
 	var bornVal FamilyMemberHistoryBorn
 	if err := bornVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -147,13 +154,6 @@ func (r *FamilyMemberHistory) UnmarshalJSON(data []byte) error {
 	}
 	if deceasedVal.Age != nil || deceasedVal.Boolean != nil || deceasedVal.Date != nil || deceasedVal.Range != nil || deceasedVal.String != nil {
 		r.Deceased = &deceasedVal
-	}
-	var ageVal FamilyMemberHistoryAge
-	if err := ageVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if ageVal.Age != nil || ageVal.Range != nil || ageVal.String != nil {
-		r.Age = &ageVal
 	}
 	return nil
 }
@@ -223,7 +223,7 @@ func (b *FamilyMemberHistoryBuilder) WithIdentifier(v dt.Identifier) *FamilyMemb
 }
 
 // WithStatus sets the status field.
-func (b *FamilyMemberHistoryBuilder) WithStatus(v string) *FamilyMemberHistoryBuilder {
+func (b *FamilyMemberHistoryBuilder) WithStatus(v FamilyMemberHistoryStatus) *FamilyMemberHistoryBuilder {
 	b.resource.Status = &v
 	return b
 }

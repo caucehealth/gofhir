@@ -34,7 +34,7 @@ type ResearchDefinition struct {
 	// Identifier A formal identifier that is used to identify this research definition when it is represented in other formats, or referenced in a specification, model, design or an instance.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this research definition. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *ResearchDefinitionStatus `json:"status,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
 	// Author An individiual or organization primarily involved in the creation and maintenance of the content.
@@ -186,7 +186,7 @@ func (b *ResearchDefinitionBuilder) WithIdentifier(v dt.Identifier) *ResearchDef
 }
 
 // WithStatus sets the status field.
-func (b *ResearchDefinitionBuilder) WithStatus(v string) *ResearchDefinitionBuilder {
+func (b *ResearchDefinitionBuilder) WithStatus(v ResearchDefinitionStatus) *ResearchDefinitionBuilder {
 	b.resource.Status = &v
 	return b
 }

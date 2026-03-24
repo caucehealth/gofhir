@@ -35,7 +35,7 @@ type Composition struct {
 	// Identifier A version-independent identifier for the Composition. This identifier stays constant as the composition is changed over time.
 	Identifier *dt.Identifier `json:"identifier,omitempty"`
 	// Status The workflow/clinical status of this composition. The status is a marker for the clinical standing of the document.
-	Status *string `json:"status,omitempty"`
+	Status *CompositionStatus `json:"status,omitempty"`
 	// Attester A participant who has attested to the accuracy of the composition/document.
 	Attester []CompositionAttester `json:"attester,omitempty"`
 	// Author Identifies who is responsible for the information in the composition, not necessarily who typed it in.
@@ -147,7 +147,7 @@ func (b *CompositionBuilder) WithIdentifier(v dt.Identifier) *CompositionBuilder
 }
 
 // WithStatus sets the status field.
-func (b *CompositionBuilder) WithStatus(v string) *CompositionBuilder {
+func (b *CompositionBuilder) WithStatus(v CompositionStatus) *CompositionBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -253,7 +253,7 @@ type CompositionAttester struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Mode The type of attestation the authenticator offers.
-	Mode *string `json:"mode,omitempty"`
+	Mode *CompositionAttesterMode `json:"mode,omitempty"`
 	// Party Who attested the composition in the specified way.
 	Party *dt.Reference `json:"party,omitempty"`
 	// Time When the composition was attested by the party.

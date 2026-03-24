@@ -34,7 +34,7 @@ type Specimen struct {
 	// Identifier Id for specimen.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The availability of the specimen.
-	Status *string `json:"status,omitempty"`
+	Status *SpecimenStatus `json:"status,omitempty"`
 	// AccessionIdentifier The identifier assigned by the lab when accessioning specimen(s). This is not necessarily the same as the specimen identifier, depending on local lab procedures.
 	AccessionIdentifier *dt.Identifier `json:"accessionIdentifier,omitempty"`
 	// Collection Details concerning the specimen collection.
@@ -142,7 +142,7 @@ func (b *SpecimenBuilder) WithIdentifier(v dt.Identifier) *SpecimenBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *SpecimenBuilder) WithStatus(v string) *SpecimenBuilder {
+func (b *SpecimenBuilder) WithStatus(v SpecimenStatus) *SpecimenBuilder {
 	b.resource.Status = &v
 	return b
 }

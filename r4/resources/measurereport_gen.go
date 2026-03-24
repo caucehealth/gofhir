@@ -35,7 +35,7 @@ type MeasureReport struct {
 	// Identifier A formal identifier that is used to identify this MeasureReport when it is represented in other formats or referenced in a specification, model, design or an instance.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The MeasureReport status. No data will be available until the MeasureReport status is complete.
-	Status *string `json:"status,omitempty"`
+	Status *MeasureReportStatus `json:"status,omitempty"`
 	// Date The date this measure report was generated.
 	Date *dt.DateTime `json:"date,omitempty"`
 	// EvaluatedResource A reference to a Bundle containing the Resources that were used in the calculation of this measure.
@@ -53,7 +53,7 @@ type MeasureReport struct {
 	// Subject Optional subject identifying the individual or individuals the report is for.
 	Subject *dt.Reference `json:"subject,omitempty"`
 	// Type The type of measure report. This may be an individual report, which provides the score for the measure for an individual member of the population; a subject-listing, which returns the list of membe...
-	Type *string `json:"type,omitempty"`
+	Type *MeasureReportType `json:"type,omitempty"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for MeasureReport.
@@ -139,7 +139,7 @@ func (b *MeasureReportBuilder) WithIdentifier(v dt.Identifier) *MeasureReportBui
 }
 
 // WithStatus sets the status field.
-func (b *MeasureReportBuilder) WithStatus(v string) *MeasureReportBuilder {
+func (b *MeasureReportBuilder) WithStatus(v MeasureReportStatus) *MeasureReportBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -193,7 +193,7 @@ func (b *MeasureReportBuilder) WithSubject(v dt.Reference) *MeasureReportBuilder
 }
 
 // WithType sets the type field.
-func (b *MeasureReportBuilder) WithType(v string) *MeasureReportBuilder {
+func (b *MeasureReportBuilder) WithType(v MeasureReportType) *MeasureReportBuilder {
 	b.resource.Type = &v
 	return b
 }

@@ -119,19 +119,19 @@ func (r *Condition) UnmarshalJSON(data []byte) error {
 	}
 	*r = Condition(alias)
 	// Unmarshal polymorphic fields
-	var abatementVal ConditionAbatement
-	if err := abatementVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if abatementVal.Age != nil || abatementVal.DateTime != nil || abatementVal.Period != nil || abatementVal.Range != nil || abatementVal.String != nil {
-		r.Abatement = &abatementVal
-	}
 	var onsetVal ConditionOnset
 	if err := onsetVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if onsetVal.Age != nil || onsetVal.DateTime != nil || onsetVal.Period != nil || onsetVal.Range != nil || onsetVal.String != nil {
 		r.Onset = &onsetVal
+	}
+	var abatementVal ConditionAbatement
+	if err := abatementVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if abatementVal.Age != nil || abatementVal.DateTime != nil || abatementVal.Period != nil || abatementVal.Range != nil || abatementVal.String != nil {
+		r.Abatement = &abatementVal
 	}
 	return nil
 }

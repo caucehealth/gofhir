@@ -244,7 +244,7 @@ type ProvenanceEntity struct {
 	// Agent The entity is attributed to an agent to express the agent's responsibility for that entity, possibly along with other agents. This description can be understood as shorthand for saying that the age...
 	Agent []ProvenanceAgent `json:"agent,omitempty"`
 	// Role How the entity was used during the activity.
-	Role *string `json:"role,omitempty"`
+	Role *ProvenanceEntityRole `json:"role,omitempty"`
 	// What Identity of the  Entity used. May be a logical or physical uri and maybe absolute or relative.
 	What dt.Reference `json:"what"`
 }

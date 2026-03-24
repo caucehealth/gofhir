@@ -35,7 +35,7 @@ type Device struct {
 	// Identifier Unique instance identifiers assigned to a device by manufacturers other organizations or owners.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Status of the Device availability.
-	Status *string `json:"status,omitempty"`
+	Status *DeviceStatus `json:"status,omitempty"`
 	// Contact Contact details for an organization or a particular human that is responsible for the device.
 	Contact []dt.ContactPoint `json:"contact,omitempty"`
 	// Definition The reference to the definition for the device.
@@ -169,7 +169,7 @@ func (b *DeviceBuilder) WithIdentifier(v dt.Identifier) *DeviceBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *DeviceBuilder) WithStatus(v string) *DeviceBuilder {
+func (b *DeviceBuilder) WithStatus(v DeviceStatus) *DeviceBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -336,7 +336,7 @@ type DeviceDeviceName struct {
 	// Name The name of the device.
 	Name *string `json:"name,omitempty"`
 	// Type The type of deviceName. UDILabelName | UserFriendlyName | PatientReportedName | ManufactureDeviceName | ModelName.
-	Type *string `json:"type,omitempty"`
+	Type *DeviceDeviceNameType `json:"type,omitempty"`
 }
 
 // DeviceProperty A type of a manufactured item that is used in the provision of healthcare without being substantially changed through that activity. The device may be a medical or non-medical device.
@@ -423,7 +423,7 @@ type DeviceUdiCarrier struct {
 	// DeviceIdentifier The device identifier (DI) is a mandatory, fixed portion of a UDI that identifies the labeler and the specific version or model of a device.
 	DeviceIdentifier *string `json:"deviceIdentifier,omitempty"`
 	// EntryType A coded entry to indicate how the data was entered.
-	EntryType *string `json:"entryType,omitempty"`
+	EntryType *DeviceUdiCarrierEntryType `json:"entryType,omitempty"`
 	// Issuer Organization that is charged with issuing UDIs for devices.  For example, the US FDA issuers include : 1) GS1:  http://hl7.org/fhir/NamingSystem/gs1-di,  2) HIBCC: http://hl7.org/fhir/NamingSystem/...
 	Issuer *dt.URI `json:"issuer,omitempty"`
 	// Jurisdiction The identity of the authoritative source for UDI generation within a  jurisdiction.  All UDIs are globally unique within a single namespace with the appropriate repository uri as the system.  For e...

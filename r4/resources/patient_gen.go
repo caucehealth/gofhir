@@ -47,7 +47,7 @@ type Patient struct {
 	// Deceased Indicates if the individual is deceased or not.
 	Deceased *PatientDeceased `json:"-"` // polymorphic
 	// Gender Administrative Gender - the gender that the patient is considered to have for administration and record keeping purposes.
-	Gender *string `json:"gender,omitempty"`
+	Gender *AdministrativeGender `json:"gender,omitempty"`
 	// GeneralPractitioner Patient's nominated care provider.
 	GeneralPractitioner []dt.Reference `json:"generalPractitioner,omitempty"`
 	// Link Link to another patient resource that concerns the same actual patient.
@@ -163,8 +163,7 @@ func (b *PatientBuilder) WithBirthDate(date string) *PatientBuilder {
 
 // WithGender sets the patient's administrative gender.
 func (b *PatientBuilder) WithGender(gender AdministrativeGender) *PatientBuilder {
-	g := string(gender)
-	b.resource.Gender = &g
+	b.resource.Gender = &gender
 	return b
 }
 
@@ -350,7 +349,7 @@ type PatientContact struct {
 	// Address Address for the contact person.
 	Address *dt.Address `json:"address,omitempty"`
 	// Gender Administrative Gender - the gender that the contact person is considered to have for administration and record keeping purposes.
-	Gender *string `json:"gender,omitempty"`
+	Gender *AdministrativeGender `json:"gender,omitempty"`
 	// Name A name associated with the contact person.
 	Name *dt.HumanName `json:"name,omitempty"`
 	// Organization Organization on behalf of which the contact is acting or for which the contact is working.
@@ -374,48 +373,7 @@ type PatientLink struct {
 	// Other The other patient resource that the link refers to.
 	Other dt.Reference `json:"other"`
 	// Type The type of link between this patient resource and another patient resource.
-	Type *string `json:"type,omitempty"`
-}
-
-// PatientDeceased represents a polymorphic choice type in FHIR.
-type PatientDeceased struct {
-	Boolean  *bool   `json:"deceasedBoolean,omitempty"`  // Indicates if the individual is deceased or not.
-	DateTime *string `json:"deceasedDateTime,omitempty"` // Indicates if the individual is deceased or not.
-}
-
-// MarshalJSON implements the json.Marshaler interface for PatientDeceased.
-func (v PatientDeceased) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Boolean != nil {
-		m["deceasedBoolean"] = v.Boolean
-	}
-	if v.DateTime != nil {
-		m["deceasedDateTime"] = v.DateTime
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for PatientDeceased.
-func (v *PatientDeceased) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["deceasedBoolean"]; ok {
-		var val bool
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling deceasedBoolean: %w", err)
-		}
-		v.Boolean = &val
-	}
-	if d, ok := raw["deceasedDateTime"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling deceasedDateTime: %w", err)
-		}
-		v.DateTime = &val
-	}
-	return nil
+	Type *PatientLinkType `json:"type,omitempty"`
 }
 
 // PatientMultipleBirth represents a polymorphic choice type in FHIR.
@@ -455,6 +413,47 @@ func (v *PatientMultipleBirth) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling multipleBirthInteger: %w", err)
 		}
 		v.Integer = &val
+	}
+	return nil
+}
+
+// PatientDeceased represents a polymorphic choice type in FHIR.
+type PatientDeceased struct {
+	Boolean  *bool   `json:"deceasedBoolean,omitempty"`  // Indicates if the individual is deceased or not.
+	DateTime *string `json:"deceasedDateTime,omitempty"` // Indicates if the individual is deceased or not.
+}
+
+// MarshalJSON implements the json.Marshaler interface for PatientDeceased.
+func (v PatientDeceased) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Boolean != nil {
+		m["deceasedBoolean"] = v.Boolean
+	}
+	if v.DateTime != nil {
+		m["deceasedDateTime"] = v.DateTime
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for PatientDeceased.
+func (v *PatientDeceased) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["deceasedBoolean"]; ok {
+		var val bool
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling deceasedBoolean: %w", err)
+		}
+		v.Boolean = &val
+	}
+	if d, ok := raw["deceasedDateTime"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling deceasedDateTime: %w", err)
+		}
+		v.DateTime = &val
 	}
 	return nil
 }

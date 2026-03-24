@@ -34,7 +34,7 @@ type Substance struct {
 	// Identifier Unique identifier for the substance.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status A code to indicate if the substance is actively used.
-	Status *string `json:"status,omitempty"`
+	Status *SubstanceStatus `json:"status,omitempty"`
 	// Category A code that classifies the general type of substance.  This is used  for searching, sorting and display purposes.
 	Category []dt.CodeableConcept `json:"category,omitempty"`
 	// Code A code (or set of codes) that identify this substance.
@@ -130,7 +130,7 @@ func (b *SubstanceBuilder) WithIdentifier(v dt.Identifier) *SubstanceBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *SubstanceBuilder) WithStatus(v string) *SubstanceBuilder {
+func (b *SubstanceBuilder) WithStatus(v SubstanceStatus) *SubstanceBuilder {
 	b.resource.Status = &v
 	return b
 }

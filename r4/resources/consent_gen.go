@@ -35,7 +35,7 @@ type Consent struct {
 	// Identifier Unique identifier for this copy of the Consent Statement.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Indicates the current state of this consent.
-	Status *string `json:"status,omitempty"`
+	Status *ConsentStatus `json:"status,omitempty"`
 	// Category A classification of the type of consents found in the statement. This element supports indexing and retrieval of consent statements.
 	Category []dt.CodeableConcept `json:"category,omitempty"`
 	// DateTime When this  Consent was issued / created / indexed.
@@ -145,7 +145,7 @@ func (b *ConsentBuilder) WithIdentifier(v dt.Identifier) *ConsentBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *ConsentBuilder) WithStatus(v string) *ConsentBuilder {
+func (b *ConsentBuilder) WithStatus(v ConsentStatus) *ConsentBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -259,7 +259,7 @@ type ConsentData struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Meaning How the resource reference is interpreted when testing consent restrictions.
-	Meaning *string `json:"meaning,omitempty"`
+	Meaning *ConsentDataMeaning `json:"meaning,omitempty"`
 	// Reference A reference to a specific resource that defines which resources are covered by this consent.
 	Reference dt.Reference `json:"reference"`
 }
@@ -307,7 +307,7 @@ type ConsentProvision struct {
 	// SecurityLabel A security label, comprised of 0..* security label fields (Privacy tags), which define which resources are controlled by this exception.
 	SecurityLabel []dt.Coding `json:"securityLabel,omitempty"`
 	// Type Action  to take - permit or deny - when the rule conditions are met.  Not permitted in root rule, required in all nested rules.
-	Type *string `json:"type,omitempty"`
+	Type *ConsentProvisionType `json:"type,omitempty"`
 }
 
 // ConsentVerification A record of a healthcare consumer’s  choices, which permits or denies identified recipient(s) or recipient role(s) to perform one or more actions within a given policy context, for specific purpo...

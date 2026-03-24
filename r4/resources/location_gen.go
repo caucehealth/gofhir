@@ -34,7 +34,7 @@ type Location struct {
 	// Identifier Unique code or number identifying the location to its users.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status property covers the general availability of the resource, not the current value which may be covered by the operationStatus, or by a schedule/slots if they are configured for the location.
-	Status *string `json:"status,omitempty"`
+	Status *LocationStatus `json:"status,omitempty"`
 	// Address Physical location.
 	Address *dt.Address `json:"address,omitempty"`
 	// Alias A list of alternate names that the location is known as, or was known as, in the past.
@@ -50,7 +50,7 @@ type Location struct {
 	// ManagingOrganization The organization responsible for the provisioning and upkeep of the location.
 	ManagingOrganization *dt.Reference `json:"managingOrganization,omitempty"`
 	// Mode Indicates whether a resource instance represents a specific location or a class of locations.
-	Mode *string `json:"mode,omitempty"`
+	Mode *LocationMode `json:"mode,omitempty"`
 	// Name Name of the location as used by humans. Does not need to be unique.
 	Name *string `json:"name,omitempty"`
 	// OperationalStatus The operational status covers operation values most relevant to beds (but can also apply to rooms/units/chairs/etc. such as an isolation unit/dialysis chair). This typically covers concepts such as...
@@ -150,7 +150,7 @@ func (b *LocationBuilder) WithIdentifier(v dt.Identifier) *LocationBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *LocationBuilder) WithStatus(v string) *LocationBuilder {
+func (b *LocationBuilder) WithStatus(v LocationStatus) *LocationBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -198,7 +198,7 @@ func (b *LocationBuilder) WithManagingOrganization(v dt.Reference) *LocationBuil
 }
 
 // WithMode sets the mode field.
-func (b *LocationBuilder) WithMode(v string) *LocationBuilder {
+func (b *LocationBuilder) WithMode(v LocationMode) *LocationBuilder {
 	b.resource.Mode = &v
 	return b
 }

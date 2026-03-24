@@ -141,7 +141,7 @@ type OperationOutcomeIssue struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code Describes the type of the issue. The system that creates an OperationOutcome SHALL choose the most applicable code from the IssueType value set, and may additional provide its own code for the erro...
-	Code *string `json:"code,omitempty"`
+	Code *OperationOutcomeIssueCode `json:"code,omitempty"`
 	// Details Additional details about the error. This may be a text description of the error or a system code that identifies the error.
 	Details *dt.CodeableConcept `json:"details,omitempty"`
 	// Diagnostics Additional diagnostic information about the issue.
@@ -151,5 +151,5 @@ type OperationOutcomeIssue struct {
 	// Location This element is deprecated because it is XML specific. It is replaced by issue.expression, which is format independent, and simpler to parse.   For resource issues, this will be a simple XPath limi...
 	Location []string `json:"location,omitempty"`
 	// Severity Indicates whether the issue indicates a variation from successful processing.
-	Severity *string `json:"severity,omitempty"`
+	Severity *OperationOutcomeIssueSeverity `json:"severity,omitempty"`
 }

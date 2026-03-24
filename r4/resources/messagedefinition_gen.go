@@ -34,13 +34,13 @@ type MessageDefinition struct {
 	// Identifier A formal identifier that is used to identify this message definition when it is represented in other formats, or referenced in a specification, model, design or an instance.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this message definition. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *MessageDefinitionStatus `json:"status,omitempty"`
 	// AllowedResponse Indicates what types of messages may be sent as an application-level response to this message.
 	AllowedResponse []MessageDefinitionAllowedResponse `json:"allowedResponse,omitempty"`
 	// Base The MessageDefinition that is the basis for the contents of this resource.
 	Base *dt.Canonical `json:"base,omitempty"`
 	// Category The impact of the content of the message.
-	Category *string `json:"category,omitempty"`
+	Category *MessageDefinitionCategory `json:"category,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the message definition and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the message definition.
@@ -72,7 +72,7 @@ type MessageDefinition struct {
 	// Replaces A MessageDefinition that is superseded by this definition.
 	Replaces []dt.Canonical `json:"replaces,omitempty"`
 	// ResponseRequired Declare at a message definition level whether a response is required or only upon error or success, or never.
-	ResponseRequired *string `json:"responseRequired,omitempty"`
+	ResponseRequired *MessageDefinitionResponseRequired `json:"responseRequired,omitempty"`
 	// Title A short, descriptive, user-friendly title for the message definition.
 	Title *string `json:"title,omitempty"`
 	// Url The business identifier that is used to reference the MessageDefinition and *is* expected to be consistent from server to server.
@@ -166,7 +166,7 @@ func (b *MessageDefinitionBuilder) WithIdentifier(v dt.Identifier) *MessageDefin
 }
 
 // WithStatus sets the status field.
-func (b *MessageDefinitionBuilder) WithStatus(v string) *MessageDefinitionBuilder {
+func (b *MessageDefinitionBuilder) WithStatus(v MessageDefinitionStatus) *MessageDefinitionBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -184,7 +184,7 @@ func (b *MessageDefinitionBuilder) WithBase(v dt.Canonical) *MessageDefinitionBu
 }
 
 // WithCategory sets the category field.
-func (b *MessageDefinitionBuilder) WithCategory(v string) *MessageDefinitionBuilder {
+func (b *MessageDefinitionBuilder) WithCategory(v MessageDefinitionCategory) *MessageDefinitionBuilder {
 	b.resource.Category = &v
 	return b
 }
@@ -280,7 +280,7 @@ func (b *MessageDefinitionBuilder) WithReplaces(v dt.Canonical) *MessageDefiniti
 }
 
 // WithResponseRequired sets the responseRequired field.
-func (b *MessageDefinitionBuilder) WithResponseRequired(v string) *MessageDefinitionBuilder {
+func (b *MessageDefinitionBuilder) WithResponseRequired(v MessageDefinitionResponseRequired) *MessageDefinitionBuilder {
 	b.resource.ResponseRequired = &v
 	return b
 }

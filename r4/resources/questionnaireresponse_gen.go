@@ -35,7 +35,7 @@ type QuestionnaireResponse struct {
 	// Identifier A business identifier assigned to a particular completed (or partially completed) questionnaire.
 	Identifier *dt.Identifier `json:"identifier,omitempty"`
 	// Status The position of the questionnaire response within its overall lifecycle.
-	Status *string `json:"status,omitempty"`
+	Status *QuestionnaireResponseStatus `json:"status,omitempty"`
 	// Author Person who received the answers to the questions in the QuestionnaireResponse and recorded them in the system.
 	Author *dt.Reference `json:"author,omitempty"`
 	// Authored The date and/or time that this set of answers were last changed.
@@ -139,7 +139,7 @@ func (b *QuestionnaireResponseBuilder) WithIdentifier(v dt.Identifier) *Question
 }
 
 // WithStatus sets the status field.
-func (b *QuestionnaireResponseBuilder) WithStatus(v string) *QuestionnaireResponseBuilder {
+func (b *QuestionnaireResponseBuilder) WithStatus(v QuestionnaireResponseStatus) *QuestionnaireResponseBuilder {
 	b.resource.Status = &v
 	return b
 }

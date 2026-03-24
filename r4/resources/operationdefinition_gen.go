@@ -32,7 +32,7 @@ type OperationDefinition struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The status of this operation definition. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *OperationDefinitionStatus `json:"status,omitempty"`
 	// AffectsState Whether the operation affects state. Side effects such as producing audit trail entries do not count as 'affecting  state'.
 	AffectsState *bool `json:"affectsState,omitempty"`
 	// Base Indicates that this operation definition is a constraining profile on the base.
@@ -56,7 +56,7 @@ type OperationDefinition struct {
 	// Jurisdiction A legal or geographic region in which the operation definition is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Kind Whether this is an operation or a named query.
-	Kind *string `json:"kind,omitempty"`
+	Kind *OperationDefinitionKind `json:"kind,omitempty"`
 	// Name A natural language name identifying the operation definition. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
 	// OutputProfile Additional validation information for the out parameters - a single profile that covers all the parameters. The profile is a constraint on the parameters resource.
@@ -162,7 +162,7 @@ func (b *OperationDefinitionBuilder) WithModifierExtension(v dt.Extension) *Oper
 }
 
 // WithStatus sets the status field.
-func (b *OperationDefinitionBuilder) WithStatus(v string) *OperationDefinitionBuilder {
+func (b *OperationDefinitionBuilder) WithStatus(v OperationDefinitionStatus) *OperationDefinitionBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -234,7 +234,7 @@ func (b *OperationDefinitionBuilder) WithJurisdiction(v dt.CodeableConcept) *Ope
 }
 
 // WithKind sets the kind field.
-func (b *OperationDefinitionBuilder) WithKind(v string) *OperationDefinitionBuilder {
+func (b *OperationDefinitionBuilder) WithKind(v OperationDefinitionKind) *OperationDefinitionBuilder {
 	b.resource.Kind = &v
 	return b
 }
@@ -333,7 +333,7 @@ type OperationDefinitionBinding struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Strength Indicates the degree of conformance expectations associated with this binding - that is, the degree to which the provided value set must be adhered to in the instances.
-	Strength *string `json:"strength,omitempty"`
+	Strength *OperationDefinitionBindingStrength `json:"strength,omitempty"`
 	// ValueSet Points to the value set or external definition (e.g. implicit value set) that identifies the set of codes to be used.
 	ValueSet dt.Canonical `json:"valueSet"`
 }
@@ -375,13 +375,13 @@ type OperationDefinitionParameter struct {
 	// ReferencedFrom Identifies other resource parameters within the operation invocation that are expected to resolve to this resource.
 	ReferencedFrom []OperationDefinitionReferencedFrom `json:"referencedFrom,omitempty"`
 	// SearchType How the parameter is understood as a search parameter. This is only used if the parameter type is 'string'.
-	SearchType *string `json:"searchType,omitempty"`
+	SearchType *OperationDefinitionParameterSearchType `json:"searchType,omitempty"`
 	// TargetProfile Used when the type is "Reference" or "canonical", and identifies a profile structure or implementation Guide that applies to the target of the reference this parameter refers to. If any profiles ar...
 	TargetProfile []dt.Canonical `json:"targetProfile,omitempty"`
 	// Type The type for this parameter.
 	Type *dt.Code `json:"type,omitempty"`
 	// Use Whether this is an input or an output parameter.
-	Use *string `json:"use,omitempty"`
+	Use *OperationDefinitionParameterUse `json:"use,omitempty"`
 }
 
 // OperationDefinitionReferencedFrom A formal computable definition of an operation (on the RESTful interface) or a named query (using the search interaction).

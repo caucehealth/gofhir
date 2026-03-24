@@ -35,7 +35,7 @@ type SupplyRequest struct {
 	// Identifier Business identifiers assigned to this SupplyRequest by the author and/or other systems. These identifiers remain constant as the resource is updated and propagates from server to server.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Status of the supply request.
-	Status *string `json:"status,omitempty"`
+	Status *SupplyRequestStatus `json:"status,omitempty"`
 	// AuthoredOn When the request was made.
 	AuthoredOn *dt.DateTime `json:"authoredOn,omitempty"`
 	// Category Category of supply, e.g.  central, non-stock, etc. This is used to support work flows associated with the supply process.
@@ -197,7 +197,7 @@ func (b *SupplyRequestBuilder) WithIdentifier(v dt.Identifier) *SupplyRequestBui
 }
 
 // WithStatus sets the status field.
-func (b *SupplyRequestBuilder) WithStatus(v string) *SupplyRequestBuilder {
+func (b *SupplyRequestBuilder) WithStatus(v SupplyRequestStatus) *SupplyRequestBuilder {
 	b.resource.Status = &v
 	return b
 }

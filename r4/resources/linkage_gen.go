@@ -159,5 +159,5 @@ type LinkageItem struct {
 	// Resource The resource instance being linked as part of the group.
 	Resource dt.Reference `json:"resource"`
 	// Type Distinguishes which item is "source of truth" (if any) and which items are no longer considered to be current representations.
-	Type *string `json:"type,omitempty"`
+	Type *LinkageItemType `json:"type,omitempty"`
 }

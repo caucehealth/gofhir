@@ -35,7 +35,7 @@ type ValueSet struct {
 	// Identifier A formal identifier that is used to identify this value set when it is represented in other formats, or referenced in a specification, model, design or an instance.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this value set. Enables tracking the life-cycle of the content. The status of the value set applies to the value set definition (ValueSet.compose) and the associated ValueSet metadata...
-	Status *string `json:"status,omitempty"`
+	Status *ValueSetStatus `json:"status,omitempty"`
 	// Compose A set of criteria that define the contents of the value set by including or excluding codes selected from the specified code system(s) that the value set draws from. This is also known as the Conte...
 	Compose *ValueSetCompose `json:"compose,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
@@ -153,7 +153,7 @@ func (b *ValueSetBuilder) WithIdentifier(v dt.Identifier) *ValueSetBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *ValueSetBuilder) WithStatus(v string) *ValueSetBuilder {
+func (b *ValueSetBuilder) WithStatus(v ValueSetStatus) *ValueSetBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -368,7 +368,7 @@ type ValueSetFilter struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Op The kind of operation to perform as a part of the filter criteria.
-	Op *string `json:"op,omitempty"`
+	Op *ValueSetFilterOp `json:"op,omitempty"`
 	// Property A code that identifies a property or a filter defined in the code system.
 	Property *dt.Code `json:"property,omitempty"`
 	// Value The match value may be either a code defined by the system, or a string value, which is a regex match on the literal string of the property value  (if the filter represents a property defined in Co...

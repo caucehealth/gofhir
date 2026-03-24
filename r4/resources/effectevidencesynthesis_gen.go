@@ -34,7 +34,7 @@ type EffectEvidenceSynthesis struct {
 	// Identifier A formal identifier that is used to identify this effect evidence synthesis when it is represented in other formats, or referenced in a specification, model, design or an instance.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this effect evidence synthesis. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *EffectEvidenceSynthesisStatus `json:"status,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
 	// Author An individiual or organization primarily involved in the creation and maintenance of the content.
@@ -182,7 +182,7 @@ func (b *EffectEvidenceSynthesisBuilder) WithIdentifier(v dt.Identifier) *Effect
 }
 
 // WithStatus sets the status field.
-func (b *EffectEvidenceSynthesisBuilder) WithStatus(v string) *EffectEvidenceSynthesisBuilder {
+func (b *EffectEvidenceSynthesisBuilder) WithStatus(v EffectEvidenceSynthesisStatus) *EffectEvidenceSynthesisBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -463,7 +463,7 @@ type EffectEvidenceSynthesisResultsByExposure struct {
 	// Description Human-readable summary of results by exposure state.
 	Description *string `json:"description,omitempty"`
 	// ExposureState Whether these results are for the exposure state or alternative exposure state.
-	ExposureState *string `json:"exposureState,omitempty"`
+	ExposureState *EffectEvidenceSynthesisResultsByExposureExposureState `json:"exposureState,omitempty"`
 	// RiskEvidenceSynthesis Reference to a RiskEvidenceSynthesis resource.
 	RiskEvidenceSynthesis dt.Reference `json:"riskEvidenceSynthesis"`
 	// VariantState Used to define variant exposure states such as low-risk state.

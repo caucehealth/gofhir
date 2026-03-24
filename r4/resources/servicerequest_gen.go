@@ -115,6 +115,19 @@ func (r ServiceRequest) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
+	if r.Occurrence != nil {
+		vData, err := json.Marshal(r.Occurrence)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
 	if r.AsNeeded != nil {
 		vData, err := json.Marshal(r.AsNeeded)
 		if err != nil {
@@ -141,19 +154,6 @@ func (r ServiceRequest) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Occurrence != nil {
-		vData, err := json.Marshal(r.Occurrence)
-		if err != nil {
-			return nil, err
-		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
-		}
-	}
 	return json.Marshal(m)
 }
 
@@ -166,6 +166,13 @@ func (r *ServiceRequest) UnmarshalJSON(data []byte) error {
 	}
 	*r = ServiceRequest(alias)
 	// Unmarshal polymorphic fields
+	var occurrenceVal ServiceRequestOccurrence
+	if err := occurrenceVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if occurrenceVal.DateTime != nil || occurrenceVal.Period != nil || occurrenceVal.Timing != nil {
+		r.Occurrence = &occurrenceVal
+	}
 	var asNeededVal ServiceRequestAsNeeded
 	if err := asNeededVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -179,13 +186,6 @@ func (r *ServiceRequest) UnmarshalJSON(data []byte) error {
 	}
 	if locationVal.Code != nil || locationVal.Reference != nil {
 		r.Location = &locationVal
-	}
-	var occurrenceVal ServiceRequestOccurrence
-	if err := occurrenceVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if occurrenceVal.DateTime != nil || occurrenceVal.Period != nil || occurrenceVal.Timing != nil {
-		r.Occurrence = &occurrenceVal
 	}
 	return nil
 }

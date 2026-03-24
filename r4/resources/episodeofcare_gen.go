@@ -34,7 +34,7 @@ type EpisodeOfCare struct {
 	// Identifier The EpisodeOfCare may be known by different identifiers for different contexts of use, such as when an external agency is tracking the Episode for funding purposes.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status planned | waitlist | active | onhold | finished | cancelled.
-	Status *string `json:"status,omitempty"`
+	Status *EpisodeOfCareStatus `json:"status,omitempty"`
 	// Account The set of accounts that may be used for billing for this EpisodeOfCare.
 	Account []dt.Reference `json:"account,omitempty"`
 	// CareManager The practitioner that is the care manager/care coordinator for this patient.
@@ -140,7 +140,7 @@ func (b *EpisodeOfCareBuilder) WithIdentifier(v dt.Identifier) *EpisodeOfCareBui
 }
 
 // WithStatus sets the status field.
-func (b *EpisodeOfCareBuilder) WithStatus(v string) *EpisodeOfCareBuilder {
+func (b *EpisodeOfCareBuilder) WithStatus(v EpisodeOfCareStatus) *EpisodeOfCareBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -237,7 +237,7 @@ type EpisodeOfCareStatusHistory struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status planned | waitlist | active | onhold | finished | cancelled.
-	Status *string `json:"status,omitempty"`
+	Status *EpisodeOfCareStatusHistoryStatus `json:"status,omitempty"`
 	// Period The period during this EpisodeOfCare that the specific status applied.
 	Period dt.Period `json:"period"`
 }

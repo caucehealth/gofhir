@@ -34,7 +34,7 @@ type InsurancePlan struct {
 	// Identifier Business identifiers assigned to this health insurance product which remain constant as the resource is updated and propagates from server to server.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The current state of the health insurance product.
-	Status *string `json:"status,omitempty"`
+	Status *InsurancePlanStatus `json:"status,omitempty"`
 	// AdministeredBy An organization which administer other services such as underwriting, customer service and/or claims processing on behalf of the health insurance product owner.
 	AdministeredBy *dt.Reference `json:"administeredBy,omitempty"`
 	// Alias A list of alternate names that the product is known as, or was known as in the past.
@@ -144,7 +144,7 @@ func (b *InsurancePlanBuilder) WithIdentifier(v dt.Identifier) *InsurancePlanBui
 }
 
 // WithStatus sets the status field.
-func (b *InsurancePlanBuilder) WithStatus(v string) *InsurancePlanBuilder {
+func (b *InsurancePlanBuilder) WithStatus(v InsurancePlanStatus) *InsurancePlanBuilder {
 	b.resource.Status = &v
 	return b
 }

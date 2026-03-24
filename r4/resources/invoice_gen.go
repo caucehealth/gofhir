@@ -34,7 +34,7 @@ type Invoice struct {
 	// Identifier Identifier of this Invoice, often used for reference in correspondence about this invoice or for tracking of payments.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The current state of the Invoice.
-	Status *string `json:"status,omitempty"`
+	Status *InvoiceStatus `json:"status,omitempty"`
 	// Account Account which is supposed to be balanced with this Invoice.
 	Account *dt.Reference `json:"account,omitempty"`
 	// CancelledReason In case of Invoice cancellation a reason must be given (entered in error, superseded by corrected invoice etc.).
@@ -148,7 +148,7 @@ func (b *InvoiceBuilder) WithIdentifier(v dt.Identifier) *InvoiceBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *InvoiceBuilder) WithStatus(v string) *InvoiceBuilder {
+func (b *InvoiceBuilder) WithStatus(v InvoiceStatus) *InvoiceBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -291,5 +291,5 @@ type InvoicePriceComponent struct {
 	// Factor The factor that has been applied on the base price for calculating this component.
 	Factor *float64 `json:"factor,omitempty"`
 	// Type This code identifies the type of the component.
-	Type *string `json:"type,omitempty"`
+	Type *InvoicePriceComponentType `json:"type,omitempty"`
 }

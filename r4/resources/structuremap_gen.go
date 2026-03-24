@@ -35,7 +35,7 @@ type StructureMap struct {
 	// Identifier A formal identifier that is used to identify this structure map when it is represented in other formats, or referenced in a specification, model, design or an instance.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this structure map. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *StructureMapStatus `json:"status,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the structure map and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the structure map.
@@ -153,7 +153,7 @@ func (b *StructureMapBuilder) WithIdentifier(v dt.Identifier) *StructureMapBuild
 }
 
 // WithStatus sets the status field.
-func (b *StructureMapBuilder) WithStatus(v string) *StructureMapBuilder {
+func (b *StructureMapBuilder) WithStatus(v StructureMapStatus) *StructureMapBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -301,7 +301,7 @@ type StructureMapGroup struct {
 	// Rule Transform Rule from source to target.
 	Rule []StructureMapRule `json:"rule,omitempty"`
 	// TypeMode If this is the default rule set to apply for the source type or this combination of types.
-	TypeMode *string `json:"typeMode,omitempty"`
+	TypeMode *StructureMapGroupTypeMode `json:"typeMode,omitempty"`
 }
 
 // StructureMapInput A Map of relationships between 2 structures that can be used to transform data.
@@ -315,7 +315,7 @@ type StructureMapInput struct {
 	// Documentation Documentation for this instance of data.
 	Documentation *string `json:"documentation,omitempty"`
 	// Mode Mode for this instance of data.
-	Mode *string `json:"mode,omitempty"`
+	Mode *StructureMapInputMode `json:"mode,omitempty"`
 	// Name Name for this instance of data.
 	Name *dt.ID `json:"name,omitempty"`
 	// Type Type for this instance of data.
@@ -449,7 +449,7 @@ type StructureMapSource struct {
 	// Element Optional field for this source.
 	Element *string `json:"element,omitempty"`
 	// ListMode How to handle the list mode for this element.
-	ListMode *string `json:"listMode,omitempty"`
+	ListMode *StructureMapSourceListMode `json:"listMode,omitempty"`
 	// LogMessage A FHIRPath expression which specifies a message to put in the transform log when content matching the source rule is found.
 	LogMessage *string `json:"logMessage,omitempty"`
 	// Max Specified maximum cardinality for the element - a number or a "*". This is optional; if present, it acts an implicit check on the input content (* just serves as documentation; it's the default val...
@@ -1044,7 +1044,7 @@ type StructureMapStructure struct {
 	// Documentation Documentation that describes how the structure is used in the mapping.
 	Documentation *string `json:"documentation,omitempty"`
 	// Mode How the referenced structure is used in this mapping.
-	Mode *string `json:"mode,omitempty"`
+	Mode *StructureMapStructureMode `json:"mode,omitempty"`
 	// Url The canonical reference to the structure.
 	Url dt.Canonical `json:"url"`
 }
@@ -1060,17 +1060,17 @@ type StructureMapTarget struct {
 	// Context Type or variable this rule applies to.
 	Context *dt.ID `json:"context,omitempty"`
 	// ContextType How to interpret the context.
-	ContextType *string `json:"contextType,omitempty"`
+	ContextType *StructureMapTargetContextType `json:"contextType,omitempty"`
 	// Element Field to create in the context.
 	Element *string `json:"element,omitempty"`
 	// ListMode If field is a list, how to manage the list.
-	ListMode []string `json:"listMode,omitempty"`
+	ListMode []StructureMapTargetListMode `json:"listMode,omitempty"`
 	// ListRuleId Internal rule reference for shared list items.
 	ListRuleId *dt.ID `json:"listRuleId,omitempty"`
 	// Parameter Parameters to the transform.
 	Parameter []StructureMapParameter `json:"parameter,omitempty"`
 	// Transform How the data is copied / created.
-	Transform *string `json:"transform,omitempty"`
+	Transform *StructureMapTargetTransform `json:"transform,omitempty"`
 	// Variable Named context for field, if desired, and a field is specified.
 	Variable *dt.ID `json:"variable,omitempty"`
 }

@@ -85,8 +85,8 @@ func (r MedicationAdministration) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Effective != nil {
-		vData, err := json.Marshal(r.Effective)
+	if r.Medication != nil {
+		vData, err := json.Marshal(r.Medication)
 		if err != nil {
 			return nil, err
 		}
@@ -98,8 +98,8 @@ func (r MedicationAdministration) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Medication != nil {
-		vData, err := json.Marshal(r.Medication)
+	if r.Effective != nil {
+		vData, err := json.Marshal(r.Effective)
 		if err != nil {
 			return nil, err
 		}
@@ -123,19 +123,19 @@ func (r *MedicationAdministration) UnmarshalJSON(data []byte) error {
 	}
 	*r = MedicationAdministration(alias)
 	// Unmarshal polymorphic fields
-	var medicationVal MedicationAdministrationMedication
-	if err := medicationVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if medicationVal.CodeableConcept != nil || medicationVal.Reference != nil {
-		r.Medication = &medicationVal
-	}
 	var effectiveVal MedicationAdministrationEffective
 	if err := effectiveVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if effectiveVal.DateTime != nil || effectiveVal.Period != nil {
 		r.Effective = &effectiveVal
+	}
+	var medicationVal MedicationAdministrationMedication
+	if err := medicationVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if medicationVal.CodeableConcept != nil || medicationVal.Reference != nil {
+		r.Medication = &medicationVal
 	}
 	return nil
 }

@@ -35,7 +35,7 @@ type DocumentManifest struct {
 	// Identifier Other identifiers associated with the document manifest, including version independent  identifiers.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this document manifest.
-	Status *string `json:"status,omitempty"`
+	Status *DocumentManifestStatus `json:"status,omitempty"`
 	// Author Identifies who is the author of the manifest. Manifest author is not necessarly the author of the references included.
 	Author []dt.Reference `json:"author,omitempty"`
 	// Content The list of Resources that consist of the parts of this manifest.
@@ -141,7 +141,7 @@ func (b *DocumentManifestBuilder) WithIdentifier(v dt.Identifier) *DocumentManif
 }
 
 // WithStatus sets the status field.
-func (b *DocumentManifestBuilder) WithStatus(v string) *DocumentManifestBuilder {
+func (b *DocumentManifestBuilder) WithStatus(v DocumentManifestStatus) *DocumentManifestBuilder {
 	b.resource.Status = &v
 	return b
 }

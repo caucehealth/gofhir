@@ -35,7 +35,7 @@ type ImagingStudy struct {
 	// Identifier Identifiers for the ImagingStudy such as DICOM Study Instance UID, and Accession Number.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The current state of the ImagingStudy.
-	Status *string `json:"status,omitempty"`
+	Status *ImagingStudyStatus `json:"status,omitempty"`
 	// BasedOn A list of the diagnostic requests that resulted in this imaging study being performed.
 	BasedOn []dt.Reference `json:"basedOn,omitempty"`
 	// Description The Imaging Manager description of the study. Institution-generated description or classification of the Study (component) performed.
@@ -185,7 +185,7 @@ func (b *ImagingStudyBuilder) WithIdentifier(v dt.Identifier) *ImagingStudyBuild
 }
 
 // WithStatus sets the status field.
-func (b *ImagingStudyBuilder) WithStatus(v string) *ImagingStudyBuilder {
+func (b *ImagingStudyBuilder) WithStatus(v ImagingStudyStatus) *ImagingStudyBuilder {
 	b.resource.Status = &v
 	return b
 }

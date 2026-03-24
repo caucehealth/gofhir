@@ -34,7 +34,7 @@ type ResearchSubject struct {
 	// Identifier Identifiers assigned to this research subject for a study.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The current state of the subject.
-	Status *string `json:"status,omitempty"`
+	Status *ResearchSubjectStatus `json:"status,omitempty"`
 	// ActualArm The name of the arm in the study the subject actually followed as part of this study.
 	ActualArm *string `json:"actualArm,omitempty"`
 	// AssignedArm The name of the arm in the study the subject is expected to follow as part of this study.
@@ -132,7 +132,7 @@ func (b *ResearchSubjectBuilder) WithIdentifier(v dt.Identifier) *ResearchSubjec
 }
 
 // WithStatus sets the status field.
-func (b *ResearchSubjectBuilder) WithStatus(v string) *ResearchSubjectBuilder {
+func (b *ResearchSubjectBuilder) WithStatus(v ResearchSubjectStatus) *ResearchSubjectBuilder {
 	b.resource.Status = &v
 	return b
 }

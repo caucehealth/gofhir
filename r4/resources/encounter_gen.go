@@ -34,7 +34,7 @@ type Encounter struct {
 	// Identifier Identifier(s) by which this encounter is known.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status planned | arrived | triaged | in-progress | onleave | finished | cancelled +.
-	Status *string `json:"status,omitempty"`
+	Status *EncounterStatus `json:"status,omitempty"`
 	// Account The set of accounts that may be used for billing for this Encounter.
 	Account []dt.Reference `json:"account,omitempty"`
 	// Appointment The appointment that scheduled this encounter.
@@ -108,7 +108,7 @@ func NewEncounter() *EncounterBuilder {
 }
 
 // WithStatus sets the encounter status.
-func (b *EncounterBuilder) WithStatus(status string) *EncounterBuilder {
+func (b *EncounterBuilder) WithStatus(status EncounterStatus) *EncounterBuilder {
 	b.resource.Status = &status
 	return b
 }
@@ -372,7 +372,7 @@ type EncounterLocation struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The status of the participants' presence at the specified location during the period specified. If the participant is no longer at the location, then the period will have an end date/time.
-	Status *string `json:"status,omitempty"`
+	Status *EncounterLocationStatus `json:"status,omitempty"`
 	// Location The location where the encounter takes place.
 	Location dt.Reference `json:"location"`
 	// Period Time period during which the patient was present at the location.
@@ -406,7 +406,7 @@ type EncounterStatusHistory struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status planned | arrived | triaged | in-progress | onleave | finished | cancelled +.
-	Status *string `json:"status,omitempty"`
+	Status *EncounterStatusHistoryStatus `json:"status,omitempty"`
 	// Period The time that the episode was in the specified status.
 	Period dt.Period `json:"period"`
 }

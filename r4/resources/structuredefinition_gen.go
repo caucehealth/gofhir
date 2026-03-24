@@ -34,7 +34,7 @@ type StructureDefinition struct {
 	// Identifier A formal identifier that is used to identify this structure definition when it is represented in other formats, or referenced in a specification, model, design or an instance.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this structure definition. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *StructureDefinitionStatus `json:"status,omitempty"`
 	// Abstract Whether structure this definition describes is abstract or not  - that is, whether the structure is not intended to be instantiated. For Resources and Data types, abstract types will never be excha...
 	Abstract *bool `json:"abstract,omitempty"`
 	// BaseDefinition An absolute URI that is the base structure from which this type is derived, either by specialization or constraint.
@@ -50,7 +50,7 @@ type StructureDefinition struct {
 	// Date The date  (and optionally time) when the structure definition was published. The date must change when the business version changes and it must change if the status code changes. In addition, it sh...
 	Date *dt.DateTime `json:"date,omitempty"`
 	// Derivation How the type relates to the baseDefinition.
-	Derivation *string `json:"derivation,omitempty"`
+	Derivation *StructureDefinitionDerivation `json:"derivation,omitempty"`
 	// Description A free text natural language description of the structure definition from a consumer's perspective.
 	Description *dt.Markdown `json:"description,omitempty"`
 	// Differential A differential view is expressed relative to the base StructureDefinition - a statement of differences that it applies.
@@ -58,13 +58,13 @@ type StructureDefinition struct {
 	// Experimental A Boolean value to indicate that this structure definition is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
 	// FhirVersion The version of the FHIR specification on which this StructureDefinition is based - this is the formal version of the specification, without the revision number, e.g. [publication].[major].[minor], ...
-	FhirVersion *string `json:"fhirVersion,omitempty"`
+	FhirVersion *StructureDefinitionFhirVersion `json:"fhirVersion,omitempty"`
 	// Jurisdiction A legal or geographic region in which the structure definition is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Keyword A set of key words or terms from external terminologies that may be used to assist with indexing and searching of templates nby describing the use of this structure definition, or the content it de...
 	Keyword []dt.Coding `json:"keyword,omitempty"`
 	// Kind Defines the kind of structure that this definition is describing.
-	Kind *string `json:"kind,omitempty"`
+	Kind *StructureDefinitionKind `json:"kind,omitempty"`
 	// Mapping An external specification that the content is mapped to.
 	Mapping []StructureDefinitionMapping `json:"mapping,omitempty"`
 	// Name A natural language name identifying the structure definition. This name should be usable as an identifier for the module by machine processing applications such as code generation.
@@ -170,7 +170,7 @@ func (b *StructureDefinitionBuilder) WithIdentifier(v dt.Identifier) *StructureD
 }
 
 // WithStatus sets the status field.
-func (b *StructureDefinitionBuilder) WithStatus(v string) *StructureDefinitionBuilder {
+func (b *StructureDefinitionBuilder) WithStatus(v StructureDefinitionStatus) *StructureDefinitionBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -218,7 +218,7 @@ func (b *StructureDefinitionBuilder) WithDate(v dt.DateTime) *StructureDefinitio
 }
 
 // WithDerivation sets the derivation field.
-func (b *StructureDefinitionBuilder) WithDerivation(v string) *StructureDefinitionBuilder {
+func (b *StructureDefinitionBuilder) WithDerivation(v StructureDefinitionDerivation) *StructureDefinitionBuilder {
 	b.resource.Derivation = &v
 	return b
 }
@@ -242,7 +242,7 @@ func (b *StructureDefinitionBuilder) WithExperimental(v bool) *StructureDefiniti
 }
 
 // WithFhirVersion sets the fhirVersion field.
-func (b *StructureDefinitionBuilder) WithFhirVersion(v string) *StructureDefinitionBuilder {
+func (b *StructureDefinitionBuilder) WithFhirVersion(v StructureDefinitionFhirVersion) *StructureDefinitionBuilder {
 	b.resource.FhirVersion = &v
 	return b
 }
@@ -260,7 +260,7 @@ func (b *StructureDefinitionBuilder) WithKeyword(v dt.Coding) *StructureDefiniti
 }
 
 // WithKind sets the kind field.
-func (b *StructureDefinitionBuilder) WithKind(v string) *StructureDefinitionBuilder {
+func (b *StructureDefinitionBuilder) WithKind(v StructureDefinitionKind) *StructureDefinitionBuilder {
 	b.resource.Kind = &v
 	return b
 }
@@ -343,7 +343,7 @@ type StructureDefinitionContext struct {
 	// Expression An expression that defines where an extension can be used in resources.
 	Expression *string `json:"expression,omitempty"`
 	// Type Defines how to interpret the expression that defines what the context of the extension is.
-	Type *string `json:"type,omitempty"`
+	Type *StructureDefinitionContextType `json:"type,omitempty"`
 }
 
 // StructureDefinitionDifferential A definition of a FHIR structure. This resource is used to describe the underlying resources, data types defined in FHIR, and also for describing extensions and constraints on resources and data ty...

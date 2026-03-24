@@ -323,7 +323,7 @@ type HealthcareServiceAvailableTime struct {
 	// AvailableStartTime The opening time of day. Note: If the AllDay flag is set, then this time is ignored.
 	AvailableStartTime *dt.Time `json:"availableStartTime,omitempty"`
 	// DaysOfWeek Indicates which days of the week are available between the start and end Times.
-	DaysOfWeek []string `json:"daysOfWeek,omitempty"`
+	DaysOfWeek []HealthcareServiceAvailableTimeDaysOfWeek `json:"daysOfWeek,omitempty"`
 }
 
 // HealthcareServiceEligibility The details of a healthcare service available at a location.

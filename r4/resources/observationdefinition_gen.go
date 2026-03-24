@@ -48,7 +48,7 @@ type ObservationDefinition struct {
 	// NormalCodedValueSet The set of normal coded results for the observations conforming to this ObservationDefinition.
 	NormalCodedValueSet *dt.Reference `json:"normalCodedValueSet,omitempty"`
 	// PermittedDataType The data types allowed for the value element of the instance observations conforming to this ObservationDefinition.
-	PermittedDataType []string `json:"permittedDataType,omitempty"`
+	PermittedDataType []ObservationDefinitionPermittedDataType `json:"permittedDataType,omitempty"`
 	// PreferredReportName The preferred name to be used when reporting the results of observations conforming to this ObservationDefinition.
 	PreferredReportName *string `json:"preferredReportName,omitempty"`
 	// QualifiedInterval Multiple  ranges of results qualified by different contexts for ordinal or continuous observations conforming to this ObservationDefinition.
@@ -184,7 +184,7 @@ func (b *ObservationDefinitionBuilder) WithNormalCodedValueSet(v dt.Reference) *
 }
 
 // WithPermittedDataType adds an item to the permittedDataType field.
-func (b *ObservationDefinitionBuilder) WithPermittedDataType(v string) *ObservationDefinitionBuilder {
+func (b *ObservationDefinitionBuilder) WithPermittedDataType(v ObservationDefinitionPermittedDataType) *ObservationDefinitionBuilder {
 	b.resource.PermittedDataType = append(b.resource.PermittedDataType, v)
 	return b
 }
@@ -233,13 +233,13 @@ type ObservationDefinitionQualifiedInterval struct {
 	// AppliesTo Codes to indicate the target population this reference range applies to.
 	AppliesTo []dt.CodeableConcept `json:"appliesTo,omitempty"`
 	// Category The category of interval of values for continuous or ordinal observations conforming to this ObservationDefinition.
-	Category *string `json:"category,omitempty"`
+	Category *ObservationDefinitionQualifiedIntervalCategory `json:"category,omitempty"`
 	// Condition Text based condition for which the reference range is valid.
 	Condition *string `json:"condition,omitempty"`
 	// Context Codes to indicate the health context the range applies to. For example, the normal or therapeutic range.
 	Context *dt.CodeableConcept `json:"context,omitempty"`
 	// Gender Sex of the population the range applies to.
-	Gender *string `json:"gender,omitempty"`
+	Gender *AdministrativeGender `json:"gender,omitempty"`
 	// GestationalAge The gestational age to which this reference range is applicable, in the context of pregnancy.
 	GestationalAge *dt.Range `json:"gestationalAge,omitempty"`
 	// Range The low and high values determining the interval. There may be only one of the two.

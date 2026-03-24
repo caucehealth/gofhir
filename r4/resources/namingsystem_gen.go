@@ -33,7 +33,7 @@ type NamingSystem struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The status of this naming system. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *NamingSystemStatus `json:"status,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Date The date  (and optionally time) when the naming system was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should ch...
@@ -43,7 +43,7 @@ type NamingSystem struct {
 	// Jurisdiction A legal or geographic region in which the naming system is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Kind Indicates the purpose for the naming system - what kinds of things does it make unique?
-	Kind *string `json:"kind,omitempty"`
+	Kind *NamingSystemKind `json:"kind,omitempty"`
 	// Name A natural language name identifying the naming system. This name should be usable as an identifier for the module by machine processing applications such as code generation.
 	Name *string `json:"name,omitempty"`
 	// Publisher The name of the organization or individual that published the naming system.
@@ -137,7 +137,7 @@ func (b *NamingSystemBuilder) WithModifierExtension(v dt.Extension) *NamingSyste
 }
 
 // WithStatus sets the status field.
-func (b *NamingSystemBuilder) WithStatus(v string) *NamingSystemBuilder {
+func (b *NamingSystemBuilder) WithStatus(v NamingSystemStatus) *NamingSystemBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -167,7 +167,7 @@ func (b *NamingSystemBuilder) WithJurisdiction(v dt.CodeableConcept) *NamingSyst
 }
 
 // WithKind sets the kind field.
-func (b *NamingSystemBuilder) WithKind(v string) *NamingSystemBuilder {
+func (b *NamingSystemBuilder) WithKind(v NamingSystemKind) *NamingSystemBuilder {
 	b.resource.Kind = &v
 	return b
 }
@@ -243,7 +243,7 @@ type NamingSystemUniqueId struct {
 	// Preferred Indicates whether this identifier is the "preferred" identifier of this type.
 	Preferred *bool `json:"preferred,omitempty"`
 	// Type Identifies the unique identifier scheme used for this particular identifier.
-	Type *string `json:"type,omitempty"`
+	Type *NamingSystemUniqueIdType `json:"type,omitempty"`
 	// Value The string that should be sent over the wire to identify the code system or identifier system.
 	Value *string `json:"value,omitempty"`
 }

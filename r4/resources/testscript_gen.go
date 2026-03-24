@@ -34,7 +34,7 @@ type TestScript struct {
 	// Identifier A formal identifier that is used to identify this test script when it is represented in other formats, or referenced in a specification, model, design or an instance.
 	Identifier *dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this test script. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *TestScriptStatus `json:"status,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the test script and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the test script.
@@ -164,7 +164,7 @@ func (b *TestScriptBuilder) WithIdentifier(v dt.Identifier) *TestScriptBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *TestScriptBuilder) WithStatus(v string) *TestScriptBuilder {
+func (b *TestScriptBuilder) WithStatus(v TestScriptStatus) *TestScriptBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -367,7 +367,7 @@ type TestScriptAssert struct {
 	// Description The description would be used by test engines for tracking and reporting purposes.
 	Description *string `json:"description,omitempty"`
 	// Direction The direction to use for the assertion.
-	Direction *string `json:"direction,omitempty"`
+	Direction *TestScriptAssertDirection `json:"direction,omitempty"`
 	// Expression The FHIRPath expression to be evaluated against the request or response message contents - HTTP headers and payload.
 	Expression *string `json:"expression,omitempty"`
 	// HeaderField The HTTP header field name e.g. 'Location'.
@@ -379,17 +379,17 @@ type TestScriptAssert struct {
 	// NavigationLinks Whether or not the test execution performs validation on the bundle navigation links.
 	NavigationLinks *bool `json:"navigationLinks,omitempty"`
 	// Operator The operator type defines the conditional behavior of the assert. If not defined, the default is equals.
-	Operator *string `json:"operator,omitempty"`
+	Operator *TestScriptAssertOperator `json:"operator,omitempty"`
 	// Path The XPath or JSONPath expression to be evaluated against the fixture representing the response received from server.
 	Path *string `json:"path,omitempty"`
 	// RequestMethod The request method or HTTP operation code to compare against that used by the client system under test.
-	RequestMethod *string `json:"requestMethod,omitempty"`
+	RequestMethod *TestScriptAssertRequestMethod `json:"requestMethod,omitempty"`
 	// RequestURL The value to use in a comparison against the request URL path string.
 	RequestURL *string `json:"requestURL,omitempty"`
 	// Resource The type of the resource.  See http://build.fhir.org/resourcelist.html.
 	Resource *dt.Code `json:"resource,omitempty"`
 	// Response okay | created | noContent | notModified | bad | forbidden | notFound | methodNotAllowed | conflict | gone | preconditionFailed | unprocessable.
-	Response *string `json:"response,omitempty"`
+	Response *TestScriptAssertResponse `json:"response,omitempty"`
 	// ResponseCode The value of the HTTP response code to be tested.
 	ResponseCode *string `json:"responseCode,omitempty"`
 	// SourceId Fixture to evaluate the XPath/JSONPath expression or the headerField  against.
@@ -505,7 +505,7 @@ type TestScriptOperation struct {
 	// Label The label would be used for tracking/logging purposes by test engines.
 	Label *string `json:"label,omitempty"`
 	// Method The HTTP method the test engine MUST use for this operation regardless of any other operation details.
-	Method *string `json:"method,omitempty"`
+	Method *TestScriptOperationMethod `json:"method,omitempty"`
 	// Origin The server where the request message originates from.  Must be one of the server numbers listed in TestScript.origin section.
 	Origin *int32 `json:"origin,omitempty"`
 	// Params Path plus parameters after [type].  Used to set parts of the request URL explicitly.

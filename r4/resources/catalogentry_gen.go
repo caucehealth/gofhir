@@ -34,7 +34,7 @@ type CatalogEntry struct {
 	// Identifier Used in supporting different identifiers for the same product, e.g. manufacturer code and retailer code.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Used to support catalog exchange even for unsupported products, e.g. getting list of medications even if not prescribable.
-	Status *string `json:"status,omitempty"`
+	Status *CatalogEntryStatus `json:"status,omitempty"`
 	// AdditionalCharacteristic Used for examplefor Out of Formulary, or any specifics.
 	AdditionalCharacteristic []dt.CodeableConcept `json:"additionalCharacteristic,omitempty"`
 	// AdditionalClassification User for example for ATC classification, or.
@@ -142,7 +142,7 @@ func (b *CatalogEntryBuilder) WithIdentifier(v dt.Identifier) *CatalogEntryBuild
 }
 
 // WithStatus sets the status field.
-func (b *CatalogEntryBuilder) WithStatus(v string) *CatalogEntryBuilder {
+func (b *CatalogEntryBuilder) WithStatus(v CatalogEntryStatus) *CatalogEntryBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -231,5 +231,5 @@ type CatalogEntryRelatedEntry struct {
 	// Item The reference to the related item.
 	Item dt.Reference `json:"item"`
 	// Relationtype The type of relation to the related item: child, parent, packageContent, containerPackage, usedIn, uses, requires, etc.
-	Relationtype *string `json:"relationtype,omitempty"`
+	Relationtype *CatalogEntryRelatedEntryRelationtype `json:"relationtype,omitempty"`
 }

@@ -32,7 +32,7 @@ type GraphDefinition struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The status of this graph definition. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *GraphDefinitionStatus `json:"status,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Date The date  (and optionally time) when the graph definition was published. The date must change when the business version changes and it must change if the status code changes. In addition, it should...
@@ -140,7 +140,7 @@ func (b *GraphDefinitionBuilder) WithModifierExtension(v dt.Extension) *GraphDef
 }
 
 // WithStatus sets the status field.
-func (b *GraphDefinitionBuilder) WithStatus(v string) *GraphDefinitionBuilder {
+func (b *GraphDefinitionBuilder) WithStatus(v GraphDefinitionStatus) *GraphDefinitionBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -251,9 +251,9 @@ type GraphDefinitionCompartment struct {
 	// Expression Custom rule, as a FHIRPath expression.
 	Expression *string `json:"expression,omitempty"`
 	// Rule identical | matching | different | no-rule | custom.
-	Rule *string `json:"rule,omitempty"`
+	Rule *GraphDefinitionCompartmentRule `json:"rule,omitempty"`
 	// Use Defines how the compartment rule is used - whether it it is used to test whether resources are subject to the rule, or whether it is a rule that must be followed.
-	Use *string `json:"use,omitempty"`
+	Use *GraphDefinitionCompartmentUse `json:"use,omitempty"`
 }
 
 // GraphDefinitionLink A formal computable definition of a graph of resources - that is, a coherent set of resources that form a graph by following references. The Graph Definition resource defines a set and makes rules ...

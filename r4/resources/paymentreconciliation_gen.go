@@ -44,7 +44,7 @@ type PaymentReconciliation struct {
 	// FormCode A code for the form to be used for printing the content.
 	FormCode *dt.CodeableConcept `json:"formCode,omitempty"`
 	// Outcome The outcome of a request for a reconciliation.
-	Outcome *string `json:"outcome,omitempty"`
+	Outcome *PaymentReconciliationOutcome `json:"outcome,omitempty"`
 	// PaymentAmount Total payment amount as indicated on the financial instrument.
 	PaymentAmount dt.Money `json:"paymentAmount"`
 	// PaymentDate The date of payment as indicated on the financial instrument.
@@ -176,7 +176,7 @@ func (b *PaymentReconciliationBuilder) WithFormCode(v dt.CodeableConcept) *Payme
 }
 
 // WithOutcome sets the outcome field.
-func (b *PaymentReconciliationBuilder) WithOutcome(v string) *PaymentReconciliationBuilder {
+func (b *PaymentReconciliationBuilder) WithOutcome(v PaymentReconciliationOutcome) *PaymentReconciliationBuilder {
 	b.resource.Outcome = &v
 	return b
 }
@@ -277,5 +277,5 @@ type PaymentReconciliationProcessNote struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Type The business purpose of the note text.
-	Type *string `json:"type,omitempty"`
+	Type *PaymentReconciliationProcessNoteType `json:"type,omitempty"`
 }

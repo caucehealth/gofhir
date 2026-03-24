@@ -282,7 +282,7 @@ func generateResource(res *spec.ResourceDef, fhirSpec *spec.FHIRSpec) error {
 					needsFmt = true
 					break
 				}
-				goType := resolveGoType(f, fhirSpec, false)
+				goType := resolveGoType(f, fhirSpec, false, "")
 				if isStringLikeType(goType) || isNumericType(goType) {
 					needsFmt = true
 					break
@@ -331,7 +331,7 @@ func generateResource(res *spec.ResourceDef, fhirSpec *spec.FHIRSpec) error {
 			}
 			continue
 		}
-		writeStructField(&buf, f, fhirSpec, false)
+		writeStructField(&buf, f, fhirSpec, false, res.Name)
 	}
 	buf.WriteString("}\n\n")
 
@@ -371,7 +371,7 @@ func generateResource(res *spec.ResourceDef, fhirSpec *spec.FHIRSpec) error {
 				}
 				continue
 			}
-			writeStructField(&buf, f, fhirSpec, false)
+			writeStructField(&buf, f, fhirSpec, false, goName)
 		}
 		buf.WriteString("}\n\n")
 
@@ -557,7 +557,7 @@ func writeValueXUnion(buf *bytes.Buffer, typeName string, fields []*spec.FieldDe
 	fmt.Fprintf(buf, "// %s represents a polymorphic choice type in FHIR.\n", typeName)
 	fmt.Fprintf(buf, "type %s struct {\n", typeName)
 	for _, f := range fields {
-		goType := resolveGoType(f, fhirSpec, false)
+		goType := resolveGoType(f, fhirSpec, false, "")
 		// Make pointer for union fields
 		if !strings.HasPrefix(goType, "*") && !strings.HasPrefix(goType, "[]") {
 			goType = "*" + goType
@@ -590,7 +590,7 @@ func writeValueXUnion(buf *bytes.Buffer, typeName string, fields []*spec.FieldDe
 	buf.WriteString("\t}\n")
 	for _, f := range fields {
 		fieldName := getValueXFieldName(f.JSONName)
-		goType := resolveGoType(f, fhirSpec, false)
+		goType := resolveGoType(f, fhirSpec, false, "")
 		isSlice := strings.HasPrefix(goType, "[]")
 		if strings.HasPrefix(goType, "*") {
 			goType = goType[1:]
@@ -630,8 +630,8 @@ func getValueXFieldName(jsonName string) string {
 	return exportName(jsonName)
 }
 
-func writeStructField(buf *bytes.Buffer, f *spec.FieldDef, fhirSpec *spec.FHIRSpec, isDatatypes bool) {
-	goType := resolveGoType(f, fhirSpec, isDatatypes)
+func writeStructField(buf *bytes.Buffer, f *spec.FieldDef, fhirSpec *spec.FHIRSpec, isDatatypes bool, parentName string) {
+	goType := resolveGoType(f, fhirSpec, isDatatypes, parentName)
 	jsonTag := f.JSONName
 
 	if f.IsArray {
@@ -651,12 +651,16 @@ func writeStructField(buf *bytes.Buffer, f *spec.FieldDef, fhirSpec *spec.FHIRSp
 	}
 }
 
-func resolveGoType(f *spec.FieldDef, fhirSpec *spec.FHIRSpec, isDatatypes bool) string {
+func resolveGoType(f *spec.FieldDef, fhirSpec *spec.FHIRSpec, isDatatypes bool, parentName string) string {
 	var baseType string
 
 	if len(f.Enum) > 0 {
-		// Enums are typed strings, handled separately
-		baseType = "string"
+		if parentName != "" {
+			// Use the enum type name in the resources package
+			baseType = deriveEnumTypeName(parentName, f)
+		} else {
+			baseType = "string"
+		}
 	} else if f.IsRef {
 		baseType = resolveRefType(f.RefTarget, fhirSpec, isDatatypes)
 	} else if goType, ok := primitiveGoType[f.FHIRType]; ok {
@@ -864,7 +868,7 @@ func writeBuilder(buf *bytes.Buffer, res *spec.ResourceDef, fhirSpec *spec.FHIRS
 		if convenienceFields[methodName] {
 			continue
 		}
-		writeBuilderSetter(buf, builderName, f, fhirSpec)
+		writeBuilderSetter(buf, builderName, f, fhirSpec, res.Name)
 	}
 
 	// Build method
@@ -888,7 +892,7 @@ func writeBuilder(buf *bytes.Buffer, res *spec.ResourceDef, fhirSpec *spec.FHIRS
 			checks = append(checks, requiredCheck{goFieldName, f.JSONName,
 				fmt.Sprintf("len(b.resource.%s) == 0", goFieldName)})
 		} else {
-			goType := resolveGoType(f, fhirSpec, false)
+			goType := resolveGoType(f, fhirSpec, false, "")
 			if isStringLikeType(goType) {
 				checks = append(checks, requiredCheck{goFieldName, f.JSONName,
 					fmt.Sprintf("b.resource.%s == \"\"", goFieldName)})
@@ -994,8 +998,7 @@ func (b *%s) WithBirthDate(date string) *%s {
 
 // WithGender sets the patient's administrative gender.
 func (b *%s) WithGender(gender AdministrativeGender) *%s {
-	g := string(gender)
-	b.resource.Gender = &g
+	b.resource.Gender = &gender
 	return b
 }
 
@@ -1004,7 +1007,7 @@ func (b *%s) WithGender(gender AdministrativeGender) *%s {
 
 func observationConvenienceMethods(builder string) string {
 	return fmt.Sprintf(`// WithStatus sets the observation status.
-func (b *%s) WithStatus(status string) *%s {
+func (b *%s) WithStatus(status ObservationStatus) *%s {
 	b.resource.Status = &status
 	return b
 }
@@ -1034,7 +1037,7 @@ func (b *%s) WithSubject(reference string) *%s {
 
 func encounterConvenienceMethods(builder string) string {
 	return fmt.Sprintf(`// WithStatus sets the encounter status.
-func (b *%s) WithStatus(status string) *%s {
+func (b *%s) WithStatus(status EncounterStatus) *%s {
 	b.resource.Status = &status
 	return b
 }
@@ -1099,7 +1102,7 @@ func (b *%s) WithSubject(reference string) *%s {
 
 func diagnosticReportConvenienceMethods(builder string) string {
 	return fmt.Sprintf(`// WithStatus sets the diagnostic report status.
-func (b *%s) WithStatus(status string) *%s {
+func (b *%s) WithStatus(status DiagnosticReportStatus) *%s {
 	b.resource.Status = &status
 	return b
 }
@@ -1172,7 +1175,7 @@ func writeValueXBuilderMethod(buf *bytes.Buffer, builderName, resName, prefix st
 	fieldName := exportName(prefix)
 
 	for _, f := range fields {
-		goType := resolveGoType(f, fhirSpec, false)
+		goType := resolveGoType(f, fhirSpec, false, "")
 		isSlice := strings.HasPrefix(goType, "[]")
 		if strings.HasPrefix(goType, "*") {
 			goType = goType[1:]
@@ -1199,8 +1202,8 @@ func writeValueXBuilderMethod(buf *bytes.Buffer, builderName, resName, prefix st
 	}
 }
 
-func writeBuilderSetter(buf *bytes.Buffer, builderName string, f *spec.FieldDef, fhirSpec *spec.FHIRSpec) {
-	goType := resolveGoType(f, fhirSpec, false)
+func writeBuilderSetter(buf *bytes.Buffer, builderName string, f *spec.FieldDef, fhirSpec *spec.FHIRSpec, parentName string) {
+	goType := resolveGoType(f, fhirSpec, false, parentName)
 	goFieldName := exportName(f.JSONName)
 	methodName := "With" + goFieldName
 
@@ -1240,7 +1243,7 @@ func writeComplexType(buf *bytes.Buffer, ct *spec.ComplexTypeDef, fhirSpec *spec
 	fmt.Fprintf(buf, "// %s %s\n", goName, desc)
 	fmt.Fprintf(buf, "type %s struct {\n", goName)
 	for _, f := range ct.Fields {
-		writeStructField(buf, f, fhirSpec, isDatatypes)
+		writeStructField(buf, f, fhirSpec, isDatatypes, "")
 	}
 	buf.WriteString("}\n\n")
 }

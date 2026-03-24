@@ -35,7 +35,7 @@ type DocumentReference struct {
 	// Identifier Other identifiers associated with the document, including version independent identifiers.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this document reference.
-	Status *string `json:"status,omitempty"`
+	Status *DocumentReferenceStatus `json:"status,omitempty"`
 	// Authenticator Which person or organization authenticates that this document is valid.
 	Authenticator *dt.Reference `json:"authenticator,omitempty"`
 	// Author Identifies who is responsible for adding the information to the document.
@@ -149,7 +149,7 @@ func (b *DocumentReferenceBuilder) WithIdentifier(v dt.Identifier) *DocumentRefe
 }
 
 // WithStatus sets the status field.
-func (b *DocumentReferenceBuilder) WithStatus(v string) *DocumentReferenceBuilder {
+func (b *DocumentReferenceBuilder) WithStatus(v DocumentReferenceStatus) *DocumentReferenceBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -299,7 +299,7 @@ type DocumentReferenceRelatesTo struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code The type of relationship that this document has with anther document.
-	Code *string `json:"code,omitempty"`
+	Code *DocumentReferenceRelatesToCode `json:"code,omitempty"`
 	// Target The target document of this relationship.
 	Target dt.Reference `json:"target"`
 }

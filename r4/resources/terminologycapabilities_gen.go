@@ -32,11 +32,11 @@ type TerminologyCapabilities struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The status of this terminology capabilities. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *TerminologyCapabilitiesStatus `json:"status,omitempty"`
 	// Closure Whether the $closure operation is supported.
 	Closure *TerminologyCapabilitiesClosure `json:"closure,omitempty"`
 	// CodeSearch The degree to which the server supports the code search parameter on ValueSet, if it is supported.
-	CodeSearch *string `json:"codeSearch,omitempty"`
+	CodeSearch *TerminologyCapabilitiesCodeSearch `json:"codeSearch,omitempty"`
 	// CodeSystem Identifies a code system that is supported by the server. If there is a no code system URL, then this declares the general assumptions a client can make about support for any CodeSystem resource.
 	CodeSystem []TerminologyCapabilitiesCodeSystem `json:"codeSystem,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
@@ -158,7 +158,7 @@ func (b *TerminologyCapabilitiesBuilder) WithModifierExtension(v dt.Extension) *
 }
 
 // WithStatus sets the status field.
-func (b *TerminologyCapabilitiesBuilder) WithStatus(v string) *TerminologyCapabilitiesBuilder {
+func (b *TerminologyCapabilitiesBuilder) WithStatus(v TerminologyCapabilitiesStatus) *TerminologyCapabilitiesBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -170,7 +170,7 @@ func (b *TerminologyCapabilitiesBuilder) WithClosure(v TerminologyCapabilitiesCl
 }
 
 // WithCodeSearch sets the codeSearch field.
-func (b *TerminologyCapabilitiesBuilder) WithCodeSearch(v string) *TerminologyCapabilitiesBuilder {
+func (b *TerminologyCapabilitiesBuilder) WithCodeSearch(v TerminologyCapabilitiesCodeSearch) *TerminologyCapabilitiesBuilder {
 	b.resource.CodeSearch = &v
 	return b
 }

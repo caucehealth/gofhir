@@ -35,7 +35,7 @@ type PlanDefinition struct {
 	// Identifier A formal identifier that is used to identify this plan definition when it is represented in other formats, or referenced in a specification, model, design or an instance.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this plan definition. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *PlanDefinitionStatus `json:"status,omitempty"`
 	// Action An action or group of actions to be taken as part of the plan.
 	Action []PlanDefinitionAction `json:"action,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
@@ -181,7 +181,7 @@ func (b *PlanDefinitionBuilder) WithIdentifier(v dt.Identifier) *PlanDefinitionB
 }
 
 // WithStatus sets the status field.
-func (b *PlanDefinitionBuilder) WithStatus(v string) *PlanDefinitionBuilder {
+func (b *PlanDefinitionBuilder) WithStatus(v PlanDefinitionStatus) *PlanDefinitionBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -384,7 +384,7 @@ type PlanDefinitionAction struct {
 	// Action Sub actions that are contained within the action. The behavior of this action determines the functionality of the sub-actions. For example, a selection behavior of at-most-one indicates that of the...
 	Action []PlanDefinitionAction `json:"action,omitempty"`
 	// CardinalityBehavior Defines whether the action can be selected multiple times.
-	CardinalityBehavior *string `json:"cardinalityBehavior,omitempty"`
+	CardinalityBehavior *PlanDefinitionActionCardinalityBehavior `json:"cardinalityBehavior,omitempty"`
 	// Code A code that provides meaning for the action or action group. For example, a section may have a LOINC code for the section of a documentation template.
 	Code []dt.CodeableConcept `json:"code,omitempty"`
 	// Condition An expression that describes applicability criteria or start/stop conditions for the action.
@@ -400,7 +400,7 @@ type PlanDefinitionAction struct {
 	// GoalId Identifies goals that this action supports. The reference must be to a goal element defined within this plan definition.
 	GoalId []dt.ID `json:"goalId,omitempty"`
 	// GroupingBehavior Defines the grouping behavior for the action and its children.
-	GroupingBehavior *string `json:"groupingBehavior,omitempty"`
+	GroupingBehavior *PlanDefinitionActionGroupingBehavior `json:"groupingBehavior,omitempty"`
 	// Input Defines input data requirements for the action.
 	Input []dt.DataRequirement `json:"input,omitempty"`
 	// Output Defines the outputs of the action, if any.
@@ -408,7 +408,7 @@ type PlanDefinitionAction struct {
 	// Participant Indicates who should participate in performing the action described.
 	Participant []PlanDefinitionParticipant `json:"participant,omitempty"`
 	// PrecheckBehavior Defines whether the action should usually be preselected.
-	PrecheckBehavior *string `json:"precheckBehavior,omitempty"`
+	PrecheckBehavior *PlanDefinitionActionPrecheckBehavior `json:"precheckBehavior,omitempty"`
 	// Prefix A user-visible prefix for the action.
 	Prefix *string `json:"prefix,omitempty"`
 	// Priority Indicates how quickly the action should be addressed with respect to other actions.
@@ -418,9 +418,9 @@ type PlanDefinitionAction struct {
 	// RelatedAction A relationship to another action such as "before" or "30-60 minutes after start of".
 	RelatedAction []PlanDefinitionRelatedAction `json:"relatedAction,omitempty"`
 	// RequiredBehavior Defines the required behavior for the action.
-	RequiredBehavior *string `json:"requiredBehavior,omitempty"`
+	RequiredBehavior *PlanDefinitionActionRequiredBehavior `json:"requiredBehavior,omitempty"`
 	// SelectionBehavior Defines the selection behavior for the action and its children.
-	SelectionBehavior *string `json:"selectionBehavior,omitempty"`
+	SelectionBehavior *PlanDefinitionActionSelectionBehavior `json:"selectionBehavior,omitempty"`
 	// SubjectCodeableConcept A code or group definition that describes the intended subject of the action and its children, if any.
 	SubjectCodeableConcept *dt.CodeableConcept `json:"subjectCodeableConcept,omitempty"`
 	// SubjectReference A code or group definition that describes the intended subject of the action and its children, if any.
@@ -576,7 +576,7 @@ type PlanDefinitionCondition struct {
 	// Expression An expression that returns true or false, indicating whether the condition is satisfied.
 	Expression *dt.Expression `json:"expression,omitempty"`
 	// Kind The kind of condition.
-	Kind *string `json:"kind,omitempty"`
+	Kind *PlanDefinitionConditionKind `json:"kind,omitempty"`
 }
 
 // PlanDefinitionDynamicValue This resource allows for the definition of various types of plans as a sharable, consumable, and executable artifact. The resource is general enough to support the description of a broad range of c...
@@ -628,7 +628,7 @@ type PlanDefinitionParticipant struct {
 	// Role The role the participant should play in performing the described action.
 	Role *dt.CodeableConcept `json:"role,omitempty"`
 	// Type The type of participant in the action.
-	Type *string `json:"type,omitempty"`
+	Type *PlanDefinitionParticipantType `json:"type,omitempty"`
 }
 
 // PlanDefinitionRelatedAction This resource allows for the definition of various types of plans as a sharable, consumable, and executable artifact. The resource is general enough to support the description of a broad range of c...
@@ -646,7 +646,7 @@ type PlanDefinitionRelatedAction struct {
 	// OffsetRange A duration or range of durations to apply to the relationship. For example, 30-60 minutes before.
 	OffsetRange *dt.Range `json:"offsetRange,omitempty"`
 	// Relationship The relationship of this action to the related action.
-	Relationship *string `json:"relationship,omitempty"`
+	Relationship *PlanDefinitionRelatedActionRelationship `json:"relationship,omitempty"`
 }
 
 // PlanDefinitionTarget This resource allows for the definition of various types of plans as a sharable, consumable, and executable artifact. The resource is general enough to support the description of a broad range of c...

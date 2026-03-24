@@ -34,7 +34,7 @@ type AdverseEvent struct {
 	// Identifier Business identifiers assigned to this adverse event by the performer or other systems which remain constant as the resource is updated and propagates from server to server.
 	Identifier *dt.Identifier `json:"identifier,omitempty"`
 	// Actuality Whether the event actually happened, or just had the potential to. Note that this is independent of whether anyone was affected or harmed or how severely.
-	Actuality *string `json:"actuality,omitempty"`
+	Actuality *AdverseEventActuality `json:"actuality,omitempty"`
 	// Category The overall type of event, intended for search and filtering purposes.
 	Category []dt.CodeableConcept `json:"category,omitempty"`
 	// Contributor Parties that may or should contribute or have contributed information to the adverse event, which can consist of one or more activities.  Such information includes information leading to the decisi...
@@ -156,7 +156,7 @@ func (b *AdverseEventBuilder) WithIdentifier(v dt.Identifier) *AdverseEventBuild
 }
 
 // WithActuality sets the actuality field.
-func (b *AdverseEventBuilder) WithActuality(v string) *AdverseEventBuilder {
+func (b *AdverseEventBuilder) WithActuality(v AdverseEventActuality) *AdverseEventBuilder {
 	b.resource.Actuality = &v
 	return b
 }

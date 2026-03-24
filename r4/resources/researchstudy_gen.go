@@ -34,7 +34,7 @@ type ResearchStudy struct {
 	// Identifier Identifiers assigned to this research study by the sponsor or other systems.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The current state of the study.
-	Status *string `json:"status,omitempty"`
+	Status *ResearchStudyStatus `json:"status,omitempty"`
 	// Arm Describes an expected sequence of events for one of the participants of a study.  E.g. Exposure to drug A, wash-out, exposure to drug B, wash-out, follow-up.
 	Arm []ResearchStudyArm `json:"arm,omitempty"`
 	// Category Codes categorizing the type of study such as investigational vs. observational, type of blinding, type of randomization, safety vs. efficacy, etc.
@@ -164,7 +164,7 @@ func (b *ResearchStudyBuilder) WithIdentifier(v dt.Identifier) *ResearchStudyBui
 }
 
 // WithStatus sets the status field.
-func (b *ResearchStudyBuilder) WithStatus(v string) *ResearchStudyBuilder {
+func (b *ResearchStudyBuilder) WithStatus(v ResearchStudyStatus) *ResearchStudyBuilder {
 	b.resource.Status = &v
 	return b
 }

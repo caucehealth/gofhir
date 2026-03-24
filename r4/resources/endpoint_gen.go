@@ -35,7 +35,7 @@ type Endpoint struct {
 	// Identifier Identifier for the organization that is used to identify the endpoint across multiple disparate systems.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status active | suspended | error | off | test.
-	Status *string `json:"status,omitempty"`
+	Status *EndpointStatus `json:"status,omitempty"`
 	// Address The uri that describes the actual end-point to connect to.
 	Address *dt.URL `json:"address,omitempty"`
 	// ConnectionType A coded value that represents the technical details of the usage of this endpoint, such as what WSDLs should be used in what way. (e.g. XDS.b/DICOM/cds-hook).
@@ -139,7 +139,7 @@ func (b *EndpointBuilder) WithIdentifier(v dt.Identifier) *EndpointBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *EndpointBuilder) WithStatus(v string) *EndpointBuilder {
+func (b *EndpointBuilder) WithStatus(v EndpointStatus) *EndpointBuilder {
 	b.resource.Status = &v
 	return b
 }

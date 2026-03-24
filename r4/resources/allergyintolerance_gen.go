@@ -37,13 +37,13 @@ type AllergyIntolerance struct {
 	// Asserter The source of the information about the allergy that is recorded.
 	Asserter *dt.Reference `json:"asserter,omitempty"`
 	// Category Category of the identified substance.
-	Category []string `json:"category,omitempty"`
+	Category []AllergyIntoleranceCategory `json:"category,omitempty"`
 	// ClinicalStatus The clinical status of the allergy or intolerance.
 	ClinicalStatus *dt.CodeableConcept `json:"clinicalStatus,omitempty"`
 	// Code Code for an allergy or intolerance statement (either a positive or a negated/excluded statement).  This may be a code for a substance or pharmaceutical product that is considered to be responsible ...
 	Code *dt.CodeableConcept `json:"code,omitempty"`
 	// Criticality Estimate of the potential clinical harm, or seriousness, of the reaction to the identified substance.
-	Criticality *string `json:"criticality,omitempty"`
+	Criticality *AllergyIntoleranceCriticality `json:"criticality,omitempty"`
 	// Encounter The encounter when the allergy or intolerance was asserted.
 	Encounter *dt.Reference `json:"encounter,omitempty"`
 	// LastOccurrence Represents the date and/or time of the last known occurrence of a reaction event.
@@ -61,7 +61,7 @@ type AllergyIntolerance struct {
 	// Recorder Individual who recorded the record and takes responsibility for its content.
 	Recorder *dt.Reference `json:"recorder,omitempty"`
 	// Type Identification of the underlying physiological mechanism for the reaction risk.
-	Type *string `json:"type,omitempty"`
+	Type *AllergyIntoleranceType `json:"type,omitempty"`
 	// VerificationStatus Assertion about certainty associated with the propensity, or potential risk, of a reaction to the identified substance (including pharmaceutical product).
 	VerificationStatus *dt.CodeableConcept `json:"verificationStatus,omitempty"`
 }
@@ -185,7 +185,7 @@ func (b *AllergyIntoleranceBuilder) WithAsserter(v dt.Reference) *AllergyIntoler
 }
 
 // WithCategory adds an item to the category field.
-func (b *AllergyIntoleranceBuilder) WithCategory(v string) *AllergyIntoleranceBuilder {
+func (b *AllergyIntoleranceBuilder) WithCategory(v AllergyIntoleranceCategory) *AllergyIntoleranceBuilder {
 	b.resource.Category = append(b.resource.Category, v)
 	return b
 }
@@ -203,7 +203,7 @@ func (b *AllergyIntoleranceBuilder) WithCode(v dt.CodeableConcept) *AllergyIntol
 }
 
 // WithCriticality sets the criticality field.
-func (b *AllergyIntoleranceBuilder) WithCriticality(v string) *AllergyIntoleranceBuilder {
+func (b *AllergyIntoleranceBuilder) WithCriticality(v AllergyIntoleranceCriticality) *AllergyIntoleranceBuilder {
 	b.resource.Criticality = &v
 	return b
 }
@@ -296,7 +296,7 @@ func (b *AllergyIntoleranceBuilder) WithRecorder(v dt.Reference) *AllergyIntoler
 }
 
 // WithType sets the type field.
-func (b *AllergyIntoleranceBuilder) WithType(v string) *AllergyIntoleranceBuilder {
+func (b *AllergyIntoleranceBuilder) WithType(v AllergyIntoleranceType) *AllergyIntoleranceBuilder {
 	b.resource.Type = &v
 	return b
 }
@@ -333,7 +333,7 @@ type AllergyIntoleranceReaction struct {
 	// Onset Record of the date and/or time of the onset of the Reaction.
 	Onset *dt.DateTime `json:"onset,omitempty"`
 	// Severity Clinical assessment of the severity of the reaction event as a whole, potentially considering multiple different manifestations.
-	Severity *string `json:"severity,omitempty"`
+	Severity *AllergyIntoleranceReactionSeverity `json:"severity,omitempty"`
 	// Substance Identification of the specific substance (or pharmaceutical product) considered to be responsible for the Adverse Reaction event. Note: the substance for a specific reaction may be different from t...
 	Substance *dt.CodeableConcept `json:"substance,omitempty"`
 }

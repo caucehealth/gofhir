@@ -35,7 +35,7 @@ type EvidenceVariable struct {
 	// Identifier A formal identifier that is used to identify this evidence variable when it is represented in other formats, or referenced in a specification, model, design or an instance.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this evidence variable. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *EvidenceVariableStatus `json:"status,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
 	// Author An individiual or organization primarily involved in the creation and maintenance of the content.
@@ -79,7 +79,7 @@ type EvidenceVariable struct {
 	// Topic Descriptive topics related to the content of the EvidenceVariable. Topics provide a high-level categorization grouping types of EvidenceVariables that can be useful for filtering and searching.
 	Topic []dt.CodeableConcept `json:"topic,omitempty"`
 	// Type The type of evidence element, a population, an exposure, or an outcome.
-	Type *string `json:"type,omitempty"`
+	Type *EvidenceVariableType `json:"type,omitempty"`
 	// Url An absolute URI that is used to identify this evidence variable when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally...
 	Url *dt.URI `json:"url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
@@ -171,7 +171,7 @@ func (b *EvidenceVariableBuilder) WithIdentifier(v dt.Identifier) *EvidenceVaria
 }
 
 // WithStatus sets the status field.
-func (b *EvidenceVariableBuilder) WithStatus(v string) *EvidenceVariableBuilder {
+func (b *EvidenceVariableBuilder) WithStatus(v EvidenceVariableStatus) *EvidenceVariableBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -303,7 +303,7 @@ func (b *EvidenceVariableBuilder) WithTopic(v dt.CodeableConcept) *EvidenceVaria
 }
 
 // WithType sets the type field.
-func (b *EvidenceVariableBuilder) WithType(v string) *EvidenceVariableBuilder {
+func (b *EvidenceVariableBuilder) WithType(v EvidenceVariableType) *EvidenceVariableBuilder {
 	b.resource.Type = &v
 	return b
 }
@@ -355,7 +355,7 @@ type EvidenceVariableCharacteristic struct {
 	// Exclude When true, members with this characteristic are excluded from the element.
 	Exclude *bool `json:"exclude,omitempty"`
 	// GroupMeasure Indicates how elements are aggregated within the study effective period.
-	GroupMeasure *string `json:"groupMeasure,omitempty"`
+	GroupMeasure *EvidenceVariableCharacteristicGroupMeasure `json:"groupMeasure,omitempty"`
 	// ParticipantEffectiveDateTime Indicates what effective period the study covers.
 	ParticipantEffectiveDateTime *string `json:"participantEffectiveDateTime,omitempty"`
 	// ParticipantEffectiveDuration Indicates what effective period the study covers.

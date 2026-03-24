@@ -49,13 +49,13 @@ type CoverageEligibilityResponse struct {
 	// Insurer The Insurer who issued the coverage in question and is the author of the response.
 	Insurer dt.Reference `json:"insurer"`
 	// Outcome The outcome of the request processing.
-	Outcome *string `json:"outcome,omitempty"`
+	Outcome *CoverageEligibilityResponseOutcome `json:"outcome,omitempty"`
 	// Patient The party who is the beneficiary of the supplied coverage and for whom eligibility is sought.
 	Patient dt.Reference `json:"patient"`
 	// PreAuthRef A reference from the Insurer to which these services pertain to be used on further communication and as proof that the request occurred.
 	PreAuthRef *string `json:"preAuthRef,omitempty"`
 	// Purpose Code to specify whether requesting: prior authorization requirements for some service categories or billing codes; benefits for coverages specified or discovered; discovery and return of coverages ...
-	Purpose []string `json:"purpose,omitempty"`
+	Purpose []CoverageEligibilityResponsePurpose `json:"purpose,omitempty"`
 	// Request Reference to the original request resource.
 	Request dt.Reference `json:"request"`
 	// Requestor The provider which is responsible for the request.
@@ -219,7 +219,7 @@ func (b *CoverageEligibilityResponseBuilder) WithInsurer(v dt.Reference) *Covera
 }
 
 // WithOutcome sets the outcome field.
-func (b *CoverageEligibilityResponseBuilder) WithOutcome(v string) *CoverageEligibilityResponseBuilder {
+func (b *CoverageEligibilityResponseBuilder) WithOutcome(v CoverageEligibilityResponseOutcome) *CoverageEligibilityResponseBuilder {
 	b.resource.Outcome = &v
 	return b
 }
@@ -237,7 +237,7 @@ func (b *CoverageEligibilityResponseBuilder) WithPreAuthRef(v string) *CoverageE
 }
 
 // WithPurpose adds an item to the purpose field.
-func (b *CoverageEligibilityResponseBuilder) WithPurpose(v string) *CoverageEligibilityResponseBuilder {
+func (b *CoverageEligibilityResponseBuilder) WithPurpose(v CoverageEligibilityResponsePurpose) *CoverageEligibilityResponseBuilder {
 	b.resource.Purpose = append(b.resource.Purpose, v)
 	return b
 }

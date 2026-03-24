@@ -34,7 +34,7 @@ type ChargeItemDefinition struct {
 	// Identifier A formal identifier that is used to identify this charge item definition when it is represented in other formats, or referenced in a specification, model, design or an instance.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The current state of the ChargeItemDefinition.
-	Status *string `json:"status,omitempty"`
+	Status *ChargeItemDefinitionStatus `json:"status,omitempty"`
 	// Applicability Expressions that describe applicability criteria for the billing code.
 	Applicability []ChargeItemDefinitionApplicability `json:"applicability,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
@@ -162,7 +162,7 @@ func (b *ChargeItemDefinitionBuilder) WithIdentifier(v dt.Identifier) *ChargeIte
 }
 
 // WithStatus sets the status field.
-func (b *ChargeItemDefinitionBuilder) WithStatus(v string) *ChargeItemDefinitionBuilder {
+func (b *ChargeItemDefinitionBuilder) WithStatus(v ChargeItemDefinitionStatus) *ChargeItemDefinitionBuilder {
 	b.resource.Status = &v
 	return b
 }

@@ -42,7 +42,7 @@ type Practitioner struct {
 	// Communication A language the practitioner can use in patient communication.
 	Communication []dt.CodeableConcept `json:"communication,omitempty"`
 	// Gender Administrative Gender - the gender that the person is considered to have for administration and record keeping purposes.
-	Gender *string `json:"gender,omitempty"`
+	Gender *AdministrativeGender `json:"gender,omitempty"`
 	// Name The name(s) associated with the practitioner.
 	Name []dt.HumanName `json:"name,omitempty"`
 	// Photo Image of the person.
@@ -170,7 +170,7 @@ func (b *PractitionerBuilder) WithCommunication(v dt.CodeableConcept) *Practitio
 }
 
 // WithGender sets the gender field.
-func (b *PractitionerBuilder) WithGender(v string) *PractitionerBuilder {
+func (b *PractitionerBuilder) WithGender(v AdministrativeGender) *PractitionerBuilder {
 	b.resource.Gender = &v
 	return b
 }

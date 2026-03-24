@@ -35,7 +35,7 @@ type SupplyDelivery struct {
 	// Identifier Identifier for the supply delivery event that is used to identify it across multiple disparate systems.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status A code specifying the state of the dispense event.
-	Status *string `json:"status,omitempty"`
+	Status *SupplyDeliveryStatus `json:"status,omitempty"`
 	// BasedOn A plan, proposal or order that is fulfilled in whole or in part by this event.
 	BasedOn []dt.Reference `json:"basedOn,omitempty"`
 	// Destination Identification of the facility/location where the Supply was shipped to, as part of the dispense event.
@@ -169,7 +169,7 @@ func (b *SupplyDeliveryBuilder) WithIdentifier(v dt.Identifier) *SupplyDeliveryB
 }
 
 // WithStatus sets the status field.
-func (b *SupplyDeliveryBuilder) WithStatus(v string) *SupplyDeliveryBuilder {
+func (b *SupplyDeliveryBuilder) WithStatus(v SupplyDeliveryStatus) *SupplyDeliveryBuilder {
 	b.resource.Status = &v
 	return b
 }

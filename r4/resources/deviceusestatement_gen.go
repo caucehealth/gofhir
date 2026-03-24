@@ -35,7 +35,7 @@ type DeviceUseStatement struct {
 	// Identifier An external identifier for this statement such as an IRI.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status A code representing the patient or other source's judgment about the state of the device used that this statement is about.  Generally this will be active or completed.
-	Status *string `json:"status,omitempty"`
+	Status *DeviceUseStatementStatus `json:"status,omitempty"`
 	// BasedOn A plan, proposal or order that is fulfilled in whole or in part by this DeviceUseStatement.
 	BasedOn []dt.Reference `json:"basedOn,omitempty"`
 	// BodySite Indicates the anotomic location on the subject's body where the device was used ( i.e. the target).
@@ -173,7 +173,7 @@ func (b *DeviceUseStatementBuilder) WithIdentifier(v dt.Identifier) *DeviceUseSt
 }
 
 // WithStatus sets the status field.
-func (b *DeviceUseStatementBuilder) WithStatus(v string) *DeviceUseStatementBuilder {
+func (b *DeviceUseStatementBuilder) WithStatus(v DeviceUseStatementStatus) *DeviceUseStatementBuilder {
 	b.resource.Status = &v
 	return b
 }

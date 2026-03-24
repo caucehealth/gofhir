@@ -35,7 +35,7 @@ type Task struct {
 	// Identifier The business identifier for this task.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The current status of the task.
-	Status *string `json:"status,omitempty"`
+	Status *TaskStatus `json:"status,omitempty"`
 	// AuthoredOn The date and time this task was created.
 	AuthoredOn *dt.DateTime `json:"authoredOn,omitempty"`
 	// BasedOn BasedOn refers to a higher-level authorization that triggered the creation of the task.  It references a "request" resource such as a ServiceRequest, MedicationRequest, ServiceRequest, CarePlan, et...
@@ -65,7 +65,7 @@ type Task struct {
 	// Insurance Insurance plans, coverage extensions, pre-authorizations and/or pre-determinations that may be relevant to the Task.
 	Insurance []dt.Reference `json:"insurance,omitempty"`
 	// Intent Indicates the "level" of actionability associated with the Task, i.e. i+R[9]Cs this a proposed task, a planned task, an actionable task, etc.
-	Intent *string `json:"intent,omitempty"`
+	Intent *TaskIntent `json:"intent,omitempty"`
 	// LastModified The date and time of last modification to this task.
 	LastModified *dt.DateTime `json:"lastModified,omitempty"`
 	// Location Principal physical location where the this task is performed.
@@ -179,7 +179,7 @@ func (b *TaskBuilder) WithIdentifier(v dt.Identifier) *TaskBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *TaskBuilder) WithStatus(v string) *TaskBuilder {
+func (b *TaskBuilder) WithStatus(v TaskStatus) *TaskBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -269,7 +269,7 @@ func (b *TaskBuilder) WithInsurance(v dt.Reference) *TaskBuilder {
 }
 
 // WithIntent sets the intent field.
-func (b *TaskBuilder) WithIntent(v string) *TaskBuilder {
+func (b *TaskBuilder) WithIntent(v TaskIntent) *TaskBuilder {
 	b.resource.Intent = &v
 	return b
 }

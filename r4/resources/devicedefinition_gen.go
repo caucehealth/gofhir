@@ -326,7 +326,7 @@ type DeviceDefinitionDeviceName struct {
 	// Name The name of the device.
 	Name *string `json:"name,omitempty"`
 	// Type The type of deviceName. UDILabelName | UserFriendlyName | PatientReportedName | ManufactureDeviceName | ModelName.
-	Type *string `json:"type,omitempty"`
+	Type *DeviceDefinitionDeviceNameType `json:"type,omitempty"`
 }
 
 // DeviceDefinitionMaterial The characteristics, operational status and capabilities of a medical-related component of a medical device.

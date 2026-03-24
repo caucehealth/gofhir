@@ -32,7 +32,7 @@ type CapabilityStatement struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The status of this capability statement. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *CapabilityStatementStatus `json:"status,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the capability statement and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the capability statement.
@@ -46,7 +46,7 @@ type CapabilityStatement struct {
 	// Experimental A Boolean value to indicate that this capability statement is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
 	// FhirVersion The version of the FHIR specification that this CapabilityStatement describes (which SHALL be the same as the FHIR version of the CapabilityStatement itself). There is no default value.
-	FhirVersion *string `json:"fhirVersion,omitempty"`
+	FhirVersion *CapabilityStatementFhirVersion `json:"fhirVersion,omitempty"`
 	// Format A list of the formats supported by this implementation using their content types.
 	Format []dt.Code `json:"format,omitempty"`
 	// Implementation Identifies a specific implementation instance that is described by the capability statement - i.e. a particular installation, rather than the capabilities of a software program.
@@ -60,7 +60,7 @@ type CapabilityStatement struct {
 	// Jurisdiction A legal or geographic region in which the capability statement is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Kind The way that this statement is intended to be used, to describe an actual running instance of software, a particular product (kind, not instance of software) or a class of implementation (e.g. a de...
-	Kind *string `json:"kind,omitempty"`
+	Kind *CapabilityStatementKind `json:"kind,omitempty"`
 	// Messaging A description of the messaging capabilities of the solution.
 	Messaging []CapabilityStatementMessaging `json:"messaging,omitempty"`
 	// Name A natural language name identifying the capability statement. This name should be usable as an identifier for the module by machine processing applications such as code generation.
@@ -162,7 +162,7 @@ func (b *CapabilityStatementBuilder) WithModifierExtension(v dt.Extension) *Capa
 }
 
 // WithStatus sets the status field.
-func (b *CapabilityStatementBuilder) WithStatus(v string) *CapabilityStatementBuilder {
+func (b *CapabilityStatementBuilder) WithStatus(v CapabilityStatementStatus) *CapabilityStatementBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -204,7 +204,7 @@ func (b *CapabilityStatementBuilder) WithExperimental(v bool) *CapabilityStateme
 }
 
 // WithFhirVersion sets the fhirVersion field.
-func (b *CapabilityStatementBuilder) WithFhirVersion(v string) *CapabilityStatementBuilder {
+func (b *CapabilityStatementBuilder) WithFhirVersion(v CapabilityStatementFhirVersion) *CapabilityStatementBuilder {
 	b.resource.FhirVersion = &v
 	return b
 }
@@ -246,7 +246,7 @@ func (b *CapabilityStatementBuilder) WithJurisdiction(v dt.CodeableConcept) *Cap
 }
 
 // WithKind sets the kind field.
-func (b *CapabilityStatementBuilder) WithKind(v string) *CapabilityStatementBuilder {
+func (b *CapabilityStatementBuilder) WithKind(v CapabilityStatementKind) *CapabilityStatementBuilder {
 	b.resource.Kind = &v
 	return b
 }
@@ -335,7 +335,7 @@ type CapabilityStatementDocument struct {
 	// Documentation A description of how the application supports or uses the specified document profile.  For example, when documents are created, what action is taken with consumed documents, etc.
 	Documentation *dt.Markdown `json:"documentation,omitempty"`
 	// Mode Mode of this document declaration - whether an application is a producer or consumer.
-	Mode *string `json:"mode,omitempty"`
+	Mode *CapabilityStatementDocumentMode `json:"mode,omitempty"`
 	// Profile A profile on the document Bundle that constrains which resources are present, and their contents.
 	Profile dt.Canonical `json:"profile"`
 }
@@ -379,7 +379,7 @@ type CapabilityStatementInteraction struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code Coded identifier of the operation, supported by the system resource.
-	Code *string `json:"code,omitempty"`
+	Code *CapabilityStatementInteractionCode `json:"code,omitempty"`
 	// Documentation Guidance specific to the implementation of this operation, such as 'delete is a logical delete' or 'updates are only allowed with version id' or 'creates permitted from pre-authorized certificates ...
 	Documentation *dt.Markdown `json:"documentation,omitempty"`
 }
@@ -393,7 +393,7 @@ type CapabilityStatementInteraction1 struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code A coded identifier of the operation, supported by the system.
-	Code *string `json:"code,omitempty"`
+	Code *CapabilityStatementInteraction1Code `json:"code,omitempty"`
 	// Documentation Guidance specific to the implementation of this operation, such as limitations on the kind of transactions allowed, or information about system wide search is implemented.
 	Documentation *dt.Markdown `json:"documentation,omitempty"`
 }
@@ -443,9 +443,9 @@ type CapabilityStatementResource struct {
 	// ConditionalCreate A flag that indicates that the server supports conditional create.
 	ConditionalCreate *bool `json:"conditionalCreate,omitempty"`
 	// ConditionalDelete A code that indicates how the server supports conditional delete.
-	ConditionalDelete *string `json:"conditionalDelete,omitempty"`
+	ConditionalDelete *CapabilityStatementResourceConditionalDelete `json:"conditionalDelete,omitempty"`
 	// ConditionalRead A code that indicates how the server supports conditional read.
-	ConditionalRead *string `json:"conditionalRead,omitempty"`
+	ConditionalRead *CapabilityStatementResourceConditionalRead `json:"conditionalRead,omitempty"`
 	// ConditionalUpdate A flag that indicates that the server supports conditional update.
 	ConditionalUpdate *bool `json:"conditionalUpdate,omitempty"`
 	// Documentation Additional information about the resource type used by the system.
@@ -459,7 +459,7 @@ type CapabilityStatementResource struct {
 	// ReadHistory A flag for whether the server is able to return past versions as part of the vRead operation.
 	ReadHistory *bool `json:"readHistory,omitempty"`
 	// ReferencePolicy A set of flags that defines how references are supported.
-	ReferencePolicy []string `json:"referencePolicy,omitempty"`
+	ReferencePolicy []CapabilityStatementResourceReferencePolicy `json:"referencePolicy,omitempty"`
 	// SearchInclude A list of _include values supported by the server.
 	SearchInclude []string `json:"searchInclude,omitempty"`
 	// SearchParam Search parameters for implementations to support and/or make use of - either references to ones defined in the specification, or additional ones defined for/by the implementation.
@@ -473,7 +473,7 @@ type CapabilityStatementResource struct {
 	// UpdateCreate A flag to indicate that the server allows or needs to allow the client to create new identities on the server (that is, the client PUTs to a location where there is no existing resource). Allowing ...
 	UpdateCreate *bool `json:"updateCreate,omitempty"`
 	// Versioning This field is set to no-version to specify that the system does not support (server) or use (client) versioning for this resource type. If this has some other value, the server must at least correc...
-	Versioning *string `json:"versioning,omitempty"`
+	Versioning *CapabilityStatementResourceVersioning `json:"versioning,omitempty"`
 }
 
 // CapabilityStatementRest A Capability Statement documents a set of capabilities (behaviors) of a FHIR Server for a particular version of FHIR that may be used as a statement of actual server functionality or a statement of...
@@ -491,7 +491,7 @@ type CapabilityStatementRest struct {
 	// Interaction A specification of restful operations supported by the system.
 	Interaction []CapabilityStatementInteraction1 `json:"interaction,omitempty"`
 	// Mode Identifies whether this portion of the statement is describing the ability to initiate or receive restful operations.
-	Mode *string `json:"mode,omitempty"`
+	Mode *CapabilityStatementRestMode `json:"mode,omitempty"`
 	// Operation Definition of an operation or a named query together with its parameters and their meaning and type.
 	Operation []CapabilityStatementOperation `json:"operation,omitempty"`
 	// Resource A specification of the restful capabilities of the solution for a specific resource type.
@@ -517,7 +517,7 @@ type CapabilityStatementSearchParam struct {
 	// Name The name of the search parameter used in the interface.
 	Name *string `json:"name,omitempty"`
 	// Type The type of value a search parameter refers to, and how the content is interpreted.
-	Type *string `json:"type,omitempty"`
+	Type *CapabilityStatementSearchParamType `json:"type,omitempty"`
 }
 
 // CapabilityStatementSecurity A Capability Statement documents a set of capabilities (behaviors) of a FHIR Server for a particular version of FHIR that may be used as a statement of actual server functionality or a statement of...
@@ -563,5 +563,5 @@ type CapabilityStatementSupportedMessage struct {
 	// Definition Points to a message definition that identifies the messaging event, message structure, allowed responses, etc.
 	Definition dt.Canonical `json:"definition"`
 	// Mode The mode of this event declaration - whether application is sender or receiver.
-	Mode *string `json:"mode,omitempty"`
+	Mode *CapabilityStatementSupportedMessageMode `json:"mode,omitempty"`
 }

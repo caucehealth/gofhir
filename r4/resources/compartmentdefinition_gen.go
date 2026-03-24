@@ -32,9 +32,9 @@ type CompartmentDefinition struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The status of this compartment definition. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *CompartmentDefinitionStatus `json:"status,omitempty"`
 	// Code Which compartment this definition describes.
-	Code *string `json:"code,omitempty"`
+	Code *CompartmentDefinitionCode `json:"code,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Date The date  (and optionally time) when the compartment definition was published. The date must change when the business version changes and it must change if the status code changes. In addition, it ...
@@ -138,13 +138,13 @@ func (b *CompartmentDefinitionBuilder) WithModifierExtension(v dt.Extension) *Co
 }
 
 // WithStatus sets the status field.
-func (b *CompartmentDefinitionBuilder) WithStatus(v string) *CompartmentDefinitionBuilder {
+func (b *CompartmentDefinitionBuilder) WithStatus(v CompartmentDefinitionStatus) *CompartmentDefinitionBuilder {
 	b.resource.Status = &v
 	return b
 }
 
 // WithCode sets the code field.
-func (b *CompartmentDefinitionBuilder) WithCode(v string) *CompartmentDefinitionBuilder {
+func (b *CompartmentDefinitionBuilder) WithCode(v CompartmentDefinitionCode) *CompartmentDefinitionBuilder {
 	b.resource.Code = &v
 	return b
 }

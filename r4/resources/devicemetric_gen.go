@@ -36,13 +36,13 @@ type DeviceMetric struct {
 	// Calibration Describes the calibrations that have been performed or that are required to be performed.
 	Calibration []DeviceMetricCalibration `json:"calibration,omitempty"`
 	// Category Indicates the category of the observation generation process. A DeviceMetric can be for example a setting, measurement, or calculation.
-	Category *string `json:"category,omitempty"`
+	Category *DeviceMetricCategory `json:"category,omitempty"`
 	// Color Describes the color representation for the metric. This is often used to aid clinicians to track and identify parameter types by color. In practice, consider a Patient Monitor that has ECG/HR and P...
-	Color *string `json:"color,omitempty"`
+	Color *DeviceMetricColor `json:"color,omitempty"`
 	// MeasurementPeriod Describes the measurement repetition time. This is not necessarily the same as the update period. The measurement repetition time can range from milliseconds up to hours. An example for a measureme...
 	MeasurementPeriod *dt.Timing `json:"measurementPeriod,omitempty"`
 	// OperationalStatus Indicates current operational state of the device. For example: On, Off, Standby, etc.
-	OperationalStatus *string `json:"operationalStatus,omitempty"`
+	OperationalStatus *DeviceMetricOperationalStatus `json:"operationalStatus,omitempty"`
 	// Parent Describes the link to the  Device that this DeviceMetric belongs to and that provide information about the location of this DeviceMetric in the containment structure of the parent Device. An exampl...
 	Parent *dt.Reference `json:"parent,omitempty"`
 	// Source Describes the link to the  Device that this DeviceMetric belongs to and that contains administrative device information such as manufacturer, serial number, etc.
@@ -142,13 +142,13 @@ func (b *DeviceMetricBuilder) WithCalibration(v DeviceMetricCalibration) *Device
 }
 
 // WithCategory sets the category field.
-func (b *DeviceMetricBuilder) WithCategory(v string) *DeviceMetricBuilder {
+func (b *DeviceMetricBuilder) WithCategory(v DeviceMetricCategory) *DeviceMetricBuilder {
 	b.resource.Category = &v
 	return b
 }
 
 // WithColor sets the color field.
-func (b *DeviceMetricBuilder) WithColor(v string) *DeviceMetricBuilder {
+func (b *DeviceMetricBuilder) WithColor(v DeviceMetricColor) *DeviceMetricBuilder {
 	b.resource.Color = &v
 	return b
 }
@@ -160,7 +160,7 @@ func (b *DeviceMetricBuilder) WithMeasurementPeriod(v dt.Timing) *DeviceMetricBu
 }
 
 // WithOperationalStatus sets the operationalStatus field.
-func (b *DeviceMetricBuilder) WithOperationalStatus(v string) *DeviceMetricBuilder {
+func (b *DeviceMetricBuilder) WithOperationalStatus(v DeviceMetricOperationalStatus) *DeviceMetricBuilder {
 	b.resource.OperationalStatus = &v
 	return b
 }
@@ -205,9 +205,9 @@ type DeviceMetricCalibration struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// State Describes the state of the calibration.
-	State *string `json:"state,omitempty"`
+	State *DeviceMetricCalibrationState `json:"state,omitempty"`
 	// Time Describes the time last calibration has been performed.
 	Time *dt.Instant `json:"time,omitempty"`
 	// Type Describes the type of the calibration method.
-	Type *string `json:"type,omitempty"`
+	Type *DeviceMetricCalibrationType `json:"type,omitempty"`
 }

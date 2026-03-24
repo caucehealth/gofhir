@@ -34,7 +34,7 @@ type Account struct {
 	// Identifier Unique identifier used to reference the account.  Might or might not be intended for human use (e.g. credit card number).
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Indicates whether the account is presently used/usable or not.
-	Status *string `json:"status,omitempty"`
+	Status *AccountStatus `json:"status,omitempty"`
 	// Coverage The party(s) that are responsible for covering the payment of this account, and what order should they be applied to the account.
 	Coverage []AccountCoverage `json:"coverage,omitempty"`
 	// Description Provides additional information about what the account tracks and how it is used.
@@ -138,7 +138,7 @@ func (b *AccountBuilder) WithIdentifier(v dt.Identifier) *AccountBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *AccountBuilder) WithStatus(v string) *AccountBuilder {
+func (b *AccountBuilder) WithStatus(v AccountStatus) *AccountBuilder {
 	b.resource.Status = &v
 	return b
 }

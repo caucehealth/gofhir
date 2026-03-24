@@ -35,7 +35,7 @@ type ResearchElementDefinition struct {
 	// Identifier A formal identifier that is used to identify this research element definition when it is represented in other formats, or referenced in a specification, model, design or an instance.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this research element definition. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *ResearchElementDefinitionStatus `json:"status,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
 	// Author An individiual or organization primarily involved in the creation and maintenance of the content.
@@ -89,7 +89,7 @@ type ResearchElementDefinition struct {
 	// Topic Descriptive topics related to the content of the ResearchElementDefinition. Topics provide a high-level categorization grouping types of ResearchElementDefinitions that can be useful for filtering ...
 	Topic []dt.CodeableConcept `json:"topic,omitempty"`
 	// Type The type of research element, a population, an exposure, or an outcome.
-	Type *string `json:"type,omitempty"`
+	Type *ResearchElementDefinitionType `json:"type,omitempty"`
 	// Url An absolute URI that is used to identify this research element definition when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD b...
 	Url *dt.URI `json:"url,omitempty"`
 	// Usage A detailed description, from a clinical perspective, of how the ResearchElementDefinition is used.
@@ -97,7 +97,7 @@ type ResearchElementDefinition struct {
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
 	UseContext []dt.UsageContext `json:"useContext,omitempty"`
 	// VariableType The type of the outcome (e.g. Dichotomous, Continuous, or Descriptive).
-	VariableType *string `json:"variableType,omitempty"`
+	VariableType *ResearchElementDefinitionVariableType `json:"variableType,omitempty"`
 	// Version The identifier that is used to identify this version of the research element definition when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by th...
 	Version *string `json:"version,omitempty"`
 }
@@ -185,7 +185,7 @@ func (b *ResearchElementDefinitionBuilder) WithIdentifier(v dt.Identifier) *Rese
 }
 
 // WithStatus sets the status field.
-func (b *ResearchElementDefinitionBuilder) WithStatus(v string) *ResearchElementDefinitionBuilder {
+func (b *ResearchElementDefinitionBuilder) WithStatus(v ResearchElementDefinitionStatus) *ResearchElementDefinitionBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -347,7 +347,7 @@ func (b *ResearchElementDefinitionBuilder) WithTopic(v dt.CodeableConcept) *Rese
 }
 
 // WithType sets the type field.
-func (b *ResearchElementDefinitionBuilder) WithType(v string) *ResearchElementDefinitionBuilder {
+func (b *ResearchElementDefinitionBuilder) WithType(v ResearchElementDefinitionType) *ResearchElementDefinitionBuilder {
 	b.resource.Type = &v
 	return b
 }
@@ -371,7 +371,7 @@ func (b *ResearchElementDefinitionBuilder) WithUseContext(v dt.UsageContext) *Re
 }
 
 // WithVariableType sets the variableType field.
-func (b *ResearchElementDefinitionBuilder) WithVariableType(v string) *ResearchElementDefinitionBuilder {
+func (b *ResearchElementDefinitionBuilder) WithVariableType(v ResearchElementDefinitionVariableType) *ResearchElementDefinitionBuilder {
 	b.resource.VariableType = &v
 	return b
 }
@@ -415,7 +415,7 @@ type ResearchElementDefinitionCharacteristic struct {
 	// ParticipantEffectiveDuration Indicates what effective period the study covers.
 	ParticipantEffectiveDuration *dt.Duration `json:"participantEffectiveDuration,omitempty"`
 	// ParticipantEffectiveGroupMeasure Indicates how elements are aggregated within the study effective period.
-	ParticipantEffectiveGroupMeasure *string `json:"participantEffectiveGroupMeasure,omitempty"`
+	ParticipantEffectiveGroupMeasure *ResearchElementDefinitionCharacteristicParticipantEffectiveGroupMeasure `json:"participantEffectiveGroupMeasure,omitempty"`
 	// ParticipantEffectivePeriod Indicates what effective period the study covers.
 	ParticipantEffectivePeriod *dt.Period `json:"participantEffectivePeriod,omitempty"`
 	// ParticipantEffectiveTimeFromStart Indicates duration from the participant's study entry.
@@ -429,7 +429,7 @@ type ResearchElementDefinitionCharacteristic struct {
 	// StudyEffectiveDuration Indicates what effective period the study covers.
 	StudyEffectiveDuration *dt.Duration `json:"studyEffectiveDuration,omitempty"`
 	// StudyEffectiveGroupMeasure Indicates how elements are aggregated within the study effective period.
-	StudyEffectiveGroupMeasure *string `json:"studyEffectiveGroupMeasure,omitempty"`
+	StudyEffectiveGroupMeasure *ResearchElementDefinitionCharacteristicStudyEffectiveGroupMeasure `json:"studyEffectiveGroupMeasure,omitempty"`
 	// StudyEffectivePeriod Indicates what effective period the study covers.
 	StudyEffectivePeriod *dt.Period `json:"studyEffectivePeriod,omitempty"`
 	// StudyEffectiveTimeFromStart Indicates duration from the study initiation.

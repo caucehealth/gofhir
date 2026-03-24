@@ -35,7 +35,7 @@ type EventDefinition struct {
 	// Identifier A formal identifier that is used to identify this event definition when it is represented in other formats, or referenced in a specification, model, design or an instance.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this event definition. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *EventDefinitionStatus `json:"status,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
 	// Author An individiual or organization primarily involved in the creation and maintenance of the content.
@@ -175,7 +175,7 @@ func (b *EventDefinitionBuilder) WithIdentifier(v dt.Identifier) *EventDefinitio
 }
 
 // WithStatus sets the status field.
-func (b *EventDefinitionBuilder) WithStatus(v string) *EventDefinitionBuilder {
+func (b *EventDefinitionBuilder) WithStatus(v EventDefinitionStatus) *EventDefinitionBuilder {
 	b.resource.Status = &v
 	return b
 }

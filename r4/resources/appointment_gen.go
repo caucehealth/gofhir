@@ -35,7 +35,7 @@ type Appointment struct {
 	// Identifier This records identifiers associated with this appointment concern that are defined by business processes and/or used to refer to it when a direct URL reference to the resource itself is not appropr...
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The overall status of the Appointment. Each of the participants has their own participation status which indicates their involvement in the process, however this status indicates the shared status.
-	Status *string `json:"status,omitempty"`
+	Status *AppointmentStatus `json:"status,omitempty"`
 	// AppointmentType The style of appointment or patient that has been booked in the slot (not service type).
 	AppointmentType *dt.CodeableConcept `json:"appointmentType,omitempty"`
 	// BasedOn The service request this appointment is allocated to assess (e.g. incoming referral or procedure request).
@@ -161,7 +161,7 @@ func (b *AppointmentBuilder) WithIdentifier(v dt.Identifier) *AppointmentBuilder
 }
 
 // WithStatus sets the status field.
-func (b *AppointmentBuilder) WithStatus(v string) *AppointmentBuilder {
+func (b *AppointmentBuilder) WithStatus(v AppointmentStatus) *AppointmentBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -309,13 +309,13 @@ type AppointmentParticipant struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status Participation status of the actor.
-	Status *string `json:"status,omitempty"`
+	Status *AppointmentParticipantStatus `json:"status,omitempty"`
 	// Actor A Person, Location/HealthcareService or Device that is participating in the appointment.
 	Actor *dt.Reference `json:"actor,omitempty"`
 	// Period Participation period of the actor.
 	Period *dt.Period `json:"period,omitempty"`
 	// Required Whether this participant is required to be present at the meeting. This covers a use-case where two doctors need to meet to discuss the results for a specific patient, and the patient is not requir...
-	Required *string `json:"required,omitempty"`
+	Required *AppointmentParticipantRequired `json:"required,omitempty"`
 	// Type Role of participant in the appointment.
 	Type []dt.CodeableConcept `json:"type,omitempty"`
 }

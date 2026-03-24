@@ -239,7 +239,7 @@ type SpecimenDefinitionTypeTested struct {
 	// IsDerived Primary of secondary specimen.
 	IsDerived *bool `json:"isDerived,omitempty"`
 	// Preference The preference for this type of conditioned specimen.
-	Preference *string `json:"preference,omitempty"`
+	Preference *SpecimenDefinitionTypeTestedPreference `json:"preference,omitempty"`
 	// RejectionCriterion Criterion for rejection of the specimen in its container by the laboratory.
 	RejectionCriterion []dt.CodeableConcept `json:"rejectionCriterion,omitempty"`
 	// Requirement Requirements for delivery and special handling of this kind of conditioned specimen.

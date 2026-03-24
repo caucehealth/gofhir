@@ -42,7 +42,7 @@ type EnrollmentResponse struct {
 	// Organization The Insurer who produced this adjudicated response.
 	Organization *dt.Reference `json:"organization,omitempty"`
 	// Outcome Processing status: error, complete.
-	Outcome *string `json:"outcome,omitempty"`
+	Outcome *EnrollmentResponseOutcome `json:"outcome,omitempty"`
 	// Request Original request resource reference.
 	Request *dt.Reference `json:"request,omitempty"`
 	// RequestProvider The practitioner who is responsible for the services rendered to the patient.
@@ -156,7 +156,7 @@ func (b *EnrollmentResponseBuilder) WithOrganization(v dt.Reference) *Enrollment
 }
 
 // WithOutcome sets the outcome field.
-func (b *EnrollmentResponseBuilder) WithOutcome(v string) *EnrollmentResponseBuilder {
+func (b *EnrollmentResponseBuilder) WithOutcome(v EnrollmentResponseOutcome) *EnrollmentResponseBuilder {
 	b.resource.Outcome = &v
 	return b
 }

@@ -40,7 +40,7 @@ type Person struct {
 	// BirthDate The birth date for the person.
 	BirthDate *dt.Date `json:"birthDate,omitempty"`
 	// Gender Administrative Gender.
-	Gender *string `json:"gender,omitempty"`
+	Gender *AdministrativeGender `json:"gender,omitempty"`
 	// Link Link to a resource that concerns the same actual person.
 	Link []PersonLink `json:"link,omitempty"`
 	// ManagingOrganization The organization that is the custodian of the person record.
@@ -154,7 +154,7 @@ func (b *PersonBuilder) WithBirthDate(v dt.Date) *PersonBuilder {
 }
 
 // WithGender sets the gender field.
-func (b *PersonBuilder) WithGender(v string) *PersonBuilder {
+func (b *PersonBuilder) WithGender(v AdministrativeGender) *PersonBuilder {
 	b.resource.Gender = &v
 	return b
 }
@@ -205,7 +205,7 @@ type PersonLink struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Assurance Level of assurance that this link is associated with the target resource.
-	Assurance *string `json:"assurance,omitempty"`
+	Assurance *PersonLinkAssurance `json:"assurance,omitempty"`
 	// Target The resource to which this actual person is associated.
 	Target dt.Reference `json:"target"`
 }

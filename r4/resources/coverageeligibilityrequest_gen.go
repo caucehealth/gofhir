@@ -55,7 +55,7 @@ type CoverageEligibilityRequest struct {
 	// Provider The provider which is responsible for the request.
 	Provider *dt.Reference `json:"provider,omitempty"`
 	// Purpose Code to specify whether requesting: prior authorization requirements for some service categories or billing codes; benefits for coverages specified or discovered; discovery and return of coverages ...
-	Purpose []string `json:"purpose,omitempty"`
+	Purpose []CoverageEligibilityRequestPurpose `json:"purpose,omitempty"`
 	// Serviced The date or dates when the enclosed suite of services were performed or completed.
 	Serviced *CoverageEligibilityRequestServiced `json:"-"` // polymorphic
 	// SupportingInfo Additional information codes regarding exceptions, special considerations, the condition, situation, prior or concurrent issues.
@@ -235,7 +235,7 @@ func (b *CoverageEligibilityRequestBuilder) WithProvider(v dt.Reference) *Covera
 }
 
 // WithPurpose adds an item to the purpose field.
-func (b *CoverageEligibilityRequestBuilder) WithPurpose(v string) *CoverageEligibilityRequestBuilder {
+func (b *CoverageEligibilityRequestBuilder) WithPurpose(v CoverageEligibilityRequestPurpose) *CoverageEligibilityRequestBuilder {
 	b.resource.Purpose = append(b.resource.Purpose, v)
 	return b
 }

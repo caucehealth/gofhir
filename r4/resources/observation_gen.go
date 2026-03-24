@@ -35,7 +35,7 @@ type Observation struct {
 	// Identifier A unique identifier assigned to this observation.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the result value.
-	Status *string `json:"status,omitempty"`
+	Status *ObservationStatus `json:"status,omitempty"`
 	// BasedOn A plan, proposal or order that is fulfilled in whole or in part by this event.  For example, a MedicationRequest may require a patient to have laboratory test performed before  it is dispensed.
 	BasedOn []dt.Reference `json:"basedOn,omitempty"`
 	// BodySite Indicates the site on the subject's body where the observation was made (i.e. the target site).
@@ -161,7 +161,7 @@ func NewObservation() *ObservationBuilder {
 }
 
 // WithStatus sets the observation status.
-func (b *ObservationBuilder) WithStatus(status string) *ObservationBuilder {
+func (b *ObservationBuilder) WithStatus(status ObservationStatus) *ObservationBuilder {
 	b.resource.Status = &status
 	return b
 }

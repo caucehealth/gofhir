@@ -277,7 +277,7 @@ func TestPatientBuilder(t *testing.T) {
 
 func TestObservationBuilder(t *testing.T) {
 	obs, err := resources.NewObservation().
-		WithStatus("final").
+		WithStatus(resources.ObservationStatusFinal).
 		WithCode("http://loinc.org", "85354-9", "Blood pressure").
 		WithSubject("Patient/example").
 		Build()
@@ -295,7 +295,7 @@ func TestObservationBuilder(t *testing.T) {
 
 func TestEncounterBuilder(t *testing.T) {
 	enc, err := resources.NewEncounter().
-		WithStatus("finished").
+		WithStatus(resources.EncounterStatusFinished).
 		WithClass("http://terminology.hl7.org/CodeSystem/v3-ActCode", "IMP").
 		WithSubject("Patient/example").
 		Build()
@@ -426,7 +426,7 @@ func TestMedicationRequestRoundTrip(t *testing.T) {
 
 func TestDiagnosticReportBuilder(t *testing.T) {
 	dr, err := resources.NewDiagnosticReport().
-		WithStatus("final").
+		WithStatus(resources.DiagnosticReportStatusFinal).
 		WithCode("http://loinc.org", "58410-2", "CBC panel").
 		WithSubject("Patient/example").
 		Build()
@@ -446,8 +446,8 @@ func TestDiagnosticReportBuilder(t *testing.T) {
 
 func TestMedicationRequestBuilder(t *testing.T) {
 	mr, err := resources.NewMedicationRequest().
-		WithStatus("active").
-		WithIntent("order").
+		WithStatus(dt.Code("active")).
+		WithIntent(dt.Code("order")).
 		WithSubject("Patient/example").
 		WithMedicationCodeableConcept("http://www.nlm.nih.gov/research/umls/rxnorm", "1049502", "Acetaminophen 325 MG").
 		Build()

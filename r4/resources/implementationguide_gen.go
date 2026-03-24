@@ -33,7 +33,7 @@ type ImplementationGuide struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The status of this implementation guide. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *ImplementationGuideStatus `json:"status,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the implementation guide and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the implementation guide.
@@ -49,13 +49,13 @@ type ImplementationGuide struct {
 	// Experimental A Boolean value to indicate that this implementation guide is authored for testing purposes (or education/evaluation/marketing) and is not intended to be used for genuine usage.
 	Experimental *bool `json:"experimental,omitempty"`
 	// FhirVersion The version(s) of the FHIR specification that this ImplementationGuide targets - e.g. describes how to use. The value of this element is the formal version of the specification, without the revisio...
-	FhirVersion []string `json:"fhirVersion,omitempty"`
+	FhirVersion []ImplementationGuideFhirVersion `json:"fhirVersion,omitempty"`
 	// Global A set of profiles that all resources covered by this implementation guide must conform to.
 	Global []ImplementationGuideGlobal `json:"global,omitempty"`
 	// Jurisdiction A legal or geographic region in which the implementation guide is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// License The license that applies to this Implementation Guide, using an SPDX license code, or 'not-open-source'.
-	License *string `json:"license,omitempty"`
+	License *ImplementationGuideLicense `json:"license,omitempty"`
 	// Manifest Information about an assembled implementation guide, created by the publication tooling.
 	Manifest *ImplementationGuideManifest `json:"manifest,omitempty"`
 	// Name A natural language name identifying the implementation guide. This name should be usable as an identifier for the module by machine processing applications such as code generation.
@@ -151,7 +151,7 @@ func (b *ImplementationGuideBuilder) WithModifierExtension(v dt.Extension) *Impl
 }
 
 // WithStatus sets the status field.
-func (b *ImplementationGuideBuilder) WithStatus(v string) *ImplementationGuideBuilder {
+func (b *ImplementationGuideBuilder) WithStatus(v ImplementationGuideStatus) *ImplementationGuideBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -199,7 +199,7 @@ func (b *ImplementationGuideBuilder) WithExperimental(v bool) *ImplementationGui
 }
 
 // WithFhirVersion adds an item to the fhirVersion field.
-func (b *ImplementationGuideBuilder) WithFhirVersion(v string) *ImplementationGuideBuilder {
+func (b *ImplementationGuideBuilder) WithFhirVersion(v ImplementationGuideFhirVersion) *ImplementationGuideBuilder {
 	b.resource.FhirVersion = append(b.resource.FhirVersion, v)
 	return b
 }
@@ -217,7 +217,7 @@ func (b *ImplementationGuideBuilder) WithJurisdiction(v dt.CodeableConcept) *Imp
 }
 
 // WithLicense sets the license field.
-func (b *ImplementationGuideBuilder) WithLicense(v string) *ImplementationGuideBuilder {
+func (b *ImplementationGuideBuilder) WithLicense(v ImplementationGuideLicense) *ImplementationGuideBuilder {
 	b.resource.License = &v
 	return b
 }
@@ -370,7 +370,7 @@ type ImplementationGuidePage struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Generation A code that indicates how the page is generated.
-	Generation *string `json:"generation,omitempty"`
+	Generation *ImplementationGuidePageGeneration `json:"generation,omitempty"`
 	// NameReference The source address for the page.
 	NameReference *dt.Reference `json:"nameReference,omitempty"`
 	// NameUrl The source address for the page.
@@ -406,7 +406,7 @@ type ImplementationGuideParameter struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Code apply | path-resource | path-pages | path-tx-cache | expansion-parameter | rule-broken-links | generate-xml | generate-json | generate-turtle | html-template.
-	Code *string `json:"code,omitempty"`
+	Code *ImplementationGuideParameterCode `json:"code,omitempty"`
 	// Value Value for named type.
 	Value *string `json:"value,omitempty"`
 }
@@ -424,7 +424,7 @@ type ImplementationGuideResource struct {
 	// Example If true or a reference, indicates the resource is an example instance.  If a reference is present, indicates that the example is an example of the specified profile.
 	Example *ImplementationGuideResourceExample `json:"-"` // polymorphic
 	// FhirVersion Indicates the FHIR Version(s) this artifact is intended to apply to. If no versions are specified, the resource is assumed to apply to all the versions stated in ImplementationGuide.fhirVersion.
-	FhirVersion []string `json:"fhirVersion,omitempty"`
+	FhirVersion []ImplementationGuideResourceFhirVersion `json:"fhirVersion,omitempty"`
 	// GroupingId Reference to the id of the grouping this resource appears in.
 	GroupingId *dt.ID `json:"groupingId,omitempty"`
 	// Name A human assigned name for the resource. All resources SHOULD have a name, but the name may be extracted from the resource (e.g. ValueSet.name).

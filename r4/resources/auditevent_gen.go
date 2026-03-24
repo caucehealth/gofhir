@@ -33,13 +33,13 @@ type AuditEvent struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Action Indicator for type of action performed during the event that generated the audit.
-	Action *string `json:"action,omitempty"`
+	Action *AuditEventAction `json:"action,omitempty"`
 	// Agent An actor taking an active role in the event or activity that is logged.
 	Agent []AuditEventAgent `json:"agent,omitempty"`
 	// Entity Specific instances of data or objects that have been accessed.
 	Entity []AuditEventEntity `json:"entity,omitempty"`
 	// Outcome Indicates whether the event succeeded or failed.
-	Outcome *string `json:"outcome,omitempty"`
+	Outcome *AuditEventOutcome `json:"outcome,omitempty"`
 	// OutcomeDesc A free text description of the outcome of the event.
 	OutcomeDesc *string `json:"outcomeDesc,omitempty"`
 	// Period The period during which the activity occurred.
@@ -133,7 +133,7 @@ func (b *AuditEventBuilder) WithModifierExtension(v dt.Extension) *AuditEventBui
 }
 
 // WithAction sets the action field.
-func (b *AuditEventBuilder) WithAction(v string) *AuditEventBuilder {
+func (b *AuditEventBuilder) WithAction(v AuditEventAction) *AuditEventBuilder {
 	b.resource.Action = &v
 	return b
 }
@@ -151,7 +151,7 @@ func (b *AuditEventBuilder) WithEntity(v AuditEventEntity) *AuditEventBuilder {
 }
 
 // WithOutcome sets the outcome field.
-func (b *AuditEventBuilder) WithOutcome(v string) *AuditEventBuilder {
+func (b *AuditEventBuilder) WithOutcome(v AuditEventOutcome) *AuditEventBuilder {
 	b.resource.Outcome = &v
 	return b
 }
@@ -338,7 +338,7 @@ type AuditEventNetwork struct {
 	// Address An identifier for the network access point of the user device for the audit event.
 	Address *string `json:"address,omitempty"`
 	// Type An identifier for the type of network access point that originated the audit event.
-	Type *string `json:"type,omitempty"`
+	Type *AuditEventNetworkType `json:"type,omitempty"`
 }
 
 // AuditEventSource A record of an event made for purposes of maintaining a security log. Typical uses include detection of intrusion attempts and monitoring for inappropriate usage.

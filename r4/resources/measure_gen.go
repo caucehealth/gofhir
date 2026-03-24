@@ -34,7 +34,7 @@ type Measure struct {
 	// Identifier A formal identifier that is used to identify this measure when it is represented in other formats, or referenced in a specification, model, design or an instance.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this measure. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *MeasureStatus `json:"status,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
 	// Author An individiual or organization primarily involved in the creation and maintenance of the content.
@@ -200,7 +200,7 @@ func (b *MeasureBuilder) WithIdentifier(v dt.Identifier) *MeasureBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *MeasureBuilder) WithStatus(v string) *MeasureBuilder {
+func (b *MeasureBuilder) WithStatus(v MeasureStatus) *MeasureBuilder {
 	b.resource.Status = &v
 	return b
 }

@@ -34,7 +34,7 @@ type Slot struct {
 	// Identifier External Ids for this item.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status busy | free | busy-unavailable | busy-tentative | entered-in-error.
-	Status *string `json:"status,omitempty"`
+	Status *SlotStatus `json:"status,omitempty"`
 	// AppointmentType The style of appointment or patient that may be booked in the slot (not service type).
 	AppointmentType *dt.CodeableConcept `json:"appointmentType,omitempty"`
 	// Comment Comments on the slot to describe any extended information. Such as custom constraints on the slot.
@@ -138,7 +138,7 @@ func (b *SlotBuilder) WithIdentifier(v dt.Identifier) *SlotBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *SlotBuilder) WithStatus(v string) *SlotBuilder {
+func (b *SlotBuilder) WithStatus(v SlotStatus) *SlotBuilder {
 	b.resource.Status = &v
 	return b
 }

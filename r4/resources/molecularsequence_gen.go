@@ -60,7 +60,7 @@ type MolecularSequence struct {
 	// StructureVariant Information about chromosome structure variation.
 	StructureVariant []MolecularSequenceStructureVariant `json:"structureVariant,omitempty"`
 	// Type Amino Acid Sequence/ DNA Sequence / RNA Sequence.
-	Type *string `json:"type,omitempty"`
+	Type *MolecularSequenceType `json:"type,omitempty"`
 	// Variant The definition of variant here originates from Sequence ontology ([variant_of](http://www.sequenceontology.org/browser/current_svn/term/variant_of)). This element can represent amino acid or nuclei...
 	Variant []MolecularSequenceVariant `json:"variant,omitempty"`
 }
@@ -226,7 +226,7 @@ func (b *MolecularSequenceBuilder) WithStructureVariant(v MolecularSequenceStruc
 }
 
 // WithType sets the type field.
-func (b *MolecularSequenceBuilder) WithType(v string) *MolecularSequenceBuilder {
+func (b *MolecularSequenceBuilder) WithType(v MolecularSequenceType) *MolecularSequenceBuilder {
 	b.resource.Type = &v
 	return b
 }
@@ -309,7 +309,7 @@ type MolecularSequenceQuality struct {
 	// TruthTP True positives, from the perspective of the truth data, i.e. the number of sites in the Truth Call Set for which there are paths through the Query Call Set that are consistent with all of the allel...
 	TruthTP *float64 `json:"truthTP,omitempty"`
 	// Type INDEL / SNP / Undefined variant.
-	Type *string `json:"type,omitempty"`
+	Type *MolecularSequenceQualityType `json:"type,omitempty"`
 }
 
 // MolecularSequenceReferenceSeq Raw data describing a biological sequence.
@@ -325,7 +325,7 @@ type MolecularSequenceReferenceSeq struct {
 	// GenomeBuild The Genome Build used for reference, following GRCh build versions e.g. 'GRCh 37'.  Version number must be included if a versioned release of a primary build was used.
 	GenomeBuild *string `json:"genomeBuild,omitempty"`
 	// Orientation A relative reference to a DNA strand based on gene orientation. The strand that contains the open reading frame of the gene is the "sense" strand, and the opposite complementary strand is the "anti...
-	Orientation *string `json:"orientation,omitempty"`
+	Orientation *MolecularSequenceReferenceSeqOrientation `json:"orientation,omitempty"`
 	// ReferenceSeqId Reference identifier of reference sequence submitted to NCBI. It must match the type in the MolecularSequence.type field. For example, the prefix, “NG_” identifies reference sequence for genes,...
 	ReferenceSeqId *dt.CodeableConcept `json:"referenceSeqId,omitempty"`
 	// ReferenceSeqPointer A pointer to another MolecularSequence entity as reference sequence.
@@ -333,7 +333,7 @@ type MolecularSequenceReferenceSeq struct {
 	// ReferenceSeqString A string like "ACGT".
 	ReferenceSeqString *string `json:"referenceSeqString,omitempty"`
 	// Strand An absolute reference to a strand. The Watson strand is the strand whose 5'-end is on the short arm of the chromosome, and the Crick strand as the one whose 5'-end is on the long arm.
-	Strand *string `json:"strand,omitempty"`
+	Strand *MolecularSequenceReferenceSeqStrand `json:"strand,omitempty"`
 	// WindowEnd End position of the window on the reference sequence. If the coordinate system is 0-based then end is exclusive and does not include the last position. If the coordinate system is 1-base, then end ...
 	WindowEnd *int32 `json:"windowEnd,omitempty"`
 	// WindowStart Start position of the window on the reference sequence. If the coordinate system is either 0-based or 1-based, then start position is inclusive.
@@ -355,7 +355,7 @@ type MolecularSequenceRepository struct {
 	// ReadsetId Id of the read in this external repository.
 	ReadsetId *string `json:"readsetId,omitempty"`
 	// Type Click and see / RESTful API / Need login to see / RESTful API with authentication / Other ways to see resource.
-	Type *string `json:"type,omitempty"`
+	Type *MolecularSequenceRepositoryType `json:"type,omitempty"`
 	// Url URI of an external repository which contains further details about the genetics data.
 	Url *dt.URI `json:"url,omitempty"`
 	// VariantsetId Id of the variantset in this external repository. The server will understand how to use this id to call for more info about variantsets in external repository.

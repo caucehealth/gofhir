@@ -34,7 +34,7 @@ type Evidence struct {
 	// Identifier A formal identifier that is used to identify this evidence when it is represented in other formats, or referenced in a specification, model, design or an instance.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this evidence. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *EvidenceStatus `json:"status,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
 	// Author An individiual or organization primarily involved in the creation and maintenance of the content.
@@ -172,7 +172,7 @@ func (b *EvidenceBuilder) WithIdentifier(v dt.Identifier) *EvidenceBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *EvidenceBuilder) WithStatus(v string) *EvidenceBuilder {
+func (b *EvidenceBuilder) WithStatus(v EvidenceStatus) *EvidenceBuilder {
 	b.resource.Status = &v
 	return b
 }

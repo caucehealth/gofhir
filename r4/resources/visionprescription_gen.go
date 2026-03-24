@@ -213,7 +213,7 @@ type VisionPrescriptionLensSpecification struct {
 	// Duration The recommended maximum wear period for the lens.
 	Duration *dt.Quantity `json:"duration,omitempty"`
 	// Eye The eye for which the lens specification applies.
-	Eye *string `json:"eye,omitempty"`
+	Eye *VisionPrescriptionLensSpecificationEye `json:"eye,omitempty"`
 	// Note Notes for special requirements such as coatings and lens materials.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// Power Contact lens power measured in dioptres (0.25 units).
@@ -237,5 +237,5 @@ type VisionPrescriptionPrism struct {
 	// Amount Amount of prism to compensate for eye alignment in fractional units.
 	Amount *float64 `json:"amount,omitempty"`
 	// Base The relative base, or reference lens edge, for the prism.
-	Base *string `json:"base,omitempty"`
+	Base *VisionPrescriptionPrismBase `json:"base,omitempty"`
 }

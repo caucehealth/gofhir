@@ -34,7 +34,7 @@ type ConceptMap struct {
 	// Identifier A formal identifier that is used to identify this concept map when it is represented in other formats, or referenced in a specification, model, design or an instance.
 	Identifier *dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this concept map. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *ConceptMapStatus `json:"status,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Copyright A copyright statement relating to the concept map and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the concept map.
@@ -156,7 +156,7 @@ func (b *ConceptMapBuilder) WithIdentifier(v dt.Identifier) *ConceptMapBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *ConceptMapBuilder) WithStatus(v string) *ConceptMapBuilder {
+func (b *ConceptMapBuilder) WithStatus(v ConceptMapStatus) *ConceptMapBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -349,7 +349,7 @@ type ConceptMapTarget struct {
 	// Display The display for the code. The display is only provided to help editors when editing the concept map.
 	Display *string `json:"display,omitempty"`
 	// Equivalence The equivalence between the source and target concepts (counting for the dependencies and products). The equivalence is read from target to source (e.g. the target is 'wider' than the source).
-	Equivalence *string `json:"equivalence,omitempty"`
+	Equivalence *ConceptMapTargetEquivalence `json:"equivalence,omitempty"`
 	// Product A set of additional outcomes from this mapping to other elements. To properly execute this mapping, the specified element must be mapped to some data element or source that is in context. The mappi...
 	Product []ConceptMapDependsOn `json:"product,omitempty"`
 }
@@ -367,7 +367,7 @@ type ConceptMapUnmapped struct {
 	// Display The display for the code. The display is only provided to help editors when editing the concept map.
 	Display *string `json:"display,omitempty"`
 	// Mode Defines which action to take if there is no match for the source concept in the target system designated for the group. One of 3 actions are possible: use the unmapped code (this is useful when doi...
-	Mode *string `json:"mode,omitempty"`
+	Mode *ConceptMapUnmappedMode `json:"mode,omitempty"`
 	// Url The canonical reference to an additional ConceptMap resource instance to use for mapping if this ConceptMap resource contains no matching mapping for the source concept.
 	Url *dt.Canonical `json:"url,omitempty"`
 }

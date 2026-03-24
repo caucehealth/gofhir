@@ -34,7 +34,7 @@ type GuidanceResponse struct {
 	// Identifier Allows a service to provide  unique, business identifiers for the response.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the response. If the evaluation is completed successfully, the status will indicate success. However, in order to complete the evaluation, the engine may require more information. In ...
-	Status *string `json:"status,omitempty"`
+	Status *GuidanceResponseStatus `json:"status,omitempty"`
 	// DataRequirement If the evaluation could not be completed due to lack of information, or additional information would potentially result in a more accurate response, this element will a description of the data requ...
 	DataRequirement []dt.DataRequirement `json:"dataRequirement,omitempty"`
 	// Encounter The encounter during which this response was created or to which the creation of this record is tightly associated.
@@ -150,7 +150,7 @@ func (b *GuidanceResponseBuilder) WithIdentifier(v dt.Identifier) *GuidanceRespo
 }
 
 // WithStatus sets the status field.
-func (b *GuidanceResponseBuilder) WithStatus(v string) *GuidanceResponseBuilder {
+func (b *GuidanceResponseBuilder) WithStatus(v GuidanceResponseStatus) *GuidanceResponseBuilder {
 	b.resource.Status = &v
 	return b
 }

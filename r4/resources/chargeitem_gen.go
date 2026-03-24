@@ -35,7 +35,7 @@ type ChargeItem struct {
 	// Identifier Identifiers assigned to this event performer or other systems.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The current state of the ChargeItem.
-	Status *string `json:"status,omitempty"`
+	Status *ChargeItemStatus `json:"status,omitempty"`
 	// Account Account into which this ChargeItems belongs.
 	Account []dt.Reference `json:"account,omitempty"`
 	// Bodysite The anatomical location where the related service has been applied.
@@ -237,7 +237,7 @@ func (b *ChargeItemBuilder) WithIdentifier(v dt.Identifier) *ChargeItemBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *ChargeItemBuilder) WithStatus(v string) *ChargeItemBuilder {
+func (b *ChargeItemBuilder) WithStatus(v ChargeItemStatus) *ChargeItemBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -446,47 +446,6 @@ type ChargeItemPerformer struct {
 	Function *dt.CodeableConcept `json:"function,omitempty"`
 }
 
-// ChargeItemProduct represents a polymorphic choice type in FHIR.
-type ChargeItemProduct struct {
-	CodeableConcept *dt.CodeableConcept `json:"productCodeableConcept,omitempty"` // Identifies the device, food, drug or other product being charged either by type code or reference to an instance.
-	Reference       *dt.Reference       `json:"productReference,omitempty"`       // Identifies the device, food, drug or other product being charged either by type code or reference to an instance.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ChargeItemProduct.
-func (v ChargeItemProduct) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.CodeableConcept != nil {
-		m["productCodeableConcept"] = v.CodeableConcept
-	}
-	if v.Reference != nil {
-		m["productReference"] = v.Reference
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ChargeItemProduct.
-func (v *ChargeItemProduct) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["productCodeableConcept"]; ok {
-		var val dt.CodeableConcept
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling productCodeableConcept: %w", err)
-		}
-		v.CodeableConcept = &val
-	}
-	if d, ok := raw["productReference"]; ok {
-		var val dt.Reference
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling productReference: %w", err)
-		}
-		v.Reference = &val
-	}
-	return nil
-}
-
 // ChargeItemDefinitionChoice represents a polymorphic choice type in FHIR.
 type ChargeItemDefinitionChoice struct {
 	Canonical []dt.Canonical `json:"definitionCanonical,omitempty"` // References the source of pricing information, rules of application for the code this ChargeItem uses.
@@ -576,6 +535,47 @@ func (v *ChargeItemOccurrence) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling occurrenceTiming: %w", err)
 		}
 		v.Timing = &val
+	}
+	return nil
+}
+
+// ChargeItemProduct represents a polymorphic choice type in FHIR.
+type ChargeItemProduct struct {
+	CodeableConcept *dt.CodeableConcept `json:"productCodeableConcept,omitempty"` // Identifies the device, food, drug or other product being charged either by type code or reference to an instance.
+	Reference       *dt.Reference       `json:"productReference,omitempty"`       // Identifies the device, food, drug or other product being charged either by type code or reference to an instance.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ChargeItemProduct.
+func (v ChargeItemProduct) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.CodeableConcept != nil {
+		m["productCodeableConcept"] = v.CodeableConcept
+	}
+	if v.Reference != nil {
+		m["productReference"] = v.Reference
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ChargeItemProduct.
+func (v *ChargeItemProduct) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["productCodeableConcept"]; ok {
+		var val dt.CodeableConcept
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling productCodeableConcept: %w", err)
+		}
+		v.CodeableConcept = &val
+	}
+	if d, ok := raw["productReference"]; ok {
+		var val dt.Reference
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling productReference: %w", err)
+		}
+		v.Reference = &val
 	}
 	return nil
 }

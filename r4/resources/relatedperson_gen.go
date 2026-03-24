@@ -42,7 +42,7 @@ type RelatedPerson struct {
 	// Communication A language which may be used to communicate with about the patient's health.
 	Communication []RelatedPersonCommunication `json:"communication,omitempty"`
 	// Gender Administrative Gender - the gender that the person is considered to have for administration and record keeping purposes.
-	Gender *string `json:"gender,omitempty"`
+	Gender *AdministrativeGender `json:"gender,omitempty"`
 	// Name A name associated with the person.
 	Name []dt.HumanName `json:"name,omitempty"`
 	// Patient The patient this person is related to.
@@ -164,7 +164,7 @@ func (b *RelatedPersonBuilder) WithCommunication(v RelatedPersonCommunication) *
 }
 
 // WithGender sets the gender field.
-func (b *RelatedPersonBuilder) WithGender(v string) *RelatedPersonBuilder {
+func (b *RelatedPersonBuilder) WithGender(v AdministrativeGender) *RelatedPersonBuilder {
 	b.resource.Gender = &v
 	return b
 }

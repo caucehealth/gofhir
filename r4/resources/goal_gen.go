@@ -44,7 +44,7 @@ type Goal struct {
 	// ExpressedBy Indicates whose goal this is - patient goal, practitioner goal, etc.
 	ExpressedBy *dt.Reference `json:"expressedBy,omitempty"`
 	// LifecycleStatus The state of the goal throughout its lifecycle.
-	LifecycleStatus *string `json:"lifecycleStatus,omitempty"`
+	LifecycleStatus *GoalLifecycleStatus `json:"lifecycleStatus,omitempty"`
 	// Note Any comments related to the goal.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// OutcomeCode Identifies the change (or lack of change) at the point when the status of the goal is assessed.
@@ -180,7 +180,7 @@ func (b *GoalBuilder) WithExpressedBy(v dt.Reference) *GoalBuilder {
 }
 
 // WithLifecycleStatus sets the lifecycleStatus field.
-func (b *GoalBuilder) WithLifecycleStatus(v string) *GoalBuilder {
+func (b *GoalBuilder) WithLifecycleStatus(v GoalLifecycleStatus) *GoalBuilder {
 	b.resource.LifecycleStatus = &v
 	return b
 }

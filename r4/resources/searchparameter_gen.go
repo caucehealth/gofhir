@@ -32,7 +32,7 @@ type SearchParameter struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The status of this search parameter. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *SearchParameterStatus `json:"status,omitempty"`
 	// Base The base resource type(s) that this search parameter can be used against.
 	Base []dt.Code `json:"base,omitempty"`
 	// Chain Contains the names of any search parameters which may be chained to the containing search parameter. Chained parameters may be added to search parameters of type reference and specify that resource...
@@ -40,7 +40,7 @@ type SearchParameter struct {
 	// Code The code used in the URL or the parameter name in a parameters resource for this search parameter.
 	Code *dt.Code `json:"code,omitempty"`
 	// Comparator Comparators supported for the search parameter.
-	Comparator []string `json:"comparator,omitempty"`
+	Comparator []SearchParameterComparator `json:"comparator,omitempty"`
 	// Component Used to define the parts of a composite search parameter.
 	Component []SearchParameterComponent `json:"component,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
@@ -58,7 +58,7 @@ type SearchParameter struct {
 	// Jurisdiction A legal or geographic region in which the search parameter is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Modifier A modifier supported for the search parameter.
-	Modifier []string `json:"modifier,omitempty"`
+	Modifier []SearchParameterModifier `json:"modifier,omitempty"`
 	// MultipleAnd Whether multiple parameters are allowed - e.g. more than one parameter with the same name. The search matches if all the parameters match.
 	MultipleAnd *bool `json:"multipleAnd,omitempty"`
 	// MultipleOr Whether multiple values are allowed for each time the parameter exists. Values are separated by commas, and the parameter matches if any of the values match.
@@ -72,7 +72,7 @@ type SearchParameter struct {
 	// Target Types of resource (if a resource is referenced).
 	Target []dt.Code `json:"target,omitempty"`
 	// Type The type of value that a search parameter may contain, and how the content is interpreted.
-	Type *string `json:"type,omitempty"`
+	Type *SearchParameterType `json:"type,omitempty"`
 	// Url An absolute URI that is used to identify this search parameter when it is referenced in a specification, model, design or an instance; also called its canonical identifier. This SHOULD be globally ...
 	Url *dt.URI `json:"url,omitempty"`
 	// UseContext The content was developed with a focus and intent of supporting the contexts that are listed. These contexts may be general categories (gender, age, ...) or may be references to specific programs (...
@@ -82,7 +82,7 @@ type SearchParameter struct {
 	// Xpath An XPath expression that returns a set of elements for the search parameter.
 	Xpath *string `json:"xpath,omitempty"`
 	// XpathUsage How the search parameter relates to the set of elements returned by evaluating the xpath query.
-	XpathUsage *string `json:"xpathUsage,omitempty"`
+	XpathUsage *SearchParameterXpathUsage `json:"xpathUsage,omitempty"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for SearchParameter.
@@ -162,7 +162,7 @@ func (b *SearchParameterBuilder) WithModifierExtension(v dt.Extension) *SearchPa
 }
 
 // WithStatus sets the status field.
-func (b *SearchParameterBuilder) WithStatus(v string) *SearchParameterBuilder {
+func (b *SearchParameterBuilder) WithStatus(v SearchParameterStatus) *SearchParameterBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -186,7 +186,7 @@ func (b *SearchParameterBuilder) WithCode(v dt.Code) *SearchParameterBuilder {
 }
 
 // WithComparator adds an item to the comparator field.
-func (b *SearchParameterBuilder) WithComparator(v string) *SearchParameterBuilder {
+func (b *SearchParameterBuilder) WithComparator(v SearchParameterComparator) *SearchParameterBuilder {
 	b.resource.Comparator = append(b.resource.Comparator, v)
 	return b
 }
@@ -240,7 +240,7 @@ func (b *SearchParameterBuilder) WithJurisdiction(v dt.CodeableConcept) *SearchP
 }
 
 // WithModifier adds an item to the modifier field.
-func (b *SearchParameterBuilder) WithModifier(v string) *SearchParameterBuilder {
+func (b *SearchParameterBuilder) WithModifier(v SearchParameterModifier) *SearchParameterBuilder {
 	b.resource.Modifier = append(b.resource.Modifier, v)
 	return b
 }
@@ -282,7 +282,7 @@ func (b *SearchParameterBuilder) WithTarget(v dt.Code) *SearchParameterBuilder {
 }
 
 // WithType sets the type field.
-func (b *SearchParameterBuilder) WithType(v string) *SearchParameterBuilder {
+func (b *SearchParameterBuilder) WithType(v SearchParameterType) *SearchParameterBuilder {
 	b.resource.Type = &v
 	return b
 }
@@ -312,7 +312,7 @@ func (b *SearchParameterBuilder) WithXpath(v string) *SearchParameterBuilder {
 }
 
 // WithXpathUsage sets the xpathUsage field.
-func (b *SearchParameterBuilder) WithXpathUsage(v string) *SearchParameterBuilder {
+func (b *SearchParameterBuilder) WithXpathUsage(v SearchParameterXpathUsage) *SearchParameterBuilder {
 	b.resource.XpathUsage = &v
 	return b
 }

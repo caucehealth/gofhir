@@ -34,7 +34,7 @@ type TestReport struct {
 	// Identifier Identifier for the TestScript assigned for external purposes outside the context of FHIR.
 	Identifier *dt.Identifier `json:"identifier,omitempty"`
 	// Status The current state of this test report.
-	Status *string `json:"status,omitempty"`
+	Status *TestReportStatus `json:"status,omitempty"`
 	// Issued When the TestScript was executed and this TestReport was generated.
 	Issued *dt.DateTime `json:"issued,omitempty"`
 	// Name A free text natural language name identifying the executed TestScript.
@@ -42,7 +42,7 @@ type TestReport struct {
 	// Participant A participant in the test execution, either the execution engine, a client, or a server.
 	Participant []TestReportParticipant `json:"participant,omitempty"`
 	// Result The overall result from the execution of the TestScript.
-	Result *string `json:"result,omitempty"`
+	Result *TestReportResult `json:"result,omitempty"`
 	// Score The final score (percentage of tests passed) resulting from the execution of the TestScript.
 	Score *float64 `json:"score,omitempty"`
 	// Setup The results of the series of required setup operations before the tests were executed.
@@ -140,7 +140,7 @@ func (b *TestReportBuilder) WithIdentifier(v dt.Identifier) *TestReportBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *TestReportBuilder) WithStatus(v string) *TestReportBuilder {
+func (b *TestReportBuilder) WithStatus(v TestReportStatus) *TestReportBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -164,7 +164,7 @@ func (b *TestReportBuilder) WithParticipant(v TestReportParticipant) *TestReport
 }
 
 // WithResult sets the result field.
-func (b *TestReportBuilder) WithResult(v string) *TestReportBuilder {
+func (b *TestReportBuilder) WithResult(v TestReportResult) *TestReportBuilder {
 	b.resource.Result = &v
 	return b
 }
@@ -265,7 +265,7 @@ type TestReportAssert struct {
 	// Message An explanatory message associated with the result.
 	Message *dt.Markdown `json:"message,omitempty"`
 	// Result The result of this assertion.
-	Result *string `json:"result,omitempty"`
+	Result *TestReportAssertResult `json:"result,omitempty"`
 }
 
 // TestReportOperation A summary of information based on the results of executing a TestScript.
@@ -281,7 +281,7 @@ type TestReportOperation struct {
 	// Message An explanatory message associated with the result.
 	Message *dt.Markdown `json:"message,omitempty"`
 	// Result The result of this operation.
-	Result *string `json:"result,omitempty"`
+	Result *TestReportOperationResult `json:"result,omitempty"`
 }
 
 // TestReportParticipant A summary of information based on the results of executing a TestScript.
@@ -295,7 +295,7 @@ type TestReportParticipant struct {
 	// Display The display name of the participant.
 	Display *string `json:"display,omitempty"`
 	// Type The type of participant.
-	Type *string `json:"type,omitempty"`
+	Type *TestReportParticipantType `json:"type,omitempty"`
 	// Uri The uri of the participant. An absolute URL is preferred.
 	Uri *dt.URI `json:"uri,omitempty"`
 }

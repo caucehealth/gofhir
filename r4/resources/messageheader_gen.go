@@ -241,7 +241,7 @@ type MessageHeaderResponse struct {
 	// Identifier The MessageHeader.id of the message to which this message is a response.
 	Identifier *dt.ID `json:"identifier,omitempty"`
 	// Code Code that identifies the type of response to the message - whether it was successful or not, and whether it should be resent or not.
-	Code *string `json:"code,omitempty"`
+	Code *MessageHeaderResponseCode `json:"code,omitempty"`
 	// Details Full details of any issues found in the message.
 	Details *dt.Reference `json:"details,omitempty"`
 }

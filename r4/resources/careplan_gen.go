@@ -330,7 +330,7 @@ type CarePlanDetail struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status Identifies what progress is being made for the specific activity.
-	Status *string `json:"status,omitempty"`
+	Status *CarePlanDetailStatus `json:"status,omitempty"`
 	// Code Detailed description of the type of planned activity; e.g. what lab test, what procedure, what kind of encounter.
 	Code *dt.CodeableConcept `json:"code,omitempty"`
 	// DailyAmount Identifies the quantity expected to be consumed in a given day.

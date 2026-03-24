@@ -35,7 +35,7 @@ type DiagnosticReport struct {
 	// Identifier Identifiers assigned to this report by the performer or other systems.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of the diagnostic report.
-	Status *string `json:"status,omitempty"`
+	Status *DiagnosticReportStatus `json:"status,omitempty"`
 	// BasedOn Details concerning a service requested.
 	BasedOn []dt.Reference `json:"basedOn,omitempty"`
 	// Category A code that classifies the clinical discipline, department or diagnostic service that created the report (e.g. cardiology, biochemistry, hematology, MRI). This is used for searching, sorting and di...
@@ -129,7 +129,7 @@ func NewDiagnosticReport() *DiagnosticReportBuilder {
 }
 
 // WithStatus sets the diagnostic report status.
-func (b *DiagnosticReportBuilder) WithStatus(status string) *DiagnosticReportBuilder {
+func (b *DiagnosticReportBuilder) WithStatus(status DiagnosticReportStatus) *DiagnosticReportBuilder {
 	b.resource.Status = &status
 	return b
 }

@@ -34,7 +34,7 @@ type Library struct {
 	// Identifier A formal identifier that is used to identify this library when it is represented in other formats, or referenced in a specification, model, design or an instance. e.g. CMS or NQF identifiers for a ...
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this library. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *LibraryStatus `json:"status,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
 	// Author An individiual or organization primarily involved in the creation and maintenance of the content.
@@ -180,7 +180,7 @@ func (b *LibraryBuilder) WithIdentifier(v dt.Identifier) *LibraryBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *LibraryBuilder) WithStatus(v string) *LibraryBuilder {
+func (b *LibraryBuilder) WithStatus(v LibraryStatus) *LibraryBuilder {
 	b.resource.Status = &v
 	return b
 }

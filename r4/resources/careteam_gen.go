@@ -34,7 +34,7 @@ type CareTeam struct {
 	// Identifier Business identifiers assigned to this care team by the performer or other systems which remain constant as the resource is updated and propagates from server to server.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Indicates the current state of the care team.
-	Status *string `json:"status,omitempty"`
+	Status *CareTeamStatus `json:"status,omitempty"`
 	// Category Identifies what kind of team.  This is to support differentiation between multiple co-existing teams, such as care plan team, episode of care team, longitudinal care team.
 	Category []dt.CodeableConcept `json:"category,omitempty"`
 	// Encounter The Encounter during which this CareTeam was created or to which the creation of this record is tightly associated.
@@ -142,7 +142,7 @@ func (b *CareTeamBuilder) WithIdentifier(v dt.Identifier) *CareTeamBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *CareTeamBuilder) WithStatus(v string) *CareTeamBuilder {
+func (b *CareTeamBuilder) WithStatus(v CareTeamStatus) *CareTeamBuilder {
 	b.resource.Status = &v
 	return b
 }

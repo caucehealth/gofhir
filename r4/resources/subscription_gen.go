@@ -32,7 +32,7 @@ type Subscription struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the resource and that modifies the understanding of the element that contains it and/or the understanding...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Status The status of the subscription, which marks the server state for managing the subscription.
-	Status *string `json:"status,omitempty"`
+	Status *SubscriptionStatus `json:"status,omitempty"`
 	// Channel Details where to send notifications when resources are received that meet the criteria.
 	Channel SubscriptionChannel `json:"channel"`
 	// Contact Contact details for a human to contact about the subscription. The primary use of this for system administrator troubleshooting.
@@ -124,7 +124,7 @@ func (b *SubscriptionBuilder) WithModifierExtension(v dt.Extension) *Subscriptio
 }
 
 // WithStatus sets the status field.
-func (b *SubscriptionBuilder) WithStatus(v string) *SubscriptionBuilder {
+func (b *SubscriptionBuilder) WithStatus(v SubscriptionStatus) *SubscriptionBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -187,5 +187,5 @@ type SubscriptionChannel struct {
 	// Payload The mime type to send the payload in - either application/fhir+xml, or application/fhir+json. If the payload is not present, then there is no payload in the notification, just a notification. The m...
 	Payload *dt.Code `json:"payload,omitempty"`
 	// Type The type of channel to send notifications on.
-	Type *string `json:"type,omitempty"`
+	Type *SubscriptionChannelType `json:"type,omitempty"`
 }

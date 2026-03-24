@@ -34,7 +34,7 @@ type Flag struct {
 	// Identifier Business identifiers assigned to this flag by the performer or other systems which remain constant as the resource is updated and propagates from server to server.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Supports basic workflow.
-	Status *string `json:"status,omitempty"`
+	Status *FlagStatus `json:"status,omitempty"`
 	// Author The person, organization or device that created the flag.
 	Author *dt.Reference `json:"author,omitempty"`
 	// Category Allows a flag to be divided into different categories like clinical, administrative etc. Intended to be used as a means of filtering which flags are displayed to particular user or in a given context.
@@ -132,7 +132,7 @@ func (b *FlagBuilder) WithIdentifier(v dt.Identifier) *FlagBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *FlagBuilder) WithStatus(v string) *FlagBuilder {
+func (b *FlagBuilder) WithStatus(v FlagStatus) *FlagBuilder {
 	b.resource.Status = &v
 	return b
 }

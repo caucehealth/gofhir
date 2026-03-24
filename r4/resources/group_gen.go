@@ -51,7 +51,7 @@ type Group struct {
 	// Quantity A count of the number of resource instances that are part of the group.
 	Quantity *uint32 `json:"quantity,omitempty"`
 	// Type Identifies the broad classification of the kind of resources the group includes.
-	Type *string `json:"type,omitempty"`
+	Type *GroupType `json:"type,omitempty"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for Group.
@@ -185,7 +185,7 @@ func (b *GroupBuilder) WithQuantity(v uint32) *GroupBuilder {
 }
 
 // WithType sets the type field.
-func (b *GroupBuilder) WithType(v string) *GroupBuilder {
+func (b *GroupBuilder) WithType(v GroupType) *GroupBuilder {
 	b.resource.Type = &v
 	return b
 }

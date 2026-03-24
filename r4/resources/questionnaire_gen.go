@@ -35,7 +35,7 @@ type Questionnaire struct {
 	// Identifier A formal identifier that is used to identify this questionnaire when it is represented in other formats, or referenced in a specification, model, design or an instance.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this questionnaire. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *QuestionnaireStatus `json:"status,omitempty"`
 	// ApprovalDate The date on which the resource content was approved by the publisher. Approval happens once when the content is officially approved for usage.
 	ApprovalDate *dt.Date `json:"approvalDate,omitempty"`
 	// Code An identifier for this question or group of questions in a particular terminology such as LOINC.
@@ -161,7 +161,7 @@ func (b *QuestionnaireBuilder) WithIdentifier(v dt.Identifier) *QuestionnaireBui
 }
 
 // WithStatus sets the status field.
-func (b *QuestionnaireBuilder) WithStatus(v string) *QuestionnaireBuilder {
+func (b *QuestionnaireBuilder) WithStatus(v QuestionnaireStatus) *QuestionnaireBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -421,7 +421,7 @@ type QuestionnaireEnableWhen struct {
 	// AnswerTime A value that the referenced question is tested using the specified operator in order for the item to be enabled.
 	AnswerTime *string `json:"answerTime,omitempty"`
 	// Operator Specifies the criteria by which the question is enabled.
-	Operator *string `json:"operator,omitempty"`
+	Operator *QuestionnaireEnableWhenOperator `json:"operator,omitempty"`
 	// Question The linkId for the question whose answer (or lack of answer) governs whether this item is enabled.
 	Question *string `json:"question,omitempty"`
 }
@@ -608,7 +608,7 @@ type QuestionnaireItem struct {
 	// Definition This element is a URI that refers to an [[[ElementDefinition]]] that provides information about this item, including information that might otherwise be included in the instance of the Questionnair...
 	Definition *dt.URI `json:"definition,omitempty"`
 	// EnableBehavior Controls how multiple enableWhen values are interpreted -  whether all or any must be true.
-	EnableBehavior *string `json:"enableBehavior,omitempty"`
+	EnableBehavior *QuestionnaireItemEnableBehavior `json:"enableBehavior,omitempty"`
 	// EnableWhen A constraint indicating that this item should only be enabled (displayed/allow answers to be captured) when the specified condition is true.
 	EnableWhen []QuestionnaireEnableWhen `json:"enableWhen,omitempty"`
 	// Initial One or more values that should be pre-populated in the answer when initially rendering the questionnaire for user input.
@@ -628,5 +628,5 @@ type QuestionnaireItem struct {
 	// Required An indication, if true, that the item must be present in a "completed" QuestionnaireResponse.  If false, the item may be skipped when answering the questionnaire.
 	Required *bool `json:"required,omitempty"`
 	// Type The type of questionnaire item this is - whether text for display, a grouping of other items or a particular type of data to be captured (string, integer, coded choice, etc.).
-	Type *string `json:"type,omitempty"`
+	Type *QuestionnaireItemType `json:"type,omitempty"`
 }

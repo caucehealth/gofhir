@@ -34,7 +34,7 @@ type ExampleScenario struct {
 	// Identifier A formal identifier that is used to identify this example scenario when it is represented in other formats, or referenced in a specification, model, design or an instance.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The status of this example scenario. Enables tracking the life-cycle of the content.
-	Status *string `json:"status,omitempty"`
+	Status *ExampleScenarioStatus `json:"status,omitempty"`
 	// Actor Actor participating in the resource.
 	Actor []ExampleScenarioActor `json:"actor,omitempty"`
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
@@ -150,7 +150,7 @@ func (b *ExampleScenarioBuilder) WithIdentifier(v dt.Identifier) *ExampleScenari
 }
 
 // WithStatus sets the status field.
-func (b *ExampleScenarioBuilder) WithStatus(v string) *ExampleScenarioBuilder {
+func (b *ExampleScenarioBuilder) WithStatus(v ExampleScenarioStatus) *ExampleScenarioBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -267,7 +267,7 @@ type ExampleScenarioActor struct {
 	// Name The name of the actor as shown in the page.
 	Name *string `json:"name,omitempty"`
 	// Type The type of actor - person or system.
-	Type *string `json:"type,omitempty"`
+	Type *ExampleScenarioActorType `json:"type,omitempty"`
 }
 
 // ExampleScenarioAlternative Example of workflow instance.

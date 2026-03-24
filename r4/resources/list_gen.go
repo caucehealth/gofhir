@@ -34,7 +34,7 @@ type List struct {
 	// Identifier Identifier for the List assigned for business purposes outside the context of FHIR.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status Indicates the current state of this list.
-	Status *string `json:"status,omitempty"`
+	Status *ListStatus `json:"status,omitempty"`
 	// Code This code defines the purpose of the list - why it was created.
 	Code *dt.CodeableConcept `json:"code,omitempty"`
 	// Date The date that the list was prepared.
@@ -46,7 +46,7 @@ type List struct {
 	// Entry Entries in this list.
 	Entry []ListEntry `json:"entry,omitempty"`
 	// Mode How this list was prepared - whether it is a working list that is suitable for being maintained on an ongoing basis, or if it represents a snapshot of a list of items from another source, or whethe...
-	Mode *string `json:"mode,omitempty"`
+	Mode *ListMode `json:"mode,omitempty"`
 	// Note Comments that apply to the overall list.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// OrderedBy What order applies to the items in the list.
@@ -142,7 +142,7 @@ func (b *ListBuilder) WithIdentifier(v dt.Identifier) *ListBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *ListBuilder) WithStatus(v string) *ListBuilder {
+func (b *ListBuilder) WithStatus(v ListStatus) *ListBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -178,7 +178,7 @@ func (b *ListBuilder) WithEntry(v ListEntry) *ListBuilder {
 }
 
 // WithMode sets the mode field.
-func (b *ListBuilder) WithMode(v string) *ListBuilder {
+func (b *ListBuilder) WithMode(v ListMode) *ListBuilder {
 	b.resource.Mode = &v
 	return b
 }

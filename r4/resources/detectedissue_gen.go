@@ -56,7 +56,7 @@ type DetectedIssue struct {
 	// Reference The literature, knowledge-base or similar reference that describes the propensity for the detected issue identified.
 	Reference *dt.URI `json:"reference,omitempty"`
 	// Severity Indicates the degree of importance associated with the identified issue based on the potential impact on the patient.
-	Severity *string `json:"severity,omitempty"`
+	Severity *DetectedIssueSeverity `json:"severity,omitempty"`
 }
 
 // MarshalJSON implements the json.Marshaler interface for DetectedIssue.
@@ -208,7 +208,7 @@ func (b *DetectedIssueBuilder) WithReference(v dt.URI) *DetectedIssueBuilder {
 }
 
 // WithSeverity sets the severity field.
-func (b *DetectedIssueBuilder) WithSeverity(v string) *DetectedIssueBuilder {
+func (b *DetectedIssueBuilder) WithSeverity(v DetectedIssueSeverity) *DetectedIssueBuilder {
 	b.resource.Severity = &v
 	return b
 }

@@ -35,7 +35,7 @@ type CodeSystem struct {
 	// Identifier A formal identifier that is used to identify this code system when it is represented in other formats, or referenced in a specification, model, design or an instance.
 	Identifier []dt.Identifier `json:"identifier,omitempty"`
 	// Status The date (and optionally time) when the code system resource was created or revised.
-	Status *string `json:"status,omitempty"`
+	Status *CodeSystemStatus `json:"status,omitempty"`
 	// CaseSensitive If code comparison is case sensitive when codes within this system are compared to each other.
 	CaseSensitive *bool `json:"caseSensitive,omitempty"`
 	// Compositional The code system defines a compositional (post-coordination) grammar.
@@ -45,7 +45,7 @@ type CodeSystem struct {
 	// Contact Contact details to assist a user in finding and communicating with the publisher.
 	Contact []dt.ContactDetail `json:"contact,omitempty"`
 	// Content The extent of the content of the code system (the concepts and codes it defines) are represented in this resource instance.
-	Content *string `json:"content,omitempty"`
+	Content *CodeSystemContent `json:"content,omitempty"`
 	// Copyright A copyright statement relating to the code system and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the code system.
 	Copyright *dt.Markdown `json:"copyright,omitempty"`
 	// Count The total number of concepts defined by the code system. Where the code system has a compositional grammar, the basis of this count is defined by the system steward.
@@ -59,7 +59,7 @@ type CodeSystem struct {
 	// Filter A filter that can be used in a value set compose statement when selecting concepts using a filter.
 	Filter []CodeSystemFilter `json:"filter,omitempty"`
 	// HierarchyMeaning The meaning of the hierarchy of concepts as represented in this resource.
-	HierarchyMeaning *string `json:"hierarchyMeaning,omitempty"`
+	HierarchyMeaning *CodeSystemHierarchyMeaning `json:"hierarchyMeaning,omitempty"`
 	// Jurisdiction A legal or geographic region in which the code system is intended to be used.
 	Jurisdiction []dt.CodeableConcept `json:"jurisdiction,omitempty"`
 	// Name A natural language name identifying the code system. This name should be usable as an identifier for the module by machine processing applications such as code generation.
@@ -169,7 +169,7 @@ func (b *CodeSystemBuilder) WithIdentifier(v dt.Identifier) *CodeSystemBuilder {
 }
 
 // WithStatus sets the status field.
-func (b *CodeSystemBuilder) WithStatus(v string) *CodeSystemBuilder {
+func (b *CodeSystemBuilder) WithStatus(v CodeSystemStatus) *CodeSystemBuilder {
 	b.resource.Status = &v
 	return b
 }
@@ -199,7 +199,7 @@ func (b *CodeSystemBuilder) WithContact(v dt.ContactDetail) *CodeSystemBuilder {
 }
 
 // WithContent sets the content field.
-func (b *CodeSystemBuilder) WithContent(v string) *CodeSystemBuilder {
+func (b *CodeSystemBuilder) WithContent(v CodeSystemContent) *CodeSystemBuilder {
 	b.resource.Content = &v
 	return b
 }
@@ -241,7 +241,7 @@ func (b *CodeSystemBuilder) WithFilter(v CodeSystemFilter) *CodeSystemBuilder {
 }
 
 // WithHierarchyMeaning sets the hierarchyMeaning field.
-func (b *CodeSystemBuilder) WithHierarchyMeaning(v string) *CodeSystemBuilder {
+func (b *CodeSystemBuilder) WithHierarchyMeaning(v CodeSystemHierarchyMeaning) *CodeSystemBuilder {
 	b.resource.HierarchyMeaning = &v
 	return b
 }
@@ -394,7 +394,7 @@ type CodeSystemProperty struct {
 	// Description A description of the property- why it is defined, and how its value might be used.
 	Description *string `json:"description,omitempty"`
 	// Type The type of the property value. Properties of type "code" contain a code defined by the code system (e.g. a reference to another defined concept).
-	Type *string `json:"type,omitempty"`
+	Type *CodeSystemPropertyType `json:"type,omitempty"`
 	// Uri Reference to the formal meaning of the property. One possible source of meaning is the [Concept Properties](codesystem-concept-properties.html) code system.
 	Uri *dt.URI `json:"uri,omitempty"`
 }
