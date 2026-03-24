@@ -310,7 +310,7 @@ func decodeXMLElement(decoder *xml.Decoder) (any, error) {
 			if hasValue {
 				// Self-closing primitive element
 				decoder.Skip()
-				addToMap(m, name, valueAttr)
+				addToMap(m, name, coerceXMLValue(name, valueAttr))
 			} else {
 				// Complex child element
 				child, err := decodeXMLChild(decoder)
@@ -350,7 +350,7 @@ func decodeXMLChild(decoder *xml.Decoder) (any, error) {
 
 			if hasValue {
 				decoder.Skip()
-				addToMap(m, name, valueAttr)
+				addToMap(m, name, coerceXMLValue(name, valueAttr))
 			} else {
 				child, err := decodeXMLChild(decoder)
 				if err != nil {
@@ -370,6 +370,37 @@ func decodeXMLChild(decoder *xml.Decoder) (any, error) {
 			}
 		}
 	}
+}
+
+// coerceXMLValue attempts to convert string values from XML attributes to
+// their appropriate JSON types based on field name and value content.
+// FHIR XML stores all primitive values as strings in value="" attributes.
+func coerceXMLValue(fieldName, s string) any {
+	// Boolean fields
+	if s == "true" || s == "false" {
+		return s == "true"
+	}
+	// Known numeric field names in FHIR
+	numericFields := map[string]bool{
+		"value": true, "rank": true, "total": true, "score": true,
+		"factor": true, "net": true, "amount": true, "count": true,
+		"number": true, "quantity": true, "length": true, "offset": true,
+		"size": true, "limit": true, "min": true, "max": true,
+		"doseNumber": true, "seriesDoses": true, "numberOfRepeats": true,
+		"frequency": true, "frequencyMax": true, "period": true,
+		"periodMax": true, "duration": true, "durationMax": true,
+		"timeOffset": true, "lowerLimit": true, "upperLimit": true,
+		"dimensions": true, "positiveInt": true, "unsignedInt": true,
+	}
+	if numericFields[fieldName] {
+		if len(s) > 0 && (s[0] == '-' || (s[0] >= '0' && s[0] <= '9')) {
+			var f float64
+			if _, err := fmt.Sscanf(s, "%g", &f); err == nil {
+				return f
+			}
+		}
+	}
+	return s
 }
 
 func addToMap(m map[string]any, key string, val any) {

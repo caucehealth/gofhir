@@ -128,6 +128,33 @@ func TestXMLRoundTrip(t *testing.T) {
 	}
 }
 
+func TestXMLObservationWithValueQuantity(t *testing.T) {
+	xmlInput := `<?xml version="1.0" encoding="UTF-8"?>
+<Observation xmlns="http://hl7.org/fhir">
+  <status value="final"/>
+  <code><coding><system value="http://loinc.org"/><code value="1234"/></coding></code>
+  <valueQuantity><value value="120"/><unit value="mmHg"/></valueQuantity>
+</Observation>`
+
+	var obs resources.Observation
+	if err := parser.UnmarshalXML([]byte(xmlInput), &obs); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+
+	if obs.GetStatus() != "final" {
+		t.Errorf("status = %q, want final", obs.GetStatus())
+	}
+	if obs.Value == nil || obs.Value.Quantity == nil {
+		t.Fatal("value.quantity should be parsed from XML")
+	}
+	if obs.Value.Quantity.Value == nil || *obs.Value.Quantity.Value != 120 {
+		t.Errorf("quantity.value = %v, want 120", obs.Value.Quantity.Value)
+	}
+	if obs.Value.Quantity.Unit == nil || *obs.Value.Quantity.Unit != "mmHg" {
+		t.Errorf("quantity.unit = %v, want mmHg", obs.Value.Quantity.Unit)
+	}
+}
+
 func TestXMLObservation(t *testing.T) {
 	obs, _ := resources.NewObservation().
 		WithStatus(resources.ObservationStatusFinal).
