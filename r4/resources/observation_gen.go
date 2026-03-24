@@ -1008,3 +1008,270 @@ func (v *ObservationValue) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Observation) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Observation) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Observation) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Observation) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Observation) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Observation) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Observation) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Observation) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Observation) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Observation) GetStatus() ObservationStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero ObservationStatus
+	return zero
+}
+
+// GetBasedOn returns the basedOn field value, or an empty slice if nil.
+func (r *Observation) GetBasedOn() []dt.Reference {
+	if r.BasedOn != nil {
+		return r.BasedOn
+	}
+	return nil
+}
+
+// GetBodySite returns the bodySite field value, or the zero value if nil.
+func (r *Observation) GetBodySite() dt.CodeableConcept {
+	if r.BodySite != nil {
+		return *r.BodySite
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetCategory returns the category field value, or an empty slice if nil.
+func (r *Observation) GetCategory() []dt.CodeableConcept {
+	if r.Category != nil {
+		return r.Category
+	}
+	return nil
+}
+
+// GetCode returns the code field value.
+func (r *Observation) GetCode() dt.CodeableConcept {
+	return r.Code
+}
+
+// GetComponent returns the component field value, or an empty slice if nil.
+func (r *Observation) GetComponent() []ObservationComponent {
+	if r.Component != nil {
+		return r.Component
+	}
+	return nil
+}
+
+// GetDataAbsentReason returns the dataAbsentReason field value, or the zero value if nil.
+func (r *Observation) GetDataAbsentReason() dt.CodeableConcept {
+	if r.DataAbsentReason != nil {
+		return *r.DataAbsentReason
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetDerivedFrom returns the derivedFrom field value, or an empty slice if nil.
+func (r *Observation) GetDerivedFrom() []dt.Reference {
+	if r.DerivedFrom != nil {
+		return r.DerivedFrom
+	}
+	return nil
+}
+
+// GetDevice returns the device field value, or the zero value if nil.
+func (r *Observation) GetDevice() dt.Reference {
+	if r.Device != nil {
+		return *r.Device
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetEffective returns the effective field value, or a zero-value if nil.
+func (r *Observation) GetEffective() ObservationEffective {
+	if r.Effective != nil {
+		return *r.Effective
+	}
+	return ObservationEffective{}
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *Observation) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetFocus returns the focus field value, or an empty slice if nil.
+func (r *Observation) GetFocus() []dt.Reference {
+	if r.Focus != nil {
+		return r.Focus
+	}
+	return nil
+}
+
+// GetHasMember returns the hasMember field value, or an empty slice if nil.
+func (r *Observation) GetHasMember() []dt.Reference {
+	if r.HasMember != nil {
+		return r.HasMember
+	}
+	return nil
+}
+
+// GetInterpretation returns the interpretation field value, or an empty slice if nil.
+func (r *Observation) GetInterpretation() []dt.CodeableConcept {
+	if r.Interpretation != nil {
+		return r.Interpretation
+	}
+	return nil
+}
+
+// GetIssued returns the issued field value, or the zero value if nil.
+func (r *Observation) GetIssued() dt.Instant {
+	if r.Issued != nil {
+		return *r.Issued
+	}
+	var zero dt.Instant
+	return zero
+}
+
+// GetMethod returns the method field value, or the zero value if nil.
+func (r *Observation) GetMethod() dt.CodeableConcept {
+	if r.Method != nil {
+		return *r.Method
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *Observation) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetPartOf returns the partOf field value, or an empty slice if nil.
+func (r *Observation) GetPartOf() []dt.Reference {
+	if r.PartOf != nil {
+		return r.PartOf
+	}
+	return nil
+}
+
+// GetPerformer returns the performer field value, or an empty slice if nil.
+func (r *Observation) GetPerformer() []dt.Reference {
+	if r.Performer != nil {
+		return r.Performer
+	}
+	return nil
+}
+
+// GetReferenceRange returns the referenceRange field value, or an empty slice if nil.
+func (r *Observation) GetReferenceRange() []ObservationReferenceRange {
+	if r.ReferenceRange != nil {
+		return r.ReferenceRange
+	}
+	return nil
+}
+
+// GetSpecimen returns the specimen field value, or the zero value if nil.
+func (r *Observation) GetSpecimen() dt.Reference {
+	if r.Specimen != nil {
+		return *r.Specimen
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetSubject returns the subject field value, or the zero value if nil.
+func (r *Observation) GetSubject() dt.Reference {
+	if r.Subject != nil {
+		return *r.Subject
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetValue returns the value field value, or a zero-value if nil.
+func (r *Observation) GetValue() ObservationValue {
+	if r.Value != nil {
+		return *r.Value
+	}
+	return ObservationValue{}
+}

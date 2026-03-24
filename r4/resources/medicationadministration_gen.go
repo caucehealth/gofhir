@@ -619,3 +619,226 @@ func (v *MedicationAdministrationMedication) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *MedicationAdministration) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *MedicationAdministration) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *MedicationAdministration) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *MedicationAdministration) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *MedicationAdministration) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *MedicationAdministration) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *MedicationAdministration) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *MedicationAdministration) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *MedicationAdministration) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *MedicationAdministration) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetCategory returns the category field value, or the zero value if nil.
+func (r *MedicationAdministration) GetCategory() dt.CodeableConcept {
+	if r.Category != nil {
+		return *r.Category
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetContext returns the context field value, or the zero value if nil.
+func (r *MedicationAdministration) GetContext() dt.Reference {
+	if r.Context != nil {
+		return *r.Context
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetDevice returns the device field value, or an empty slice if nil.
+func (r *MedicationAdministration) GetDevice() []dt.Reference {
+	if r.Device != nil {
+		return r.Device
+	}
+	return nil
+}
+
+// GetDosage returns the dosage field value, or the zero value if nil.
+func (r *MedicationAdministration) GetDosage() MedicationAdministrationDosage {
+	if r.Dosage != nil {
+		return *r.Dosage
+	}
+	var zero MedicationAdministrationDosage
+	return zero
+}
+
+// GetEffective returns the effective field value, or a zero-value if nil.
+func (r *MedicationAdministration) GetEffective() MedicationAdministrationEffective {
+	if r.Effective != nil {
+		return *r.Effective
+	}
+	return MedicationAdministrationEffective{}
+}
+
+// GetEventHistory returns the eventHistory field value, or an empty slice if nil.
+func (r *MedicationAdministration) GetEventHistory() []dt.Reference {
+	if r.EventHistory != nil {
+		return r.EventHistory
+	}
+	return nil
+}
+
+// GetInstantiates returns the instantiates field value, or an empty slice if nil.
+func (r *MedicationAdministration) GetInstantiates() []dt.URI {
+	if r.Instantiates != nil {
+		return r.Instantiates
+	}
+	return nil
+}
+
+// GetMedication returns the medication field value, or a zero-value if nil.
+func (r *MedicationAdministration) GetMedication() MedicationAdministrationMedication {
+	if r.Medication != nil {
+		return *r.Medication
+	}
+	return MedicationAdministrationMedication{}
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *MedicationAdministration) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetPartOf returns the partOf field value, or an empty slice if nil.
+func (r *MedicationAdministration) GetPartOf() []dt.Reference {
+	if r.PartOf != nil {
+		return r.PartOf
+	}
+	return nil
+}
+
+// GetPerformer returns the performer field value, or an empty slice if nil.
+func (r *MedicationAdministration) GetPerformer() []MedicationAdministrationPerformer {
+	if r.Performer != nil {
+		return r.Performer
+	}
+	return nil
+}
+
+// GetReasonCode returns the reasonCode field value, or an empty slice if nil.
+func (r *MedicationAdministration) GetReasonCode() []dt.CodeableConcept {
+	if r.ReasonCode != nil {
+		return r.ReasonCode
+	}
+	return nil
+}
+
+// GetReasonReference returns the reasonReference field value, or an empty slice if nil.
+func (r *MedicationAdministration) GetReasonReference() []dt.Reference {
+	if r.ReasonReference != nil {
+		return r.ReasonReference
+	}
+	return nil
+}
+
+// GetRequest returns the request field value, or the zero value if nil.
+func (r *MedicationAdministration) GetRequest() dt.Reference {
+	if r.Request != nil {
+		return *r.Request
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetStatusReason returns the statusReason field value, or an empty slice if nil.
+func (r *MedicationAdministration) GetStatusReason() []dt.CodeableConcept {
+	if r.StatusReason != nil {
+		return r.StatusReason
+	}
+	return nil
+}
+
+// GetSubject returns the subject field value.
+func (r *MedicationAdministration) GetSubject() dt.Reference {
+	return r.Subject
+}
+
+// GetSupportingInformation returns the supportingInformation field value, or an empty slice if nil.
+func (r *MedicationAdministration) GetSupportingInformation() []dt.Reference {
+	if r.SupportingInformation != nil {
+		return r.SupportingInformation
+	}
+	return nil
+}

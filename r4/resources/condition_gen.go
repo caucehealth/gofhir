@@ -90,8 +90,8 @@ func (r Condition) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Abatement != nil {
-		vData, err := json.Marshal(r.Abatement)
+	if r.Onset != nil {
+		vData, err := json.Marshal(r.Onset)
 		if err != nil {
 			return nil, err
 		}
@@ -103,8 +103,8 @@ func (r Condition) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Onset != nil {
-		vData, err := json.Marshal(r.Onset)
+	if r.Abatement != nil {
+		vData, err := json.Marshal(r.Abatement)
 		if err != nil {
 			return nil, err
 		}
@@ -638,4 +638,214 @@ func (v *ConditionOnset) UnmarshalJSON(data []byte) error {
 		v.String = &val
 	}
 	return nil
+}
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Condition) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Condition) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Condition) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Condition) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Condition) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Condition) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Condition) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Condition) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Condition) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetAbatement returns the abatement field value, or a zero-value if nil.
+func (r *Condition) GetAbatement() ConditionAbatement {
+	if r.Abatement != nil {
+		return *r.Abatement
+	}
+	return ConditionAbatement{}
+}
+
+// GetAsserter returns the asserter field value, or the zero value if nil.
+func (r *Condition) GetAsserter() dt.Reference {
+	if r.Asserter != nil {
+		return *r.Asserter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetBodySite returns the bodySite field value, or an empty slice if nil.
+func (r *Condition) GetBodySite() []dt.CodeableConcept {
+	if r.BodySite != nil {
+		return r.BodySite
+	}
+	return nil
+}
+
+// GetCategory returns the category field value, or an empty slice if nil.
+func (r *Condition) GetCategory() []dt.CodeableConcept {
+	if r.Category != nil {
+		return r.Category
+	}
+	return nil
+}
+
+// GetClinicalStatus returns the clinicalStatus field value, or the zero value if nil.
+func (r *Condition) GetClinicalStatus() dt.CodeableConcept {
+	if r.ClinicalStatus != nil {
+		return *r.ClinicalStatus
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetCode returns the code field value, or the zero value if nil.
+func (r *Condition) GetCode() dt.CodeableConcept {
+	if r.Code != nil {
+		return *r.Code
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *Condition) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetEvidence returns the evidence field value, or an empty slice if nil.
+func (r *Condition) GetEvidence() []ConditionEvidence {
+	if r.Evidence != nil {
+		return r.Evidence
+	}
+	return nil
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *Condition) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetOnset returns the onset field value, or a zero-value if nil.
+func (r *Condition) GetOnset() ConditionOnset {
+	if r.Onset != nil {
+		return *r.Onset
+	}
+	return ConditionOnset{}
+}
+
+// GetRecordedDate returns the recordedDate field value, or the zero value if nil.
+func (r *Condition) GetRecordedDate() dt.DateTime {
+	if r.RecordedDate != nil {
+		return *r.RecordedDate
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetRecorder returns the recorder field value, or the zero value if nil.
+func (r *Condition) GetRecorder() dt.Reference {
+	if r.Recorder != nil {
+		return *r.Recorder
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetSeverity returns the severity field value, or the zero value if nil.
+func (r *Condition) GetSeverity() dt.CodeableConcept {
+	if r.Severity != nil {
+		return *r.Severity
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetStage returns the stage field value, or an empty slice if nil.
+func (r *Condition) GetStage() []ConditionStage {
+	if r.Stage != nil {
+		return r.Stage
+	}
+	return nil
+}
+
+// GetSubject returns the subject field value.
+func (r *Condition) GetSubject() dt.Reference {
+	return r.Subject
+}
+
+// GetVerificationStatus returns the verificationStatus field value, or the zero value if nil.
+func (r *Condition) GetVerificationStatus() dt.CodeableConcept {
+	if r.VerificationStatus != nil {
+		return *r.VerificationStatus
+	}
+	var zero dt.CodeableConcept
+	return zero
 }

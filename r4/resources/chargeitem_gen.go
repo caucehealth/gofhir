@@ -663,3 +663,277 @@ func (v *ChargeItemProduct) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *ChargeItem) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *ChargeItem) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *ChargeItem) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *ChargeItem) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *ChargeItem) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *ChargeItem) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *ChargeItem) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *ChargeItem) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *ChargeItem) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *ChargeItem) GetStatus() ChargeItemStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero ChargeItemStatus
+	return zero
+}
+
+// GetAccount returns the account field value, or an empty slice if nil.
+func (r *ChargeItem) GetAccount() []dt.Reference {
+	if r.Account != nil {
+		return r.Account
+	}
+	return nil
+}
+
+// GetBodysite returns the bodysite field value, or an empty slice if nil.
+func (r *ChargeItem) GetBodysite() []dt.CodeableConcept {
+	if r.Bodysite != nil {
+		return r.Bodysite
+	}
+	return nil
+}
+
+// GetCode returns the code field value.
+func (r *ChargeItem) GetCode() dt.CodeableConcept {
+	return r.Code
+}
+
+// GetContext returns the context field value, or the zero value if nil.
+func (r *ChargeItem) GetContext() dt.Reference {
+	if r.Context != nil {
+		return *r.Context
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetCostCenter returns the costCenter field value, or the zero value if nil.
+func (r *ChargeItem) GetCostCenter() dt.Reference {
+	if r.CostCenter != nil {
+		return *r.CostCenter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetDefinition returns the definition field value, or a zero-value if nil.
+func (r *ChargeItem) GetDefinition() ChargeItemDefinitionChoice {
+	if r.Definition != nil {
+		return *r.Definition
+	}
+	return ChargeItemDefinitionChoice{}
+}
+
+// GetEnteredDate returns the enteredDate field value, or the zero value if nil.
+func (r *ChargeItem) GetEnteredDate() dt.DateTime {
+	if r.EnteredDate != nil {
+		return *r.EnteredDate
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetEnterer returns the enterer field value, or the zero value if nil.
+func (r *ChargeItem) GetEnterer() dt.Reference {
+	if r.Enterer != nil {
+		return *r.Enterer
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetFactorOverride returns the factorOverride field value, or the zero value if nil.
+func (r *ChargeItem) GetFactorOverride() float64 {
+	if r.FactorOverride != nil {
+		return *r.FactorOverride
+	}
+	var zero float64
+	return zero
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *ChargeItem) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetOccurrence returns the occurrence field value, or a zero-value if nil.
+func (r *ChargeItem) GetOccurrence() ChargeItemOccurrence {
+	if r.Occurrence != nil {
+		return *r.Occurrence
+	}
+	return ChargeItemOccurrence{}
+}
+
+// GetOverrideReason returns the overrideReason field value, or the zero value if nil.
+func (r *ChargeItem) GetOverrideReason() string {
+	if r.OverrideReason != nil {
+		return *r.OverrideReason
+	}
+	var zero string
+	return zero
+}
+
+// GetPartOf returns the partOf field value, or an empty slice if nil.
+func (r *ChargeItem) GetPartOf() []dt.Reference {
+	if r.PartOf != nil {
+		return r.PartOf
+	}
+	return nil
+}
+
+// GetPerformer returns the performer field value, or an empty slice if nil.
+func (r *ChargeItem) GetPerformer() []ChargeItemPerformer {
+	if r.Performer != nil {
+		return r.Performer
+	}
+	return nil
+}
+
+// GetPerformingOrganization returns the performingOrganization field value, or the zero value if nil.
+func (r *ChargeItem) GetPerformingOrganization() dt.Reference {
+	if r.PerformingOrganization != nil {
+		return *r.PerformingOrganization
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPriceOverride returns the priceOverride field value, or the zero value if nil.
+func (r *ChargeItem) GetPriceOverride() dt.Money {
+	if r.PriceOverride != nil {
+		return *r.PriceOverride
+	}
+	var zero dt.Money
+	return zero
+}
+
+// GetProduct returns the product field value, or a zero-value if nil.
+func (r *ChargeItem) GetProduct() ChargeItemProduct {
+	if r.Product != nil {
+		return *r.Product
+	}
+	return ChargeItemProduct{}
+}
+
+// GetQuantity returns the quantity field value, or the zero value if nil.
+func (r *ChargeItem) GetQuantity() dt.Quantity {
+	if r.Quantity != nil {
+		return *r.Quantity
+	}
+	var zero dt.Quantity
+	return zero
+}
+
+// GetReason returns the reason field value, or an empty slice if nil.
+func (r *ChargeItem) GetReason() []dt.CodeableConcept {
+	if r.Reason != nil {
+		return r.Reason
+	}
+	return nil
+}
+
+// GetRequestingOrganization returns the requestingOrganization field value, or the zero value if nil.
+func (r *ChargeItem) GetRequestingOrganization() dt.Reference {
+	if r.RequestingOrganization != nil {
+		return *r.RequestingOrganization
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetService returns the service field value, or an empty slice if nil.
+func (r *ChargeItem) GetService() []dt.Reference {
+	if r.Service != nil {
+		return r.Service
+	}
+	return nil
+}
+
+// GetSubject returns the subject field value.
+func (r *ChargeItem) GetSubject() dt.Reference {
+	return r.Subject
+}
+
+// GetSupportingInformation returns the supportingInformation field value, or an empty slice if nil.
+func (r *ChargeItem) GetSupportingInformation() []dt.Reference {
+	if r.SupportingInformation != nil {
+		return r.SupportingInformation
+	}
+	return nil
+}

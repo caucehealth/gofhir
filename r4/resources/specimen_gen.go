@@ -369,3 +369,182 @@ type SpecimenProcessing struct {
 	// TimePeriod A record of the time or period when the specimen processing occurred.  For example the time of sample fixation or the period of time the sample was in formalin.
 	TimePeriod *dt.Period `json:"timePeriod,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Specimen) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Specimen) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Specimen) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Specimen) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Specimen) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Specimen) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Specimen) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Specimen) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Specimen) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Specimen) GetStatus() SpecimenStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero SpecimenStatus
+	return zero
+}
+
+// GetAccessionIdentifier returns the accessionIdentifier field value, or the zero value if nil.
+func (r *Specimen) GetAccessionIdentifier() dt.Identifier {
+	if r.AccessionIdentifier != nil {
+		return *r.AccessionIdentifier
+	}
+	var zero dt.Identifier
+	return zero
+}
+
+// GetCollection returns the collection field value, or the zero value if nil.
+func (r *Specimen) GetCollection() SpecimenCollection {
+	if r.Collection != nil {
+		return *r.Collection
+	}
+	var zero SpecimenCollection
+	return zero
+}
+
+// GetCondition returns the condition field value, or an empty slice if nil.
+func (r *Specimen) GetCondition() []dt.CodeableConcept {
+	if r.Condition != nil {
+		return r.Condition
+	}
+	return nil
+}
+
+// GetContainer returns the container field value, or an empty slice if nil.
+func (r *Specimen) GetContainer() []SpecimenContainer {
+	if r.Container != nil {
+		return r.Container
+	}
+	return nil
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *Specimen) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetParent returns the parent field value, or an empty slice if nil.
+func (r *Specimen) GetParent() []dt.Reference {
+	if r.Parent != nil {
+		return r.Parent
+	}
+	return nil
+}
+
+// GetProcessing returns the processing field value, or an empty slice if nil.
+func (r *Specimen) GetProcessing() []SpecimenProcessing {
+	if r.Processing != nil {
+		return r.Processing
+	}
+	return nil
+}
+
+// GetReceivedTime returns the receivedTime field value, or the zero value if nil.
+func (r *Specimen) GetReceivedTime() dt.DateTime {
+	if r.ReceivedTime != nil {
+		return *r.ReceivedTime
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetRequest returns the request field value, or an empty slice if nil.
+func (r *Specimen) GetRequest() []dt.Reference {
+	if r.Request != nil {
+		return r.Request
+	}
+	return nil
+}
+
+// GetSubject returns the subject field value, or the zero value if nil.
+func (r *Specimen) GetSubject() dt.Reference {
+	if r.Subject != nil {
+		return *r.Subject
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *Specimen) GetType() dt.CodeableConcept {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero dt.CodeableConcept
+	return zero
+}

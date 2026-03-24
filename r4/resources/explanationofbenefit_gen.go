@@ -813,47 +813,6 @@ func (r *ExplanationOfBenefitAddItem) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// ExplanationOfBenefitAddItemServiced represents a polymorphic choice type in FHIR.
-type ExplanationOfBenefitAddItemServiced struct {
-	Date   *string    `json:"servicedDate,omitempty"`   // The date or dates when the service or product was supplied, performed or completed.
-	Period *dt.Period `json:"servicedPeriod,omitempty"` // The date or dates when the service or product was supplied, performed or completed.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ExplanationOfBenefitAddItemServiced.
-func (v ExplanationOfBenefitAddItemServiced) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Date != nil {
-		m["servicedDate"] = v.Date
-	}
-	if v.Period != nil {
-		m["servicedPeriod"] = v.Period
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ExplanationOfBenefitAddItemServiced.
-func (v *ExplanationOfBenefitAddItemServiced) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["servicedDate"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling servicedDate: %w", err)
-		}
-		v.Date = &val
-	}
-	if d, ok := raw["servicedPeriod"]; ok {
-		var val dt.Period
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling servicedPeriod: %w", err)
-		}
-		v.Period = &val
-	}
-	return nil
-}
-
 // ExplanationOfBenefitAddItemLocation represents a polymorphic choice type in FHIR.
 type ExplanationOfBenefitAddItemLocation struct {
 	Address         *dt.Address         `json:"locationAddress,omitempty"`         // Where the product or service was provided.
@@ -902,6 +861,47 @@ func (v *ExplanationOfBenefitAddItemLocation) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling locationReference: %w", err)
 		}
 		v.Reference = &val
+	}
+	return nil
+}
+
+// ExplanationOfBenefitAddItemServiced represents a polymorphic choice type in FHIR.
+type ExplanationOfBenefitAddItemServiced struct {
+	Date   *string    `json:"servicedDate,omitempty"`   // The date or dates when the service or product was supplied, performed or completed.
+	Period *dt.Period `json:"servicedPeriod,omitempty"` // The date or dates when the service or product was supplied, performed or completed.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ExplanationOfBenefitAddItemServiced.
+func (v ExplanationOfBenefitAddItemServiced) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Date != nil {
+		m["servicedDate"] = v.Date
+	}
+	if v.Period != nil {
+		m["servicedPeriod"] = v.Period
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ExplanationOfBenefitAddItemServiced.
+func (v *ExplanationOfBenefitAddItemServiced) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["servicedDate"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling servicedDate: %w", err)
+		}
+		v.Date = &val
+	}
+	if d, ok := raw["servicedPeriod"]; ok {
+		var val dt.Period
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling servicedPeriod: %w", err)
+		}
+		v.Period = &val
 	}
 	return nil
 }
@@ -1459,8 +1459,8 @@ func (r ExplanationOfBenefitItem) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Location != nil {
-		vData, err := json.Marshal(r.Location)
+	if r.Serviced != nil {
+		vData, err := json.Marshal(r.Serviced)
 		if err != nil {
 			return nil, err
 		}
@@ -1472,8 +1472,8 @@ func (r ExplanationOfBenefitItem) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Serviced != nil {
-		vData, err := json.Marshal(r.Serviced)
+	if r.Location != nil {
+		vData, err := json.Marshal(r.Location)
 		if err != nil {
 			return nil, err
 		}
@@ -1509,47 +1509,6 @@ func (r *ExplanationOfBenefitItem) UnmarshalJSON(data []byte) error {
 	}
 	if servicedVal.Date != nil || servicedVal.Period != nil {
 		r.Serviced = &servicedVal
-	}
-	return nil
-}
-
-// ExplanationOfBenefitItemServiced represents a polymorphic choice type in FHIR.
-type ExplanationOfBenefitItemServiced struct {
-	Date   *string    `json:"servicedDate,omitempty"`   // The date or dates when the service or product was supplied, performed or completed.
-	Period *dt.Period `json:"servicedPeriod,omitempty"` // The date or dates when the service or product was supplied, performed or completed.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ExplanationOfBenefitItemServiced.
-func (v ExplanationOfBenefitItemServiced) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Date != nil {
-		m["servicedDate"] = v.Date
-	}
-	if v.Period != nil {
-		m["servicedPeriod"] = v.Period
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ExplanationOfBenefitItemServiced.
-func (v *ExplanationOfBenefitItemServiced) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["servicedDate"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling servicedDate: %w", err)
-		}
-		v.Date = &val
-	}
-	if d, ok := raw["servicedPeriod"]; ok {
-		var val dt.Period
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling servicedPeriod: %w", err)
-		}
-		v.Period = &val
 	}
 	return nil
 }
@@ -1602,6 +1561,47 @@ func (v *ExplanationOfBenefitItemLocation) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling locationReference: %w", err)
 		}
 		v.Reference = &val
+	}
+	return nil
+}
+
+// ExplanationOfBenefitItemServiced represents a polymorphic choice type in FHIR.
+type ExplanationOfBenefitItemServiced struct {
+	Date   *string    `json:"servicedDate,omitempty"`   // The date or dates when the service or product was supplied, performed or completed.
+	Period *dt.Period `json:"servicedPeriod,omitempty"` // The date or dates when the service or product was supplied, performed or completed.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ExplanationOfBenefitItemServiced.
+func (v ExplanationOfBenefitItemServiced) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Date != nil {
+		m["servicedDate"] = v.Date
+	}
+	if v.Period != nil {
+		m["servicedPeriod"] = v.Period
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ExplanationOfBenefitItemServiced.
+func (v *ExplanationOfBenefitItemServiced) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["servicedDate"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling servicedDate: %w", err)
+		}
+		v.Date = &val
+	}
+	if d, ok := raw["servicedPeriod"]; ok {
+		var val dt.Period
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling servicedPeriod: %w", err)
+		}
+		v.Period = &val
 	}
 	return nil
 }
@@ -2100,4 +2100,429 @@ type ExplanationOfBenefitTotal struct {
 	Amount dt.Money `json:"amount"`
 	// Category A code to indicate the information type of this adjudication record. Information types may include: the value submitted, maximum values or percentages allowed or payable under the plan, amounts tha...
 	Category dt.CodeableConcept `json:"category"`
+}
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *ExplanationOfBenefit) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *ExplanationOfBenefit) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *ExplanationOfBenefit) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *ExplanationOfBenefit) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetStatus() ExplanationOfBenefitStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero ExplanationOfBenefitStatus
+	return zero
+}
+
+// GetAccident returns the accident field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetAccident() ExplanationOfBenefitAccident {
+	if r.Accident != nil {
+		return *r.Accident
+	}
+	var zero ExplanationOfBenefitAccident
+	return zero
+}
+
+// GetAddItem returns the addItem field value, or an empty slice if nil.
+func (r *ExplanationOfBenefit) GetAddItem() []ExplanationOfBenefitAddItem {
+	if r.AddItem != nil {
+		return r.AddItem
+	}
+	return nil
+}
+
+// GetAdjudication returns the adjudication field value, or an empty slice if nil.
+func (r *ExplanationOfBenefit) GetAdjudication() []ExplanationOfBenefitAdjudication {
+	if r.Adjudication != nil {
+		return r.Adjudication
+	}
+	return nil
+}
+
+// GetBenefitBalance returns the benefitBalance field value, or an empty slice if nil.
+func (r *ExplanationOfBenefit) GetBenefitBalance() []ExplanationOfBenefitBenefitBalance {
+	if r.BenefitBalance != nil {
+		return r.BenefitBalance
+	}
+	return nil
+}
+
+// GetBenefitPeriod returns the benefitPeriod field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetBenefitPeriod() dt.Period {
+	if r.BenefitPeriod != nil {
+		return *r.BenefitPeriod
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetBillablePeriod returns the billablePeriod field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetBillablePeriod() dt.Period {
+	if r.BillablePeriod != nil {
+		return *r.BillablePeriod
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetCareTeam returns the careTeam field value, or an empty slice if nil.
+func (r *ExplanationOfBenefit) GetCareTeam() []ExplanationOfBenefitCareTeam {
+	if r.CareTeam != nil {
+		return r.CareTeam
+	}
+	return nil
+}
+
+// GetClaim returns the claim field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetClaim() dt.Reference {
+	if r.Claim != nil {
+		return *r.Claim
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetClaimResponse returns the claimResponse field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetClaimResponse() dt.Reference {
+	if r.ClaimResponse != nil {
+		return *r.ClaimResponse
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetCreated returns the created field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetCreated() dt.DateTime {
+	if r.Created != nil {
+		return *r.Created
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDiagnosis returns the diagnosis field value, or an empty slice if nil.
+func (r *ExplanationOfBenefit) GetDiagnosis() []ExplanationOfBenefitDiagnosis {
+	if r.Diagnosis != nil {
+		return r.Diagnosis
+	}
+	return nil
+}
+
+// GetDisposition returns the disposition field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetDisposition() string {
+	if r.Disposition != nil {
+		return *r.Disposition
+	}
+	var zero string
+	return zero
+}
+
+// GetEnterer returns the enterer field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetEnterer() dt.Reference {
+	if r.Enterer != nil {
+		return *r.Enterer
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetFacility returns the facility field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetFacility() dt.Reference {
+	if r.Facility != nil {
+		return *r.Facility
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetForm returns the form field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetForm() dt.Attachment {
+	if r.Form != nil {
+		return *r.Form
+	}
+	var zero dt.Attachment
+	return zero
+}
+
+// GetFormCode returns the formCode field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetFormCode() dt.CodeableConcept {
+	if r.FormCode != nil {
+		return *r.FormCode
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetFundsReserve returns the fundsReserve field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetFundsReserve() dt.CodeableConcept {
+	if r.FundsReserve != nil {
+		return *r.FundsReserve
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetFundsReserveRequested returns the fundsReserveRequested field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetFundsReserveRequested() dt.CodeableConcept {
+	if r.FundsReserveRequested != nil {
+		return *r.FundsReserveRequested
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetInsurance returns the insurance field value, or an empty slice if nil.
+func (r *ExplanationOfBenefit) GetInsurance() []ExplanationOfBenefitInsurance {
+	if r.Insurance != nil {
+		return r.Insurance
+	}
+	return nil
+}
+
+// GetInsurer returns the insurer field value.
+func (r *ExplanationOfBenefit) GetInsurer() dt.Reference {
+	return r.Insurer
+}
+
+// GetItem returns the item field value, or an empty slice if nil.
+func (r *ExplanationOfBenefit) GetItem() []ExplanationOfBenefitItem {
+	if r.Item != nil {
+		return r.Item
+	}
+	return nil
+}
+
+// GetOriginalPrescription returns the originalPrescription field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetOriginalPrescription() dt.Reference {
+	if r.OriginalPrescription != nil {
+		return *r.OriginalPrescription
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetOutcome returns the outcome field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetOutcome() dt.Code {
+	if r.Outcome != nil {
+		return *r.Outcome
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetPatient returns the patient field value.
+func (r *ExplanationOfBenefit) GetPatient() dt.Reference {
+	return r.Patient
+}
+
+// GetPayee returns the payee field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetPayee() ExplanationOfBenefitPayee {
+	if r.Payee != nil {
+		return *r.Payee
+	}
+	var zero ExplanationOfBenefitPayee
+	return zero
+}
+
+// GetPayment returns the payment field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetPayment() ExplanationOfBenefitPayment {
+	if r.Payment != nil {
+		return *r.Payment
+	}
+	var zero ExplanationOfBenefitPayment
+	return zero
+}
+
+// GetPreAuthRef returns the preAuthRef field value, or an empty slice if nil.
+func (r *ExplanationOfBenefit) GetPreAuthRef() []string {
+	if r.PreAuthRef != nil {
+		return r.PreAuthRef
+	}
+	return nil
+}
+
+// GetPreAuthRefPeriod returns the preAuthRefPeriod field value, or an empty slice if nil.
+func (r *ExplanationOfBenefit) GetPreAuthRefPeriod() []dt.Period {
+	if r.PreAuthRefPeriod != nil {
+		return r.PreAuthRefPeriod
+	}
+	return nil
+}
+
+// GetPrecedence returns the precedence field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetPrecedence() uint32 {
+	if r.Precedence != nil {
+		return *r.Precedence
+	}
+	var zero uint32
+	return zero
+}
+
+// GetPrescription returns the prescription field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetPrescription() dt.Reference {
+	if r.Prescription != nil {
+		return *r.Prescription
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPriority returns the priority field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetPriority() dt.CodeableConcept {
+	if r.Priority != nil {
+		return *r.Priority
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetProcedure returns the procedure field value, or an empty slice if nil.
+func (r *ExplanationOfBenefit) GetProcedure() []ExplanationOfBenefitProcedure {
+	if r.Procedure != nil {
+		return r.Procedure
+	}
+	return nil
+}
+
+// GetProcessNote returns the processNote field value, or an empty slice if nil.
+func (r *ExplanationOfBenefit) GetProcessNote() []ExplanationOfBenefitProcessNote {
+	if r.ProcessNote != nil {
+		return r.ProcessNote
+	}
+	return nil
+}
+
+// GetProvider returns the provider field value.
+func (r *ExplanationOfBenefit) GetProvider() dt.Reference {
+	return r.Provider
+}
+
+// GetReferral returns the referral field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetReferral() dt.Reference {
+	if r.Referral != nil {
+		return *r.Referral
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetRelated returns the related field value, or an empty slice if nil.
+func (r *ExplanationOfBenefit) GetRelated() []ExplanationOfBenefitRelated {
+	if r.Related != nil {
+		return r.Related
+	}
+	return nil
+}
+
+// GetSubType returns the subType field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetSubType() dt.CodeableConcept {
+	if r.SubType != nil {
+		return *r.SubType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSupportingInfo returns the supportingInfo field value, or an empty slice if nil.
+func (r *ExplanationOfBenefit) GetSupportingInfo() []ExplanationOfBenefitSupportingInfo {
+	if r.SupportingInfo != nil {
+		return r.SupportingInfo
+	}
+	return nil
+}
+
+// GetTotal returns the total field value, or an empty slice if nil.
+func (r *ExplanationOfBenefit) GetTotal() []ExplanationOfBenefitTotal {
+	if r.Total != nil {
+		return r.Total
+	}
+	return nil
+}
+
+// GetType returns the type field value.
+func (r *ExplanationOfBenefit) GetType() dt.CodeableConcept {
+	return r.Type
+}
+
+// GetUse returns the use field value, or the zero value if nil.
+func (r *ExplanationOfBenefit) GetUse() dt.Code {
+	if r.Use != nil {
+		return *r.Use
+	}
+	var zero dt.Code
+	return zero
 }

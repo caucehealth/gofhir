@@ -392,3 +392,160 @@ type MeasureReportStratum struct {
 	// Value The value for this stratum, expressed as a CodeableConcept. When defining stratifiers on complex values, the value must be rendered such that the value for each stratum within the stratifier is uni...
 	Value *dt.CodeableConcept `json:"value,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *MeasureReport) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *MeasureReport) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *MeasureReport) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *MeasureReport) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *MeasureReport) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *MeasureReport) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *MeasureReport) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *MeasureReport) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *MeasureReport) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *MeasureReport) GetStatus() MeasureReportStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero MeasureReportStatus
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *MeasureReport) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetEvaluatedResource returns the evaluatedResource field value, or an empty slice if nil.
+func (r *MeasureReport) GetEvaluatedResource() []dt.Reference {
+	if r.EvaluatedResource != nil {
+		return r.EvaluatedResource
+	}
+	return nil
+}
+
+// GetGroup returns the group field value, or an empty slice if nil.
+func (r *MeasureReport) GetGroup() []MeasureReportGroup {
+	if r.Group != nil {
+		return r.Group
+	}
+	return nil
+}
+
+// GetImprovementNotation returns the improvementNotation field value, or the zero value if nil.
+func (r *MeasureReport) GetImprovementNotation() dt.CodeableConcept {
+	if r.ImprovementNotation != nil {
+		return *r.ImprovementNotation
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetMeasure returns the measure field value.
+func (r *MeasureReport) GetMeasure() dt.Canonical {
+	return r.Measure
+}
+
+// GetPeriod returns the period field value.
+func (r *MeasureReport) GetPeriod() dt.Period {
+	return r.Period
+}
+
+// GetReporter returns the reporter field value, or the zero value if nil.
+func (r *MeasureReport) GetReporter() dt.Reference {
+	if r.Reporter != nil {
+		return *r.Reporter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetSubject returns the subject field value, or the zero value if nil.
+func (r *MeasureReport) GetSubject() dt.Reference {
+	if r.Subject != nil {
+		return *r.Subject
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *MeasureReport) GetType() MeasureReportType {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero MeasureReportType
+	return zero
+}

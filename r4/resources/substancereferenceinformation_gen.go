@@ -299,3 +299,113 @@ type SubstanceReferenceInformationTarget struct {
 	// Type Todo.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *SubstanceReferenceInformation) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *SubstanceReferenceInformation) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *SubstanceReferenceInformation) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *SubstanceReferenceInformation) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *SubstanceReferenceInformation) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *SubstanceReferenceInformation) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *SubstanceReferenceInformation) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *SubstanceReferenceInformation) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetClassification returns the classification field value, or an empty slice if nil.
+func (r *SubstanceReferenceInformation) GetClassification() []SubstanceReferenceInformationClassification {
+	if r.Classification != nil {
+		return r.Classification
+	}
+	return nil
+}
+
+// GetComment returns the comment field value, or the zero value if nil.
+func (r *SubstanceReferenceInformation) GetComment() string {
+	if r.Comment != nil {
+		return *r.Comment
+	}
+	var zero string
+	return zero
+}
+
+// GetGene returns the gene field value, or an empty slice if nil.
+func (r *SubstanceReferenceInformation) GetGene() []SubstanceReferenceInformationGene {
+	if r.Gene != nil {
+		return r.Gene
+	}
+	return nil
+}
+
+// GetGeneElement returns the geneElement field value, or an empty slice if nil.
+func (r *SubstanceReferenceInformation) GetGeneElement() []SubstanceReferenceInformationGeneElement {
+	if r.GeneElement != nil {
+		return r.GeneElement
+	}
+	return nil
+}
+
+// GetTarget returns the target field value, or an empty slice if nil.
+func (r *SubstanceReferenceInformation) GetTarget() []SubstanceReferenceInformationTarget {
+	if r.Target != nil {
+		return r.Target
+	}
+	return nil
+}

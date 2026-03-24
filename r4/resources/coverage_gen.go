@@ -480,3 +480,216 @@ type CoverageException struct {
 	// Type The code for the specific exception.
 	Type dt.CodeableConcept `json:"type"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Coverage) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Coverage) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Coverage) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Coverage) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Coverage) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Coverage) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Coverage) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Coverage) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Coverage) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Coverage) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetBeneficiary returns the beneficiary field value.
+func (r *Coverage) GetBeneficiary() dt.Reference {
+	return r.Beneficiary
+}
+
+// GetClass returns the class field value, or an empty slice if nil.
+func (r *Coverage) GetClass() []CoverageClass {
+	if r.Class != nil {
+		return r.Class
+	}
+	return nil
+}
+
+// GetContract returns the contract field value, or an empty slice if nil.
+func (r *Coverage) GetContract() []dt.Reference {
+	if r.Contract != nil {
+		return r.Contract
+	}
+	return nil
+}
+
+// GetCostToBeneficiary returns the costToBeneficiary field value, or an empty slice if nil.
+func (r *Coverage) GetCostToBeneficiary() []CoverageCostToBeneficiary {
+	if r.CostToBeneficiary != nil {
+		return r.CostToBeneficiary
+	}
+	return nil
+}
+
+// GetDependent returns the dependent field value, or the zero value if nil.
+func (r *Coverage) GetDependent() string {
+	if r.Dependent != nil {
+		return *r.Dependent
+	}
+	var zero string
+	return zero
+}
+
+// GetNetwork returns the network field value, or the zero value if nil.
+func (r *Coverage) GetNetwork() string {
+	if r.Network != nil {
+		return *r.Network
+	}
+	var zero string
+	return zero
+}
+
+// GetOrder returns the order field value, or the zero value if nil.
+func (r *Coverage) GetOrder() uint32 {
+	if r.Order != nil {
+		return *r.Order
+	}
+	var zero uint32
+	return zero
+}
+
+// GetPayor returns the payor field value, or an empty slice if nil.
+func (r *Coverage) GetPayor() []dt.Reference {
+	if r.Payor != nil {
+		return r.Payor
+	}
+	return nil
+}
+
+// GetPeriod returns the period field value, or the zero value if nil.
+func (r *Coverage) GetPeriod() dt.Period {
+	if r.Period != nil {
+		return *r.Period
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetPolicyHolder returns the policyHolder field value, or the zero value if nil.
+func (r *Coverage) GetPolicyHolder() dt.Reference {
+	if r.PolicyHolder != nil {
+		return *r.PolicyHolder
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetRelationship returns the relationship field value, or the zero value if nil.
+func (r *Coverage) GetRelationship() dt.CodeableConcept {
+	if r.Relationship != nil {
+		return *r.Relationship
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSubrogation returns the subrogation field value, or the zero value if nil.
+func (r *Coverage) GetSubrogation() bool {
+	if r.Subrogation != nil {
+		return *r.Subrogation
+	}
+	var zero bool
+	return zero
+}
+
+// GetSubscriber returns the subscriber field value, or the zero value if nil.
+func (r *Coverage) GetSubscriber() dt.Reference {
+	if r.Subscriber != nil {
+		return *r.Subscriber
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetSubscriberId returns the subscriberId field value, or the zero value if nil.
+func (r *Coverage) GetSubscriberId() string {
+	if r.SubscriberId != nil {
+		return *r.SubscriberId
+	}
+	var zero string
+	return zero
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *Coverage) GetType() dt.CodeableConcept {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero dt.CodeableConcept
+	return zero
+}

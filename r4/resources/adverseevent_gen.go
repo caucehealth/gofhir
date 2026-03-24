@@ -396,3 +396,241 @@ type AdverseEventSuspectEntity struct {
 	// Instance Identifies the actual instance of what caused the adverse event.  May be a substance, medication, medication administration, medication statement or a device.
 	Instance dt.Reference `json:"instance"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *AdverseEvent) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *AdverseEvent) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *AdverseEvent) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *AdverseEvent) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *AdverseEvent) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *AdverseEvent) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *AdverseEvent) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *AdverseEvent) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or the zero value if nil.
+func (r *AdverseEvent) GetIdentifier() dt.Identifier {
+	if r.Identifier != nil {
+		return *r.Identifier
+	}
+	var zero dt.Identifier
+	return zero
+}
+
+// GetActuality returns the actuality field value, or the zero value if nil.
+func (r *AdverseEvent) GetActuality() AdverseEventActuality {
+	if r.Actuality != nil {
+		return *r.Actuality
+	}
+	var zero AdverseEventActuality
+	return zero
+}
+
+// GetCategory returns the category field value, or an empty slice if nil.
+func (r *AdverseEvent) GetCategory() []dt.CodeableConcept {
+	if r.Category != nil {
+		return r.Category
+	}
+	return nil
+}
+
+// GetContributor returns the contributor field value, or an empty slice if nil.
+func (r *AdverseEvent) GetContributor() []dt.Reference {
+	if r.Contributor != nil {
+		return r.Contributor
+	}
+	return nil
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *AdverseEvent) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDetected returns the detected field value, or the zero value if nil.
+func (r *AdverseEvent) GetDetected() dt.DateTime {
+	if r.Detected != nil {
+		return *r.Detected
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *AdverseEvent) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetEvent returns the event field value, or the zero value if nil.
+func (r *AdverseEvent) GetEvent() dt.CodeableConcept {
+	if r.Event != nil {
+		return *r.Event
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetLocation returns the location field value, or the zero value if nil.
+func (r *AdverseEvent) GetLocation() dt.Reference {
+	if r.Location != nil {
+		return *r.Location
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetOutcome returns the outcome field value, or the zero value if nil.
+func (r *AdverseEvent) GetOutcome() dt.CodeableConcept {
+	if r.Outcome != nil {
+		return *r.Outcome
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetRecordedDate returns the recordedDate field value, or the zero value if nil.
+func (r *AdverseEvent) GetRecordedDate() dt.DateTime {
+	if r.RecordedDate != nil {
+		return *r.RecordedDate
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetRecorder returns the recorder field value, or the zero value if nil.
+func (r *AdverseEvent) GetRecorder() dt.Reference {
+	if r.Recorder != nil {
+		return *r.Recorder
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetReferenceDocument returns the referenceDocument field value, or an empty slice if nil.
+func (r *AdverseEvent) GetReferenceDocument() []dt.Reference {
+	if r.ReferenceDocument != nil {
+		return r.ReferenceDocument
+	}
+	return nil
+}
+
+// GetResultingCondition returns the resultingCondition field value, or an empty slice if nil.
+func (r *AdverseEvent) GetResultingCondition() []dt.Reference {
+	if r.ResultingCondition != nil {
+		return r.ResultingCondition
+	}
+	return nil
+}
+
+// GetSeriousness returns the seriousness field value, or the zero value if nil.
+func (r *AdverseEvent) GetSeriousness() dt.CodeableConcept {
+	if r.Seriousness != nil {
+		return *r.Seriousness
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSeverity returns the severity field value, or the zero value if nil.
+func (r *AdverseEvent) GetSeverity() dt.CodeableConcept {
+	if r.Severity != nil {
+		return *r.Severity
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetStudy returns the study field value, or an empty slice if nil.
+func (r *AdverseEvent) GetStudy() []dt.Reference {
+	if r.Study != nil {
+		return r.Study
+	}
+	return nil
+}
+
+// GetSubject returns the subject field value.
+func (r *AdverseEvent) GetSubject() dt.Reference {
+	return r.Subject
+}
+
+// GetSubjectMedicalHistory returns the subjectMedicalHistory field value, or an empty slice if nil.
+func (r *AdverseEvent) GetSubjectMedicalHistory() []dt.Reference {
+	if r.SubjectMedicalHistory != nil {
+		return r.SubjectMedicalHistory
+	}
+	return nil
+}
+
+// GetSuspectEntity returns the suspectEntity field value, or an empty slice if nil.
+func (r *AdverseEvent) GetSuspectEntity() []AdverseEventSuspectEntity {
+	if r.SuspectEntity != nil {
+		return r.SuspectEntity
+	}
+	return nil
+}

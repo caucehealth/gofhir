@@ -508,3 +508,168 @@ type QuestionnaireResponseItem struct {
 	// LinkIdElement contains element extensions for linkId.
 	LinkIdElement *dt.Element `json:"_linkId,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *QuestionnaireResponse) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *QuestionnaireResponse) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *QuestionnaireResponse) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *QuestionnaireResponse) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *QuestionnaireResponse) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *QuestionnaireResponse) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *QuestionnaireResponse) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *QuestionnaireResponse) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or the zero value if nil.
+func (r *QuestionnaireResponse) GetIdentifier() dt.Identifier {
+	if r.Identifier != nil {
+		return *r.Identifier
+	}
+	var zero dt.Identifier
+	return zero
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *QuestionnaireResponse) GetStatus() QuestionnaireResponseStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero QuestionnaireResponseStatus
+	return zero
+}
+
+// GetAuthor returns the author field value, or the zero value if nil.
+func (r *QuestionnaireResponse) GetAuthor() dt.Reference {
+	if r.Author != nil {
+		return *r.Author
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetAuthored returns the authored field value, or the zero value if nil.
+func (r *QuestionnaireResponse) GetAuthored() dt.DateTime {
+	if r.Authored != nil {
+		return *r.Authored
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetBasedOn returns the basedOn field value, or an empty slice if nil.
+func (r *QuestionnaireResponse) GetBasedOn() []dt.Reference {
+	if r.BasedOn != nil {
+		return r.BasedOn
+	}
+	return nil
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *QuestionnaireResponse) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetItem returns the item field value, or an empty slice if nil.
+func (r *QuestionnaireResponse) GetItem() []QuestionnaireResponseItem {
+	if r.Item != nil {
+		return r.Item
+	}
+	return nil
+}
+
+// GetPartOf returns the partOf field value, or an empty slice if nil.
+func (r *QuestionnaireResponse) GetPartOf() []dt.Reference {
+	if r.PartOf != nil {
+		return r.PartOf
+	}
+	return nil
+}
+
+// GetQuestionnaire returns the questionnaire field value, or the zero value if nil.
+func (r *QuestionnaireResponse) GetQuestionnaire() dt.Canonical {
+	if r.Questionnaire != nil {
+		return *r.Questionnaire
+	}
+	var zero dt.Canonical
+	return zero
+}
+
+// GetSource returns the source field value, or the zero value if nil.
+func (r *QuestionnaireResponse) GetSource() dt.Reference {
+	if r.Source != nil {
+		return *r.Source
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetSubject returns the subject field value, or the zero value if nil.
+func (r *QuestionnaireResponse) GetSubject() dt.Reference {
+	if r.Subject != nil {
+		return *r.Subject
+	}
+	var zero dt.Reference
+	return zero
+}

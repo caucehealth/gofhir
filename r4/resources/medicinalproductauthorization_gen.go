@@ -360,3 +360,212 @@ type MedicinalProductAuthorizationProcedure struct {
 	// Type Type of procedure.
 	Type dt.CodeableConcept `json:"type"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *MedicinalProductAuthorization) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *MedicinalProductAuthorization) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *MedicinalProductAuthorization) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *MedicinalProductAuthorization) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *MedicinalProductAuthorization) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *MedicinalProductAuthorization) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *MedicinalProductAuthorization) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *MedicinalProductAuthorization) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *MedicinalProductAuthorization) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *MedicinalProductAuthorization) GetStatus() dt.CodeableConcept {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetCountry returns the country field value, or an empty slice if nil.
+func (r *MedicinalProductAuthorization) GetCountry() []dt.CodeableConcept {
+	if r.Country != nil {
+		return r.Country
+	}
+	return nil
+}
+
+// GetDataExclusivityPeriod returns the dataExclusivityPeriod field value, or the zero value if nil.
+func (r *MedicinalProductAuthorization) GetDataExclusivityPeriod() dt.Period {
+	if r.DataExclusivityPeriod != nil {
+		return *r.DataExclusivityPeriod
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetDateOfFirstAuthorization returns the dateOfFirstAuthorization field value, or the zero value if nil.
+func (r *MedicinalProductAuthorization) GetDateOfFirstAuthorization() dt.DateTime {
+	if r.DateOfFirstAuthorization != nil {
+		return *r.DateOfFirstAuthorization
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetHolder returns the holder field value, or the zero value if nil.
+func (r *MedicinalProductAuthorization) GetHolder() dt.Reference {
+	if r.Holder != nil {
+		return *r.Holder
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetInternationalBirthDate returns the internationalBirthDate field value, or the zero value if nil.
+func (r *MedicinalProductAuthorization) GetInternationalBirthDate() dt.DateTime {
+	if r.InternationalBirthDate != nil {
+		return *r.InternationalBirthDate
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetJurisdiction returns the jurisdiction field value, or an empty slice if nil.
+func (r *MedicinalProductAuthorization) GetJurisdiction() []dt.CodeableConcept {
+	if r.Jurisdiction != nil {
+		return r.Jurisdiction
+	}
+	return nil
+}
+
+// GetJurisdictionalAuthorization returns the jurisdictionalAuthorization field value, or an empty slice if nil.
+func (r *MedicinalProductAuthorization) GetJurisdictionalAuthorization() []MedicinalProductAuthorizationJurisdictionalAuthorization {
+	if r.JurisdictionalAuthorization != nil {
+		return r.JurisdictionalAuthorization
+	}
+	return nil
+}
+
+// GetLegalBasis returns the legalBasis field value, or the zero value if nil.
+func (r *MedicinalProductAuthorization) GetLegalBasis() dt.CodeableConcept {
+	if r.LegalBasis != nil {
+		return *r.LegalBasis
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetProcedure returns the procedure field value, or the zero value if nil.
+func (r *MedicinalProductAuthorization) GetProcedure() MedicinalProductAuthorizationProcedure {
+	if r.Procedure != nil {
+		return *r.Procedure
+	}
+	var zero MedicinalProductAuthorizationProcedure
+	return zero
+}
+
+// GetRegulator returns the regulator field value, or the zero value if nil.
+func (r *MedicinalProductAuthorization) GetRegulator() dt.Reference {
+	if r.Regulator != nil {
+		return *r.Regulator
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetRestoreDate returns the restoreDate field value, or the zero value if nil.
+func (r *MedicinalProductAuthorization) GetRestoreDate() dt.DateTime {
+	if r.RestoreDate != nil {
+		return *r.RestoreDate
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetStatusDate returns the statusDate field value, or the zero value if nil.
+func (r *MedicinalProductAuthorization) GetStatusDate() dt.DateTime {
+	if r.StatusDate != nil {
+		return *r.StatusDate
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetSubject returns the subject field value, or the zero value if nil.
+func (r *MedicinalProductAuthorization) GetSubject() dt.Reference {
+	if r.Subject != nil {
+		return *r.Subject
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetValidityPeriod returns the validityPeriod field value, or the zero value if nil.
+func (r *MedicinalProductAuthorization) GetValidityPeriod() dt.Period {
+	if r.ValidityPeriod != nil {
+		return *r.ValidityPeriod
+	}
+	var zero dt.Period
+	return zero
+}

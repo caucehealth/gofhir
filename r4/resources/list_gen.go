@@ -311,3 +311,186 @@ type ListEntry struct {
 	// Item A reference to the actual resource from which data was derived.
 	Item dt.Reference `json:"item"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *List) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *List) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *List) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *List) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *List) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *List) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *List) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *List) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *List) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *List) GetStatus() ListStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero ListStatus
+	return zero
+}
+
+// GetCode returns the code field value, or the zero value if nil.
+func (r *List) GetCode() dt.CodeableConcept {
+	if r.Code != nil {
+		return *r.Code
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *List) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetEmptyReason returns the emptyReason field value, or the zero value if nil.
+func (r *List) GetEmptyReason() dt.CodeableConcept {
+	if r.EmptyReason != nil {
+		return *r.EmptyReason
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *List) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetEntry returns the entry field value, or an empty slice if nil.
+func (r *List) GetEntry() []ListEntry {
+	if r.Entry != nil {
+		return r.Entry
+	}
+	return nil
+}
+
+// GetMode returns the mode field value, or the zero value if nil.
+func (r *List) GetMode() ListMode {
+	if r.Mode != nil {
+		return *r.Mode
+	}
+	var zero ListMode
+	return zero
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *List) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetOrderedBy returns the orderedBy field value, or the zero value if nil.
+func (r *List) GetOrderedBy() dt.CodeableConcept {
+	if r.OrderedBy != nil {
+		return *r.OrderedBy
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSource returns the source field value, or the zero value if nil.
+func (r *List) GetSource() dt.Reference {
+	if r.Source != nil {
+		return *r.Source
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetSubject returns the subject field value, or the zero value if nil.
+func (r *List) GetSubject() dt.Reference {
+	if r.Subject != nil {
+		return *r.Subject
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetTitle returns the title field value, or the zero value if nil.
+func (r *List) GetTitle() string {
+	if r.Title != nil {
+		return *r.Title
+	}
+	var zero string
+	return zero
+}

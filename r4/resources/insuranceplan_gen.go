@@ -468,3 +468,189 @@ type InsurancePlanSpecificCost struct {
 	// Category General category of benefit (Medical; Dental; Vision; Drug; Mental Health; Substance Abuse; Hospice, Home Health).
 	Category dt.CodeableConcept `json:"category"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *InsurancePlan) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *InsurancePlan) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *InsurancePlan) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *InsurancePlan) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *InsurancePlan) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *InsurancePlan) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *InsurancePlan) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *InsurancePlan) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *InsurancePlan) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *InsurancePlan) GetStatus() InsurancePlanStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero InsurancePlanStatus
+	return zero
+}
+
+// GetAdministeredBy returns the administeredBy field value, or the zero value if nil.
+func (r *InsurancePlan) GetAdministeredBy() dt.Reference {
+	if r.AdministeredBy != nil {
+		return *r.AdministeredBy
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetAlias returns the alias field value, or an empty slice if nil.
+func (r *InsurancePlan) GetAlias() []string {
+	if r.Alias != nil {
+		return r.Alias
+	}
+	return nil
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *InsurancePlan) GetContact() []InsurancePlanContact {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetCoverage returns the coverage field value, or an empty slice if nil.
+func (r *InsurancePlan) GetCoverage() []InsurancePlanCoverage {
+	if r.Coverage != nil {
+		return r.Coverage
+	}
+	return nil
+}
+
+// GetCoverageArea returns the coverageArea field value, or an empty slice if nil.
+func (r *InsurancePlan) GetCoverageArea() []dt.Reference {
+	if r.CoverageArea != nil {
+		return r.CoverageArea
+	}
+	return nil
+}
+
+// GetEndpoint returns the endpoint field value, or an empty slice if nil.
+func (r *InsurancePlan) GetEndpoint() []dt.Reference {
+	if r.Endpoint != nil {
+		return r.Endpoint
+	}
+	return nil
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *InsurancePlan) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetNetwork returns the network field value, or an empty slice if nil.
+func (r *InsurancePlan) GetNetwork() []dt.Reference {
+	if r.Network != nil {
+		return r.Network
+	}
+	return nil
+}
+
+// GetOwnedBy returns the ownedBy field value, or the zero value if nil.
+func (r *InsurancePlan) GetOwnedBy() dt.Reference {
+	if r.OwnedBy != nil {
+		return *r.OwnedBy
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPeriod returns the period field value, or the zero value if nil.
+func (r *InsurancePlan) GetPeriod() dt.Period {
+	if r.Period != nil {
+		return *r.Period
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetPlan returns the plan field value, or an empty slice if nil.
+func (r *InsurancePlan) GetPlan() []InsurancePlanPlan {
+	if r.Plan != nil {
+		return r.Plan
+	}
+	return nil
+}
+
+// GetType returns the type field value, or an empty slice if nil.
+func (r *InsurancePlan) GetType() []dt.CodeableConcept {
+	if r.Type != nil {
+		return r.Type
+	}
+	return nil
+}

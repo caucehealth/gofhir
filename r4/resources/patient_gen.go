@@ -528,3 +528,205 @@ func (v *PatientMultipleBirth) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Patient) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Patient) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Patient) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Patient) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Patient) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Patient) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Patient) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Patient) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Patient) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetActive returns the active field value, or the zero value if nil.
+func (r *Patient) GetActive() bool {
+	if r.Active != nil {
+		return *r.Active
+	}
+	var zero bool
+	return zero
+}
+
+// GetAddress returns the address field value, or an empty slice if nil.
+func (r *Patient) GetAddress() []dt.Address {
+	if r.Address != nil {
+		return r.Address
+	}
+	return nil
+}
+
+// GetBirthDate returns the birthDate field value, or the zero value if nil.
+func (r *Patient) GetBirthDate() dt.Date {
+	if r.BirthDate != nil {
+		return *r.BirthDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetCommunication returns the communication field value, or an empty slice if nil.
+func (r *Patient) GetCommunication() []PatientCommunication {
+	if r.Communication != nil {
+		return r.Communication
+	}
+	return nil
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *Patient) GetContact() []PatientContact {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetDeceased returns the deceased field value, or a zero-value if nil.
+func (r *Patient) GetDeceased() PatientDeceased {
+	if r.Deceased != nil {
+		return *r.Deceased
+	}
+	return PatientDeceased{}
+}
+
+// GetGender returns the gender field value, or the zero value if nil.
+func (r *Patient) GetGender() AdministrativeGender {
+	if r.Gender != nil {
+		return *r.Gender
+	}
+	var zero AdministrativeGender
+	return zero
+}
+
+// GetGeneralPractitioner returns the generalPractitioner field value, or an empty slice if nil.
+func (r *Patient) GetGeneralPractitioner() []dt.Reference {
+	if r.GeneralPractitioner != nil {
+		return r.GeneralPractitioner
+	}
+	return nil
+}
+
+// GetLink returns the link field value, or an empty slice if nil.
+func (r *Patient) GetLink() []PatientLink {
+	if r.Link != nil {
+		return r.Link
+	}
+	return nil
+}
+
+// GetManagingOrganization returns the managingOrganization field value, or the zero value if nil.
+func (r *Patient) GetManagingOrganization() dt.Reference {
+	if r.ManagingOrganization != nil {
+		return *r.ManagingOrganization
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetMaritalStatus returns the maritalStatus field value, or the zero value if nil.
+func (r *Patient) GetMaritalStatus() dt.CodeableConcept {
+	if r.MaritalStatus != nil {
+		return *r.MaritalStatus
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetMultipleBirth returns the multipleBirth field value, or a zero-value if nil.
+func (r *Patient) GetMultipleBirth() PatientMultipleBirth {
+	if r.MultipleBirth != nil {
+		return *r.MultipleBirth
+	}
+	return PatientMultipleBirth{}
+}
+
+// GetName returns the name field value, or an empty slice if nil.
+func (r *Patient) GetName() []dt.HumanName {
+	if r.Name != nil {
+		return r.Name
+	}
+	return nil
+}
+
+// GetPhoto returns the photo field value, or an empty slice if nil.
+func (r *Patient) GetPhoto() []dt.Attachment {
+	if r.Photo != nil {
+		return r.Photo
+	}
+	return nil
+}
+
+// GetTelecom returns the telecom field value, or an empty slice if nil.
+func (r *Patient) GetTelecom() []dt.ContactPoint {
+	if r.Telecom != nil {
+		return r.Telecom
+	}
+	return nil
+}

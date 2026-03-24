@@ -424,3 +424,273 @@ type ResearchStudyObjective struct {
 	// Type The kind of study objective.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *ResearchStudy) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *ResearchStudy) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *ResearchStudy) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *ResearchStudy) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *ResearchStudy) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *ResearchStudy) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *ResearchStudy) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *ResearchStudy) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *ResearchStudy) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *ResearchStudy) GetStatus() ResearchStudyStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero ResearchStudyStatus
+	return zero
+}
+
+// GetArm returns the arm field value, or an empty slice if nil.
+func (r *ResearchStudy) GetArm() []ResearchStudyArm {
+	if r.Arm != nil {
+		return r.Arm
+	}
+	return nil
+}
+
+// GetCategory returns the category field value, or an empty slice if nil.
+func (r *ResearchStudy) GetCategory() []dt.CodeableConcept {
+	if r.Category != nil {
+		return r.Category
+	}
+	return nil
+}
+
+// GetCondition returns the condition field value, or an empty slice if nil.
+func (r *ResearchStudy) GetCondition() []dt.CodeableConcept {
+	if r.Condition != nil {
+		return r.Condition
+	}
+	return nil
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *ResearchStudy) GetContact() []dt.ContactDetail {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *ResearchStudy) GetDescription() dt.Markdown {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetEnrollment returns the enrollment field value, or an empty slice if nil.
+func (r *ResearchStudy) GetEnrollment() []dt.Reference {
+	if r.Enrollment != nil {
+		return r.Enrollment
+	}
+	return nil
+}
+
+// GetFocus returns the focus field value, or an empty slice if nil.
+func (r *ResearchStudy) GetFocus() []dt.CodeableConcept {
+	if r.Focus != nil {
+		return r.Focus
+	}
+	return nil
+}
+
+// GetKeyword returns the keyword field value, or an empty slice if nil.
+func (r *ResearchStudy) GetKeyword() []dt.CodeableConcept {
+	if r.Keyword != nil {
+		return r.Keyword
+	}
+	return nil
+}
+
+// GetLocation returns the location field value, or an empty slice if nil.
+func (r *ResearchStudy) GetLocation() []dt.CodeableConcept {
+	if r.Location != nil {
+		return r.Location
+	}
+	return nil
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *ResearchStudy) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetObjective returns the objective field value, or an empty slice if nil.
+func (r *ResearchStudy) GetObjective() []ResearchStudyObjective {
+	if r.Objective != nil {
+		return r.Objective
+	}
+	return nil
+}
+
+// GetPartOf returns the partOf field value, or an empty slice if nil.
+func (r *ResearchStudy) GetPartOf() []dt.Reference {
+	if r.PartOf != nil {
+		return r.PartOf
+	}
+	return nil
+}
+
+// GetPeriod returns the period field value, or the zero value if nil.
+func (r *ResearchStudy) GetPeriod() dt.Period {
+	if r.Period != nil {
+		return *r.Period
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetPhase returns the phase field value, or the zero value if nil.
+func (r *ResearchStudy) GetPhase() dt.CodeableConcept {
+	if r.Phase != nil {
+		return *r.Phase
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetPrimaryPurposeType returns the primaryPurposeType field value, or the zero value if nil.
+func (r *ResearchStudy) GetPrimaryPurposeType() dt.CodeableConcept {
+	if r.PrimaryPurposeType != nil {
+		return *r.PrimaryPurposeType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetPrincipalInvestigator returns the principalInvestigator field value, or the zero value if nil.
+func (r *ResearchStudy) GetPrincipalInvestigator() dt.Reference {
+	if r.PrincipalInvestigator != nil {
+		return *r.PrincipalInvestigator
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetProtocol returns the protocol field value, or an empty slice if nil.
+func (r *ResearchStudy) GetProtocol() []dt.Reference {
+	if r.Protocol != nil {
+		return r.Protocol
+	}
+	return nil
+}
+
+// GetReasonStopped returns the reasonStopped field value, or the zero value if nil.
+func (r *ResearchStudy) GetReasonStopped() dt.CodeableConcept {
+	if r.ReasonStopped != nil {
+		return *r.ReasonStopped
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetRelatedArtifact returns the relatedArtifact field value, or an empty slice if nil.
+func (r *ResearchStudy) GetRelatedArtifact() []dt.RelatedArtifact {
+	if r.RelatedArtifact != nil {
+		return r.RelatedArtifact
+	}
+	return nil
+}
+
+// GetSite returns the site field value, or an empty slice if nil.
+func (r *ResearchStudy) GetSite() []dt.Reference {
+	if r.Site != nil {
+		return r.Site
+	}
+	return nil
+}
+
+// GetSponsor returns the sponsor field value, or the zero value if nil.
+func (r *ResearchStudy) GetSponsor() dt.Reference {
+	if r.Sponsor != nil {
+		return *r.Sponsor
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetTitle returns the title field value, or the zero value if nil.
+func (r *ResearchStudy) GetTitle() string {
+	if r.Title != nil {
+		return *r.Title
+	}
+	var zero string
+	return zero
+}

@@ -157,3 +157,62 @@ func (b *BinaryBuilder) Build() (*Binary, error) {
 	r := b.resource
 	return &r, nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Binary) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Binary) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Binary) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Binary) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetContentType returns the contentType field value, or the zero value if nil.
+func (r *Binary) GetContentType() dt.Code {
+	if r.ContentType != nil {
+		return *r.ContentType
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetData returns the data field value.
+func (r *Binary) GetData() []byte {
+	return r.Data
+}
+
+// GetSecurityContext returns the securityContext field value, or the zero value if nil.
+func (r *Binary) GetSecurityContext() dt.Reference {
+	if r.SecurityContext != nil {
+		return *r.SecurityContext
+	}
+	var zero dt.Reference
+	return zero
+}

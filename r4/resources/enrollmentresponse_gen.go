@@ -242,3 +242,143 @@ func (b *EnrollmentResponseBuilder) Build() (*EnrollmentResponse, error) {
 	r := b.resource
 	return &r, nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *EnrollmentResponse) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *EnrollmentResponse) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *EnrollmentResponse) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *EnrollmentResponse) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *EnrollmentResponse) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *EnrollmentResponse) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *EnrollmentResponse) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *EnrollmentResponse) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *EnrollmentResponse) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *EnrollmentResponse) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetCreated returns the created field value, or the zero value if nil.
+func (r *EnrollmentResponse) GetCreated() dt.DateTime {
+	if r.Created != nil {
+		return *r.Created
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDisposition returns the disposition field value, or the zero value if nil.
+func (r *EnrollmentResponse) GetDisposition() string {
+	if r.Disposition != nil {
+		return *r.Disposition
+	}
+	var zero string
+	return zero
+}
+
+// GetOrganization returns the organization field value, or the zero value if nil.
+func (r *EnrollmentResponse) GetOrganization() dt.Reference {
+	if r.Organization != nil {
+		return *r.Organization
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetOutcome returns the outcome field value, or the zero value if nil.
+func (r *EnrollmentResponse) GetOutcome() EnrollmentResponseOutcome {
+	if r.Outcome != nil {
+		return *r.Outcome
+	}
+	var zero EnrollmentResponseOutcome
+	return zero
+}
+
+// GetRequest returns the request field value, or the zero value if nil.
+func (r *EnrollmentResponse) GetRequest() dt.Reference {
+	if r.Request != nil {
+		return *r.Request
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetRequestProvider returns the requestProvider field value, or the zero value if nil.
+func (r *EnrollmentResponse) GetRequestProvider() dt.Reference {
+	if r.RequestProvider != nil {
+		return *r.RequestProvider
+	}
+	var zero dt.Reference
+	return zero
+}

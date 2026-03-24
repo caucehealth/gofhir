@@ -579,3 +579,225 @@ type RequestGroupRelatedAction struct {
 	// RelationshipElement contains element extensions for relationship.
 	RelationshipElement *dt.Element `json:"_relationship,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *RequestGroup) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *RequestGroup) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *RequestGroup) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *RequestGroup) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *RequestGroup) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *RequestGroup) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *RequestGroup) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *RequestGroup) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *RequestGroup) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *RequestGroup) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetAction returns the action field value, or an empty slice if nil.
+func (r *RequestGroup) GetAction() []RequestGroupAction {
+	if r.Action != nil {
+		return r.Action
+	}
+	return nil
+}
+
+// GetAuthor returns the author field value, or the zero value if nil.
+func (r *RequestGroup) GetAuthor() dt.Reference {
+	if r.Author != nil {
+		return *r.Author
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetAuthoredOn returns the authoredOn field value, or the zero value if nil.
+func (r *RequestGroup) GetAuthoredOn() dt.DateTime {
+	if r.AuthoredOn != nil {
+		return *r.AuthoredOn
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetBasedOn returns the basedOn field value, or an empty slice if nil.
+func (r *RequestGroup) GetBasedOn() []dt.Reference {
+	if r.BasedOn != nil {
+		return r.BasedOn
+	}
+	return nil
+}
+
+// GetCode returns the code field value, or the zero value if nil.
+func (r *RequestGroup) GetCode() dt.CodeableConcept {
+	if r.Code != nil {
+		return *r.Code
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *RequestGroup) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetGroupIdentifier returns the groupIdentifier field value, or the zero value if nil.
+func (r *RequestGroup) GetGroupIdentifier() dt.Identifier {
+	if r.GroupIdentifier != nil {
+		return *r.GroupIdentifier
+	}
+	var zero dt.Identifier
+	return zero
+}
+
+// GetInstantiatesCanonical returns the instantiatesCanonical field value, or an empty slice if nil.
+func (r *RequestGroup) GetInstantiatesCanonical() []dt.Canonical {
+	if r.InstantiatesCanonical != nil {
+		return r.InstantiatesCanonical
+	}
+	return nil
+}
+
+// GetInstantiatesUri returns the instantiatesUri field value, or an empty slice if nil.
+func (r *RequestGroup) GetInstantiatesUri() []dt.URI {
+	if r.InstantiatesUri != nil {
+		return r.InstantiatesUri
+	}
+	return nil
+}
+
+// GetIntent returns the intent field value, or the zero value if nil.
+func (r *RequestGroup) GetIntent() dt.Code {
+	if r.Intent != nil {
+		return *r.Intent
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *RequestGroup) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetPriority returns the priority field value, or the zero value if nil.
+func (r *RequestGroup) GetPriority() dt.Code {
+	if r.Priority != nil {
+		return *r.Priority
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetReasonCode returns the reasonCode field value, or an empty slice if nil.
+func (r *RequestGroup) GetReasonCode() []dt.CodeableConcept {
+	if r.ReasonCode != nil {
+		return r.ReasonCode
+	}
+	return nil
+}
+
+// GetReasonReference returns the reasonReference field value, or an empty slice if nil.
+func (r *RequestGroup) GetReasonReference() []dt.Reference {
+	if r.ReasonReference != nil {
+		return r.ReasonReference
+	}
+	return nil
+}
+
+// GetReplaces returns the replaces field value, or an empty slice if nil.
+func (r *RequestGroup) GetReplaces() []dt.Reference {
+	if r.Replaces != nil {
+		return r.Replaces
+	}
+	return nil
+}
+
+// GetSubject returns the subject field value, or the zero value if nil.
+func (r *RequestGroup) GetSubject() dt.Reference {
+	if r.Subject != nil {
+		return *r.Subject
+	}
+	var zero dt.Reference
+	return zero
+}

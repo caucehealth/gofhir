@@ -461,3 +461,269 @@ type ChargeItemDefinitionPropertyGroup struct {
 	// PriceComponent The price for a ChargeItem may be calculated as a base price with surcharges/deductions that apply in certain conditions. A ChargeItemDefinition resource that defines the prices, factors and condit...
 	PriceComponent []ChargeItemDefinitionPriceComponent `json:"priceComponent,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *ChargeItemDefinition) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *ChargeItemDefinition) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *ChargeItemDefinition) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *ChargeItemDefinition) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *ChargeItemDefinition) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *ChargeItemDefinition) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *ChargeItemDefinition) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *ChargeItemDefinition) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *ChargeItemDefinition) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *ChargeItemDefinition) GetStatus() ChargeItemDefinitionStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero ChargeItemDefinitionStatus
+	return zero
+}
+
+// GetApplicability returns the applicability field value, or an empty slice if nil.
+func (r *ChargeItemDefinition) GetApplicability() []ChargeItemDefinitionApplicability {
+	if r.Applicability != nil {
+		return r.Applicability
+	}
+	return nil
+}
+
+// GetApprovalDate returns the approvalDate field value, or the zero value if nil.
+func (r *ChargeItemDefinition) GetApprovalDate() dt.Date {
+	if r.ApprovalDate != nil {
+		return *r.ApprovalDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetCode returns the code field value, or the zero value if nil.
+func (r *ChargeItemDefinition) GetCode() dt.CodeableConcept {
+	if r.Code != nil {
+		return *r.Code
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *ChargeItemDefinition) GetContact() []dt.ContactDetail {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetCopyright returns the copyright field value, or the zero value if nil.
+func (r *ChargeItemDefinition) GetCopyright() dt.Markdown {
+	if r.Copyright != nil {
+		return *r.Copyright
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *ChargeItemDefinition) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDerivedFromUri returns the derivedFromUri field value, or an empty slice if nil.
+func (r *ChargeItemDefinition) GetDerivedFromUri() []dt.URI {
+	if r.DerivedFromUri != nil {
+		return r.DerivedFromUri
+	}
+	return nil
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *ChargeItemDefinition) GetDescription() dt.Markdown {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetEffectivePeriod returns the effectivePeriod field value, or the zero value if nil.
+func (r *ChargeItemDefinition) GetEffectivePeriod() dt.Period {
+	if r.EffectivePeriod != nil {
+		return *r.EffectivePeriod
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetExperimental returns the experimental field value, or the zero value if nil.
+func (r *ChargeItemDefinition) GetExperimental() bool {
+	if r.Experimental != nil {
+		return *r.Experimental
+	}
+	var zero bool
+	return zero
+}
+
+// GetInstance returns the instance field value, or an empty slice if nil.
+func (r *ChargeItemDefinition) GetInstance() []dt.Reference {
+	if r.Instance != nil {
+		return r.Instance
+	}
+	return nil
+}
+
+// GetJurisdiction returns the jurisdiction field value, or an empty slice if nil.
+func (r *ChargeItemDefinition) GetJurisdiction() []dt.CodeableConcept {
+	if r.Jurisdiction != nil {
+		return r.Jurisdiction
+	}
+	return nil
+}
+
+// GetLastReviewDate returns the lastReviewDate field value, or the zero value if nil.
+func (r *ChargeItemDefinition) GetLastReviewDate() dt.Date {
+	if r.LastReviewDate != nil {
+		return *r.LastReviewDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetPartOf returns the partOf field value, or an empty slice if nil.
+func (r *ChargeItemDefinition) GetPartOf() []dt.Canonical {
+	if r.PartOf != nil {
+		return r.PartOf
+	}
+	return nil
+}
+
+// GetPropertyGroup returns the propertyGroup field value, or an empty slice if nil.
+func (r *ChargeItemDefinition) GetPropertyGroup() []ChargeItemDefinitionPropertyGroup {
+	if r.PropertyGroup != nil {
+		return r.PropertyGroup
+	}
+	return nil
+}
+
+// GetPublisher returns the publisher field value, or the zero value if nil.
+func (r *ChargeItemDefinition) GetPublisher() string {
+	if r.Publisher != nil {
+		return *r.Publisher
+	}
+	var zero string
+	return zero
+}
+
+// GetReplaces returns the replaces field value, or an empty slice if nil.
+func (r *ChargeItemDefinition) GetReplaces() []dt.Canonical {
+	if r.Replaces != nil {
+		return r.Replaces
+	}
+	return nil
+}
+
+// GetTitle returns the title field value, or the zero value if nil.
+func (r *ChargeItemDefinition) GetTitle() string {
+	if r.Title != nil {
+		return *r.Title
+	}
+	var zero string
+	return zero
+}
+
+// GetUrl returns the url field value, or the zero value if nil.
+func (r *ChargeItemDefinition) GetUrl() dt.URI {
+	if r.Url != nil {
+		return *r.Url
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetUseContext returns the useContext field value, or an empty slice if nil.
+func (r *ChargeItemDefinition) GetUseContext() []dt.UsageContext {
+	if r.UseContext != nil {
+		return r.UseContext
+	}
+	return nil
+}
+
+// GetVersion returns the version field value, or the zero value if nil.
+func (r *ChargeItemDefinition) GetVersion() string {
+	if r.Version != nil {
+		return *r.Version
+	}
+	var zero string
+	return zero
+}

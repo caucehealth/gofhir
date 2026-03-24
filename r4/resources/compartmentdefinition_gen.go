@@ -334,3 +334,195 @@ type CompartmentDefinitionResource struct {
 	// ParamElement contains element extensions for each param.
 	ParamElement []dt.Element `json:"_param,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *CompartmentDefinition) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *CompartmentDefinition) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *CompartmentDefinition) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *CompartmentDefinition) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *CompartmentDefinition) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *CompartmentDefinition) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *CompartmentDefinition) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *CompartmentDefinition) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *CompartmentDefinition) GetStatus() CompartmentDefinitionStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero CompartmentDefinitionStatus
+	return zero
+}
+
+// GetCode returns the code field value, or the zero value if nil.
+func (r *CompartmentDefinition) GetCode() CompartmentDefinitionCode {
+	if r.Code != nil {
+		return *r.Code
+	}
+	var zero CompartmentDefinitionCode
+	return zero
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *CompartmentDefinition) GetContact() []dt.ContactDetail {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *CompartmentDefinition) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *CompartmentDefinition) GetDescription() dt.Markdown {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetExperimental returns the experimental field value, or the zero value if nil.
+func (r *CompartmentDefinition) GetExperimental() bool {
+	if r.Experimental != nil {
+		return *r.Experimental
+	}
+	var zero bool
+	return zero
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *CompartmentDefinition) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetPublisher returns the publisher field value, or the zero value if nil.
+func (r *CompartmentDefinition) GetPublisher() string {
+	if r.Publisher != nil {
+		return *r.Publisher
+	}
+	var zero string
+	return zero
+}
+
+// GetPurpose returns the purpose field value, or the zero value if nil.
+func (r *CompartmentDefinition) GetPurpose() dt.Markdown {
+	if r.Purpose != nil {
+		return *r.Purpose
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetResource returns the resource field value, or an empty slice if nil.
+func (r *CompartmentDefinition) GetResource() []CompartmentDefinitionResource {
+	if r.Resource != nil {
+		return r.Resource
+	}
+	return nil
+}
+
+// GetSearch returns the search field value, or the zero value if nil.
+func (r *CompartmentDefinition) GetSearch() bool {
+	if r.Search != nil {
+		return *r.Search
+	}
+	var zero bool
+	return zero
+}
+
+// GetUrl returns the url field value, or the zero value if nil.
+func (r *CompartmentDefinition) GetUrl() dt.URI {
+	if r.Url != nil {
+		return *r.Url
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetUseContext returns the useContext field value, or an empty slice if nil.
+func (r *CompartmentDefinition) GetUseContext() []dt.UsageContext {
+	if r.UseContext != nil {
+		return r.UseContext
+	}
+	return nil
+}
+
+// GetVersion returns the version field value, or the zero value if nil.
+func (r *CompartmentDefinition) GetVersion() string {
+	if r.Version != nil {
+		return *r.Version
+	}
+	var zero string
+	return zero
+}

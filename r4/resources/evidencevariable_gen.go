@@ -611,3 +611,303 @@ func (v *EvidenceVariableCharacteristicDefinition) UnmarshalJSON(data []byte) er
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *EvidenceVariable) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *EvidenceVariable) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *EvidenceVariable) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *EvidenceVariable) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *EvidenceVariable) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *EvidenceVariable) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *EvidenceVariable) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *EvidenceVariable) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *EvidenceVariable) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *EvidenceVariable) GetStatus() EvidenceVariableStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero EvidenceVariableStatus
+	return zero
+}
+
+// GetApprovalDate returns the approvalDate field value, or the zero value if nil.
+func (r *EvidenceVariable) GetApprovalDate() dt.Date {
+	if r.ApprovalDate != nil {
+		return *r.ApprovalDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetAuthor returns the author field value, or an empty slice if nil.
+func (r *EvidenceVariable) GetAuthor() []dt.ContactDetail {
+	if r.Author != nil {
+		return r.Author
+	}
+	return nil
+}
+
+// GetCharacteristic returns the characteristic field value, or an empty slice if nil.
+func (r *EvidenceVariable) GetCharacteristic() []EvidenceVariableCharacteristic {
+	if r.Characteristic != nil {
+		return r.Characteristic
+	}
+	return nil
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *EvidenceVariable) GetContact() []dt.ContactDetail {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetCopyright returns the copyright field value, or the zero value if nil.
+func (r *EvidenceVariable) GetCopyright() dt.Markdown {
+	if r.Copyright != nil {
+		return *r.Copyright
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *EvidenceVariable) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *EvidenceVariable) GetDescription() dt.Markdown {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetEditor returns the editor field value, or an empty slice if nil.
+func (r *EvidenceVariable) GetEditor() []dt.ContactDetail {
+	if r.Editor != nil {
+		return r.Editor
+	}
+	return nil
+}
+
+// GetEffectivePeriod returns the effectivePeriod field value, or the zero value if nil.
+func (r *EvidenceVariable) GetEffectivePeriod() dt.Period {
+	if r.EffectivePeriod != nil {
+		return *r.EffectivePeriod
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetEndorser returns the endorser field value, or an empty slice if nil.
+func (r *EvidenceVariable) GetEndorser() []dt.ContactDetail {
+	if r.Endorser != nil {
+		return r.Endorser
+	}
+	return nil
+}
+
+// GetJurisdiction returns the jurisdiction field value, or an empty slice if nil.
+func (r *EvidenceVariable) GetJurisdiction() []dt.CodeableConcept {
+	if r.Jurisdiction != nil {
+		return r.Jurisdiction
+	}
+	return nil
+}
+
+// GetLastReviewDate returns the lastReviewDate field value, or the zero value if nil.
+func (r *EvidenceVariable) GetLastReviewDate() dt.Date {
+	if r.LastReviewDate != nil {
+		return *r.LastReviewDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *EvidenceVariable) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *EvidenceVariable) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetPublisher returns the publisher field value, or the zero value if nil.
+func (r *EvidenceVariable) GetPublisher() string {
+	if r.Publisher != nil {
+		return *r.Publisher
+	}
+	var zero string
+	return zero
+}
+
+// GetRelatedArtifact returns the relatedArtifact field value, or an empty slice if nil.
+func (r *EvidenceVariable) GetRelatedArtifact() []dt.RelatedArtifact {
+	if r.RelatedArtifact != nil {
+		return r.RelatedArtifact
+	}
+	return nil
+}
+
+// GetReviewer returns the reviewer field value, or an empty slice if nil.
+func (r *EvidenceVariable) GetReviewer() []dt.ContactDetail {
+	if r.Reviewer != nil {
+		return r.Reviewer
+	}
+	return nil
+}
+
+// GetShortTitle returns the shortTitle field value, or the zero value if nil.
+func (r *EvidenceVariable) GetShortTitle() string {
+	if r.ShortTitle != nil {
+		return *r.ShortTitle
+	}
+	var zero string
+	return zero
+}
+
+// GetSubtitle returns the subtitle field value, or the zero value if nil.
+func (r *EvidenceVariable) GetSubtitle() string {
+	if r.Subtitle != nil {
+		return *r.Subtitle
+	}
+	var zero string
+	return zero
+}
+
+// GetTitle returns the title field value, or the zero value if nil.
+func (r *EvidenceVariable) GetTitle() string {
+	if r.Title != nil {
+		return *r.Title
+	}
+	var zero string
+	return zero
+}
+
+// GetTopic returns the topic field value, or an empty slice if nil.
+func (r *EvidenceVariable) GetTopic() []dt.CodeableConcept {
+	if r.Topic != nil {
+		return r.Topic
+	}
+	return nil
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *EvidenceVariable) GetType() EvidenceVariableType {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero EvidenceVariableType
+	return zero
+}
+
+// GetUrl returns the url field value, or the zero value if nil.
+func (r *EvidenceVariable) GetUrl() dt.URI {
+	if r.Url != nil {
+		return *r.Url
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetUseContext returns the useContext field value, or an empty slice if nil.
+func (r *EvidenceVariable) GetUseContext() []dt.UsageContext {
+	if r.UseContext != nil {
+		return r.UseContext
+	}
+	return nil
+}
+
+// GetVersion returns the version field value, or the zero value if nil.
+func (r *EvidenceVariable) GetVersion() string {
+	if r.Version != nil {
+		return *r.Version
+	}
+	var zero string
+	return zero
+}

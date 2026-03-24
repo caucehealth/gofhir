@@ -425,3 +425,156 @@ func (v *BiologicallyDerivedProductProduct) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *BiologicallyDerivedProduct) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *BiologicallyDerivedProduct) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *BiologicallyDerivedProduct) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *BiologicallyDerivedProduct) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *BiologicallyDerivedProduct) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *BiologicallyDerivedProduct) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *BiologicallyDerivedProduct) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *BiologicallyDerivedProduct) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *BiologicallyDerivedProduct) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *BiologicallyDerivedProduct) GetStatus() BiologicallyDerivedProductStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero BiologicallyDerivedProductStatus
+	return zero
+}
+
+// GetCollection returns the collection field value, or the zero value if nil.
+func (r *BiologicallyDerivedProduct) GetCollection() BiologicallyDerivedProductCollection {
+	if r.Collection != nil {
+		return *r.Collection
+	}
+	var zero BiologicallyDerivedProductCollection
+	return zero
+}
+
+// GetManipulation returns the manipulation field value, or the zero value if nil.
+func (r *BiologicallyDerivedProduct) GetManipulation() BiologicallyDerivedProductManipulation {
+	if r.Manipulation != nil {
+		return *r.Manipulation
+	}
+	var zero BiologicallyDerivedProductManipulation
+	return zero
+}
+
+// GetParent returns the parent field value, or an empty slice if nil.
+func (r *BiologicallyDerivedProduct) GetParent() []dt.Reference {
+	if r.Parent != nil {
+		return r.Parent
+	}
+	return nil
+}
+
+// GetProcessing returns the processing field value, or an empty slice if nil.
+func (r *BiologicallyDerivedProduct) GetProcessing() []BiologicallyDerivedProductProcessing {
+	if r.Processing != nil {
+		return r.Processing
+	}
+	return nil
+}
+
+// GetProduct returns the product field value, or a zero-value if nil.
+func (r *BiologicallyDerivedProduct) GetProduct() BiologicallyDerivedProductProduct {
+	if r.Product != nil {
+		return *r.Product
+	}
+	return BiologicallyDerivedProductProduct{}
+}
+
+// GetQuantity returns the quantity field value, or the zero value if nil.
+func (r *BiologicallyDerivedProduct) GetQuantity() int32 {
+	if r.Quantity != nil {
+		return *r.Quantity
+	}
+	var zero int32
+	return zero
+}
+
+// GetRequest returns the request field value, or an empty slice if nil.
+func (r *BiologicallyDerivedProduct) GetRequest() []dt.Reference {
+	if r.Request != nil {
+		return r.Request
+	}
+	return nil
+}
+
+// GetStorage returns the storage field value, or an empty slice if nil.
+func (r *BiologicallyDerivedProduct) GetStorage() []BiologicallyDerivedProductStorage {
+	if r.Storage != nil {
+		return r.Storage
+	}
+	return nil
+}

@@ -251,3 +251,135 @@ func (b *ResearchSubjectBuilder) Build() (*ResearchSubject, error) {
 	r := b.resource
 	return &r, nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *ResearchSubject) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *ResearchSubject) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *ResearchSubject) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *ResearchSubject) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *ResearchSubject) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *ResearchSubject) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *ResearchSubject) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *ResearchSubject) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *ResearchSubject) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *ResearchSubject) GetStatus() ResearchSubjectStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero ResearchSubjectStatus
+	return zero
+}
+
+// GetActualArm returns the actualArm field value, or the zero value if nil.
+func (r *ResearchSubject) GetActualArm() string {
+	if r.ActualArm != nil {
+		return *r.ActualArm
+	}
+	var zero string
+	return zero
+}
+
+// GetAssignedArm returns the assignedArm field value, or the zero value if nil.
+func (r *ResearchSubject) GetAssignedArm() string {
+	if r.AssignedArm != nil {
+		return *r.AssignedArm
+	}
+	var zero string
+	return zero
+}
+
+// GetConsent returns the consent field value, or the zero value if nil.
+func (r *ResearchSubject) GetConsent() dt.Reference {
+	if r.Consent != nil {
+		return *r.Consent
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetIndividual returns the individual field value.
+func (r *ResearchSubject) GetIndividual() dt.Reference {
+	return r.Individual
+}
+
+// GetPeriod returns the period field value, or the zero value if nil.
+func (r *ResearchSubject) GetPeriod() dt.Period {
+	if r.Period != nil {
+		return *r.Period
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetStudy returns the study field value.
+func (r *ResearchSubject) GetStudy() dt.Reference {
+	return r.Study
+}

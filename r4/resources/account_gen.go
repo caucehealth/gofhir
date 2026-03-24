@@ -305,3 +305,167 @@ type AccountGuarantor struct {
 	// Period The timeframe during which the guarantor accepts responsibility for the account.
 	Period *dt.Period `json:"period,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Account) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Account) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Account) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Account) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Account) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Account) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Account) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Account) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Account) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Account) GetStatus() AccountStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero AccountStatus
+	return zero
+}
+
+// GetCoverage returns the coverage field value, or an empty slice if nil.
+func (r *Account) GetCoverage() []AccountCoverage {
+	if r.Coverage != nil {
+		return r.Coverage
+	}
+	return nil
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *Account) GetDescription() string {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero string
+	return zero
+}
+
+// GetGuarantor returns the guarantor field value, or an empty slice if nil.
+func (r *Account) GetGuarantor() []AccountGuarantor {
+	if r.Guarantor != nil {
+		return r.Guarantor
+	}
+	return nil
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *Account) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetOwner returns the owner field value, or the zero value if nil.
+func (r *Account) GetOwner() dt.Reference {
+	if r.Owner != nil {
+		return *r.Owner
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPartOf returns the partOf field value, or the zero value if nil.
+func (r *Account) GetPartOf() dt.Reference {
+	if r.PartOf != nil {
+		return *r.PartOf
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetServicePeriod returns the servicePeriod field value, or the zero value if nil.
+func (r *Account) GetServicePeriod() dt.Period {
+	if r.ServicePeriod != nil {
+		return *r.ServicePeriod
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetSubject returns the subject field value, or an empty slice if nil.
+func (r *Account) GetSubject() []dt.Reference {
+	if r.Subject != nil {
+		return r.Subject
+	}
+	return nil
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *Account) GetType() dt.CodeableConcept {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero dt.CodeableConcept
+	return zero
+}

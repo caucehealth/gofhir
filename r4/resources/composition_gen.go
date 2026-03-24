@@ -412,3 +412,197 @@ type CompositionSection struct {
 	// TitleElement contains element extensions for title.
 	TitleElement *dt.Element `json:"_title,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Composition) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Composition) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Composition) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Composition) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Composition) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Composition) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Composition) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Composition) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or the zero value if nil.
+func (r *Composition) GetIdentifier() dt.Identifier {
+	if r.Identifier != nil {
+		return *r.Identifier
+	}
+	var zero dt.Identifier
+	return zero
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Composition) GetStatus() CompositionStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero CompositionStatus
+	return zero
+}
+
+// GetAttester returns the attester field value, or an empty slice if nil.
+func (r *Composition) GetAttester() []CompositionAttester {
+	if r.Attester != nil {
+		return r.Attester
+	}
+	return nil
+}
+
+// GetAuthor returns the author field value, or an empty slice if nil.
+func (r *Composition) GetAuthor() []dt.Reference {
+	if r.Author != nil {
+		return r.Author
+	}
+	return nil
+}
+
+// GetCategory returns the category field value, or an empty slice if nil.
+func (r *Composition) GetCategory() []dt.CodeableConcept {
+	if r.Category != nil {
+		return r.Category
+	}
+	return nil
+}
+
+// GetConfidentiality returns the confidentiality field value, or the zero value if nil.
+func (r *Composition) GetConfidentiality() dt.Code {
+	if r.Confidentiality != nil {
+		return *r.Confidentiality
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetCustodian returns the custodian field value, or the zero value if nil.
+func (r *Composition) GetCustodian() dt.Reference {
+	if r.Custodian != nil {
+		return *r.Custodian
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *Composition) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *Composition) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetEvent returns the event field value, or an empty slice if nil.
+func (r *Composition) GetEvent() []CompositionEvent {
+	if r.Event != nil {
+		return r.Event
+	}
+	return nil
+}
+
+// GetRelatesTo returns the relatesTo field value, or an empty slice if nil.
+func (r *Composition) GetRelatesTo() []CompositionRelatesTo {
+	if r.RelatesTo != nil {
+		return r.RelatesTo
+	}
+	return nil
+}
+
+// GetSection returns the section field value, or an empty slice if nil.
+func (r *Composition) GetSection() []CompositionSection {
+	if r.Section != nil {
+		return r.Section
+	}
+	return nil
+}
+
+// GetSubject returns the subject field value, or the zero value if nil.
+func (r *Composition) GetSubject() dt.Reference {
+	if r.Subject != nil {
+		return *r.Subject
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetTitle returns the title field value, or the zero value if nil.
+func (r *Composition) GetTitle() string {
+	if r.Title != nil {
+		return *r.Title
+	}
+	var zero string
+	return zero
+}
+
+// GetType returns the type field value.
+func (r *Composition) GetType() dt.CodeableConcept {
+	return r.Type
+}

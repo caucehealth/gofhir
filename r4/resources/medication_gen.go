@@ -363,3 +363,142 @@ func (v *MedicationIngredientItem) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Medication) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Medication) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Medication) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Medication) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Medication) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Medication) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Medication) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Medication) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Medication) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Medication) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetAmount returns the amount field value, or the zero value if nil.
+func (r *Medication) GetAmount() dt.Ratio {
+	if r.Amount != nil {
+		return *r.Amount
+	}
+	var zero dt.Ratio
+	return zero
+}
+
+// GetBatch returns the batch field value, or the zero value if nil.
+func (r *Medication) GetBatch() MedicationBatch {
+	if r.Batch != nil {
+		return *r.Batch
+	}
+	var zero MedicationBatch
+	return zero
+}
+
+// GetCode returns the code field value, or the zero value if nil.
+func (r *Medication) GetCode() dt.CodeableConcept {
+	if r.Code != nil {
+		return *r.Code
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetForm returns the form field value, or the zero value if nil.
+func (r *Medication) GetForm() dt.CodeableConcept {
+	if r.Form != nil {
+		return *r.Form
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetIngredient returns the ingredient field value, or an empty slice if nil.
+func (r *Medication) GetIngredient() []MedicationIngredient {
+	if r.Ingredient != nil {
+		return r.Ingredient
+	}
+	return nil
+}
+
+// GetManufacturer returns the manufacturer field value, or the zero value if nil.
+func (r *Medication) GetManufacturer() dt.Reference {
+	if r.Manufacturer != nil {
+		return *r.Manufacturer
+	}
+	var zero dt.Reference
+	return zero
+}

@@ -282,3 +282,162 @@ func (b *EndpointBuilder) Build() (*Endpoint, error) {
 	r := b.resource
 	return &r, nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Endpoint) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Endpoint) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Endpoint) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Endpoint) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Endpoint) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Endpoint) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Endpoint) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Endpoint) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Endpoint) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Endpoint) GetStatus() EndpointStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero EndpointStatus
+	return zero
+}
+
+// GetAddress returns the address field value, or the zero value if nil.
+func (r *Endpoint) GetAddress() dt.URL {
+	if r.Address != nil {
+		return *r.Address
+	}
+	var zero dt.URL
+	return zero
+}
+
+// GetConnectionType returns the connectionType field value.
+func (r *Endpoint) GetConnectionType() dt.Coding {
+	return r.ConnectionType
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *Endpoint) GetContact() []dt.ContactPoint {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetHeader returns the header field value, or an empty slice if nil.
+func (r *Endpoint) GetHeader() []string {
+	if r.Header != nil {
+		return r.Header
+	}
+	return nil
+}
+
+// GetManagingOrganization returns the managingOrganization field value, or the zero value if nil.
+func (r *Endpoint) GetManagingOrganization() dt.Reference {
+	if r.ManagingOrganization != nil {
+		return *r.ManagingOrganization
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *Endpoint) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetPayloadMimeType returns the payloadMimeType field value, or an empty slice if nil.
+func (r *Endpoint) GetPayloadMimeType() []dt.Code {
+	if r.PayloadMimeType != nil {
+		return r.PayloadMimeType
+	}
+	return nil
+}
+
+// GetPayloadType returns the payloadType field value, or an empty slice if nil.
+func (r *Endpoint) GetPayloadType() []dt.CodeableConcept {
+	if r.PayloadType != nil {
+		return r.PayloadType
+	}
+	return nil
+}
+
+// GetPeriod returns the period field value, or the zero value if nil.
+func (r *Endpoint) GetPeriod() dt.Period {
+	if r.Period != nil {
+		return *r.Period
+	}
+	var zero dt.Period
+	return zero
+}

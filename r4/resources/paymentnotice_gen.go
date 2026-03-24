@@ -290,3 +290,167 @@ func (b *PaymentNoticeBuilder) Build() (*PaymentNotice, error) {
 	r := b.resource
 	return &r, nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *PaymentNotice) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *PaymentNotice) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *PaymentNotice) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *PaymentNotice) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *PaymentNotice) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *PaymentNotice) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *PaymentNotice) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *PaymentNotice) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *PaymentNotice) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *PaymentNotice) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetAmount returns the amount field value.
+func (r *PaymentNotice) GetAmount() dt.Money {
+	return r.Amount
+}
+
+// GetCreated returns the created field value, or the zero value if nil.
+func (r *PaymentNotice) GetCreated() dt.DateTime {
+	if r.Created != nil {
+		return *r.Created
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetPayee returns the payee field value, or the zero value if nil.
+func (r *PaymentNotice) GetPayee() dt.Reference {
+	if r.Payee != nil {
+		return *r.Payee
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPayment returns the payment field value.
+func (r *PaymentNotice) GetPayment() dt.Reference {
+	return r.Payment
+}
+
+// GetPaymentDate returns the paymentDate field value, or the zero value if nil.
+func (r *PaymentNotice) GetPaymentDate() dt.Date {
+	if r.PaymentDate != nil {
+		return *r.PaymentDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetPaymentStatus returns the paymentStatus field value, or the zero value if nil.
+func (r *PaymentNotice) GetPaymentStatus() dt.CodeableConcept {
+	if r.PaymentStatus != nil {
+		return *r.PaymentStatus
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetProvider returns the provider field value, or the zero value if nil.
+func (r *PaymentNotice) GetProvider() dt.Reference {
+	if r.Provider != nil {
+		return *r.Provider
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetRecipient returns the recipient field value.
+func (r *PaymentNotice) GetRecipient() dt.Reference {
+	return r.Recipient
+}
+
+// GetRequest returns the request field value, or the zero value if nil.
+func (r *PaymentNotice) GetRequest() dt.Reference {
+	if r.Request != nil {
+		return *r.Request
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetResponse returns the response field value, or the zero value if nil.
+func (r *PaymentNotice) GetResponse() dt.Reference {
+	if r.Response != nil {
+		return *r.Response
+	}
+	var zero dt.Reference
+	return zero
+}

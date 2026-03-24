@@ -624,3 +624,280 @@ func (v *DeviceRequestOccurrence) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *DeviceRequest) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *DeviceRequest) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *DeviceRequest) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *DeviceRequest) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *DeviceRequest) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *DeviceRequest) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *DeviceRequest) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *DeviceRequest) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *DeviceRequest) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *DeviceRequest) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetAuthoredOn returns the authoredOn field value, or the zero value if nil.
+func (r *DeviceRequest) GetAuthoredOn() dt.DateTime {
+	if r.AuthoredOn != nil {
+		return *r.AuthoredOn
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetBasedOn returns the basedOn field value, or an empty slice if nil.
+func (r *DeviceRequest) GetBasedOn() []dt.Reference {
+	if r.BasedOn != nil {
+		return r.BasedOn
+	}
+	return nil
+}
+
+// GetCodeCodeableConcept returns the codeCodeableConcept field value, or the zero value if nil.
+func (r *DeviceRequest) GetCodeCodeableConcept() dt.CodeableConcept {
+	if r.CodeCodeableConcept != nil {
+		return *r.CodeCodeableConcept
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetCodeReference returns the codeReference field value, or the zero value if nil.
+func (r *DeviceRequest) GetCodeReference() dt.Reference {
+	if r.CodeReference != nil {
+		return *r.CodeReference
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *DeviceRequest) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetGroupIdentifier returns the groupIdentifier field value, or the zero value if nil.
+func (r *DeviceRequest) GetGroupIdentifier() dt.Identifier {
+	if r.GroupIdentifier != nil {
+		return *r.GroupIdentifier
+	}
+	var zero dt.Identifier
+	return zero
+}
+
+// GetInstantiatesCanonical returns the instantiatesCanonical field value, or an empty slice if nil.
+func (r *DeviceRequest) GetInstantiatesCanonical() []dt.Canonical {
+	if r.InstantiatesCanonical != nil {
+		return r.InstantiatesCanonical
+	}
+	return nil
+}
+
+// GetInstantiatesUri returns the instantiatesUri field value, or an empty slice if nil.
+func (r *DeviceRequest) GetInstantiatesUri() []dt.URI {
+	if r.InstantiatesUri != nil {
+		return r.InstantiatesUri
+	}
+	return nil
+}
+
+// GetInsurance returns the insurance field value, or an empty slice if nil.
+func (r *DeviceRequest) GetInsurance() []dt.Reference {
+	if r.Insurance != nil {
+		return r.Insurance
+	}
+	return nil
+}
+
+// GetIntent returns the intent field value, or the zero value if nil.
+func (r *DeviceRequest) GetIntent() dt.Code {
+	if r.Intent != nil {
+		return *r.Intent
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *DeviceRequest) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetOccurrence returns the occurrence field value, or a zero-value if nil.
+func (r *DeviceRequest) GetOccurrence() DeviceRequestOccurrence {
+	if r.Occurrence != nil {
+		return *r.Occurrence
+	}
+	return DeviceRequestOccurrence{}
+}
+
+// GetParameter returns the parameter field value, or an empty slice if nil.
+func (r *DeviceRequest) GetParameter() []DeviceRequestParameter {
+	if r.Parameter != nil {
+		return r.Parameter
+	}
+	return nil
+}
+
+// GetPerformer returns the performer field value, or the zero value if nil.
+func (r *DeviceRequest) GetPerformer() dt.Reference {
+	if r.Performer != nil {
+		return *r.Performer
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPerformerType returns the performerType field value, or the zero value if nil.
+func (r *DeviceRequest) GetPerformerType() dt.CodeableConcept {
+	if r.PerformerType != nil {
+		return *r.PerformerType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetPriorRequest returns the priorRequest field value, or an empty slice if nil.
+func (r *DeviceRequest) GetPriorRequest() []dt.Reference {
+	if r.PriorRequest != nil {
+		return r.PriorRequest
+	}
+	return nil
+}
+
+// GetPriority returns the priority field value, or the zero value if nil.
+func (r *DeviceRequest) GetPriority() dt.Code {
+	if r.Priority != nil {
+		return *r.Priority
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetReasonCode returns the reasonCode field value, or an empty slice if nil.
+func (r *DeviceRequest) GetReasonCode() []dt.CodeableConcept {
+	if r.ReasonCode != nil {
+		return r.ReasonCode
+	}
+	return nil
+}
+
+// GetReasonReference returns the reasonReference field value, or an empty slice if nil.
+func (r *DeviceRequest) GetReasonReference() []dt.Reference {
+	if r.ReasonReference != nil {
+		return r.ReasonReference
+	}
+	return nil
+}
+
+// GetRelevantHistory returns the relevantHistory field value, or an empty slice if nil.
+func (r *DeviceRequest) GetRelevantHistory() []dt.Reference {
+	if r.RelevantHistory != nil {
+		return r.RelevantHistory
+	}
+	return nil
+}
+
+// GetRequester returns the requester field value, or the zero value if nil.
+func (r *DeviceRequest) GetRequester() dt.Reference {
+	if r.Requester != nil {
+		return *r.Requester
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetSubject returns the subject field value.
+func (r *DeviceRequest) GetSubject() dt.Reference {
+	return r.Subject
+}
+
+// GetSupportingInfo returns the supportingInfo field value, or an empty slice if nil.
+func (r *DeviceRequest) GetSupportingInfo() []dt.Reference {
+	if r.SupportingInfo != nil {
+		return r.SupportingInfo
+	}
+	return nil
+}

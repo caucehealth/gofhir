@@ -596,3 +596,210 @@ type MolecularSequenceVariant struct {
 	// VariantPointer A pointer to an Observation containing variant information.
 	VariantPointer *dt.Reference `json:"variantPointer,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *MolecularSequence) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *MolecularSequence) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *MolecularSequence) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *MolecularSequence) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *MolecularSequence) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *MolecularSequence) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *MolecularSequence) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *MolecularSequence) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *MolecularSequence) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetCoordinateSystem returns the coordinateSystem field value, or the zero value if nil.
+func (r *MolecularSequence) GetCoordinateSystem() int32 {
+	if r.CoordinateSystem != nil {
+		return *r.CoordinateSystem
+	}
+	var zero int32
+	return zero
+}
+
+// GetDevice returns the device field value, or the zero value if nil.
+func (r *MolecularSequence) GetDevice() dt.Reference {
+	if r.Device != nil {
+		return *r.Device
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetObservedSeq returns the observedSeq field value, or the zero value if nil.
+func (r *MolecularSequence) GetObservedSeq() string {
+	if r.ObservedSeq != nil {
+		return *r.ObservedSeq
+	}
+	var zero string
+	return zero
+}
+
+// GetPatient returns the patient field value, or the zero value if nil.
+func (r *MolecularSequence) GetPatient() dt.Reference {
+	if r.Patient != nil {
+		return *r.Patient
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPerformer returns the performer field value, or the zero value if nil.
+func (r *MolecularSequence) GetPerformer() dt.Reference {
+	if r.Performer != nil {
+		return *r.Performer
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPointer returns the pointer field value, or an empty slice if nil.
+func (r *MolecularSequence) GetPointer() []dt.Reference {
+	if r.Pointer != nil {
+		return r.Pointer
+	}
+	return nil
+}
+
+// GetQuality returns the quality field value, or an empty slice if nil.
+func (r *MolecularSequence) GetQuality() []MolecularSequenceQuality {
+	if r.Quality != nil {
+		return r.Quality
+	}
+	return nil
+}
+
+// GetQuantity returns the quantity field value, or the zero value if nil.
+func (r *MolecularSequence) GetQuantity() dt.Quantity {
+	if r.Quantity != nil {
+		return *r.Quantity
+	}
+	var zero dt.Quantity
+	return zero
+}
+
+// GetReadCoverage returns the readCoverage field value, or the zero value if nil.
+func (r *MolecularSequence) GetReadCoverage() int32 {
+	if r.ReadCoverage != nil {
+		return *r.ReadCoverage
+	}
+	var zero int32
+	return zero
+}
+
+// GetReferenceSeq returns the referenceSeq field value, or the zero value if nil.
+func (r *MolecularSequence) GetReferenceSeq() MolecularSequenceReferenceSeq {
+	if r.ReferenceSeq != nil {
+		return *r.ReferenceSeq
+	}
+	var zero MolecularSequenceReferenceSeq
+	return zero
+}
+
+// GetRepository returns the repository field value, or an empty slice if nil.
+func (r *MolecularSequence) GetRepository() []MolecularSequenceRepository {
+	if r.Repository != nil {
+		return r.Repository
+	}
+	return nil
+}
+
+// GetSpecimen returns the specimen field value, or the zero value if nil.
+func (r *MolecularSequence) GetSpecimen() dt.Reference {
+	if r.Specimen != nil {
+		return *r.Specimen
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetStructureVariant returns the structureVariant field value, or an empty slice if nil.
+func (r *MolecularSequence) GetStructureVariant() []MolecularSequenceStructureVariant {
+	if r.StructureVariant != nil {
+		return r.StructureVariant
+	}
+	return nil
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *MolecularSequence) GetType() MolecularSequenceType {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero MolecularSequenceType
+	return zero
+}
+
+// GetVariant returns the variant field value, or an empty slice if nil.
+func (r *MolecularSequence) GetVariant() []MolecularSequenceVariant {
+	if r.Variant != nil {
+		return r.Variant
+	}
+	return nil
+}

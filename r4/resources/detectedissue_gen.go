@@ -325,3 +325,185 @@ type DetectedIssueMitigation struct {
 	// DateElement contains element extensions for date.
 	DateElement *dt.Element `json:"_date,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *DetectedIssue) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *DetectedIssue) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *DetectedIssue) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *DetectedIssue) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *DetectedIssue) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *DetectedIssue) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *DetectedIssue) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *DetectedIssue) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *DetectedIssue) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *DetectedIssue) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetAuthor returns the author field value, or the zero value if nil.
+func (r *DetectedIssue) GetAuthor() dt.Reference {
+	if r.Author != nil {
+		return *r.Author
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetCode returns the code field value, or the zero value if nil.
+func (r *DetectedIssue) GetCode() dt.CodeableConcept {
+	if r.Code != nil {
+		return *r.Code
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetDetail returns the detail field value, or the zero value if nil.
+func (r *DetectedIssue) GetDetail() string {
+	if r.Detail != nil {
+		return *r.Detail
+	}
+	var zero string
+	return zero
+}
+
+// GetEvidence returns the evidence field value, or an empty slice if nil.
+func (r *DetectedIssue) GetEvidence() []DetectedIssueEvidence {
+	if r.Evidence != nil {
+		return r.Evidence
+	}
+	return nil
+}
+
+// GetIdentifiedDateTime returns the identifiedDateTime field value, or the zero value if nil.
+func (r *DetectedIssue) GetIdentifiedDateTime() string {
+	if r.IdentifiedDateTime != nil {
+		return *r.IdentifiedDateTime
+	}
+	var zero string
+	return zero
+}
+
+// GetIdentifiedPeriod returns the identifiedPeriod field value, or the zero value if nil.
+func (r *DetectedIssue) GetIdentifiedPeriod() dt.Period {
+	if r.IdentifiedPeriod != nil {
+		return *r.IdentifiedPeriod
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetImplicated returns the implicated field value, or an empty slice if nil.
+func (r *DetectedIssue) GetImplicated() []dt.Reference {
+	if r.Implicated != nil {
+		return r.Implicated
+	}
+	return nil
+}
+
+// GetMitigation returns the mitigation field value, or an empty slice if nil.
+func (r *DetectedIssue) GetMitigation() []DetectedIssueMitigation {
+	if r.Mitigation != nil {
+		return r.Mitigation
+	}
+	return nil
+}
+
+// GetPatient returns the patient field value, or the zero value if nil.
+func (r *DetectedIssue) GetPatient() dt.Reference {
+	if r.Patient != nil {
+		return *r.Patient
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetReference returns the reference field value, or the zero value if nil.
+func (r *DetectedIssue) GetReference() dt.URI {
+	if r.Reference != nil {
+		return *r.Reference
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetSeverity returns the severity field value, or the zero value if nil.
+func (r *DetectedIssue) GetSeverity() DetectedIssueSeverity {
+	if r.Severity != nil {
+		return *r.Severity
+	}
+	var zero DetectedIssueSeverity
+	return zero
+}

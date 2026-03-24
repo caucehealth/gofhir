@@ -454,3 +454,272 @@ type HealthcareServiceNotAvailable struct {
 	// During Service is not available (seasonally or for a public holiday) from this date.
 	During *dt.Period `json:"during,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *HealthcareService) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *HealthcareService) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *HealthcareService) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *HealthcareService) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *HealthcareService) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *HealthcareService) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *HealthcareService) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *HealthcareService) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *HealthcareService) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetActive returns the active field value, or the zero value if nil.
+func (r *HealthcareService) GetActive() bool {
+	if r.Active != nil {
+		return *r.Active
+	}
+	var zero bool
+	return zero
+}
+
+// GetAppointmentRequired returns the appointmentRequired field value, or the zero value if nil.
+func (r *HealthcareService) GetAppointmentRequired() bool {
+	if r.AppointmentRequired != nil {
+		return *r.AppointmentRequired
+	}
+	var zero bool
+	return zero
+}
+
+// GetAvailabilityExceptions returns the availabilityExceptions field value, or the zero value if nil.
+func (r *HealthcareService) GetAvailabilityExceptions() string {
+	if r.AvailabilityExceptions != nil {
+		return *r.AvailabilityExceptions
+	}
+	var zero string
+	return zero
+}
+
+// GetAvailableTime returns the availableTime field value, or an empty slice if nil.
+func (r *HealthcareService) GetAvailableTime() []HealthcareServiceAvailableTime {
+	if r.AvailableTime != nil {
+		return r.AvailableTime
+	}
+	return nil
+}
+
+// GetCategory returns the category field value, or an empty slice if nil.
+func (r *HealthcareService) GetCategory() []dt.CodeableConcept {
+	if r.Category != nil {
+		return r.Category
+	}
+	return nil
+}
+
+// GetCharacteristic returns the characteristic field value, or an empty slice if nil.
+func (r *HealthcareService) GetCharacteristic() []dt.CodeableConcept {
+	if r.Characteristic != nil {
+		return r.Characteristic
+	}
+	return nil
+}
+
+// GetComment returns the comment field value, or the zero value if nil.
+func (r *HealthcareService) GetComment() string {
+	if r.Comment != nil {
+		return *r.Comment
+	}
+	var zero string
+	return zero
+}
+
+// GetCommunication returns the communication field value, or an empty slice if nil.
+func (r *HealthcareService) GetCommunication() []dt.CodeableConcept {
+	if r.Communication != nil {
+		return r.Communication
+	}
+	return nil
+}
+
+// GetCoverageArea returns the coverageArea field value, or an empty slice if nil.
+func (r *HealthcareService) GetCoverageArea() []dt.Reference {
+	if r.CoverageArea != nil {
+		return r.CoverageArea
+	}
+	return nil
+}
+
+// GetEligibility returns the eligibility field value, or an empty slice if nil.
+func (r *HealthcareService) GetEligibility() []HealthcareServiceEligibility {
+	if r.Eligibility != nil {
+		return r.Eligibility
+	}
+	return nil
+}
+
+// GetEndpoint returns the endpoint field value, or an empty slice if nil.
+func (r *HealthcareService) GetEndpoint() []dt.Reference {
+	if r.Endpoint != nil {
+		return r.Endpoint
+	}
+	return nil
+}
+
+// GetExtraDetails returns the extraDetails field value, or the zero value if nil.
+func (r *HealthcareService) GetExtraDetails() dt.Markdown {
+	if r.ExtraDetails != nil {
+		return *r.ExtraDetails
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetLocation returns the location field value, or an empty slice if nil.
+func (r *HealthcareService) GetLocation() []dt.Reference {
+	if r.Location != nil {
+		return r.Location
+	}
+	return nil
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *HealthcareService) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetNotAvailable returns the notAvailable field value, or an empty slice if nil.
+func (r *HealthcareService) GetNotAvailable() []HealthcareServiceNotAvailable {
+	if r.NotAvailable != nil {
+		return r.NotAvailable
+	}
+	return nil
+}
+
+// GetPhoto returns the photo field value, or the zero value if nil.
+func (r *HealthcareService) GetPhoto() dt.Attachment {
+	if r.Photo != nil {
+		return *r.Photo
+	}
+	var zero dt.Attachment
+	return zero
+}
+
+// GetProgram returns the program field value, or an empty slice if nil.
+func (r *HealthcareService) GetProgram() []dt.CodeableConcept {
+	if r.Program != nil {
+		return r.Program
+	}
+	return nil
+}
+
+// GetProvidedBy returns the providedBy field value, or the zero value if nil.
+func (r *HealthcareService) GetProvidedBy() dt.Reference {
+	if r.ProvidedBy != nil {
+		return *r.ProvidedBy
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetReferralMethod returns the referralMethod field value, or an empty slice if nil.
+func (r *HealthcareService) GetReferralMethod() []dt.CodeableConcept {
+	if r.ReferralMethod != nil {
+		return r.ReferralMethod
+	}
+	return nil
+}
+
+// GetServiceProvisionCode returns the serviceProvisionCode field value, or an empty slice if nil.
+func (r *HealthcareService) GetServiceProvisionCode() []dt.CodeableConcept {
+	if r.ServiceProvisionCode != nil {
+		return r.ServiceProvisionCode
+	}
+	return nil
+}
+
+// GetSpecialty returns the specialty field value, or an empty slice if nil.
+func (r *HealthcareService) GetSpecialty() []dt.CodeableConcept {
+	if r.Specialty != nil {
+		return r.Specialty
+	}
+	return nil
+}
+
+// GetTelecom returns the telecom field value, or an empty slice if nil.
+func (r *HealthcareService) GetTelecom() []dt.ContactPoint {
+	if r.Telecom != nil {
+		return r.Telecom
+	}
+	return nil
+}
+
+// GetType returns the type field value, or an empty slice if nil.
+func (r *HealthcareService) GetType() []dt.CodeableConcept {
+	if r.Type != nil {
+		return r.Type
+	}
+	return nil
+}

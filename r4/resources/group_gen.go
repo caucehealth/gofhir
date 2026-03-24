@@ -424,3 +424,159 @@ type GroupMember struct {
 	// Period The period that the member was in the group, if known.
 	Period *dt.Period `json:"period,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Group) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Group) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Group) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Group) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Group) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Group) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Group) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Group) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Group) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetActive returns the active field value, or the zero value if nil.
+func (r *Group) GetActive() bool {
+	if r.Active != nil {
+		return *r.Active
+	}
+	var zero bool
+	return zero
+}
+
+// GetActual returns the actual field value, or the zero value if nil.
+func (r *Group) GetActual() bool {
+	if r.Actual != nil {
+		return *r.Actual
+	}
+	var zero bool
+	return zero
+}
+
+// GetCharacteristic returns the characteristic field value, or an empty slice if nil.
+func (r *Group) GetCharacteristic() []GroupCharacteristic {
+	if r.Characteristic != nil {
+		return r.Characteristic
+	}
+	return nil
+}
+
+// GetCode returns the code field value, or the zero value if nil.
+func (r *Group) GetCode() dt.CodeableConcept {
+	if r.Code != nil {
+		return *r.Code
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetManagingEntity returns the managingEntity field value, or the zero value if nil.
+func (r *Group) GetManagingEntity() dt.Reference {
+	if r.ManagingEntity != nil {
+		return *r.ManagingEntity
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetMember returns the member field value, or an empty slice if nil.
+func (r *Group) GetMember() []GroupMember {
+	if r.Member != nil {
+		return r.Member
+	}
+	return nil
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *Group) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetQuantity returns the quantity field value, or the zero value if nil.
+func (r *Group) GetQuantity() uint32 {
+	if r.Quantity != nil {
+		return *r.Quantity
+	}
+	var zero uint32
+	return zero
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *Group) GetType() GroupType {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero GroupType
+	return zero
+}

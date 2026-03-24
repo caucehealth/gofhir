@@ -870,3 +870,279 @@ type TestScriptVariable struct {
 	// SourceIdElement contains element extensions for sourceId.
 	SourceIdElement *dt.Element `json:"_sourceId,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *TestScript) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *TestScript) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *TestScript) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *TestScript) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *TestScript) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *TestScript) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *TestScript) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *TestScript) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or the zero value if nil.
+func (r *TestScript) GetIdentifier() dt.Identifier {
+	if r.Identifier != nil {
+		return *r.Identifier
+	}
+	var zero dt.Identifier
+	return zero
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *TestScript) GetStatus() TestScriptStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero TestScriptStatus
+	return zero
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *TestScript) GetContact() []dt.ContactDetail {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetCopyright returns the copyright field value, or the zero value if nil.
+func (r *TestScript) GetCopyright() dt.Markdown {
+	if r.Copyright != nil {
+		return *r.Copyright
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *TestScript) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *TestScript) GetDescription() dt.Markdown {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetDestination returns the destination field value, or an empty slice if nil.
+func (r *TestScript) GetDestination() []TestScriptDestination {
+	if r.Destination != nil {
+		return r.Destination
+	}
+	return nil
+}
+
+// GetExperimental returns the experimental field value, or the zero value if nil.
+func (r *TestScript) GetExperimental() bool {
+	if r.Experimental != nil {
+		return *r.Experimental
+	}
+	var zero bool
+	return zero
+}
+
+// GetFixture returns the fixture field value, or an empty slice if nil.
+func (r *TestScript) GetFixture() []TestScriptFixture {
+	if r.Fixture != nil {
+		return r.Fixture
+	}
+	return nil
+}
+
+// GetJurisdiction returns the jurisdiction field value, or an empty slice if nil.
+func (r *TestScript) GetJurisdiction() []dt.CodeableConcept {
+	if r.Jurisdiction != nil {
+		return r.Jurisdiction
+	}
+	return nil
+}
+
+// GetMetadata returns the metadata field value, or the zero value if nil.
+func (r *TestScript) GetMetadata() TestScriptMetadata {
+	if r.Metadata != nil {
+		return *r.Metadata
+	}
+	var zero TestScriptMetadata
+	return zero
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *TestScript) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetOrigin returns the origin field value, or an empty slice if nil.
+func (r *TestScript) GetOrigin() []TestScriptOrigin {
+	if r.Origin != nil {
+		return r.Origin
+	}
+	return nil
+}
+
+// GetProfile returns the profile field value, or an empty slice if nil.
+func (r *TestScript) GetProfile() []dt.Reference {
+	if r.Profile != nil {
+		return r.Profile
+	}
+	return nil
+}
+
+// GetPublisher returns the publisher field value, or the zero value if nil.
+func (r *TestScript) GetPublisher() string {
+	if r.Publisher != nil {
+		return *r.Publisher
+	}
+	var zero string
+	return zero
+}
+
+// GetPurpose returns the purpose field value, or the zero value if nil.
+func (r *TestScript) GetPurpose() dt.Markdown {
+	if r.Purpose != nil {
+		return *r.Purpose
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetSetup returns the setup field value, or the zero value if nil.
+func (r *TestScript) GetSetup() TestScriptSetup {
+	if r.Setup != nil {
+		return *r.Setup
+	}
+	var zero TestScriptSetup
+	return zero
+}
+
+// GetTeardown returns the teardown field value, or the zero value if nil.
+func (r *TestScript) GetTeardown() TestScriptTeardown {
+	if r.Teardown != nil {
+		return *r.Teardown
+	}
+	var zero TestScriptTeardown
+	return zero
+}
+
+// GetTest returns the test field value, or an empty slice if nil.
+func (r *TestScript) GetTest() []TestScriptTest {
+	if r.Test != nil {
+		return r.Test
+	}
+	return nil
+}
+
+// GetTitle returns the title field value, or the zero value if nil.
+func (r *TestScript) GetTitle() string {
+	if r.Title != nil {
+		return *r.Title
+	}
+	var zero string
+	return zero
+}
+
+// GetUrl returns the url field value, or the zero value if nil.
+func (r *TestScript) GetUrl() dt.URI {
+	if r.Url != nil {
+		return *r.Url
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetUseContext returns the useContext field value, or an empty slice if nil.
+func (r *TestScript) GetUseContext() []dt.UsageContext {
+	if r.UseContext != nil {
+		return r.UseContext
+	}
+	return nil
+}
+
+// GetVariable returns the variable field value, or an empty slice if nil.
+func (r *TestScript) GetVariable() []TestScriptVariable {
+	if r.Variable != nil {
+		return r.Variable
+	}
+	return nil
+}
+
+// GetVersion returns the version field value, or the zero value if nil.
+func (r *TestScript) GetVersion() string {
+	if r.Version != nil {
+		return *r.Version
+	}
+	var zero string
+	return zero
+}

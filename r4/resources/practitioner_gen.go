@@ -282,3 +282,155 @@ type PractitionerQualification struct {
 	// Period Period during which the qualification is valid.
 	Period *dt.Period `json:"period,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Practitioner) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Practitioner) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Practitioner) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Practitioner) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Practitioner) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Practitioner) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Practitioner) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Practitioner) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Practitioner) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetActive returns the active field value, or the zero value if nil.
+func (r *Practitioner) GetActive() bool {
+	if r.Active != nil {
+		return *r.Active
+	}
+	var zero bool
+	return zero
+}
+
+// GetAddress returns the address field value, or an empty slice if nil.
+func (r *Practitioner) GetAddress() []dt.Address {
+	if r.Address != nil {
+		return r.Address
+	}
+	return nil
+}
+
+// GetBirthDate returns the birthDate field value, or the zero value if nil.
+func (r *Practitioner) GetBirthDate() dt.Date {
+	if r.BirthDate != nil {
+		return *r.BirthDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetCommunication returns the communication field value, or an empty slice if nil.
+func (r *Practitioner) GetCommunication() []dt.CodeableConcept {
+	if r.Communication != nil {
+		return r.Communication
+	}
+	return nil
+}
+
+// GetGender returns the gender field value, or the zero value if nil.
+func (r *Practitioner) GetGender() AdministrativeGender {
+	if r.Gender != nil {
+		return *r.Gender
+	}
+	var zero AdministrativeGender
+	return zero
+}
+
+// GetName returns the name field value, or an empty slice if nil.
+func (r *Practitioner) GetName() []dt.HumanName {
+	if r.Name != nil {
+		return r.Name
+	}
+	return nil
+}
+
+// GetPhoto returns the photo field value, or an empty slice if nil.
+func (r *Practitioner) GetPhoto() []dt.Attachment {
+	if r.Photo != nil {
+		return r.Photo
+	}
+	return nil
+}
+
+// GetQualification returns the qualification field value, or an empty slice if nil.
+func (r *Practitioner) GetQualification() []PractitionerQualification {
+	if r.Qualification != nil {
+		return r.Qualification
+	}
+	return nil
+}
+
+// GetTelecom returns the telecom field value, or an empty slice if nil.
+func (r *Practitioner) GetTelecom() []dt.ContactPoint {
+	if r.Telecom != nil {
+		return r.Telecom
+	}
+	return nil
+}

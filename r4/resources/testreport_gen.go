@@ -458,3 +458,174 @@ type TestReportTest struct {
 	// NameElement contains element extensions for name.
 	NameElement *dt.Element `json:"_name,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *TestReport) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *TestReport) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *TestReport) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *TestReport) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *TestReport) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *TestReport) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *TestReport) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *TestReport) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or the zero value if nil.
+func (r *TestReport) GetIdentifier() dt.Identifier {
+	if r.Identifier != nil {
+		return *r.Identifier
+	}
+	var zero dt.Identifier
+	return zero
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *TestReport) GetStatus() TestReportStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero TestReportStatus
+	return zero
+}
+
+// GetIssued returns the issued field value, or the zero value if nil.
+func (r *TestReport) GetIssued() dt.DateTime {
+	if r.Issued != nil {
+		return *r.Issued
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *TestReport) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetParticipant returns the participant field value, or an empty slice if nil.
+func (r *TestReport) GetParticipant() []TestReportParticipant {
+	if r.Participant != nil {
+		return r.Participant
+	}
+	return nil
+}
+
+// GetResult returns the result field value, or the zero value if nil.
+func (r *TestReport) GetResult() TestReportResult {
+	if r.Result != nil {
+		return *r.Result
+	}
+	var zero TestReportResult
+	return zero
+}
+
+// GetScore returns the score field value, or the zero value if nil.
+func (r *TestReport) GetScore() float64 {
+	if r.Score != nil {
+		return *r.Score
+	}
+	var zero float64
+	return zero
+}
+
+// GetSetup returns the setup field value, or the zero value if nil.
+func (r *TestReport) GetSetup() TestReportSetup {
+	if r.Setup != nil {
+		return *r.Setup
+	}
+	var zero TestReportSetup
+	return zero
+}
+
+// GetTeardown returns the teardown field value, or the zero value if nil.
+func (r *TestReport) GetTeardown() TestReportTeardown {
+	if r.Teardown != nil {
+		return *r.Teardown
+	}
+	var zero TestReportTeardown
+	return zero
+}
+
+// GetTest returns the test field value, or an empty slice if nil.
+func (r *TestReport) GetTest() []TestReportTest {
+	if r.Test != nil {
+		return r.Test
+	}
+	return nil
+}
+
+// GetTestScript returns the testScript field value.
+func (r *TestReport) GetTestScript() dt.Reference {
+	return r.TestScript
+}
+
+// GetTester returns the tester field value, or the zero value if nil.
+func (r *TestReport) GetTester() string {
+	if r.Tester != nil {
+		return *r.Tester
+	}
+	var zero string
+	return zero
+}

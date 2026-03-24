@@ -392,6 +392,47 @@ func (b *MedicationStatementBuilder) Build() (*MedicationStatement, error) {
 	return &r, nil
 }
 
+// MedicationStatementMedication represents a polymorphic choice type in FHIR.
+type MedicationStatementMedication struct {
+	CodeableConcept *dt.CodeableConcept `json:"medicationCodeableConcept,omitempty"` // Identifies the medication being administered. This is either a link to a resource representing the details of the medication or a simple attribute carrying a code that identifies the medication fro...
+	Reference       *dt.Reference       `json:"medicationReference,omitempty"`       // Identifies the medication being administered. This is either a link to a resource representing the details of the medication or a simple attribute carrying a code that identifies the medication fro...
+}
+
+// MarshalJSON implements the json.Marshaler interface for MedicationStatementMedication.
+func (v MedicationStatementMedication) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.CodeableConcept != nil {
+		m["medicationCodeableConcept"] = v.CodeableConcept
+	}
+	if v.Reference != nil {
+		m["medicationReference"] = v.Reference
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for MedicationStatementMedication.
+func (v *MedicationStatementMedication) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["medicationCodeableConcept"]; ok {
+		var val dt.CodeableConcept
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling medicationCodeableConcept: %w", err)
+		}
+		v.CodeableConcept = &val
+	}
+	if d, ok := raw["medicationReference"]; ok {
+		var val dt.Reference
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling medicationReference: %w", err)
+		}
+		v.Reference = &val
+	}
+	return nil
+}
+
 // MedicationStatementEffective represents a polymorphic choice type in FHIR.
 type MedicationStatementEffective struct {
 	DateTime *string    `json:"effectiveDateTime,omitempty"` // The interval of time during which it is being asserted that the patient is/was/will be taking the medication (or was not taking, when the MedicationStatement.taken element is No).
@@ -433,43 +474,209 @@ func (v *MedicationStatementEffective) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MedicationStatementMedication represents a polymorphic choice type in FHIR.
-type MedicationStatementMedication struct {
-	CodeableConcept *dt.CodeableConcept `json:"medicationCodeableConcept,omitempty"` // Identifies the medication being administered. This is either a link to a resource representing the details of the medication or a simple attribute carrying a code that identifies the medication fro...
-	Reference       *dt.Reference       `json:"medicationReference,omitempty"`       // Identifies the medication being administered. This is either a link to a resource representing the details of the medication or a simple attribute carrying a code that identifies the medication fro...
+// GetId returns the id field value, or the zero value if nil.
+func (r *MedicationStatement) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
 }
 
-// MarshalJSON implements the json.Marshaler interface for MedicationStatementMedication.
-func (v MedicationStatementMedication) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.CodeableConcept != nil {
-		m["medicationCodeableConcept"] = v.CodeableConcept
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *MedicationStatement) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
 	}
-	if v.Reference != nil {
-		m["medicationReference"] = v.Reference
-	}
-	return json.Marshal(m)
+	var zero dt.Meta
+	return zero
 }
 
-// UnmarshalJSON implements the json.Unmarshaler interface for MedicationStatementMedication.
-func (v *MedicationStatementMedication) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *MedicationStatement) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
 	}
-	if d, ok := raw["medicationCodeableConcept"]; ok {
-		var val dt.CodeableConcept
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling medicationCodeableConcept: %w", err)
-		}
-		v.CodeableConcept = &val
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *MedicationStatement) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
 	}
-	if d, ok := raw["medicationReference"]; ok {
-		var val dt.Reference
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling medicationReference: %w", err)
-		}
-		v.Reference = &val
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *MedicationStatement) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *MedicationStatement) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
 	}
 	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *MedicationStatement) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *MedicationStatement) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *MedicationStatement) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *MedicationStatement) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetBasedOn returns the basedOn field value, or an empty slice if nil.
+func (r *MedicationStatement) GetBasedOn() []dt.Reference {
+	if r.BasedOn != nil {
+		return r.BasedOn
+	}
+	return nil
+}
+
+// GetCategory returns the category field value, or the zero value if nil.
+func (r *MedicationStatement) GetCategory() dt.CodeableConcept {
+	if r.Category != nil {
+		return *r.Category
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetContext returns the context field value, or the zero value if nil.
+func (r *MedicationStatement) GetContext() dt.Reference {
+	if r.Context != nil {
+		return *r.Context
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetDateAsserted returns the dateAsserted field value, or the zero value if nil.
+func (r *MedicationStatement) GetDateAsserted() dt.DateTime {
+	if r.DateAsserted != nil {
+		return *r.DateAsserted
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDerivedFrom returns the derivedFrom field value, or an empty slice if nil.
+func (r *MedicationStatement) GetDerivedFrom() []dt.Reference {
+	if r.DerivedFrom != nil {
+		return r.DerivedFrom
+	}
+	return nil
+}
+
+// GetDosage returns the dosage field value, or an empty slice if nil.
+func (r *MedicationStatement) GetDosage() []dt.Dosage {
+	if r.Dosage != nil {
+		return r.Dosage
+	}
+	return nil
+}
+
+// GetEffective returns the effective field value, or a zero-value if nil.
+func (r *MedicationStatement) GetEffective() MedicationStatementEffective {
+	if r.Effective != nil {
+		return *r.Effective
+	}
+	return MedicationStatementEffective{}
+}
+
+// GetInformationSource returns the informationSource field value, or the zero value if nil.
+func (r *MedicationStatement) GetInformationSource() dt.Reference {
+	if r.InformationSource != nil {
+		return *r.InformationSource
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetMedication returns the medication field value, or a zero-value if nil.
+func (r *MedicationStatement) GetMedication() MedicationStatementMedication {
+	if r.Medication != nil {
+		return *r.Medication
+	}
+	return MedicationStatementMedication{}
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *MedicationStatement) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetPartOf returns the partOf field value, or an empty slice if nil.
+func (r *MedicationStatement) GetPartOf() []dt.Reference {
+	if r.PartOf != nil {
+		return r.PartOf
+	}
+	return nil
+}
+
+// GetReasonCode returns the reasonCode field value, or an empty slice if nil.
+func (r *MedicationStatement) GetReasonCode() []dt.CodeableConcept {
+	if r.ReasonCode != nil {
+		return r.ReasonCode
+	}
+	return nil
+}
+
+// GetReasonReference returns the reasonReference field value, or an empty slice if nil.
+func (r *MedicationStatement) GetReasonReference() []dt.Reference {
+	if r.ReasonReference != nil {
+		return r.ReasonReference
+	}
+	return nil
+}
+
+// GetStatusReason returns the statusReason field value, or an empty slice if nil.
+func (r *MedicationStatement) GetStatusReason() []dt.CodeableConcept {
+	if r.StatusReason != nil {
+		return r.StatusReason
+	}
+	return nil
+}
+
+// GetSubject returns the subject field value.
+func (r *MedicationStatement) GetSubject() dt.Reference {
+	return r.Subject
 }

@@ -491,3 +491,207 @@ func (v *AllergyIntoleranceOnset) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *AllergyIntolerance) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *AllergyIntolerance) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *AllergyIntolerance) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *AllergyIntolerance) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *AllergyIntolerance) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *AllergyIntolerance) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *AllergyIntolerance) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *AllergyIntolerance) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *AllergyIntolerance) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetAsserter returns the asserter field value, or the zero value if nil.
+func (r *AllergyIntolerance) GetAsserter() dt.Reference {
+	if r.Asserter != nil {
+		return *r.Asserter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetCategory returns the category field value, or an empty slice if nil.
+func (r *AllergyIntolerance) GetCategory() []AllergyIntoleranceCategory {
+	if r.Category != nil {
+		return r.Category
+	}
+	return nil
+}
+
+// GetClinicalStatus returns the clinicalStatus field value, or the zero value if nil.
+func (r *AllergyIntolerance) GetClinicalStatus() dt.CodeableConcept {
+	if r.ClinicalStatus != nil {
+		return *r.ClinicalStatus
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetCode returns the code field value, or the zero value if nil.
+func (r *AllergyIntolerance) GetCode() dt.CodeableConcept {
+	if r.Code != nil {
+		return *r.Code
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetCriticality returns the criticality field value, or the zero value if nil.
+func (r *AllergyIntolerance) GetCriticality() AllergyIntoleranceCriticality {
+	if r.Criticality != nil {
+		return *r.Criticality
+	}
+	var zero AllergyIntoleranceCriticality
+	return zero
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *AllergyIntolerance) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetLastOccurrence returns the lastOccurrence field value, or the zero value if nil.
+func (r *AllergyIntolerance) GetLastOccurrence() dt.DateTime {
+	if r.LastOccurrence != nil {
+		return *r.LastOccurrence
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *AllergyIntolerance) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetOnset returns the onset field value, or a zero-value if nil.
+func (r *AllergyIntolerance) GetOnset() AllergyIntoleranceOnset {
+	if r.Onset != nil {
+		return *r.Onset
+	}
+	return AllergyIntoleranceOnset{}
+}
+
+// GetPatient returns the patient field value.
+func (r *AllergyIntolerance) GetPatient() dt.Reference {
+	return r.Patient
+}
+
+// GetReaction returns the reaction field value, or an empty slice if nil.
+func (r *AllergyIntolerance) GetReaction() []AllergyIntoleranceReaction {
+	if r.Reaction != nil {
+		return r.Reaction
+	}
+	return nil
+}
+
+// GetRecordedDate returns the recordedDate field value, or the zero value if nil.
+func (r *AllergyIntolerance) GetRecordedDate() dt.DateTime {
+	if r.RecordedDate != nil {
+		return *r.RecordedDate
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetRecorder returns the recorder field value, or the zero value if nil.
+func (r *AllergyIntolerance) GetRecorder() dt.Reference {
+	if r.Recorder != nil {
+		return *r.Recorder
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *AllergyIntolerance) GetType() AllergyIntoleranceType {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero AllergyIntoleranceType
+	return zero
+}
+
+// GetVerificationStatus returns the verificationStatus field value, or the zero value if nil.
+func (r *AllergyIntolerance) GetVerificationStatus() dt.CodeableConcept {
+	if r.VerificationStatus != nil {
+		return *r.VerificationStatus
+	}
+	var zero dt.CodeableConcept
+	return zero
+}

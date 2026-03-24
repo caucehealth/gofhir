@@ -692,3 +692,435 @@ type MeasureSupplementalData struct {
 	// Usage An indicator of the intended usage for the supplemental data element. Supplemental data indicates the data is additional information requested to augment the measure information. Risk adjustment fa...
 	Usage []dt.CodeableConcept `json:"usage,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Measure) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Measure) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Measure) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Measure) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Measure) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Measure) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Measure) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Measure) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Measure) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Measure) GetStatus() MeasureStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero MeasureStatus
+	return zero
+}
+
+// GetApprovalDate returns the approvalDate field value, or the zero value if nil.
+func (r *Measure) GetApprovalDate() dt.Date {
+	if r.ApprovalDate != nil {
+		return *r.ApprovalDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetAuthor returns the author field value, or an empty slice if nil.
+func (r *Measure) GetAuthor() []dt.ContactDetail {
+	if r.Author != nil {
+		return r.Author
+	}
+	return nil
+}
+
+// GetClinicalRecommendationStatement returns the clinicalRecommendationStatement field value, or the zero value if nil.
+func (r *Measure) GetClinicalRecommendationStatement() dt.Markdown {
+	if r.ClinicalRecommendationStatement != nil {
+		return *r.ClinicalRecommendationStatement
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetCompositeScoring returns the compositeScoring field value, or the zero value if nil.
+func (r *Measure) GetCompositeScoring() dt.CodeableConcept {
+	if r.CompositeScoring != nil {
+		return *r.CompositeScoring
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *Measure) GetContact() []dt.ContactDetail {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetCopyright returns the copyright field value, or the zero value if nil.
+func (r *Measure) GetCopyright() dt.Markdown {
+	if r.Copyright != nil {
+		return *r.Copyright
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *Measure) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDefinition returns the definition field value, or an empty slice if nil.
+func (r *Measure) GetDefinition() []dt.Markdown {
+	if r.Definition != nil {
+		return r.Definition
+	}
+	return nil
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *Measure) GetDescription() dt.Markdown {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetDisclaimer returns the disclaimer field value, or the zero value if nil.
+func (r *Measure) GetDisclaimer() dt.Markdown {
+	if r.Disclaimer != nil {
+		return *r.Disclaimer
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetEditor returns the editor field value, or an empty slice if nil.
+func (r *Measure) GetEditor() []dt.ContactDetail {
+	if r.Editor != nil {
+		return r.Editor
+	}
+	return nil
+}
+
+// GetEffectivePeriod returns the effectivePeriod field value, or the zero value if nil.
+func (r *Measure) GetEffectivePeriod() dt.Period {
+	if r.EffectivePeriod != nil {
+		return *r.EffectivePeriod
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetEndorser returns the endorser field value, or an empty slice if nil.
+func (r *Measure) GetEndorser() []dt.ContactDetail {
+	if r.Endorser != nil {
+		return r.Endorser
+	}
+	return nil
+}
+
+// GetExperimental returns the experimental field value, or the zero value if nil.
+func (r *Measure) GetExperimental() bool {
+	if r.Experimental != nil {
+		return *r.Experimental
+	}
+	var zero bool
+	return zero
+}
+
+// GetGroup returns the group field value, or an empty slice if nil.
+func (r *Measure) GetGroup() []MeasureGroup {
+	if r.Group != nil {
+		return r.Group
+	}
+	return nil
+}
+
+// GetGuidance returns the guidance field value, or the zero value if nil.
+func (r *Measure) GetGuidance() dt.Markdown {
+	if r.Guidance != nil {
+		return *r.Guidance
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetImprovementNotation returns the improvementNotation field value, or the zero value if nil.
+func (r *Measure) GetImprovementNotation() dt.CodeableConcept {
+	if r.ImprovementNotation != nil {
+		return *r.ImprovementNotation
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetJurisdiction returns the jurisdiction field value, or an empty slice if nil.
+func (r *Measure) GetJurisdiction() []dt.CodeableConcept {
+	if r.Jurisdiction != nil {
+		return r.Jurisdiction
+	}
+	return nil
+}
+
+// GetLastReviewDate returns the lastReviewDate field value, or the zero value if nil.
+func (r *Measure) GetLastReviewDate() dt.Date {
+	if r.LastReviewDate != nil {
+		return *r.LastReviewDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetLibrary returns the library field value, or an empty slice if nil.
+func (r *Measure) GetLibrary() []dt.Canonical {
+	if r.Library != nil {
+		return r.Library
+	}
+	return nil
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *Measure) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetPublisher returns the publisher field value, or the zero value if nil.
+func (r *Measure) GetPublisher() string {
+	if r.Publisher != nil {
+		return *r.Publisher
+	}
+	var zero string
+	return zero
+}
+
+// GetPurpose returns the purpose field value, or the zero value if nil.
+func (r *Measure) GetPurpose() dt.Markdown {
+	if r.Purpose != nil {
+		return *r.Purpose
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetRateAggregation returns the rateAggregation field value, or the zero value if nil.
+func (r *Measure) GetRateAggregation() string {
+	if r.RateAggregation != nil {
+		return *r.RateAggregation
+	}
+	var zero string
+	return zero
+}
+
+// GetRationale returns the rationale field value, or the zero value if nil.
+func (r *Measure) GetRationale() dt.Markdown {
+	if r.Rationale != nil {
+		return *r.Rationale
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetRelatedArtifact returns the relatedArtifact field value, or an empty slice if nil.
+func (r *Measure) GetRelatedArtifact() []dt.RelatedArtifact {
+	if r.RelatedArtifact != nil {
+		return r.RelatedArtifact
+	}
+	return nil
+}
+
+// GetReviewer returns the reviewer field value, or an empty slice if nil.
+func (r *Measure) GetReviewer() []dt.ContactDetail {
+	if r.Reviewer != nil {
+		return r.Reviewer
+	}
+	return nil
+}
+
+// GetRiskAdjustment returns the riskAdjustment field value, or the zero value if nil.
+func (r *Measure) GetRiskAdjustment() string {
+	if r.RiskAdjustment != nil {
+		return *r.RiskAdjustment
+	}
+	var zero string
+	return zero
+}
+
+// GetScoring returns the scoring field value, or the zero value if nil.
+func (r *Measure) GetScoring() dt.CodeableConcept {
+	if r.Scoring != nil {
+		return *r.Scoring
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSubjectCodeableConcept returns the subjectCodeableConcept field value, or the zero value if nil.
+func (r *Measure) GetSubjectCodeableConcept() dt.CodeableConcept {
+	if r.SubjectCodeableConcept != nil {
+		return *r.SubjectCodeableConcept
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSubjectReference returns the subjectReference field value, or the zero value if nil.
+func (r *Measure) GetSubjectReference() dt.Reference {
+	if r.SubjectReference != nil {
+		return *r.SubjectReference
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetSubtitle returns the subtitle field value, or the zero value if nil.
+func (r *Measure) GetSubtitle() string {
+	if r.Subtitle != nil {
+		return *r.Subtitle
+	}
+	var zero string
+	return zero
+}
+
+// GetSupplementalData returns the supplementalData field value, or an empty slice if nil.
+func (r *Measure) GetSupplementalData() []MeasureSupplementalData {
+	if r.SupplementalData != nil {
+		return r.SupplementalData
+	}
+	return nil
+}
+
+// GetTitle returns the title field value, or the zero value if nil.
+func (r *Measure) GetTitle() string {
+	if r.Title != nil {
+		return *r.Title
+	}
+	var zero string
+	return zero
+}
+
+// GetTopic returns the topic field value, or an empty slice if nil.
+func (r *Measure) GetTopic() []dt.CodeableConcept {
+	if r.Topic != nil {
+		return r.Topic
+	}
+	return nil
+}
+
+// GetType returns the type field value, or an empty slice if nil.
+func (r *Measure) GetType() []dt.CodeableConcept {
+	if r.Type != nil {
+		return r.Type
+	}
+	return nil
+}
+
+// GetUrl returns the url field value, or the zero value if nil.
+func (r *Measure) GetUrl() dt.URI {
+	if r.Url != nil {
+		return *r.Url
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetUsage returns the usage field value, or the zero value if nil.
+func (r *Measure) GetUsage() string {
+	if r.Usage != nil {
+		return *r.Usage
+	}
+	var zero string
+	return zero
+}
+
+// GetUseContext returns the useContext field value, or an empty slice if nil.
+func (r *Measure) GetUseContext() []dt.UsageContext {
+	if r.UseContext != nil {
+		return r.UseContext
+	}
+	return nil
+}
+
+// GetVersion returns the version field value, or the zero value if nil.
+func (r *Measure) GetVersion() string {
+	if r.Version != nil {
+		return *r.Version
+	}
+	var zero string
+	return zero
+}

@@ -293,3 +293,116 @@ type SubstanceNucleicAcidSugar struct {
 	// ResidueSiteElement contains element extensions for residueSite.
 	ResidueSiteElement *dt.Element `json:"_residueSite,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *SubstanceNucleicAcid) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *SubstanceNucleicAcid) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *SubstanceNucleicAcid) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *SubstanceNucleicAcid) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *SubstanceNucleicAcid) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *SubstanceNucleicAcid) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *SubstanceNucleicAcid) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *SubstanceNucleicAcid) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetAreaOfHybridisation returns the areaOfHybridisation field value, or the zero value if nil.
+func (r *SubstanceNucleicAcid) GetAreaOfHybridisation() string {
+	if r.AreaOfHybridisation != nil {
+		return *r.AreaOfHybridisation
+	}
+	var zero string
+	return zero
+}
+
+// GetNumberOfSubunits returns the numberOfSubunits field value, or the zero value if nil.
+func (r *SubstanceNucleicAcid) GetNumberOfSubunits() int32 {
+	if r.NumberOfSubunits != nil {
+		return *r.NumberOfSubunits
+	}
+	var zero int32
+	return zero
+}
+
+// GetOligoNucleotideType returns the oligoNucleotideType field value, or the zero value if nil.
+func (r *SubstanceNucleicAcid) GetOligoNucleotideType() dt.CodeableConcept {
+	if r.OligoNucleotideType != nil {
+		return *r.OligoNucleotideType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSequenceType returns the sequenceType field value, or the zero value if nil.
+func (r *SubstanceNucleicAcid) GetSequenceType() dt.CodeableConcept {
+	if r.SequenceType != nil {
+		return *r.SequenceType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSubunit returns the subunit field value, or an empty slice if nil.
+func (r *SubstanceNucleicAcid) GetSubunit() []SubstanceNucleicAcidSubunit {
+	if r.Subunit != nil {
+		return r.Subunit
+	}
+	return nil
+}

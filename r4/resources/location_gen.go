@@ -379,3 +379,219 @@ type LocationPosition struct {
 	// LongitudeElement contains element extensions for longitude.
 	LongitudeElement *dt.Element `json:"_longitude,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Location) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Location) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Location) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Location) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Location) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Location) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Location) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Location) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Location) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Location) GetStatus() LocationStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero LocationStatus
+	return zero
+}
+
+// GetAddress returns the address field value, or the zero value if nil.
+func (r *Location) GetAddress() dt.Address {
+	if r.Address != nil {
+		return *r.Address
+	}
+	var zero dt.Address
+	return zero
+}
+
+// GetAlias returns the alias field value, or an empty slice if nil.
+func (r *Location) GetAlias() []string {
+	if r.Alias != nil {
+		return r.Alias
+	}
+	return nil
+}
+
+// GetAvailabilityExceptions returns the availabilityExceptions field value, or the zero value if nil.
+func (r *Location) GetAvailabilityExceptions() string {
+	if r.AvailabilityExceptions != nil {
+		return *r.AvailabilityExceptions
+	}
+	var zero string
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *Location) GetDescription() string {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero string
+	return zero
+}
+
+// GetEndpoint returns the endpoint field value, or an empty slice if nil.
+func (r *Location) GetEndpoint() []dt.Reference {
+	if r.Endpoint != nil {
+		return r.Endpoint
+	}
+	return nil
+}
+
+// GetHoursOfOperation returns the hoursOfOperation field value, or an empty slice if nil.
+func (r *Location) GetHoursOfOperation() []LocationHoursOfOperation {
+	if r.HoursOfOperation != nil {
+		return r.HoursOfOperation
+	}
+	return nil
+}
+
+// GetManagingOrganization returns the managingOrganization field value, or the zero value if nil.
+func (r *Location) GetManagingOrganization() dt.Reference {
+	if r.ManagingOrganization != nil {
+		return *r.ManagingOrganization
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetMode returns the mode field value, or the zero value if nil.
+func (r *Location) GetMode() LocationMode {
+	if r.Mode != nil {
+		return *r.Mode
+	}
+	var zero LocationMode
+	return zero
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *Location) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetOperationalStatus returns the operationalStatus field value, or the zero value if nil.
+func (r *Location) GetOperationalStatus() dt.Coding {
+	if r.OperationalStatus != nil {
+		return *r.OperationalStatus
+	}
+	var zero dt.Coding
+	return zero
+}
+
+// GetPartOf returns the partOf field value, or the zero value if nil.
+func (r *Location) GetPartOf() dt.Reference {
+	if r.PartOf != nil {
+		return *r.PartOf
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPhysicalType returns the physicalType field value, or the zero value if nil.
+func (r *Location) GetPhysicalType() dt.CodeableConcept {
+	if r.PhysicalType != nil {
+		return *r.PhysicalType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetPosition returns the position field value, or the zero value if nil.
+func (r *Location) GetPosition() LocationPosition {
+	if r.Position != nil {
+		return *r.Position
+	}
+	var zero LocationPosition
+	return zero
+}
+
+// GetTelecom returns the telecom field value, or an empty slice if nil.
+func (r *Location) GetTelecom() []dt.ContactPoint {
+	if r.Telecom != nil {
+		return r.Telecom
+	}
+	return nil
+}
+
+// GetType returns the type field value, or an empty slice if nil.
+func (r *Location) GetType() []dt.CodeableConcept {
+	if r.Type != nil {
+		return r.Type
+	}
+	return nil
+}

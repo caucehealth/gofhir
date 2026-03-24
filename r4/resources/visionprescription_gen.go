@@ -334,3 +334,134 @@ type VisionPrescriptionPrism struct {
 	// BaseElement contains element extensions for base.
 	BaseElement *dt.Element `json:"_base,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *VisionPrescription) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *VisionPrescription) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *VisionPrescription) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *VisionPrescription) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *VisionPrescription) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *VisionPrescription) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *VisionPrescription) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *VisionPrescription) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *VisionPrescription) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *VisionPrescription) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetCreated returns the created field value, or the zero value if nil.
+func (r *VisionPrescription) GetCreated() dt.DateTime {
+	if r.Created != nil {
+		return *r.Created
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDateWritten returns the dateWritten field value, or the zero value if nil.
+func (r *VisionPrescription) GetDateWritten() dt.DateTime {
+	if r.DateWritten != nil {
+		return *r.DateWritten
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *VisionPrescription) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetLensSpecification returns the lensSpecification field value, or an empty slice if nil.
+func (r *VisionPrescription) GetLensSpecification() []VisionPrescriptionLensSpecification {
+	if r.LensSpecification != nil {
+		return r.LensSpecification
+	}
+	return nil
+}
+
+// GetPatient returns the patient field value.
+func (r *VisionPrescription) GetPatient() dt.Reference {
+	return r.Patient
+}
+
+// GetPrescriber returns the prescriber field value.
+func (r *VisionPrescription) GetPrescriber() dt.Reference {
+	return r.Prescriber
+}

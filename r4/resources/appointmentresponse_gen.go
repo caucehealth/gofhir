@@ -250,3 +250,138 @@ func (b *AppointmentResponseBuilder) Build() (*AppointmentResponse, error) {
 	r := b.resource
 	return &r, nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *AppointmentResponse) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *AppointmentResponse) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *AppointmentResponse) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *AppointmentResponse) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *AppointmentResponse) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *AppointmentResponse) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *AppointmentResponse) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *AppointmentResponse) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *AppointmentResponse) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetActor returns the actor field value, or the zero value if nil.
+func (r *AppointmentResponse) GetActor() dt.Reference {
+	if r.Actor != nil {
+		return *r.Actor
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetAppointment returns the appointment field value.
+func (r *AppointmentResponse) GetAppointment() dt.Reference {
+	return r.Appointment
+}
+
+// GetComment returns the comment field value, or the zero value if nil.
+func (r *AppointmentResponse) GetComment() string {
+	if r.Comment != nil {
+		return *r.Comment
+	}
+	var zero string
+	return zero
+}
+
+// GetEnd returns the end field value, or the zero value if nil.
+func (r *AppointmentResponse) GetEnd() dt.Instant {
+	if r.End != nil {
+		return *r.End
+	}
+	var zero dt.Instant
+	return zero
+}
+
+// GetParticipantStatus returns the participantStatus field value, or the zero value if nil.
+func (r *AppointmentResponse) GetParticipantStatus() dt.Code {
+	if r.ParticipantStatus != nil {
+		return *r.ParticipantStatus
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetParticipantType returns the participantType field value, or an empty slice if nil.
+func (r *AppointmentResponse) GetParticipantType() []dt.CodeableConcept {
+	if r.ParticipantType != nil {
+		return r.ParticipantType
+	}
+	return nil
+}
+
+// GetStart returns the start field value, or the zero value if nil.
+func (r *AppointmentResponse) GetStart() dt.Instant {
+	if r.Start != nil {
+		return *r.Start
+	}
+	var zero dt.Instant
+	return zero
+}

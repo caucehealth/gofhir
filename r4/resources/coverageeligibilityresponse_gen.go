@@ -384,8 +384,8 @@ func (r CoverageEligibilityResponseBenefit) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Used != nil {
-		vData, err := json.Marshal(r.Used)
+	if r.Allowed != nil {
+		vData, err := json.Marshal(r.Allowed)
 		if err != nil {
 			return nil, err
 		}
@@ -397,8 +397,8 @@ func (r CoverageEligibilityResponseBenefit) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Allowed != nil {
-		vData, err := json.Marshal(r.Allowed)
+	if r.Used != nil {
+		vData, err := json.Marshal(r.Used)
 		if err != nil {
 			return nil, err
 		}
@@ -667,4 +667,191 @@ func (v *CoverageEligibilityResponseServiced) UnmarshalJSON(data []byte) error {
 		v.Period = &val
 	}
 	return nil
+}
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *CoverageEligibilityResponse) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *CoverageEligibilityResponse) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *CoverageEligibilityResponse) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *CoverageEligibilityResponse) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *CoverageEligibilityResponse) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *CoverageEligibilityResponse) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *CoverageEligibilityResponse) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *CoverageEligibilityResponse) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *CoverageEligibilityResponse) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *CoverageEligibilityResponse) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetCreated returns the created field value, or the zero value if nil.
+func (r *CoverageEligibilityResponse) GetCreated() dt.DateTime {
+	if r.Created != nil {
+		return *r.Created
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDisposition returns the disposition field value, or the zero value if nil.
+func (r *CoverageEligibilityResponse) GetDisposition() string {
+	if r.Disposition != nil {
+		return *r.Disposition
+	}
+	var zero string
+	return zero
+}
+
+// GetError returns the error field value, or an empty slice if nil.
+func (r *CoverageEligibilityResponse) GetError() []CoverageEligibilityResponseError {
+	if r.Error != nil {
+		return r.Error
+	}
+	return nil
+}
+
+// GetForm returns the form field value, or the zero value if nil.
+func (r *CoverageEligibilityResponse) GetForm() dt.CodeableConcept {
+	if r.Form != nil {
+		return *r.Form
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetInsurance returns the insurance field value, or an empty slice if nil.
+func (r *CoverageEligibilityResponse) GetInsurance() []CoverageEligibilityResponseInsurance {
+	if r.Insurance != nil {
+		return r.Insurance
+	}
+	return nil
+}
+
+// GetInsurer returns the insurer field value.
+func (r *CoverageEligibilityResponse) GetInsurer() dt.Reference {
+	return r.Insurer
+}
+
+// GetOutcome returns the outcome field value, or the zero value if nil.
+func (r *CoverageEligibilityResponse) GetOutcome() CoverageEligibilityResponseOutcome {
+	if r.Outcome != nil {
+		return *r.Outcome
+	}
+	var zero CoverageEligibilityResponseOutcome
+	return zero
+}
+
+// GetPatient returns the patient field value.
+func (r *CoverageEligibilityResponse) GetPatient() dt.Reference {
+	return r.Patient
+}
+
+// GetPreAuthRef returns the preAuthRef field value, or the zero value if nil.
+func (r *CoverageEligibilityResponse) GetPreAuthRef() string {
+	if r.PreAuthRef != nil {
+		return *r.PreAuthRef
+	}
+	var zero string
+	return zero
+}
+
+// GetPurpose returns the purpose field value, or an empty slice if nil.
+func (r *CoverageEligibilityResponse) GetPurpose() []CoverageEligibilityResponsePurpose {
+	if r.Purpose != nil {
+		return r.Purpose
+	}
+	return nil
+}
+
+// GetRequest returns the request field value.
+func (r *CoverageEligibilityResponse) GetRequest() dt.Reference {
+	return r.Request
+}
+
+// GetRequestor returns the requestor field value, or the zero value if nil.
+func (r *CoverageEligibilityResponse) GetRequestor() dt.Reference {
+	if r.Requestor != nil {
+		return *r.Requestor
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetServiced returns the serviced field value, or a zero-value if nil.
+func (r *CoverageEligibilityResponse) GetServiced() CoverageEligibilityResponseServiced {
+	if r.Serviced != nil {
+		return *r.Serviced
+	}
+	return CoverageEligibilityResponseServiced{}
 }

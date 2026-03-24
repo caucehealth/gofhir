@@ -333,3 +333,185 @@ type NamingSystemUniqueId struct {
 	// ValueElement contains element extensions for value.
 	ValueElement *dt.Element `json:"_value,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *NamingSystem) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *NamingSystem) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *NamingSystem) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *NamingSystem) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *NamingSystem) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *NamingSystem) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *NamingSystem) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *NamingSystem) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *NamingSystem) GetStatus() NamingSystemStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero NamingSystemStatus
+	return zero
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *NamingSystem) GetContact() []dt.ContactDetail {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *NamingSystem) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *NamingSystem) GetDescription() dt.Markdown {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetJurisdiction returns the jurisdiction field value, or an empty slice if nil.
+func (r *NamingSystem) GetJurisdiction() []dt.CodeableConcept {
+	if r.Jurisdiction != nil {
+		return r.Jurisdiction
+	}
+	return nil
+}
+
+// GetKind returns the kind field value, or the zero value if nil.
+func (r *NamingSystem) GetKind() NamingSystemKind {
+	if r.Kind != nil {
+		return *r.Kind
+	}
+	var zero NamingSystemKind
+	return zero
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *NamingSystem) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetPublisher returns the publisher field value, or the zero value if nil.
+func (r *NamingSystem) GetPublisher() string {
+	if r.Publisher != nil {
+		return *r.Publisher
+	}
+	var zero string
+	return zero
+}
+
+// GetResponsible returns the responsible field value, or the zero value if nil.
+func (r *NamingSystem) GetResponsible() string {
+	if r.Responsible != nil {
+		return *r.Responsible
+	}
+	var zero string
+	return zero
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *NamingSystem) GetType() dt.CodeableConcept {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetUniqueId returns the uniqueId field value, or an empty slice if nil.
+func (r *NamingSystem) GetUniqueId() []NamingSystemUniqueId {
+	if r.UniqueId != nil {
+		return r.UniqueId
+	}
+	return nil
+}
+
+// GetUsage returns the usage field value, or the zero value if nil.
+func (r *NamingSystem) GetUsage() string {
+	if r.Usage != nil {
+		return *r.Usage
+	}
+	var zero string
+	return zero
+}
+
+// GetUseContext returns the useContext field value, or an empty slice if nil.
+func (r *NamingSystem) GetUseContext() []dt.UsageContext {
+	if r.UseContext != nil {
+		return r.UseContext
+	}
+	return nil
+}

@@ -471,3 +471,288 @@ type MessageDefinitionFocus struct {
 	// ProfileElement contains element extensions for profile.
 	ProfileElement *dt.Element `json:"_profile,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *MessageDefinition) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *MessageDefinition) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *MessageDefinition) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *MessageDefinition) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *MessageDefinition) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *MessageDefinition) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *MessageDefinition) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *MessageDefinition) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *MessageDefinition) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *MessageDefinition) GetStatus() MessageDefinitionStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero MessageDefinitionStatus
+	return zero
+}
+
+// GetAllowedResponse returns the allowedResponse field value, or an empty slice if nil.
+func (r *MessageDefinition) GetAllowedResponse() []MessageDefinitionAllowedResponse {
+	if r.AllowedResponse != nil {
+		return r.AllowedResponse
+	}
+	return nil
+}
+
+// GetBase returns the base field value, or the zero value if nil.
+func (r *MessageDefinition) GetBase() dt.Canonical {
+	if r.Base != nil {
+		return *r.Base
+	}
+	var zero dt.Canonical
+	return zero
+}
+
+// GetCategory returns the category field value, or the zero value if nil.
+func (r *MessageDefinition) GetCategory() MessageDefinitionCategory {
+	if r.Category != nil {
+		return *r.Category
+	}
+	var zero MessageDefinitionCategory
+	return zero
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *MessageDefinition) GetContact() []dt.ContactDetail {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetCopyright returns the copyright field value, or the zero value if nil.
+func (r *MessageDefinition) GetCopyright() dt.Markdown {
+	if r.Copyright != nil {
+		return *r.Copyright
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *MessageDefinition) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *MessageDefinition) GetDescription() dt.Markdown {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetEventCoding returns the eventCoding field value, or the zero value if nil.
+func (r *MessageDefinition) GetEventCoding() dt.Coding {
+	if r.EventCoding != nil {
+		return *r.EventCoding
+	}
+	var zero dt.Coding
+	return zero
+}
+
+// GetEventUri returns the eventUri field value, or the zero value if nil.
+func (r *MessageDefinition) GetEventUri() string {
+	if r.EventUri != nil {
+		return *r.EventUri
+	}
+	var zero string
+	return zero
+}
+
+// GetExperimental returns the experimental field value, or the zero value if nil.
+func (r *MessageDefinition) GetExperimental() bool {
+	if r.Experimental != nil {
+		return *r.Experimental
+	}
+	var zero bool
+	return zero
+}
+
+// GetFocus returns the focus field value, or an empty slice if nil.
+func (r *MessageDefinition) GetFocus() []MessageDefinitionFocus {
+	if r.Focus != nil {
+		return r.Focus
+	}
+	return nil
+}
+
+// GetGraph returns the graph field value, or an empty slice if nil.
+func (r *MessageDefinition) GetGraph() []dt.Canonical {
+	if r.Graph != nil {
+		return r.Graph
+	}
+	return nil
+}
+
+// GetJurisdiction returns the jurisdiction field value, or an empty slice if nil.
+func (r *MessageDefinition) GetJurisdiction() []dt.CodeableConcept {
+	if r.Jurisdiction != nil {
+		return r.Jurisdiction
+	}
+	return nil
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *MessageDefinition) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetParent returns the parent field value, or an empty slice if nil.
+func (r *MessageDefinition) GetParent() []dt.Canonical {
+	if r.Parent != nil {
+		return r.Parent
+	}
+	return nil
+}
+
+// GetPublisher returns the publisher field value, or the zero value if nil.
+func (r *MessageDefinition) GetPublisher() string {
+	if r.Publisher != nil {
+		return *r.Publisher
+	}
+	var zero string
+	return zero
+}
+
+// GetPurpose returns the purpose field value, or the zero value if nil.
+func (r *MessageDefinition) GetPurpose() dt.Markdown {
+	if r.Purpose != nil {
+		return *r.Purpose
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetReplaces returns the replaces field value, or an empty slice if nil.
+func (r *MessageDefinition) GetReplaces() []dt.Canonical {
+	if r.Replaces != nil {
+		return r.Replaces
+	}
+	return nil
+}
+
+// GetResponseRequired returns the responseRequired field value, or the zero value if nil.
+func (r *MessageDefinition) GetResponseRequired() MessageDefinitionResponseRequired {
+	if r.ResponseRequired != nil {
+		return *r.ResponseRequired
+	}
+	var zero MessageDefinitionResponseRequired
+	return zero
+}
+
+// GetTitle returns the title field value, or the zero value if nil.
+func (r *MessageDefinition) GetTitle() string {
+	if r.Title != nil {
+		return *r.Title
+	}
+	var zero string
+	return zero
+}
+
+// GetUrl returns the url field value, or the zero value if nil.
+func (r *MessageDefinition) GetUrl() dt.URI {
+	if r.Url != nil {
+		return *r.Url
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetUseContext returns the useContext field value, or an empty slice if nil.
+func (r *MessageDefinition) GetUseContext() []dt.UsageContext {
+	if r.UseContext != nil {
+		return r.UseContext
+	}
+	return nil
+}
+
+// GetVersion returns the version field value, or the zero value if nil.
+func (r *MessageDefinition) GetVersion() string {
+	if r.Version != nil {
+		return *r.Version
+	}
+	var zero string
+	return zero
+}

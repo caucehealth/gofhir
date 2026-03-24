@@ -511,3 +511,229 @@ func (v *ImagingStudyProcedure) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *ImagingStudy) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *ImagingStudy) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *ImagingStudy) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *ImagingStudy) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *ImagingStudy) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *ImagingStudy) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *ImagingStudy) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *ImagingStudy) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *ImagingStudy) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *ImagingStudy) GetStatus() ImagingStudyStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero ImagingStudyStatus
+	return zero
+}
+
+// GetBasedOn returns the basedOn field value, or an empty slice if nil.
+func (r *ImagingStudy) GetBasedOn() []dt.Reference {
+	if r.BasedOn != nil {
+		return r.BasedOn
+	}
+	return nil
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *ImagingStudy) GetDescription() string {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero string
+	return zero
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *ImagingStudy) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetEndpoint returns the endpoint field value, or an empty slice if nil.
+func (r *ImagingStudy) GetEndpoint() []dt.Reference {
+	if r.Endpoint != nil {
+		return r.Endpoint
+	}
+	return nil
+}
+
+// GetInterpreter returns the interpreter field value, or an empty slice if nil.
+func (r *ImagingStudy) GetInterpreter() []dt.Reference {
+	if r.Interpreter != nil {
+		return r.Interpreter
+	}
+	return nil
+}
+
+// GetLocation returns the location field value, or the zero value if nil.
+func (r *ImagingStudy) GetLocation() dt.Reference {
+	if r.Location != nil {
+		return *r.Location
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetModality returns the modality field value, or an empty slice if nil.
+func (r *ImagingStudy) GetModality() []dt.Coding {
+	if r.Modality != nil {
+		return r.Modality
+	}
+	return nil
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *ImagingStudy) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetNumberOfInstances returns the numberOfInstances field value, or the zero value if nil.
+func (r *ImagingStudy) GetNumberOfInstances() uint32 {
+	if r.NumberOfInstances != nil {
+		return *r.NumberOfInstances
+	}
+	var zero uint32
+	return zero
+}
+
+// GetNumberOfSeries returns the numberOfSeries field value, or the zero value if nil.
+func (r *ImagingStudy) GetNumberOfSeries() uint32 {
+	if r.NumberOfSeries != nil {
+		return *r.NumberOfSeries
+	}
+	var zero uint32
+	return zero
+}
+
+// GetProcedure returns the procedure field value, or a zero-value if nil.
+func (r *ImagingStudy) GetProcedure() ImagingStudyProcedure {
+	if r.Procedure != nil {
+		return *r.Procedure
+	}
+	return ImagingStudyProcedure{}
+}
+
+// GetReasonCode returns the reasonCode field value, or an empty slice if nil.
+func (r *ImagingStudy) GetReasonCode() []dt.CodeableConcept {
+	if r.ReasonCode != nil {
+		return r.ReasonCode
+	}
+	return nil
+}
+
+// GetReasonReference returns the reasonReference field value, or an empty slice if nil.
+func (r *ImagingStudy) GetReasonReference() []dt.Reference {
+	if r.ReasonReference != nil {
+		return r.ReasonReference
+	}
+	return nil
+}
+
+// GetReferrer returns the referrer field value, or the zero value if nil.
+func (r *ImagingStudy) GetReferrer() dt.Reference {
+	if r.Referrer != nil {
+		return *r.Referrer
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetSeries returns the series field value, or an empty slice if nil.
+func (r *ImagingStudy) GetSeries() []ImagingStudySeries {
+	if r.Series != nil {
+		return r.Series
+	}
+	return nil
+}
+
+// GetStarted returns the started field value, or the zero value if nil.
+func (r *ImagingStudy) GetStarted() dt.DateTime {
+	if r.Started != nil {
+		return *r.Started
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetSubject returns the subject field value.
+func (r *ImagingStudy) GetSubject() dt.Reference {
+	return r.Subject
+}

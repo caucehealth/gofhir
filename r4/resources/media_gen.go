@@ -393,3 +393,270 @@ func (b *MediaBuilder) Build() (*Media, error) {
 	r := b.resource
 	return &r, nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Media) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Media) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Media) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Media) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Media) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Media) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Media) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Media) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Media) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Media) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetBasedOn returns the basedOn field value, or an empty slice if nil.
+func (r *Media) GetBasedOn() []dt.Reference {
+	if r.BasedOn != nil {
+		return r.BasedOn
+	}
+	return nil
+}
+
+// GetBodySite returns the bodySite field value, or the zero value if nil.
+func (r *Media) GetBodySite() dt.CodeableConcept {
+	if r.BodySite != nil {
+		return *r.BodySite
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetContent returns the content field value.
+func (r *Media) GetContent() dt.Attachment {
+	return r.Content
+}
+
+// GetCreatedDateTime returns the createdDateTime field value, or the zero value if nil.
+func (r *Media) GetCreatedDateTime() string {
+	if r.CreatedDateTime != nil {
+		return *r.CreatedDateTime
+	}
+	var zero string
+	return zero
+}
+
+// GetCreatedPeriod returns the createdPeriod field value, or the zero value if nil.
+func (r *Media) GetCreatedPeriod() dt.Period {
+	if r.CreatedPeriod != nil {
+		return *r.CreatedPeriod
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetDevice returns the device field value, or the zero value if nil.
+func (r *Media) GetDevice() dt.Reference {
+	if r.Device != nil {
+		return *r.Device
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetDeviceName returns the deviceName field value, or the zero value if nil.
+func (r *Media) GetDeviceName() string {
+	if r.DeviceName != nil {
+		return *r.DeviceName
+	}
+	var zero string
+	return zero
+}
+
+// GetDuration returns the duration field value, or the zero value if nil.
+func (r *Media) GetDuration() float64 {
+	if r.Duration != nil {
+		return *r.Duration
+	}
+	var zero float64
+	return zero
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *Media) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetFrames returns the frames field value, or the zero value if nil.
+func (r *Media) GetFrames() uint32 {
+	if r.Frames != nil {
+		return *r.Frames
+	}
+	var zero uint32
+	return zero
+}
+
+// GetHeight returns the height field value, or the zero value if nil.
+func (r *Media) GetHeight() uint32 {
+	if r.Height != nil {
+		return *r.Height
+	}
+	var zero uint32
+	return zero
+}
+
+// GetIssued returns the issued field value, or the zero value if nil.
+func (r *Media) GetIssued() dt.Instant {
+	if r.Issued != nil {
+		return *r.Issued
+	}
+	var zero dt.Instant
+	return zero
+}
+
+// GetModality returns the modality field value, or the zero value if nil.
+func (r *Media) GetModality() dt.CodeableConcept {
+	if r.Modality != nil {
+		return *r.Modality
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *Media) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetOperator returns the operator field value, or the zero value if nil.
+func (r *Media) GetOperator() dt.Reference {
+	if r.Operator != nil {
+		return *r.Operator
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPartOf returns the partOf field value, or an empty slice if nil.
+func (r *Media) GetPartOf() []dt.Reference {
+	if r.PartOf != nil {
+		return r.PartOf
+	}
+	return nil
+}
+
+// GetReasonCode returns the reasonCode field value, or an empty slice if nil.
+func (r *Media) GetReasonCode() []dt.CodeableConcept {
+	if r.ReasonCode != nil {
+		return r.ReasonCode
+	}
+	return nil
+}
+
+// GetSubject returns the subject field value, or the zero value if nil.
+func (r *Media) GetSubject() dt.Reference {
+	if r.Subject != nil {
+		return *r.Subject
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *Media) GetType() dt.CodeableConcept {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetView returns the view field value, or the zero value if nil.
+func (r *Media) GetView() dt.CodeableConcept {
+	if r.View != nil {
+		return *r.View
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetWidth returns the width field value, or the zero value if nil.
+func (r *Media) GetWidth() uint32 {
+	if r.Width != nil {
+		return *r.Width
+	}
+	var zero uint32
+	return zero
+}

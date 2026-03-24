@@ -691,3 +691,305 @@ func (v *ImmunizationOccurrence) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Immunization) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Immunization) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Immunization) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Immunization) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Immunization) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Immunization) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Immunization) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Immunization) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Immunization) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Immunization) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetDoseQuantity returns the doseQuantity field value, or the zero value if nil.
+func (r *Immunization) GetDoseQuantity() dt.Quantity {
+	if r.DoseQuantity != nil {
+		return *r.DoseQuantity
+	}
+	var zero dt.Quantity
+	return zero
+}
+
+// GetEducation returns the education field value, or an empty slice if nil.
+func (r *Immunization) GetEducation() []ImmunizationEducation {
+	if r.Education != nil {
+		return r.Education
+	}
+	return nil
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *Immunization) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetExpirationDate returns the expirationDate field value, or the zero value if nil.
+func (r *Immunization) GetExpirationDate() dt.Date {
+	if r.ExpirationDate != nil {
+		return *r.ExpirationDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetFundingSource returns the fundingSource field value, or the zero value if nil.
+func (r *Immunization) GetFundingSource() dt.CodeableConcept {
+	if r.FundingSource != nil {
+		return *r.FundingSource
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetIsSubpotent returns the isSubpotent field value, or the zero value if nil.
+func (r *Immunization) GetIsSubpotent() bool {
+	if r.IsSubpotent != nil {
+		return *r.IsSubpotent
+	}
+	var zero bool
+	return zero
+}
+
+// GetLocation returns the location field value, or the zero value if nil.
+func (r *Immunization) GetLocation() dt.Reference {
+	if r.Location != nil {
+		return *r.Location
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetLotNumber returns the lotNumber field value, or the zero value if nil.
+func (r *Immunization) GetLotNumber() string {
+	if r.LotNumber != nil {
+		return *r.LotNumber
+	}
+	var zero string
+	return zero
+}
+
+// GetManufacturer returns the manufacturer field value, or the zero value if nil.
+func (r *Immunization) GetManufacturer() dt.Reference {
+	if r.Manufacturer != nil {
+		return *r.Manufacturer
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *Immunization) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetOccurrence returns the occurrence field value, or a zero-value if nil.
+func (r *Immunization) GetOccurrence() ImmunizationOccurrence {
+	if r.Occurrence != nil {
+		return *r.Occurrence
+	}
+	return ImmunizationOccurrence{}
+}
+
+// GetPatient returns the patient field value.
+func (r *Immunization) GetPatient() dt.Reference {
+	return r.Patient
+}
+
+// GetPerformer returns the performer field value, or an empty slice if nil.
+func (r *Immunization) GetPerformer() []ImmunizationPerformer {
+	if r.Performer != nil {
+		return r.Performer
+	}
+	return nil
+}
+
+// GetPrimarySource returns the primarySource field value, or the zero value if nil.
+func (r *Immunization) GetPrimarySource() bool {
+	if r.PrimarySource != nil {
+		return *r.PrimarySource
+	}
+	var zero bool
+	return zero
+}
+
+// GetProgramEligibility returns the programEligibility field value, or an empty slice if nil.
+func (r *Immunization) GetProgramEligibility() []dt.CodeableConcept {
+	if r.ProgramEligibility != nil {
+		return r.ProgramEligibility
+	}
+	return nil
+}
+
+// GetProtocolApplied returns the protocolApplied field value, or an empty slice if nil.
+func (r *Immunization) GetProtocolApplied() []ImmunizationProtocolApplied {
+	if r.ProtocolApplied != nil {
+		return r.ProtocolApplied
+	}
+	return nil
+}
+
+// GetReaction returns the reaction field value, or an empty slice if nil.
+func (r *Immunization) GetReaction() []ImmunizationReaction {
+	if r.Reaction != nil {
+		return r.Reaction
+	}
+	return nil
+}
+
+// GetReasonCode returns the reasonCode field value, or an empty slice if nil.
+func (r *Immunization) GetReasonCode() []dt.CodeableConcept {
+	if r.ReasonCode != nil {
+		return r.ReasonCode
+	}
+	return nil
+}
+
+// GetReasonReference returns the reasonReference field value, or an empty slice if nil.
+func (r *Immunization) GetReasonReference() []dt.Reference {
+	if r.ReasonReference != nil {
+		return r.ReasonReference
+	}
+	return nil
+}
+
+// GetRecorded returns the recorded field value, or the zero value if nil.
+func (r *Immunization) GetRecorded() dt.DateTime {
+	if r.Recorded != nil {
+		return *r.Recorded
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetReportOrigin returns the reportOrigin field value, or the zero value if nil.
+func (r *Immunization) GetReportOrigin() dt.CodeableConcept {
+	if r.ReportOrigin != nil {
+		return *r.ReportOrigin
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetRoute returns the route field value, or the zero value if nil.
+func (r *Immunization) GetRoute() dt.CodeableConcept {
+	if r.Route != nil {
+		return *r.Route
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSite returns the site field value, or the zero value if nil.
+func (r *Immunization) GetSite() dt.CodeableConcept {
+	if r.Site != nil {
+		return *r.Site
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetStatusReason returns the statusReason field value, or the zero value if nil.
+func (r *Immunization) GetStatusReason() dt.CodeableConcept {
+	if r.StatusReason != nil {
+		return *r.StatusReason
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSubpotentReason returns the subpotentReason field value, or an empty slice if nil.
+func (r *Immunization) GetSubpotentReason() []dt.CodeableConcept {
+	if r.SubpotentReason != nil {
+		return r.SubpotentReason
+	}
+	return nil
+}
+
+// GetVaccineCode returns the vaccineCode field value.
+func (r *Immunization) GetVaccineCode() dt.CodeableConcept {
+	return r.VaccineCode
+}

@@ -559,3 +559,212 @@ type NutritionOrderTexture struct {
 	// Modifier Any texture modifications (for solid foods) that should be made, e.g. easy to chew, chopped, ground, and pureed.
 	Modifier *dt.CodeableConcept `json:"modifier,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *NutritionOrder) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *NutritionOrder) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *NutritionOrder) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *NutritionOrder) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *NutritionOrder) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *NutritionOrder) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *NutritionOrder) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *NutritionOrder) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *NutritionOrder) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *NutritionOrder) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetAllergyIntolerance returns the allergyIntolerance field value, or an empty slice if nil.
+func (r *NutritionOrder) GetAllergyIntolerance() []dt.Reference {
+	if r.AllergyIntolerance != nil {
+		return r.AllergyIntolerance
+	}
+	return nil
+}
+
+// GetDateTime returns the dateTime field value, or the zero value if nil.
+func (r *NutritionOrder) GetDateTime() dt.DateTime {
+	if r.DateTime != nil {
+		return *r.DateTime
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *NutritionOrder) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetEnteralFormula returns the enteralFormula field value, or the zero value if nil.
+func (r *NutritionOrder) GetEnteralFormula() NutritionOrderEnteralFormula {
+	if r.EnteralFormula != nil {
+		return *r.EnteralFormula
+	}
+	var zero NutritionOrderEnteralFormula
+	return zero
+}
+
+// GetExcludeFoodModifier returns the excludeFoodModifier field value, or an empty slice if nil.
+func (r *NutritionOrder) GetExcludeFoodModifier() []dt.CodeableConcept {
+	if r.ExcludeFoodModifier != nil {
+		return r.ExcludeFoodModifier
+	}
+	return nil
+}
+
+// GetFoodPreferenceModifier returns the foodPreferenceModifier field value, or an empty slice if nil.
+func (r *NutritionOrder) GetFoodPreferenceModifier() []dt.CodeableConcept {
+	if r.FoodPreferenceModifier != nil {
+		return r.FoodPreferenceModifier
+	}
+	return nil
+}
+
+// GetInstantiates returns the instantiates field value, or an empty slice if nil.
+func (r *NutritionOrder) GetInstantiates() []dt.URI {
+	if r.Instantiates != nil {
+		return r.Instantiates
+	}
+	return nil
+}
+
+// GetInstantiatesCanonical returns the instantiatesCanonical field value, or an empty slice if nil.
+func (r *NutritionOrder) GetInstantiatesCanonical() []dt.Canonical {
+	if r.InstantiatesCanonical != nil {
+		return r.InstantiatesCanonical
+	}
+	return nil
+}
+
+// GetInstantiatesUri returns the instantiatesUri field value, or an empty slice if nil.
+func (r *NutritionOrder) GetInstantiatesUri() []dt.URI {
+	if r.InstantiatesUri != nil {
+		return r.InstantiatesUri
+	}
+	return nil
+}
+
+// GetIntent returns the intent field value, or the zero value if nil.
+func (r *NutritionOrder) GetIntent() dt.Code {
+	if r.Intent != nil {
+		return *r.Intent
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *NutritionOrder) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetOralDiet returns the oralDiet field value, or the zero value if nil.
+func (r *NutritionOrder) GetOralDiet() NutritionOrderOralDiet {
+	if r.OralDiet != nil {
+		return *r.OralDiet
+	}
+	var zero NutritionOrderOralDiet
+	return zero
+}
+
+// GetOrderer returns the orderer field value, or the zero value if nil.
+func (r *NutritionOrder) GetOrderer() dt.Reference {
+	if r.Orderer != nil {
+		return *r.Orderer
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPatient returns the patient field value.
+func (r *NutritionOrder) GetPatient() dt.Reference {
+	return r.Patient
+}
+
+// GetSupplement returns the supplement field value, or an empty slice if nil.
+func (r *NutritionOrder) GetSupplement() []NutritionOrderSupplement {
+	if r.Supplement != nil {
+		return r.Supplement
+	}
+	return nil
+}

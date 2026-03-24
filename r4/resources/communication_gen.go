@@ -401,3 +401,265 @@ type CommunicationPayload struct {
 	// ContentStringElement contains element extensions for contentString.
 	ContentStringElement *dt.Element `json:"_contentString,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Communication) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Communication) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Communication) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Communication) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Communication) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Communication) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Communication) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Communication) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Communication) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Communication) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetAbout returns the about field value, or an empty slice if nil.
+func (r *Communication) GetAbout() []dt.Reference {
+	if r.About != nil {
+		return r.About
+	}
+	return nil
+}
+
+// GetBasedOn returns the basedOn field value, or an empty slice if nil.
+func (r *Communication) GetBasedOn() []dt.Reference {
+	if r.BasedOn != nil {
+		return r.BasedOn
+	}
+	return nil
+}
+
+// GetCategory returns the category field value, or an empty slice if nil.
+func (r *Communication) GetCategory() []dt.CodeableConcept {
+	if r.Category != nil {
+		return r.Category
+	}
+	return nil
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *Communication) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetInResponseTo returns the inResponseTo field value, or an empty slice if nil.
+func (r *Communication) GetInResponseTo() []dt.Reference {
+	if r.InResponseTo != nil {
+		return r.InResponseTo
+	}
+	return nil
+}
+
+// GetInstantiatesCanonical returns the instantiatesCanonical field value, or an empty slice if nil.
+func (r *Communication) GetInstantiatesCanonical() []dt.Canonical {
+	if r.InstantiatesCanonical != nil {
+		return r.InstantiatesCanonical
+	}
+	return nil
+}
+
+// GetInstantiatesUri returns the instantiatesUri field value, or an empty slice if nil.
+func (r *Communication) GetInstantiatesUri() []dt.URI {
+	if r.InstantiatesUri != nil {
+		return r.InstantiatesUri
+	}
+	return nil
+}
+
+// GetMedium returns the medium field value, or an empty slice if nil.
+func (r *Communication) GetMedium() []dt.CodeableConcept {
+	if r.Medium != nil {
+		return r.Medium
+	}
+	return nil
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *Communication) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetPartOf returns the partOf field value, or an empty slice if nil.
+func (r *Communication) GetPartOf() []dt.Reference {
+	if r.PartOf != nil {
+		return r.PartOf
+	}
+	return nil
+}
+
+// GetPayload returns the payload field value, or an empty slice if nil.
+func (r *Communication) GetPayload() []CommunicationPayload {
+	if r.Payload != nil {
+		return r.Payload
+	}
+	return nil
+}
+
+// GetPriority returns the priority field value, or the zero value if nil.
+func (r *Communication) GetPriority() dt.Code {
+	if r.Priority != nil {
+		return *r.Priority
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetReasonCode returns the reasonCode field value, or an empty slice if nil.
+func (r *Communication) GetReasonCode() []dt.CodeableConcept {
+	if r.ReasonCode != nil {
+		return r.ReasonCode
+	}
+	return nil
+}
+
+// GetReasonReference returns the reasonReference field value, or an empty slice if nil.
+func (r *Communication) GetReasonReference() []dt.Reference {
+	if r.ReasonReference != nil {
+		return r.ReasonReference
+	}
+	return nil
+}
+
+// GetReceived returns the received field value, or the zero value if nil.
+func (r *Communication) GetReceived() dt.DateTime {
+	if r.Received != nil {
+		return *r.Received
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetRecipient returns the recipient field value, or an empty slice if nil.
+func (r *Communication) GetRecipient() []dt.Reference {
+	if r.Recipient != nil {
+		return r.Recipient
+	}
+	return nil
+}
+
+// GetSender returns the sender field value, or the zero value if nil.
+func (r *Communication) GetSender() dt.Reference {
+	if r.Sender != nil {
+		return *r.Sender
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetSent returns the sent field value, or the zero value if nil.
+func (r *Communication) GetSent() dt.DateTime {
+	if r.Sent != nil {
+		return *r.Sent
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetStatusReason returns the statusReason field value, or the zero value if nil.
+func (r *Communication) GetStatusReason() dt.CodeableConcept {
+	if r.StatusReason != nil {
+		return *r.StatusReason
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSubject returns the subject field value, or the zero value if nil.
+func (r *Communication) GetSubject() dt.Reference {
+	if r.Subject != nil {
+		return *r.Subject
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetTopic returns the topic field value, or the zero value if nil.
+func (r *Communication) GetTopic() dt.CodeableConcept {
+	if r.Topic != nil {
+		return *r.Topic
+	}
+	var zero dt.CodeableConcept
+	return zero
+}

@@ -408,8 +408,71 @@ func generateResource(res *spec.ResourceDef, fhirSpec *spec.FHIRSpec) error {
 		writeValueXUnion(&buf, unionName, fields, fhirSpec)
 	}
 
+	// Nil-safe getters
+	writeGetters(&buf, res.Name, res.Fields, fhirSpec, valueGroups)
+
 	fileName := strings.ToLower(res.Name) + "_gen.go"
 	return writeGoFile(filepath.Join(resourcesDir, fileName), buf.Bytes())
+}
+
+func writeGetters(buf *bytes.Buffer, typeName string, fields []*spec.FieldDef, fhirSpec *spec.FHIRSpec, valueGroups map[string][]*spec.FieldDef) {
+	writtenGroups := make(map[string]bool)
+	for _, f := range fields {
+		// Skip value[x] group members — handled as union
+		if group := getValueGroup(f.JSONName, valueGroups); group != "" {
+			if !writtenGroups[group] {
+				writtenGroups[group] = true
+				unionTypeName := safeUnionTypeName(typeName+exportName(group), fhirSpec)
+				fieldName := exportName(group)
+				fmt.Fprintf(buf, "// Get%s returns the %s field value, or a zero-value if nil.\n", fieldName, group)
+				fmt.Fprintf(buf, "func (r *%s) Get%s() %s {\n", typeName, fieldName, unionTypeName)
+				fmt.Fprintf(buf, "\tif r.%s != nil {\n", fieldName)
+				fmt.Fprintf(buf, "\t\treturn *r.%s\n", fieldName)
+				fmt.Fprintf(buf, "\t}\n")
+				fmt.Fprintf(buf, "\treturn %s{}\n", unionTypeName)
+				fmt.Fprintf(buf, "}\n\n")
+			}
+			continue
+		}
+
+		goType := resolveGoType(f, fhirSpec, false, typeName)
+		goFieldName := exportName(f.JSONName)
+
+		if f.IsArray {
+			// Slice getter returns empty slice, never nil
+			fmt.Fprintf(buf, "// Get%s returns the %s field value, or an empty slice if nil.\n", goFieldName, f.JSONName)
+			fmt.Fprintf(buf, "func (r *%s) Get%s() %s {\n", typeName, goFieldName, goType)
+			fmt.Fprintf(buf, "\tif r.%s != nil {\n", goFieldName)
+			fmt.Fprintf(buf, "\t\treturn r.%s\n", goFieldName)
+			fmt.Fprintf(buf, "\t}\n")
+			fmt.Fprintf(buf, "\treturn nil\n")
+			fmt.Fprintf(buf, "}\n\n")
+		} else if f.IsRequired {
+			fmt.Fprintf(buf, "// Get%s returns the %s field value.\n", goFieldName, f.JSONName)
+			fmt.Fprintf(buf, "func (r *%s) Get%s() %s {\n", typeName, goFieldName, goType)
+			fmt.Fprintf(buf, "\treturn r.%s\n", goFieldName)
+			fmt.Fprintf(buf, "}\n\n")
+		} else {
+			// Optional fields are pointers in the struct — dereference or return zero
+			// goType is the base type; the struct field is *goType (unless already a slice/pointer)
+			isPtr := !strings.HasPrefix(goType, "[]") && !strings.HasPrefix(goType, "*")
+			if isPtr {
+				fmt.Fprintf(buf, "// Get%s returns the %s field value, or the zero value if nil.\n", goFieldName, f.JSONName)
+				fmt.Fprintf(buf, "func (r *%s) Get%s() %s {\n", typeName, goFieldName, goType)
+				fmt.Fprintf(buf, "\tif r.%s != nil {\n", goFieldName)
+				fmt.Fprintf(buf, "\t\treturn *r.%s\n", goFieldName)
+				fmt.Fprintf(buf, "\t}\n")
+				fmt.Fprintf(buf, "\tvar zero %s\n", goType)
+				fmt.Fprintf(buf, "\treturn zero\n")
+				fmt.Fprintf(buf, "}\n\n")
+			} else {
+				fmt.Fprintf(buf, "// Get%s returns the %s field value.\n", goFieldName, f.JSONName)
+				fmt.Fprintf(buf, "func (r *%s) Get%s() %s {\n", typeName, goFieldName, goType)
+				fmt.Fprintf(buf, "\treturn r.%s\n", goFieldName)
+				fmt.Fprintf(buf, "}\n\n")
+			}
+		}
+	}
 }
 
 type enumDef struct {

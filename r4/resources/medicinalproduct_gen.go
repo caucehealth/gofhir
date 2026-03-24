@@ -464,3 +464,238 @@ type MedicinalProductSpecialDesignation struct {
 	// Type The type of special designation, e.g. orphan drug, minor use.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *MedicinalProduct) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *MedicinalProduct) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *MedicinalProduct) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *MedicinalProduct) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *MedicinalProduct) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *MedicinalProduct) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *MedicinalProduct) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *MedicinalProduct) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *MedicinalProduct) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetAdditionalMonitoringIndicator returns the additionalMonitoringIndicator field value, or the zero value if nil.
+func (r *MedicinalProduct) GetAdditionalMonitoringIndicator() dt.CodeableConcept {
+	if r.AdditionalMonitoringIndicator != nil {
+		return *r.AdditionalMonitoringIndicator
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetAttachedDocument returns the attachedDocument field value, or an empty slice if nil.
+func (r *MedicinalProduct) GetAttachedDocument() []dt.Reference {
+	if r.AttachedDocument != nil {
+		return r.AttachedDocument
+	}
+	return nil
+}
+
+// GetClinicalTrial returns the clinicalTrial field value, or an empty slice if nil.
+func (r *MedicinalProduct) GetClinicalTrial() []dt.Reference {
+	if r.ClinicalTrial != nil {
+		return r.ClinicalTrial
+	}
+	return nil
+}
+
+// GetCombinedPharmaceuticalDoseForm returns the combinedPharmaceuticalDoseForm field value, or the zero value if nil.
+func (r *MedicinalProduct) GetCombinedPharmaceuticalDoseForm() dt.CodeableConcept {
+	if r.CombinedPharmaceuticalDoseForm != nil {
+		return *r.CombinedPharmaceuticalDoseForm
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *MedicinalProduct) GetContact() []dt.Reference {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetCrossReference returns the crossReference field value, or an empty slice if nil.
+func (r *MedicinalProduct) GetCrossReference() []dt.Identifier {
+	if r.CrossReference != nil {
+		return r.CrossReference
+	}
+	return nil
+}
+
+// GetDomain returns the domain field value, or the zero value if nil.
+func (r *MedicinalProduct) GetDomain() dt.Coding {
+	if r.Domain != nil {
+		return *r.Domain
+	}
+	var zero dt.Coding
+	return zero
+}
+
+// GetLegalStatusOfSupply returns the legalStatusOfSupply field value, or the zero value if nil.
+func (r *MedicinalProduct) GetLegalStatusOfSupply() dt.CodeableConcept {
+	if r.LegalStatusOfSupply != nil {
+		return *r.LegalStatusOfSupply
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetManufacturingBusinessOperation returns the manufacturingBusinessOperation field value, or an empty slice if nil.
+func (r *MedicinalProduct) GetManufacturingBusinessOperation() []MedicinalProductManufacturingBusinessOperation {
+	if r.ManufacturingBusinessOperation != nil {
+		return r.ManufacturingBusinessOperation
+	}
+	return nil
+}
+
+// GetMarketingStatus returns the marketingStatus field value, or an empty slice if nil.
+func (r *MedicinalProduct) GetMarketingStatus() []dt.MarketingStatus {
+	if r.MarketingStatus != nil {
+		return r.MarketingStatus
+	}
+	return nil
+}
+
+// GetMasterFile returns the masterFile field value, or an empty slice if nil.
+func (r *MedicinalProduct) GetMasterFile() []dt.Reference {
+	if r.MasterFile != nil {
+		return r.MasterFile
+	}
+	return nil
+}
+
+// GetName returns the name field value, or an empty slice if nil.
+func (r *MedicinalProduct) GetName() []MedicinalProductName {
+	if r.Name != nil {
+		return r.Name
+	}
+	return nil
+}
+
+// GetPackagedMedicinalProduct returns the packagedMedicinalProduct field value, or an empty slice if nil.
+func (r *MedicinalProduct) GetPackagedMedicinalProduct() []dt.Reference {
+	if r.PackagedMedicinalProduct != nil {
+		return r.PackagedMedicinalProduct
+	}
+	return nil
+}
+
+// GetPaediatricUseIndicator returns the paediatricUseIndicator field value, or the zero value if nil.
+func (r *MedicinalProduct) GetPaediatricUseIndicator() dt.CodeableConcept {
+	if r.PaediatricUseIndicator != nil {
+		return *r.PaediatricUseIndicator
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetPharmaceuticalProduct returns the pharmaceuticalProduct field value, or an empty slice if nil.
+func (r *MedicinalProduct) GetPharmaceuticalProduct() []dt.Reference {
+	if r.PharmaceuticalProduct != nil {
+		return r.PharmaceuticalProduct
+	}
+	return nil
+}
+
+// GetProductClassification returns the productClassification field value, or an empty slice if nil.
+func (r *MedicinalProduct) GetProductClassification() []dt.CodeableConcept {
+	if r.ProductClassification != nil {
+		return r.ProductClassification
+	}
+	return nil
+}
+
+// GetSpecialDesignation returns the specialDesignation field value, or an empty slice if nil.
+func (r *MedicinalProduct) GetSpecialDesignation() []MedicinalProductSpecialDesignation {
+	if r.SpecialDesignation != nil {
+		return r.SpecialDesignation
+	}
+	return nil
+}
+
+// GetSpecialMeasures returns the specialMeasures field value, or an empty slice if nil.
+func (r *MedicinalProduct) GetSpecialMeasures() []string {
+	if r.SpecialMeasures != nil {
+		return r.SpecialMeasures
+	}
+	return nil
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *MedicinalProduct) GetType() dt.CodeableConcept {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero dt.CodeableConcept
+	return zero
+}

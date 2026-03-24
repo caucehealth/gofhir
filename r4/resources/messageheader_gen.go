@@ -358,3 +358,174 @@ type MessageHeaderSource struct {
 	// VersionElement contains element extensions for version.
 	VersionElement *dt.Element `json:"_version,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *MessageHeader) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *MessageHeader) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *MessageHeader) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *MessageHeader) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *MessageHeader) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *MessageHeader) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *MessageHeader) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *MessageHeader) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetAuthor returns the author field value, or the zero value if nil.
+func (r *MessageHeader) GetAuthor() dt.Reference {
+	if r.Author != nil {
+		return *r.Author
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetDefinition returns the definition field value, or the zero value if nil.
+func (r *MessageHeader) GetDefinition() dt.Canonical {
+	if r.Definition != nil {
+		return *r.Definition
+	}
+	var zero dt.Canonical
+	return zero
+}
+
+// GetDestination returns the destination field value, or an empty slice if nil.
+func (r *MessageHeader) GetDestination() []MessageHeaderDestination {
+	if r.Destination != nil {
+		return r.Destination
+	}
+	return nil
+}
+
+// GetEnterer returns the enterer field value, or the zero value if nil.
+func (r *MessageHeader) GetEnterer() dt.Reference {
+	if r.Enterer != nil {
+		return *r.Enterer
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetEventCoding returns the eventCoding field value, or the zero value if nil.
+func (r *MessageHeader) GetEventCoding() dt.Coding {
+	if r.EventCoding != nil {
+		return *r.EventCoding
+	}
+	var zero dt.Coding
+	return zero
+}
+
+// GetEventUri returns the eventUri field value, or the zero value if nil.
+func (r *MessageHeader) GetEventUri() string {
+	if r.EventUri != nil {
+		return *r.EventUri
+	}
+	var zero string
+	return zero
+}
+
+// GetFocus returns the focus field value, or an empty slice if nil.
+func (r *MessageHeader) GetFocus() []dt.Reference {
+	if r.Focus != nil {
+		return r.Focus
+	}
+	return nil
+}
+
+// GetReason returns the reason field value, or the zero value if nil.
+func (r *MessageHeader) GetReason() dt.CodeableConcept {
+	if r.Reason != nil {
+		return *r.Reason
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetResponse returns the response field value, or the zero value if nil.
+func (r *MessageHeader) GetResponse() MessageHeaderResponse {
+	if r.Response != nil {
+		return *r.Response
+	}
+	var zero MessageHeaderResponse
+	return zero
+}
+
+// GetResponsible returns the responsible field value, or the zero value if nil.
+func (r *MessageHeader) GetResponsible() dt.Reference {
+	if r.Responsible != nil {
+		return *r.Responsible
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetSender returns the sender field value, or the zero value if nil.
+func (r *MessageHeader) GetSender() dt.Reference {
+	if r.Sender != nil {
+		return *r.Sender
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetSource returns the source field value.
+func (r *MessageHeader) GetSource() MessageHeaderSource {
+	return r.Source
+}

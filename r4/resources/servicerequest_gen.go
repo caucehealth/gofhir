@@ -192,13 +192,6 @@ func (r *ServiceRequest) UnmarshalJSON(data []byte) error {
 	}
 	*r = ServiceRequest(alias)
 	// Unmarshal polymorphic fields
-	var asNeededVal ServiceRequestAsNeeded
-	if err := asNeededVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if asNeededVal.Boolean != nil || asNeededVal.CodeableConcept != nil {
-		r.AsNeeded = &asNeededVal
-	}
 	var locationVal ServiceRequestLocation
 	if err := locationVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -212,6 +205,13 @@ func (r *ServiceRequest) UnmarshalJSON(data []byte) error {
 	}
 	if occurrenceVal.DateTime != nil || occurrenceVal.Period != nil || occurrenceVal.Timing != nil {
 		r.Occurrence = &occurrenceVal
+	}
+	var asNeededVal ServiceRequestAsNeeded
+	if err := asNeededVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if asNeededVal.Boolean != nil || asNeededVal.CodeableConcept != nil {
+		r.AsNeeded = &asNeededVal
 	}
 	// Capture unknown fields
 	var raw map[string]json.RawMessage
@@ -600,47 +600,6 @@ func (b *ServiceRequestBuilder) Build() (*ServiceRequest, error) {
 	return &r, nil
 }
 
-// ServiceRequestAsNeeded represents a polymorphic choice type in FHIR.
-type ServiceRequestAsNeeded struct {
-	Boolean         *bool               `json:"asNeededBoolean,omitempty"`         // If a CodeableConcept is present, it indicates the pre-condition for performing the service.  For example "pain", "on flare-up", etc.
-	CodeableConcept *dt.CodeableConcept `json:"asNeededCodeableConcept,omitempty"` // If a CodeableConcept is present, it indicates the pre-condition for performing the service.  For example "pain", "on flare-up", etc.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ServiceRequestAsNeeded.
-func (v ServiceRequestAsNeeded) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Boolean != nil {
-		m["asNeededBoolean"] = v.Boolean
-	}
-	if v.CodeableConcept != nil {
-		m["asNeededCodeableConcept"] = v.CodeableConcept
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ServiceRequestAsNeeded.
-func (v *ServiceRequestAsNeeded) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["asNeededBoolean"]; ok {
-		var val bool
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling asNeededBoolean: %w", err)
-		}
-		v.Boolean = &val
-	}
-	if d, ok := raw["asNeededCodeableConcept"]; ok {
-		var val dt.CodeableConcept
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling asNeededCodeableConcept: %w", err)
-		}
-		v.CodeableConcept = &val
-	}
-	return nil
-}
-
 // ServiceRequestLocation represents a polymorphic choice type in FHIR.
 type ServiceRequestLocation struct {
 	Code      []dt.CodeableConcept `json:"locationCode,omitempty"`      // The preferred location(s) where the procedure should actually happen in coded or free text form. E.g. at home or nursing day care center.
@@ -730,6 +689,399 @@ func (v *ServiceRequestOccurrence) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling occurrenceTiming: %w", err)
 		}
 		v.Timing = &val
+	}
+	return nil
+}
+
+// ServiceRequestAsNeeded represents a polymorphic choice type in FHIR.
+type ServiceRequestAsNeeded struct {
+	Boolean         *bool               `json:"asNeededBoolean,omitempty"`         // If a CodeableConcept is present, it indicates the pre-condition for performing the service.  For example "pain", "on flare-up", etc.
+	CodeableConcept *dt.CodeableConcept `json:"asNeededCodeableConcept,omitempty"` // If a CodeableConcept is present, it indicates the pre-condition for performing the service.  For example "pain", "on flare-up", etc.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ServiceRequestAsNeeded.
+func (v ServiceRequestAsNeeded) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Boolean != nil {
+		m["asNeededBoolean"] = v.Boolean
+	}
+	if v.CodeableConcept != nil {
+		m["asNeededCodeableConcept"] = v.CodeableConcept
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ServiceRequestAsNeeded.
+func (v *ServiceRequestAsNeeded) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["asNeededBoolean"]; ok {
+		var val bool
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling asNeededBoolean: %w", err)
+		}
+		v.Boolean = &val
+	}
+	if d, ok := raw["asNeededCodeableConcept"]; ok {
+		var val dt.CodeableConcept
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling asNeededCodeableConcept: %w", err)
+		}
+		v.CodeableConcept = &val
+	}
+	return nil
+}
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *ServiceRequest) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *ServiceRequest) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *ServiceRequest) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *ServiceRequest) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *ServiceRequest) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *ServiceRequest) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *ServiceRequest) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *ServiceRequest) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *ServiceRequest) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *ServiceRequest) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetAsNeeded returns the asNeeded field value, or a zero-value if nil.
+func (r *ServiceRequest) GetAsNeeded() ServiceRequestAsNeeded {
+	if r.AsNeeded != nil {
+		return *r.AsNeeded
+	}
+	return ServiceRequestAsNeeded{}
+}
+
+// GetAuthoredOn returns the authoredOn field value, or the zero value if nil.
+func (r *ServiceRequest) GetAuthoredOn() dt.DateTime {
+	if r.AuthoredOn != nil {
+		return *r.AuthoredOn
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetBasedOn returns the basedOn field value, or an empty slice if nil.
+func (r *ServiceRequest) GetBasedOn() []dt.Reference {
+	if r.BasedOn != nil {
+		return r.BasedOn
+	}
+	return nil
+}
+
+// GetBodySite returns the bodySite field value, or an empty slice if nil.
+func (r *ServiceRequest) GetBodySite() []dt.CodeableConcept {
+	if r.BodySite != nil {
+		return r.BodySite
+	}
+	return nil
+}
+
+// GetCategory returns the category field value, or an empty slice if nil.
+func (r *ServiceRequest) GetCategory() []dt.CodeableConcept {
+	if r.Category != nil {
+		return r.Category
+	}
+	return nil
+}
+
+// GetCode returns the code field value, or the zero value if nil.
+func (r *ServiceRequest) GetCode() dt.CodeableConcept {
+	if r.Code != nil {
+		return *r.Code
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetDoNotPerform returns the doNotPerform field value, or the zero value if nil.
+func (r *ServiceRequest) GetDoNotPerform() bool {
+	if r.DoNotPerform != nil {
+		return *r.DoNotPerform
+	}
+	var zero bool
+	return zero
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *ServiceRequest) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetInstantiatesCanonical returns the instantiatesCanonical field value, or an empty slice if nil.
+func (r *ServiceRequest) GetInstantiatesCanonical() []dt.Canonical {
+	if r.InstantiatesCanonical != nil {
+		return r.InstantiatesCanonical
+	}
+	return nil
+}
+
+// GetInstantiatesUri returns the instantiatesUri field value, or an empty slice if nil.
+func (r *ServiceRequest) GetInstantiatesUri() []dt.URI {
+	if r.InstantiatesUri != nil {
+		return r.InstantiatesUri
+	}
+	return nil
+}
+
+// GetInsurance returns the insurance field value, or an empty slice if nil.
+func (r *ServiceRequest) GetInsurance() []dt.Reference {
+	if r.Insurance != nil {
+		return r.Insurance
+	}
+	return nil
+}
+
+// GetIntent returns the intent field value, or the zero value if nil.
+func (r *ServiceRequest) GetIntent() dt.Code {
+	if r.Intent != nil {
+		return *r.Intent
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetLocation returns the location field value, or a zero-value if nil.
+func (r *ServiceRequest) GetLocation() ServiceRequestLocation {
+	if r.Location != nil {
+		return *r.Location
+	}
+	return ServiceRequestLocation{}
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *ServiceRequest) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetOccurrence returns the occurrence field value, or a zero-value if nil.
+func (r *ServiceRequest) GetOccurrence() ServiceRequestOccurrence {
+	if r.Occurrence != nil {
+		return *r.Occurrence
+	}
+	return ServiceRequestOccurrence{}
+}
+
+// GetOrderDetail returns the orderDetail field value, or an empty slice if nil.
+func (r *ServiceRequest) GetOrderDetail() []dt.CodeableConcept {
+	if r.OrderDetail != nil {
+		return r.OrderDetail
+	}
+	return nil
+}
+
+// GetPatientInstruction returns the patientInstruction field value, or the zero value if nil.
+func (r *ServiceRequest) GetPatientInstruction() string {
+	if r.PatientInstruction != nil {
+		return *r.PatientInstruction
+	}
+	var zero string
+	return zero
+}
+
+// GetPerformer returns the performer field value, or an empty slice if nil.
+func (r *ServiceRequest) GetPerformer() []dt.Reference {
+	if r.Performer != nil {
+		return r.Performer
+	}
+	return nil
+}
+
+// GetPerformerType returns the performerType field value, or the zero value if nil.
+func (r *ServiceRequest) GetPerformerType() dt.CodeableConcept {
+	if r.PerformerType != nil {
+		return *r.PerformerType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetPriority returns the priority field value, or the zero value if nil.
+func (r *ServiceRequest) GetPriority() dt.Code {
+	if r.Priority != nil {
+		return *r.Priority
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetQuantityQuantity returns the quantityQuantity field value, or the zero value if nil.
+func (r *ServiceRequest) GetQuantityQuantity() dt.Quantity {
+	if r.QuantityQuantity != nil {
+		return *r.QuantityQuantity
+	}
+	var zero dt.Quantity
+	return zero
+}
+
+// GetQuantityRange returns the quantityRange field value, or the zero value if nil.
+func (r *ServiceRequest) GetQuantityRange() dt.Range {
+	if r.QuantityRange != nil {
+		return *r.QuantityRange
+	}
+	var zero dt.Range
+	return zero
+}
+
+// GetQuantityRatio returns the quantityRatio field value, or the zero value if nil.
+func (r *ServiceRequest) GetQuantityRatio() dt.Ratio {
+	if r.QuantityRatio != nil {
+		return *r.QuantityRatio
+	}
+	var zero dt.Ratio
+	return zero
+}
+
+// GetReasonCode returns the reasonCode field value, or an empty slice if nil.
+func (r *ServiceRequest) GetReasonCode() []dt.CodeableConcept {
+	if r.ReasonCode != nil {
+		return r.ReasonCode
+	}
+	return nil
+}
+
+// GetReasonReference returns the reasonReference field value, or an empty slice if nil.
+func (r *ServiceRequest) GetReasonReference() []dt.Reference {
+	if r.ReasonReference != nil {
+		return r.ReasonReference
+	}
+	return nil
+}
+
+// GetRelevantHistory returns the relevantHistory field value, or an empty slice if nil.
+func (r *ServiceRequest) GetRelevantHistory() []dt.Reference {
+	if r.RelevantHistory != nil {
+		return r.RelevantHistory
+	}
+	return nil
+}
+
+// GetReplaces returns the replaces field value, or an empty slice if nil.
+func (r *ServiceRequest) GetReplaces() []dt.Reference {
+	if r.Replaces != nil {
+		return r.Replaces
+	}
+	return nil
+}
+
+// GetRequester returns the requester field value, or the zero value if nil.
+func (r *ServiceRequest) GetRequester() dt.Reference {
+	if r.Requester != nil {
+		return *r.Requester
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetRequisition returns the requisition field value, or the zero value if nil.
+func (r *ServiceRequest) GetRequisition() dt.Identifier {
+	if r.Requisition != nil {
+		return *r.Requisition
+	}
+	var zero dt.Identifier
+	return zero
+}
+
+// GetSpecimen returns the specimen field value, or an empty slice if nil.
+func (r *ServiceRequest) GetSpecimen() []dt.Reference {
+	if r.Specimen != nil {
+		return r.Specimen
+	}
+	return nil
+}
+
+// GetSubject returns the subject field value.
+func (r *ServiceRequest) GetSubject() dt.Reference {
+	return r.Subject
+}
+
+// GetSupportingInfo returns the supportingInfo field value, or an empty slice if nil.
+func (r *ServiceRequest) GetSupportingInfo() []dt.Reference {
+	if r.SupportingInfo != nil {
+		return r.SupportingInfo
 	}
 	return nil
 }

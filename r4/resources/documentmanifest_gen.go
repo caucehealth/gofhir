@@ -302,3 +302,175 @@ type DocumentManifestRelated struct {
 	// Ref Related Resource to this DocumentManifest. For example, Order, ServiceRequest,  Procedure, EligibilityRequest, etc.
 	Ref *dt.Reference `json:"ref,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *DocumentManifest) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *DocumentManifest) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *DocumentManifest) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *DocumentManifest) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *DocumentManifest) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *DocumentManifest) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *DocumentManifest) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *DocumentManifest) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *DocumentManifest) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *DocumentManifest) GetStatus() DocumentManifestStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero DocumentManifestStatus
+	return zero
+}
+
+// GetAuthor returns the author field value, or an empty slice if nil.
+func (r *DocumentManifest) GetAuthor() []dt.Reference {
+	if r.Author != nil {
+		return r.Author
+	}
+	return nil
+}
+
+// GetContent returns the content field value, or an empty slice if nil.
+func (r *DocumentManifest) GetContent() []dt.Reference {
+	if r.Content != nil {
+		return r.Content
+	}
+	return nil
+}
+
+// GetCreated returns the created field value, or the zero value if nil.
+func (r *DocumentManifest) GetCreated() dt.DateTime {
+	if r.Created != nil {
+		return *r.Created
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *DocumentManifest) GetDescription() string {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero string
+	return zero
+}
+
+// GetMasterIdentifier returns the masterIdentifier field value, or the zero value if nil.
+func (r *DocumentManifest) GetMasterIdentifier() dt.Identifier {
+	if r.MasterIdentifier != nil {
+		return *r.MasterIdentifier
+	}
+	var zero dt.Identifier
+	return zero
+}
+
+// GetRecipient returns the recipient field value, or an empty slice if nil.
+func (r *DocumentManifest) GetRecipient() []dt.Reference {
+	if r.Recipient != nil {
+		return r.Recipient
+	}
+	return nil
+}
+
+// GetRelated returns the related field value, or an empty slice if nil.
+func (r *DocumentManifest) GetRelated() []DocumentManifestRelated {
+	if r.Related != nil {
+		return r.Related
+	}
+	return nil
+}
+
+// GetSource returns the source field value, or the zero value if nil.
+func (r *DocumentManifest) GetSource() dt.URI {
+	if r.Source != nil {
+		return *r.Source
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetSubject returns the subject field value, or the zero value if nil.
+func (r *DocumentManifest) GetSubject() dt.Reference {
+	if r.Subject != nil {
+		return *r.Subject
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *DocumentManifest) GetType() dt.CodeableConcept {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero dt.CodeableConcept
+	return zero
+}

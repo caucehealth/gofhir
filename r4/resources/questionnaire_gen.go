@@ -869,3 +869,262 @@ type QuestionnaireItem struct {
 	// TypeElement contains element extensions for type.
 	TypeElement *dt.Element `json:"_type,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Questionnaire) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Questionnaire) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Questionnaire) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Questionnaire) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Questionnaire) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Questionnaire) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Questionnaire) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Questionnaire) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Questionnaire) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Questionnaire) GetStatus() QuestionnaireStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero QuestionnaireStatus
+	return zero
+}
+
+// GetApprovalDate returns the approvalDate field value, or the zero value if nil.
+func (r *Questionnaire) GetApprovalDate() dt.Date {
+	if r.ApprovalDate != nil {
+		return *r.ApprovalDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetCode returns the code field value, or an empty slice if nil.
+func (r *Questionnaire) GetCode() []dt.Coding {
+	if r.Code != nil {
+		return r.Code
+	}
+	return nil
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *Questionnaire) GetContact() []dt.ContactDetail {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetCopyright returns the copyright field value, or the zero value if nil.
+func (r *Questionnaire) GetCopyright() dt.Markdown {
+	if r.Copyright != nil {
+		return *r.Copyright
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *Questionnaire) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDerivedFrom returns the derivedFrom field value, or an empty slice if nil.
+func (r *Questionnaire) GetDerivedFrom() []dt.Canonical {
+	if r.DerivedFrom != nil {
+		return r.DerivedFrom
+	}
+	return nil
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *Questionnaire) GetDescription() dt.Markdown {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetEffectivePeriod returns the effectivePeriod field value, or the zero value if nil.
+func (r *Questionnaire) GetEffectivePeriod() dt.Period {
+	if r.EffectivePeriod != nil {
+		return *r.EffectivePeriod
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetExperimental returns the experimental field value, or the zero value if nil.
+func (r *Questionnaire) GetExperimental() bool {
+	if r.Experimental != nil {
+		return *r.Experimental
+	}
+	var zero bool
+	return zero
+}
+
+// GetItem returns the item field value, or an empty slice if nil.
+func (r *Questionnaire) GetItem() []QuestionnaireItem {
+	if r.Item != nil {
+		return r.Item
+	}
+	return nil
+}
+
+// GetJurisdiction returns the jurisdiction field value, or an empty slice if nil.
+func (r *Questionnaire) GetJurisdiction() []dt.CodeableConcept {
+	if r.Jurisdiction != nil {
+		return r.Jurisdiction
+	}
+	return nil
+}
+
+// GetLastReviewDate returns the lastReviewDate field value, or the zero value if nil.
+func (r *Questionnaire) GetLastReviewDate() dt.Date {
+	if r.LastReviewDate != nil {
+		return *r.LastReviewDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *Questionnaire) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetPublisher returns the publisher field value, or the zero value if nil.
+func (r *Questionnaire) GetPublisher() string {
+	if r.Publisher != nil {
+		return *r.Publisher
+	}
+	var zero string
+	return zero
+}
+
+// GetPurpose returns the purpose field value, or the zero value if nil.
+func (r *Questionnaire) GetPurpose() dt.Markdown {
+	if r.Purpose != nil {
+		return *r.Purpose
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetSubjectType returns the subjectType field value, or an empty slice if nil.
+func (r *Questionnaire) GetSubjectType() []dt.Code {
+	if r.SubjectType != nil {
+		return r.SubjectType
+	}
+	return nil
+}
+
+// GetTitle returns the title field value, or the zero value if nil.
+func (r *Questionnaire) GetTitle() string {
+	if r.Title != nil {
+		return *r.Title
+	}
+	var zero string
+	return zero
+}
+
+// GetUrl returns the url field value, or the zero value if nil.
+func (r *Questionnaire) GetUrl() dt.URI {
+	if r.Url != nil {
+		return *r.Url
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetUseContext returns the useContext field value, or an empty slice if nil.
+func (r *Questionnaire) GetUseContext() []dt.UsageContext {
+	if r.UseContext != nil {
+		return r.UseContext
+	}
+	return nil
+}
+
+// GetVersion returns the version field value, or the zero value if nil.
+func (r *Questionnaire) GetVersion() string {
+	if r.Version != nil {
+		return *r.Version
+	}
+	var zero string
+	return zero
+}

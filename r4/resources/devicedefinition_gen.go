@@ -584,3 +584,266 @@ type DeviceDefinitionUdiDeviceIdentifier struct {
 	// JurisdictionElement contains element extensions for jurisdiction.
 	JurisdictionElement *dt.Element `json:"_jurisdiction,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *DeviceDefinition) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *DeviceDefinition) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *DeviceDefinition) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *DeviceDefinition) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *DeviceDefinition) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *DeviceDefinition) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *DeviceDefinition) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *DeviceDefinition) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *DeviceDefinition) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetCapability returns the capability field value, or an empty slice if nil.
+func (r *DeviceDefinition) GetCapability() []DeviceDefinitionCapability {
+	if r.Capability != nil {
+		return r.Capability
+	}
+	return nil
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *DeviceDefinition) GetContact() []dt.ContactPoint {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetDeviceName returns the deviceName field value, or an empty slice if nil.
+func (r *DeviceDefinition) GetDeviceName() []DeviceDefinitionDeviceName {
+	if r.DeviceName != nil {
+		return r.DeviceName
+	}
+	return nil
+}
+
+// GetLanguageCode returns the languageCode field value, or an empty slice if nil.
+func (r *DeviceDefinition) GetLanguageCode() []dt.CodeableConcept {
+	if r.LanguageCode != nil {
+		return r.LanguageCode
+	}
+	return nil
+}
+
+// GetManufacturerReference returns the manufacturerReference field value, or the zero value if nil.
+func (r *DeviceDefinition) GetManufacturerReference() dt.Reference {
+	if r.ManufacturerReference != nil {
+		return *r.ManufacturerReference
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetManufacturerString returns the manufacturerString field value, or the zero value if nil.
+func (r *DeviceDefinition) GetManufacturerString() string {
+	if r.ManufacturerString != nil {
+		return *r.ManufacturerString
+	}
+	var zero string
+	return zero
+}
+
+// GetMaterial returns the material field value, or an empty slice if nil.
+func (r *DeviceDefinition) GetMaterial() []DeviceDefinitionMaterial {
+	if r.Material != nil {
+		return r.Material
+	}
+	return nil
+}
+
+// GetModelNumber returns the modelNumber field value, or the zero value if nil.
+func (r *DeviceDefinition) GetModelNumber() string {
+	if r.ModelNumber != nil {
+		return *r.ModelNumber
+	}
+	var zero string
+	return zero
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *DeviceDefinition) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetOnlineInformation returns the onlineInformation field value, or the zero value if nil.
+func (r *DeviceDefinition) GetOnlineInformation() dt.URI {
+	if r.OnlineInformation != nil {
+		return *r.OnlineInformation
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetOwner returns the owner field value, or the zero value if nil.
+func (r *DeviceDefinition) GetOwner() dt.Reference {
+	if r.Owner != nil {
+		return *r.Owner
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetParentDevice returns the parentDevice field value, or the zero value if nil.
+func (r *DeviceDefinition) GetParentDevice() dt.Reference {
+	if r.ParentDevice != nil {
+		return *r.ParentDevice
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPhysicalCharacteristics returns the physicalCharacteristics field value, or the zero value if nil.
+func (r *DeviceDefinition) GetPhysicalCharacteristics() dt.ProdCharacteristic {
+	if r.PhysicalCharacteristics != nil {
+		return *r.PhysicalCharacteristics
+	}
+	var zero dt.ProdCharacteristic
+	return zero
+}
+
+// GetProperty returns the property field value, or an empty slice if nil.
+func (r *DeviceDefinition) GetProperty() []DeviceDefinitionProperty {
+	if r.Property != nil {
+		return r.Property
+	}
+	return nil
+}
+
+// GetQuantity returns the quantity field value, or the zero value if nil.
+func (r *DeviceDefinition) GetQuantity() dt.Quantity {
+	if r.Quantity != nil {
+		return *r.Quantity
+	}
+	var zero dt.Quantity
+	return zero
+}
+
+// GetSafety returns the safety field value, or an empty slice if nil.
+func (r *DeviceDefinition) GetSafety() []dt.CodeableConcept {
+	if r.Safety != nil {
+		return r.Safety
+	}
+	return nil
+}
+
+// GetShelfLifeStorage returns the shelfLifeStorage field value, or an empty slice if nil.
+func (r *DeviceDefinition) GetShelfLifeStorage() []dt.ProductShelfLife {
+	if r.ShelfLifeStorage != nil {
+		return r.ShelfLifeStorage
+	}
+	return nil
+}
+
+// GetSpecialization returns the specialization field value, or an empty slice if nil.
+func (r *DeviceDefinition) GetSpecialization() []DeviceDefinitionSpecialization {
+	if r.Specialization != nil {
+		return r.Specialization
+	}
+	return nil
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *DeviceDefinition) GetType() dt.CodeableConcept {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetUdiDeviceIdentifier returns the udiDeviceIdentifier field value, or an empty slice if nil.
+func (r *DeviceDefinition) GetUdiDeviceIdentifier() []DeviceDefinitionUdiDeviceIdentifier {
+	if r.UdiDeviceIdentifier != nil {
+		return r.UdiDeviceIdentifier
+	}
+	return nil
+}
+
+// GetUrl returns the url field value, or the zero value if nil.
+func (r *DeviceDefinition) GetUrl() dt.URI {
+	if r.Url != nil {
+		return *r.Url
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetVersion returns the version field value, or an empty slice if nil.
+func (r *DeviceDefinition) GetVersion() []string {
+	if r.Version != nil {
+		return r.Version
+	}
+	return nil
+}

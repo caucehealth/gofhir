@@ -278,3 +278,155 @@ type OrganizationContact struct {
 	// Telecom A contact detail (e.g. a telephone number or an email address) by which the party may be contacted.
 	Telecom []dt.ContactPoint `json:"telecom,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Organization) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Organization) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Organization) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Organization) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Organization) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Organization) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Organization) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Organization) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Organization) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetActive returns the active field value, or the zero value if nil.
+func (r *Organization) GetActive() bool {
+	if r.Active != nil {
+		return *r.Active
+	}
+	var zero bool
+	return zero
+}
+
+// GetAddress returns the address field value, or an empty slice if nil.
+func (r *Organization) GetAddress() []dt.Address {
+	if r.Address != nil {
+		return r.Address
+	}
+	return nil
+}
+
+// GetAlias returns the alias field value, or an empty slice if nil.
+func (r *Organization) GetAlias() []string {
+	if r.Alias != nil {
+		return r.Alias
+	}
+	return nil
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *Organization) GetContact() []OrganizationContact {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetEndpoint returns the endpoint field value, or an empty slice if nil.
+func (r *Organization) GetEndpoint() []dt.Reference {
+	if r.Endpoint != nil {
+		return r.Endpoint
+	}
+	return nil
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *Organization) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetPartOf returns the partOf field value, or the zero value if nil.
+func (r *Organization) GetPartOf() dt.Reference {
+	if r.PartOf != nil {
+		return *r.PartOf
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetTelecom returns the telecom field value, or an empty slice if nil.
+func (r *Organization) GetTelecom() []dt.ContactPoint {
+	if r.Telecom != nil {
+		return r.Telecom
+	}
+	return nil
+}
+
+// GetType returns the type field value, or an empty slice if nil.
+func (r *Organization) GetType() []dt.CodeableConcept {
+	if r.Type != nil {
+		return r.Type
+	}
+	return nil
+}

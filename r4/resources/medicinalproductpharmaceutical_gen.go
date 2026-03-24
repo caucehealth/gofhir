@@ -314,3 +314,126 @@ type MedicinalProductPharmaceuticalWithdrawalPeriod struct {
 	// Value A value for the time.
 	Value dt.Quantity `json:"value"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *MedicinalProductPharmaceutical) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *MedicinalProductPharmaceutical) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *MedicinalProductPharmaceutical) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *MedicinalProductPharmaceutical) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *MedicinalProductPharmaceutical) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *MedicinalProductPharmaceutical) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *MedicinalProductPharmaceutical) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *MedicinalProductPharmaceutical) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *MedicinalProductPharmaceutical) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetAdministrableDoseForm returns the administrableDoseForm field value.
+func (r *MedicinalProductPharmaceutical) GetAdministrableDoseForm() dt.CodeableConcept {
+	return r.AdministrableDoseForm
+}
+
+// GetCharacteristics returns the characteristics field value, or an empty slice if nil.
+func (r *MedicinalProductPharmaceutical) GetCharacteristics() []MedicinalProductPharmaceuticalCharacteristics {
+	if r.Characteristics != nil {
+		return r.Characteristics
+	}
+	return nil
+}
+
+// GetDevice returns the device field value, or an empty slice if nil.
+func (r *MedicinalProductPharmaceutical) GetDevice() []dt.Reference {
+	if r.Device != nil {
+		return r.Device
+	}
+	return nil
+}
+
+// GetIngredient returns the ingredient field value, or an empty slice if nil.
+func (r *MedicinalProductPharmaceutical) GetIngredient() []dt.Reference {
+	if r.Ingredient != nil {
+		return r.Ingredient
+	}
+	return nil
+}
+
+// GetRouteOfAdministration returns the routeOfAdministration field value, or an empty slice if nil.
+func (r *MedicinalProductPharmaceutical) GetRouteOfAdministration() []MedicinalProductPharmaceuticalRouteOfAdministration {
+	if r.RouteOfAdministration != nil {
+		return r.RouteOfAdministration
+	}
+	return nil
+}
+
+// GetUnitOfPresentation returns the unitOfPresentation field value, or the zero value if nil.
+func (r *MedicinalProductPharmaceutical) GetUnitOfPresentation() dt.CodeableConcept {
+	if r.UnitOfPresentation != nil {
+		return *r.UnitOfPresentation
+	}
+	var zero dt.CodeableConcept
+	return zero
+}

@@ -555,47 +555,6 @@ func (r *ClaimResponseAddItem) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// ClaimResponseAddItemServiced represents a polymorphic choice type in FHIR.
-type ClaimResponseAddItemServiced struct {
-	Date   *string    `json:"servicedDate,omitempty"`   // The date or dates when the service or product was supplied, performed or completed.
-	Period *dt.Period `json:"servicedPeriod,omitempty"` // The date or dates when the service or product was supplied, performed or completed.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ClaimResponseAddItemServiced.
-func (v ClaimResponseAddItemServiced) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Date != nil {
-		m["servicedDate"] = v.Date
-	}
-	if v.Period != nil {
-		m["servicedPeriod"] = v.Period
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ClaimResponseAddItemServiced.
-func (v *ClaimResponseAddItemServiced) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["servicedDate"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling servicedDate: %w", err)
-		}
-		v.Date = &val
-	}
-	if d, ok := raw["servicedPeriod"]; ok {
-		var val dt.Period
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling servicedPeriod: %w", err)
-		}
-		v.Period = &val
-	}
-	return nil
-}
-
 // ClaimResponseAddItemLocation represents a polymorphic choice type in FHIR.
 type ClaimResponseAddItemLocation struct {
 	Address         *dt.Address         `json:"locationAddress,omitempty"`         // Where the product or service was provided.
@@ -644,6 +603,47 @@ func (v *ClaimResponseAddItemLocation) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling locationReference: %w", err)
 		}
 		v.Reference = &val
+	}
+	return nil
+}
+
+// ClaimResponseAddItemServiced represents a polymorphic choice type in FHIR.
+type ClaimResponseAddItemServiced struct {
+	Date   *string    `json:"servicedDate,omitempty"`   // The date or dates when the service or product was supplied, performed or completed.
+	Period *dt.Period `json:"servicedPeriod,omitempty"` // The date or dates when the service or product was supplied, performed or completed.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ClaimResponseAddItemServiced.
+func (v ClaimResponseAddItemServiced) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Date != nil {
+		m["servicedDate"] = v.Date
+	}
+	if v.Period != nil {
+		m["servicedPeriod"] = v.Period
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ClaimResponseAddItemServiced.
+func (v *ClaimResponseAddItemServiced) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["servicedDate"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling servicedDate: %w", err)
+		}
+		v.Date = &val
+	}
+	if d, ok := raw["servicedPeriod"]; ok {
+		var val dt.Period
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling servicedPeriod: %w", err)
+		}
+		v.Period = &val
 	}
 	return nil
 }
@@ -926,4 +926,295 @@ type ClaimResponseTotal struct {
 	Amount dt.Money `json:"amount"`
 	// Category A code to indicate the information type of this adjudication record. Information types may include: the value submitted, maximum values or percentages allowed or payable under the plan, amounts tha...
 	Category dt.CodeableConcept `json:"category"`
+}
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *ClaimResponse) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *ClaimResponse) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *ClaimResponse) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *ClaimResponse) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *ClaimResponse) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *ClaimResponse) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *ClaimResponse) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *ClaimResponse) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *ClaimResponse) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *ClaimResponse) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetAddItem returns the addItem field value, or an empty slice if nil.
+func (r *ClaimResponse) GetAddItem() []ClaimResponseAddItem {
+	if r.AddItem != nil {
+		return r.AddItem
+	}
+	return nil
+}
+
+// GetAdjudication returns the adjudication field value, or an empty slice if nil.
+func (r *ClaimResponse) GetAdjudication() []ClaimResponseAdjudication {
+	if r.Adjudication != nil {
+		return r.Adjudication
+	}
+	return nil
+}
+
+// GetCommunicationRequest returns the communicationRequest field value, or an empty slice if nil.
+func (r *ClaimResponse) GetCommunicationRequest() []dt.Reference {
+	if r.CommunicationRequest != nil {
+		return r.CommunicationRequest
+	}
+	return nil
+}
+
+// GetCreated returns the created field value, or the zero value if nil.
+func (r *ClaimResponse) GetCreated() dt.DateTime {
+	if r.Created != nil {
+		return *r.Created
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDisposition returns the disposition field value, or the zero value if nil.
+func (r *ClaimResponse) GetDisposition() string {
+	if r.Disposition != nil {
+		return *r.Disposition
+	}
+	var zero string
+	return zero
+}
+
+// GetError returns the error field value, or an empty slice if nil.
+func (r *ClaimResponse) GetError() []ClaimResponseError {
+	if r.Error != nil {
+		return r.Error
+	}
+	return nil
+}
+
+// GetForm returns the form field value, or the zero value if nil.
+func (r *ClaimResponse) GetForm() dt.Attachment {
+	if r.Form != nil {
+		return *r.Form
+	}
+	var zero dt.Attachment
+	return zero
+}
+
+// GetFormCode returns the formCode field value, or the zero value if nil.
+func (r *ClaimResponse) GetFormCode() dt.CodeableConcept {
+	if r.FormCode != nil {
+		return *r.FormCode
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetFundsReserve returns the fundsReserve field value, or the zero value if nil.
+func (r *ClaimResponse) GetFundsReserve() dt.CodeableConcept {
+	if r.FundsReserve != nil {
+		return *r.FundsReserve
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetInsurance returns the insurance field value, or an empty slice if nil.
+func (r *ClaimResponse) GetInsurance() []ClaimResponseInsurance {
+	if r.Insurance != nil {
+		return r.Insurance
+	}
+	return nil
+}
+
+// GetInsurer returns the insurer field value.
+func (r *ClaimResponse) GetInsurer() dt.Reference {
+	return r.Insurer
+}
+
+// GetItem returns the item field value, or an empty slice if nil.
+func (r *ClaimResponse) GetItem() []ClaimResponseItem {
+	if r.Item != nil {
+		return r.Item
+	}
+	return nil
+}
+
+// GetOutcome returns the outcome field value, or the zero value if nil.
+func (r *ClaimResponse) GetOutcome() dt.Code {
+	if r.Outcome != nil {
+		return *r.Outcome
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetPatient returns the patient field value.
+func (r *ClaimResponse) GetPatient() dt.Reference {
+	return r.Patient
+}
+
+// GetPayeeType returns the payeeType field value, or the zero value if nil.
+func (r *ClaimResponse) GetPayeeType() dt.CodeableConcept {
+	if r.PayeeType != nil {
+		return *r.PayeeType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetPayment returns the payment field value, or the zero value if nil.
+func (r *ClaimResponse) GetPayment() ClaimResponsePayment {
+	if r.Payment != nil {
+		return *r.Payment
+	}
+	var zero ClaimResponsePayment
+	return zero
+}
+
+// GetPreAuthPeriod returns the preAuthPeriod field value, or the zero value if nil.
+func (r *ClaimResponse) GetPreAuthPeriod() dt.Period {
+	if r.PreAuthPeriod != nil {
+		return *r.PreAuthPeriod
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetPreAuthRef returns the preAuthRef field value, or the zero value if nil.
+func (r *ClaimResponse) GetPreAuthRef() string {
+	if r.PreAuthRef != nil {
+		return *r.PreAuthRef
+	}
+	var zero string
+	return zero
+}
+
+// GetProcessNote returns the processNote field value, or an empty slice if nil.
+func (r *ClaimResponse) GetProcessNote() []ClaimResponseProcessNote {
+	if r.ProcessNote != nil {
+		return r.ProcessNote
+	}
+	return nil
+}
+
+// GetRequest returns the request field value, or the zero value if nil.
+func (r *ClaimResponse) GetRequest() dt.Reference {
+	if r.Request != nil {
+		return *r.Request
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetRequestor returns the requestor field value, or the zero value if nil.
+func (r *ClaimResponse) GetRequestor() dt.Reference {
+	if r.Requestor != nil {
+		return *r.Requestor
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetSubType returns the subType field value, or the zero value if nil.
+func (r *ClaimResponse) GetSubType() dt.CodeableConcept {
+	if r.SubType != nil {
+		return *r.SubType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetTotal returns the total field value, or an empty slice if nil.
+func (r *ClaimResponse) GetTotal() []ClaimResponseTotal {
+	if r.Total != nil {
+		return r.Total
+	}
+	return nil
+}
+
+// GetType returns the type field value.
+func (r *ClaimResponse) GetType() dt.CodeableConcept {
+	return r.Type
+}
+
+// GetUse returns the use field value, or the zero value if nil.
+func (r *ClaimResponse) GetUse() dt.Code {
+	if r.Use != nil {
+		return *r.Use
+	}
+	var zero dt.Code
+	return zero
 }

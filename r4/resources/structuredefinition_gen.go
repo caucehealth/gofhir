@@ -517,3 +517,307 @@ type StructureDefinitionSnapshot struct {
 	// Element Captures constraints on each element within the resource.
 	Element []dt.ElementDefinition `json:"element,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *StructureDefinition) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *StructureDefinition) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *StructureDefinition) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *StructureDefinition) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *StructureDefinition) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *StructureDefinition) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *StructureDefinition) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *StructureDefinition) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *StructureDefinition) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *StructureDefinition) GetStatus() StructureDefinitionStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero StructureDefinitionStatus
+	return zero
+}
+
+// GetAbstract returns the abstract field value, or the zero value if nil.
+func (r *StructureDefinition) GetAbstract() bool {
+	if r.Abstract != nil {
+		return *r.Abstract
+	}
+	var zero bool
+	return zero
+}
+
+// GetBaseDefinition returns the baseDefinition field value, or the zero value if nil.
+func (r *StructureDefinition) GetBaseDefinition() dt.Canonical {
+	if r.BaseDefinition != nil {
+		return *r.BaseDefinition
+	}
+	var zero dt.Canonical
+	return zero
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *StructureDefinition) GetContact() []dt.ContactDetail {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetContext returns the context field value, or an empty slice if nil.
+func (r *StructureDefinition) GetContext() []StructureDefinitionContext {
+	if r.Context != nil {
+		return r.Context
+	}
+	return nil
+}
+
+// GetContextInvariant returns the contextInvariant field value, or an empty slice if nil.
+func (r *StructureDefinition) GetContextInvariant() []string {
+	if r.ContextInvariant != nil {
+		return r.ContextInvariant
+	}
+	return nil
+}
+
+// GetCopyright returns the copyright field value, or the zero value if nil.
+func (r *StructureDefinition) GetCopyright() dt.Markdown {
+	if r.Copyright != nil {
+		return *r.Copyright
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *StructureDefinition) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDerivation returns the derivation field value, or the zero value if nil.
+func (r *StructureDefinition) GetDerivation() StructureDefinitionDerivation {
+	if r.Derivation != nil {
+		return *r.Derivation
+	}
+	var zero StructureDefinitionDerivation
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *StructureDefinition) GetDescription() dt.Markdown {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetDifferential returns the differential field value, or the zero value if nil.
+func (r *StructureDefinition) GetDifferential() StructureDefinitionDifferential {
+	if r.Differential != nil {
+		return *r.Differential
+	}
+	var zero StructureDefinitionDifferential
+	return zero
+}
+
+// GetExperimental returns the experimental field value, or the zero value if nil.
+func (r *StructureDefinition) GetExperimental() bool {
+	if r.Experimental != nil {
+		return *r.Experimental
+	}
+	var zero bool
+	return zero
+}
+
+// GetFhirVersion returns the fhirVersion field value, or the zero value if nil.
+func (r *StructureDefinition) GetFhirVersion() StructureDefinitionFhirVersion {
+	if r.FhirVersion != nil {
+		return *r.FhirVersion
+	}
+	var zero StructureDefinitionFhirVersion
+	return zero
+}
+
+// GetJurisdiction returns the jurisdiction field value, or an empty slice if nil.
+func (r *StructureDefinition) GetJurisdiction() []dt.CodeableConcept {
+	if r.Jurisdiction != nil {
+		return r.Jurisdiction
+	}
+	return nil
+}
+
+// GetKeyword returns the keyword field value, or an empty slice if nil.
+func (r *StructureDefinition) GetKeyword() []dt.Coding {
+	if r.Keyword != nil {
+		return r.Keyword
+	}
+	return nil
+}
+
+// GetKind returns the kind field value, or the zero value if nil.
+func (r *StructureDefinition) GetKind() StructureDefinitionKind {
+	if r.Kind != nil {
+		return *r.Kind
+	}
+	var zero StructureDefinitionKind
+	return zero
+}
+
+// GetMapping returns the mapping field value, or an empty slice if nil.
+func (r *StructureDefinition) GetMapping() []StructureDefinitionMapping {
+	if r.Mapping != nil {
+		return r.Mapping
+	}
+	return nil
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *StructureDefinition) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetPublisher returns the publisher field value, or the zero value if nil.
+func (r *StructureDefinition) GetPublisher() string {
+	if r.Publisher != nil {
+		return *r.Publisher
+	}
+	var zero string
+	return zero
+}
+
+// GetPurpose returns the purpose field value, or the zero value if nil.
+func (r *StructureDefinition) GetPurpose() dt.Markdown {
+	if r.Purpose != nil {
+		return *r.Purpose
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetSnapshot returns the snapshot field value, or the zero value if nil.
+func (r *StructureDefinition) GetSnapshot() StructureDefinitionSnapshot {
+	if r.Snapshot != nil {
+		return *r.Snapshot
+	}
+	var zero StructureDefinitionSnapshot
+	return zero
+}
+
+// GetTitle returns the title field value, or the zero value if nil.
+func (r *StructureDefinition) GetTitle() string {
+	if r.Title != nil {
+		return *r.Title
+	}
+	var zero string
+	return zero
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *StructureDefinition) GetType() dt.URI {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetUrl returns the url field value, or the zero value if nil.
+func (r *StructureDefinition) GetUrl() dt.URI {
+	if r.Url != nil {
+		return *r.Url
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetUseContext returns the useContext field value, or an empty slice if nil.
+func (r *StructureDefinition) GetUseContext() []dt.UsageContext {
+	if r.UseContext != nil {
+		return r.UseContext
+	}
+	return nil
+}
+
+// GetVersion returns the version field value, or the zero value if nil.
+func (r *StructureDefinition) GetVersion() string {
+	if r.Version != nil {
+		return *r.Version
+	}
+	var zero string
+	return zero
+}

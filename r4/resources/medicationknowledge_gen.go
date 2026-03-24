@@ -841,3 +841,255 @@ type MedicationKnowledgeSubstitution struct {
 	// Type Specifies the type of substitution allowed.
 	Type dt.CodeableConcept `json:"type"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *MedicationKnowledge) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *MedicationKnowledge) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *MedicationKnowledge) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *MedicationKnowledge) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *MedicationKnowledge) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *MedicationKnowledge) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *MedicationKnowledge) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *MedicationKnowledge) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *MedicationKnowledge) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetAdministrationGuidelines returns the administrationGuidelines field value, or an empty slice if nil.
+func (r *MedicationKnowledge) GetAdministrationGuidelines() []MedicationKnowledgeAdministrationGuidelines {
+	if r.AdministrationGuidelines != nil {
+		return r.AdministrationGuidelines
+	}
+	return nil
+}
+
+// GetAmount returns the amount field value, or the zero value if nil.
+func (r *MedicationKnowledge) GetAmount() dt.Quantity {
+	if r.Amount != nil {
+		return *r.Amount
+	}
+	var zero dt.Quantity
+	return zero
+}
+
+// GetAssociatedMedication returns the associatedMedication field value, or an empty slice if nil.
+func (r *MedicationKnowledge) GetAssociatedMedication() []dt.Reference {
+	if r.AssociatedMedication != nil {
+		return r.AssociatedMedication
+	}
+	return nil
+}
+
+// GetCode returns the code field value, or the zero value if nil.
+func (r *MedicationKnowledge) GetCode() dt.CodeableConcept {
+	if r.Code != nil {
+		return *r.Code
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetContraindication returns the contraindication field value, or an empty slice if nil.
+func (r *MedicationKnowledge) GetContraindication() []dt.Reference {
+	if r.Contraindication != nil {
+		return r.Contraindication
+	}
+	return nil
+}
+
+// GetCost returns the cost field value, or an empty slice if nil.
+func (r *MedicationKnowledge) GetCost() []MedicationKnowledgeCost {
+	if r.Cost != nil {
+		return r.Cost
+	}
+	return nil
+}
+
+// GetDoseForm returns the doseForm field value, or the zero value if nil.
+func (r *MedicationKnowledge) GetDoseForm() dt.CodeableConcept {
+	if r.DoseForm != nil {
+		return *r.DoseForm
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetDrugCharacteristic returns the drugCharacteristic field value, or an empty slice if nil.
+func (r *MedicationKnowledge) GetDrugCharacteristic() []MedicationKnowledgeDrugCharacteristic {
+	if r.DrugCharacteristic != nil {
+		return r.DrugCharacteristic
+	}
+	return nil
+}
+
+// GetIngredient returns the ingredient field value, or an empty slice if nil.
+func (r *MedicationKnowledge) GetIngredient() []MedicationKnowledgeIngredient {
+	if r.Ingredient != nil {
+		return r.Ingredient
+	}
+	return nil
+}
+
+// GetIntendedRoute returns the intendedRoute field value, or an empty slice if nil.
+func (r *MedicationKnowledge) GetIntendedRoute() []dt.CodeableConcept {
+	if r.IntendedRoute != nil {
+		return r.IntendedRoute
+	}
+	return nil
+}
+
+// GetKinetics returns the kinetics field value, or an empty slice if nil.
+func (r *MedicationKnowledge) GetKinetics() []MedicationKnowledgeKinetics {
+	if r.Kinetics != nil {
+		return r.Kinetics
+	}
+	return nil
+}
+
+// GetManufacturer returns the manufacturer field value, or the zero value if nil.
+func (r *MedicationKnowledge) GetManufacturer() dt.Reference {
+	if r.Manufacturer != nil {
+		return *r.Manufacturer
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetMedicineClassification returns the medicineClassification field value, or an empty slice if nil.
+func (r *MedicationKnowledge) GetMedicineClassification() []MedicationKnowledgeMedicineClassification {
+	if r.MedicineClassification != nil {
+		return r.MedicineClassification
+	}
+	return nil
+}
+
+// GetMonitoringProgram returns the monitoringProgram field value, or an empty slice if nil.
+func (r *MedicationKnowledge) GetMonitoringProgram() []MedicationKnowledgeMonitoringProgram {
+	if r.MonitoringProgram != nil {
+		return r.MonitoringProgram
+	}
+	return nil
+}
+
+// GetMonograph returns the monograph field value, or an empty slice if nil.
+func (r *MedicationKnowledge) GetMonograph() []MedicationKnowledgeMonograph {
+	if r.Monograph != nil {
+		return r.Monograph
+	}
+	return nil
+}
+
+// GetPackaging returns the packaging field value, or the zero value if nil.
+func (r *MedicationKnowledge) GetPackaging() MedicationKnowledgePackaging {
+	if r.Packaging != nil {
+		return *r.Packaging
+	}
+	var zero MedicationKnowledgePackaging
+	return zero
+}
+
+// GetPreparationInstruction returns the preparationInstruction field value, or the zero value if nil.
+func (r *MedicationKnowledge) GetPreparationInstruction() dt.Markdown {
+	if r.PreparationInstruction != nil {
+		return *r.PreparationInstruction
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetProductType returns the productType field value, or an empty slice if nil.
+func (r *MedicationKnowledge) GetProductType() []dt.CodeableConcept {
+	if r.ProductType != nil {
+		return r.ProductType
+	}
+	return nil
+}
+
+// GetRegulatory returns the regulatory field value, or an empty slice if nil.
+func (r *MedicationKnowledge) GetRegulatory() []MedicationKnowledgeRegulatory {
+	if r.Regulatory != nil {
+		return r.Regulatory
+	}
+	return nil
+}
+
+// GetRelatedMedicationKnowledge returns the relatedMedicationKnowledge field value, or an empty slice if nil.
+func (r *MedicationKnowledge) GetRelatedMedicationKnowledge() []MedicationKnowledgeRelatedMedicationKnowledge {
+	if r.RelatedMedicationKnowledge != nil {
+		return r.RelatedMedicationKnowledge
+	}
+	return nil
+}
+
+// GetSynonym returns the synonym field value, or an empty slice if nil.
+func (r *MedicationKnowledge) GetSynonym() []string {
+	if r.Synonym != nil {
+		return r.Synonym
+	}
+	return nil
+}

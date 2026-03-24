@@ -326,3 +326,123 @@ type SpecimenDefinitionTypeTested struct {
 	// Type The kind of specimen conditioned for testing expected by lab.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *SpecimenDefinition) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *SpecimenDefinition) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *SpecimenDefinition) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *SpecimenDefinition) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *SpecimenDefinition) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *SpecimenDefinition) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *SpecimenDefinition) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *SpecimenDefinition) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or the zero value if nil.
+func (r *SpecimenDefinition) GetIdentifier() dt.Identifier {
+	if r.Identifier != nil {
+		return *r.Identifier
+	}
+	var zero dt.Identifier
+	return zero
+}
+
+// GetCollection returns the collection field value, or an empty slice if nil.
+func (r *SpecimenDefinition) GetCollection() []dt.CodeableConcept {
+	if r.Collection != nil {
+		return r.Collection
+	}
+	return nil
+}
+
+// GetPatientPreparation returns the patientPreparation field value, or an empty slice if nil.
+func (r *SpecimenDefinition) GetPatientPreparation() []dt.CodeableConcept {
+	if r.PatientPreparation != nil {
+		return r.PatientPreparation
+	}
+	return nil
+}
+
+// GetTimeAspect returns the timeAspect field value, or the zero value if nil.
+func (r *SpecimenDefinition) GetTimeAspect() string {
+	if r.TimeAspect != nil {
+		return *r.TimeAspect
+	}
+	var zero string
+	return zero
+}
+
+// GetTypeCollected returns the typeCollected field value, or the zero value if nil.
+func (r *SpecimenDefinition) GetTypeCollected() dt.CodeableConcept {
+	if r.TypeCollected != nil {
+		return *r.TypeCollected
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetTypeTested returns the typeTested field value, or an empty slice if nil.
+func (r *SpecimenDefinition) GetTypeTested() []SpecimenDefinitionTypeTested {
+	if r.TypeTested != nil {
+		return r.TypeTested
+	}
+	return nil
+}

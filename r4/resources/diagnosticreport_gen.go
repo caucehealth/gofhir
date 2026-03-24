@@ -436,3 +436,218 @@ func (v *DiagnosticReportEffective) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *DiagnosticReport) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *DiagnosticReport) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *DiagnosticReport) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *DiagnosticReport) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *DiagnosticReport) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *DiagnosticReport) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *DiagnosticReport) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *DiagnosticReport) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *DiagnosticReport) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *DiagnosticReport) GetStatus() DiagnosticReportStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero DiagnosticReportStatus
+	return zero
+}
+
+// GetBasedOn returns the basedOn field value, or an empty slice if nil.
+func (r *DiagnosticReport) GetBasedOn() []dt.Reference {
+	if r.BasedOn != nil {
+		return r.BasedOn
+	}
+	return nil
+}
+
+// GetCategory returns the category field value, or an empty slice if nil.
+func (r *DiagnosticReport) GetCategory() []dt.CodeableConcept {
+	if r.Category != nil {
+		return r.Category
+	}
+	return nil
+}
+
+// GetCode returns the code field value.
+func (r *DiagnosticReport) GetCode() dt.CodeableConcept {
+	return r.Code
+}
+
+// GetConclusion returns the conclusion field value, or the zero value if nil.
+func (r *DiagnosticReport) GetConclusion() string {
+	if r.Conclusion != nil {
+		return *r.Conclusion
+	}
+	var zero string
+	return zero
+}
+
+// GetConclusionCode returns the conclusionCode field value, or an empty slice if nil.
+func (r *DiagnosticReport) GetConclusionCode() []dt.CodeableConcept {
+	if r.ConclusionCode != nil {
+		return r.ConclusionCode
+	}
+	return nil
+}
+
+// GetEffective returns the effective field value, or a zero-value if nil.
+func (r *DiagnosticReport) GetEffective() DiagnosticReportEffective {
+	if r.Effective != nil {
+		return *r.Effective
+	}
+	return DiagnosticReportEffective{}
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *DiagnosticReport) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetImagingStudy returns the imagingStudy field value, or an empty slice if nil.
+func (r *DiagnosticReport) GetImagingStudy() []dt.Reference {
+	if r.ImagingStudy != nil {
+		return r.ImagingStudy
+	}
+	return nil
+}
+
+// GetIssued returns the issued field value, or the zero value if nil.
+func (r *DiagnosticReport) GetIssued() dt.Instant {
+	if r.Issued != nil {
+		return *r.Issued
+	}
+	var zero dt.Instant
+	return zero
+}
+
+// GetMedia returns the media field value, or an empty slice if nil.
+func (r *DiagnosticReport) GetMedia() []DiagnosticReportMedia {
+	if r.Media != nil {
+		return r.Media
+	}
+	return nil
+}
+
+// GetPerformer returns the performer field value, or an empty slice if nil.
+func (r *DiagnosticReport) GetPerformer() []dt.Reference {
+	if r.Performer != nil {
+		return r.Performer
+	}
+	return nil
+}
+
+// GetPresentedForm returns the presentedForm field value, or an empty slice if nil.
+func (r *DiagnosticReport) GetPresentedForm() []dt.Attachment {
+	if r.PresentedForm != nil {
+		return r.PresentedForm
+	}
+	return nil
+}
+
+// GetResult returns the result field value, or an empty slice if nil.
+func (r *DiagnosticReport) GetResult() []dt.Reference {
+	if r.Result != nil {
+		return r.Result
+	}
+	return nil
+}
+
+// GetResultsInterpreter returns the resultsInterpreter field value, or an empty slice if nil.
+func (r *DiagnosticReport) GetResultsInterpreter() []dt.Reference {
+	if r.ResultsInterpreter != nil {
+		return r.ResultsInterpreter
+	}
+	return nil
+}
+
+// GetSpecimen returns the specimen field value, or an empty slice if nil.
+func (r *DiagnosticReport) GetSpecimen() []dt.Reference {
+	if r.Specimen != nil {
+		return r.Specimen
+	}
+	return nil
+}
+
+// GetSubject returns the subject field value, or the zero value if nil.
+func (r *DiagnosticReport) GetSubject() dt.Reference {
+	if r.Subject != nil {
+		return *r.Subject
+	}
+	var zero dt.Reference
+	return zero
+}

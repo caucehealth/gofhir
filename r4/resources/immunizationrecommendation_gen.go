@@ -370,3 +370,111 @@ func (v *ImmunizationRecommendationRecommendationDose) UnmarshalJSON(data []byte
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *ImmunizationRecommendation) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *ImmunizationRecommendation) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *ImmunizationRecommendation) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *ImmunizationRecommendation) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *ImmunizationRecommendation) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *ImmunizationRecommendation) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *ImmunizationRecommendation) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *ImmunizationRecommendation) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *ImmunizationRecommendation) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetAuthority returns the authority field value, or the zero value if nil.
+func (r *ImmunizationRecommendation) GetAuthority() dt.Reference {
+	if r.Authority != nil {
+		return *r.Authority
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *ImmunizationRecommendation) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetPatient returns the patient field value.
+func (r *ImmunizationRecommendation) GetPatient() dt.Reference {
+	return r.Patient
+}
+
+// GetRecommendation returns the recommendation field value, or an empty slice if nil.
+func (r *ImmunizationRecommendation) GetRecommendation() []ImmunizationRecommendationRecommendation {
+	if r.Recommendation != nil {
+		return r.Recommendation
+	}
+	return nil
+}

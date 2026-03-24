@@ -552,3 +552,238 @@ func (v *ClinicalImpressionEffective) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *ClinicalImpression) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *ClinicalImpression) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *ClinicalImpression) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *ClinicalImpression) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *ClinicalImpression) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *ClinicalImpression) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *ClinicalImpression) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *ClinicalImpression) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *ClinicalImpression) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *ClinicalImpression) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetAssessor returns the assessor field value, or the zero value if nil.
+func (r *ClinicalImpression) GetAssessor() dt.Reference {
+	if r.Assessor != nil {
+		return *r.Assessor
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetCode returns the code field value, or the zero value if nil.
+func (r *ClinicalImpression) GetCode() dt.CodeableConcept {
+	if r.Code != nil {
+		return *r.Code
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *ClinicalImpression) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *ClinicalImpression) GetDescription() string {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero string
+	return zero
+}
+
+// GetEffective returns the effective field value, or a zero-value if nil.
+func (r *ClinicalImpression) GetEffective() ClinicalImpressionEffective {
+	if r.Effective != nil {
+		return *r.Effective
+	}
+	return ClinicalImpressionEffective{}
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *ClinicalImpression) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetFinding returns the finding field value, or an empty slice if nil.
+func (r *ClinicalImpression) GetFinding() []ClinicalImpressionFinding {
+	if r.Finding != nil {
+		return r.Finding
+	}
+	return nil
+}
+
+// GetInvestigation returns the investigation field value, or an empty slice if nil.
+func (r *ClinicalImpression) GetInvestigation() []ClinicalImpressionInvestigation {
+	if r.Investigation != nil {
+		return r.Investigation
+	}
+	return nil
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *ClinicalImpression) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetPrevious returns the previous field value, or the zero value if nil.
+func (r *ClinicalImpression) GetPrevious() dt.Reference {
+	if r.Previous != nil {
+		return *r.Previous
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetProblem returns the problem field value, or an empty slice if nil.
+func (r *ClinicalImpression) GetProblem() []dt.Reference {
+	if r.Problem != nil {
+		return r.Problem
+	}
+	return nil
+}
+
+// GetPrognosisCodeableConcept returns the prognosisCodeableConcept field value, or an empty slice if nil.
+func (r *ClinicalImpression) GetPrognosisCodeableConcept() []dt.CodeableConcept {
+	if r.PrognosisCodeableConcept != nil {
+		return r.PrognosisCodeableConcept
+	}
+	return nil
+}
+
+// GetPrognosisReference returns the prognosisReference field value, or an empty slice if nil.
+func (r *ClinicalImpression) GetPrognosisReference() []dt.Reference {
+	if r.PrognosisReference != nil {
+		return r.PrognosisReference
+	}
+	return nil
+}
+
+// GetProtocol returns the protocol field value, or an empty slice if nil.
+func (r *ClinicalImpression) GetProtocol() []dt.URI {
+	if r.Protocol != nil {
+		return r.Protocol
+	}
+	return nil
+}
+
+// GetStatusReason returns the statusReason field value, or the zero value if nil.
+func (r *ClinicalImpression) GetStatusReason() dt.CodeableConcept {
+	if r.StatusReason != nil {
+		return *r.StatusReason
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSubject returns the subject field value.
+func (r *ClinicalImpression) GetSubject() dt.Reference {
+	return r.Subject
+}
+
+// GetSummary returns the summary field value, or the zero value if nil.
+func (r *ClinicalImpression) GetSummary() string {
+	if r.Summary != nil {
+		return *r.Summary
+	}
+	var zero string
+	return zero
+}
+
+// GetSupportingInfo returns the supportingInfo field value, or an empty slice if nil.
+func (r *ClinicalImpression) GetSupportingInfo() []dt.Reference {
+	if r.SupportingInfo != nil {
+		return r.SupportingInfo
+	}
+	return nil
+}

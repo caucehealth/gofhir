@@ -318,3 +318,169 @@ type EpisodeOfCareStatusHistory struct {
 	// Period The period during this EpisodeOfCare that the specific status applied.
 	Period dt.Period `json:"period"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *EpisodeOfCare) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *EpisodeOfCare) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *EpisodeOfCare) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *EpisodeOfCare) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *EpisodeOfCare) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *EpisodeOfCare) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *EpisodeOfCare) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *EpisodeOfCare) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *EpisodeOfCare) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *EpisodeOfCare) GetStatus() EpisodeOfCareStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero EpisodeOfCareStatus
+	return zero
+}
+
+// GetAccount returns the account field value, or an empty slice if nil.
+func (r *EpisodeOfCare) GetAccount() []dt.Reference {
+	if r.Account != nil {
+		return r.Account
+	}
+	return nil
+}
+
+// GetCareManager returns the careManager field value, or the zero value if nil.
+func (r *EpisodeOfCare) GetCareManager() dt.Reference {
+	if r.CareManager != nil {
+		return *r.CareManager
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetDiagnosis returns the diagnosis field value, or an empty slice if nil.
+func (r *EpisodeOfCare) GetDiagnosis() []EpisodeOfCareDiagnosis {
+	if r.Diagnosis != nil {
+		return r.Diagnosis
+	}
+	return nil
+}
+
+// GetManagingOrganization returns the managingOrganization field value, or the zero value if nil.
+func (r *EpisodeOfCare) GetManagingOrganization() dt.Reference {
+	if r.ManagingOrganization != nil {
+		return *r.ManagingOrganization
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPatient returns the patient field value.
+func (r *EpisodeOfCare) GetPatient() dt.Reference {
+	return r.Patient
+}
+
+// GetPeriod returns the period field value, or the zero value if nil.
+func (r *EpisodeOfCare) GetPeriod() dt.Period {
+	if r.Period != nil {
+		return *r.Period
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetReferralRequest returns the referralRequest field value, or an empty slice if nil.
+func (r *EpisodeOfCare) GetReferralRequest() []dt.Reference {
+	if r.ReferralRequest != nil {
+		return r.ReferralRequest
+	}
+	return nil
+}
+
+// GetStatusHistory returns the statusHistory field value, or an empty slice if nil.
+func (r *EpisodeOfCare) GetStatusHistory() []EpisodeOfCareStatusHistory {
+	if r.StatusHistory != nil {
+		return r.StatusHistory
+	}
+	return nil
+}
+
+// GetTeam returns the team field value, or an empty slice if nil.
+func (r *EpisodeOfCare) GetTeam() []dt.Reference {
+	if r.Team != nil {
+		return r.Team
+	}
+	return nil
+}
+
+// GetType returns the type field value, or an empty slice if nil.
+func (r *EpisodeOfCare) GetType() []dt.CodeableConcept {
+	if r.Type != nil {
+		return r.Type
+	}
+	return nil
+}

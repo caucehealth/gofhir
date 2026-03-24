@@ -565,3 +565,331 @@ func (v *ProcedureUsed) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Procedure) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Procedure) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Procedure) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Procedure) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Procedure) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Procedure) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Procedure) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Procedure) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Procedure) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Procedure) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetAsserter returns the asserter field value, or the zero value if nil.
+func (r *Procedure) GetAsserter() dt.Reference {
+	if r.Asserter != nil {
+		return *r.Asserter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetBasedOn returns the basedOn field value, or an empty slice if nil.
+func (r *Procedure) GetBasedOn() []dt.Reference {
+	if r.BasedOn != nil {
+		return r.BasedOn
+	}
+	return nil
+}
+
+// GetBodySite returns the bodySite field value, or an empty slice if nil.
+func (r *Procedure) GetBodySite() []dt.CodeableConcept {
+	if r.BodySite != nil {
+		return r.BodySite
+	}
+	return nil
+}
+
+// GetCategory returns the category field value, or the zero value if nil.
+func (r *Procedure) GetCategory() dt.CodeableConcept {
+	if r.Category != nil {
+		return *r.Category
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetCode returns the code field value, or the zero value if nil.
+func (r *Procedure) GetCode() dt.CodeableConcept {
+	if r.Code != nil {
+		return *r.Code
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetComplication returns the complication field value, or an empty slice if nil.
+func (r *Procedure) GetComplication() []dt.CodeableConcept {
+	if r.Complication != nil {
+		return r.Complication
+	}
+	return nil
+}
+
+// GetComplicationDetail returns the complicationDetail field value, or an empty slice if nil.
+func (r *Procedure) GetComplicationDetail() []dt.Reference {
+	if r.ComplicationDetail != nil {
+		return r.ComplicationDetail
+	}
+	return nil
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *Procedure) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetFocalDevice returns the focalDevice field value, or an empty slice if nil.
+func (r *Procedure) GetFocalDevice() []ProcedureFocalDevice {
+	if r.FocalDevice != nil {
+		return r.FocalDevice
+	}
+	return nil
+}
+
+// GetFollowUp returns the followUp field value, or an empty slice if nil.
+func (r *Procedure) GetFollowUp() []dt.CodeableConcept {
+	if r.FollowUp != nil {
+		return r.FollowUp
+	}
+	return nil
+}
+
+// GetInstantiatesCanonical returns the instantiatesCanonical field value, or an empty slice if nil.
+func (r *Procedure) GetInstantiatesCanonical() []dt.Canonical {
+	if r.InstantiatesCanonical != nil {
+		return r.InstantiatesCanonical
+	}
+	return nil
+}
+
+// GetInstantiatesUri returns the instantiatesUri field value, or an empty slice if nil.
+func (r *Procedure) GetInstantiatesUri() []dt.URI {
+	if r.InstantiatesUri != nil {
+		return r.InstantiatesUri
+	}
+	return nil
+}
+
+// GetLocation returns the location field value, or the zero value if nil.
+func (r *Procedure) GetLocation() dt.Reference {
+	if r.Location != nil {
+		return *r.Location
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *Procedure) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetOutcome returns the outcome field value, or the zero value if nil.
+func (r *Procedure) GetOutcome() dt.CodeableConcept {
+	if r.Outcome != nil {
+		return *r.Outcome
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetPartOf returns the partOf field value, or an empty slice if nil.
+func (r *Procedure) GetPartOf() []dt.Reference {
+	if r.PartOf != nil {
+		return r.PartOf
+	}
+	return nil
+}
+
+// GetPerformedAge returns the performedAge field value, or the zero value if nil.
+func (r *Procedure) GetPerformedAge() dt.Age {
+	if r.PerformedAge != nil {
+		return *r.PerformedAge
+	}
+	var zero dt.Age
+	return zero
+}
+
+// GetPerformedDateTime returns the performedDateTime field value, or the zero value if nil.
+func (r *Procedure) GetPerformedDateTime() string {
+	if r.PerformedDateTime != nil {
+		return *r.PerformedDateTime
+	}
+	var zero string
+	return zero
+}
+
+// GetPerformedPeriod returns the performedPeriod field value, or the zero value if nil.
+func (r *Procedure) GetPerformedPeriod() dt.Period {
+	if r.PerformedPeriod != nil {
+		return *r.PerformedPeriod
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetPerformedRange returns the performedRange field value, or the zero value if nil.
+func (r *Procedure) GetPerformedRange() dt.Range {
+	if r.PerformedRange != nil {
+		return *r.PerformedRange
+	}
+	var zero dt.Range
+	return zero
+}
+
+// GetPerformedString returns the performedString field value, or the zero value if nil.
+func (r *Procedure) GetPerformedString() string {
+	if r.PerformedString != nil {
+		return *r.PerformedString
+	}
+	var zero string
+	return zero
+}
+
+// GetPerformer returns the performer field value, or an empty slice if nil.
+func (r *Procedure) GetPerformer() []ProcedurePerformer {
+	if r.Performer != nil {
+		return r.Performer
+	}
+	return nil
+}
+
+// GetReasonCode returns the reasonCode field value, or an empty slice if nil.
+func (r *Procedure) GetReasonCode() []dt.CodeableConcept {
+	if r.ReasonCode != nil {
+		return r.ReasonCode
+	}
+	return nil
+}
+
+// GetReasonReference returns the reasonReference field value, or an empty slice if nil.
+func (r *Procedure) GetReasonReference() []dt.Reference {
+	if r.ReasonReference != nil {
+		return r.ReasonReference
+	}
+	return nil
+}
+
+// GetRecorder returns the recorder field value, or the zero value if nil.
+func (r *Procedure) GetRecorder() dt.Reference {
+	if r.Recorder != nil {
+		return *r.Recorder
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetReport returns the report field value, or an empty slice if nil.
+func (r *Procedure) GetReport() []dt.Reference {
+	if r.Report != nil {
+		return r.Report
+	}
+	return nil
+}
+
+// GetStatusReason returns the statusReason field value, or the zero value if nil.
+func (r *Procedure) GetStatusReason() dt.CodeableConcept {
+	if r.StatusReason != nil {
+		return *r.StatusReason
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSubject returns the subject field value.
+func (r *Procedure) GetSubject() dt.Reference {
+	return r.Subject
+}
+
+// GetUsed returns the used field value, or a zero-value if nil.
+func (r *Procedure) GetUsed() ProcedureUsed {
+	if r.Used != nil {
+		return *r.Used
+	}
+	return ProcedureUsed{}
+}

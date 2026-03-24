@@ -318,3 +318,165 @@ type ProvenanceEntity struct {
 	// What Identity of the  Entity used. May be a logical or physical uri and maybe absolute or relative.
 	What dt.Reference `json:"what"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Provenance) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Provenance) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Provenance) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Provenance) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Provenance) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Provenance) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Provenance) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Provenance) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetActivity returns the activity field value, or the zero value if nil.
+func (r *Provenance) GetActivity() dt.CodeableConcept {
+	if r.Activity != nil {
+		return *r.Activity
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetAgent returns the agent field value, or an empty slice if nil.
+func (r *Provenance) GetAgent() []ProvenanceAgent {
+	if r.Agent != nil {
+		return r.Agent
+	}
+	return nil
+}
+
+// GetEntity returns the entity field value, or an empty slice if nil.
+func (r *Provenance) GetEntity() []ProvenanceEntity {
+	if r.Entity != nil {
+		return r.Entity
+	}
+	return nil
+}
+
+// GetLocation returns the location field value, or the zero value if nil.
+func (r *Provenance) GetLocation() dt.Reference {
+	if r.Location != nil {
+		return *r.Location
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetOccurredDateTime returns the occurredDateTime field value, or the zero value if nil.
+func (r *Provenance) GetOccurredDateTime() string {
+	if r.OccurredDateTime != nil {
+		return *r.OccurredDateTime
+	}
+	var zero string
+	return zero
+}
+
+// GetOccurredPeriod returns the occurredPeriod field value, or the zero value if nil.
+func (r *Provenance) GetOccurredPeriod() dt.Period {
+	if r.OccurredPeriod != nil {
+		return *r.OccurredPeriod
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetPolicy returns the policy field value, or an empty slice if nil.
+func (r *Provenance) GetPolicy() []dt.URI {
+	if r.Policy != nil {
+		return r.Policy
+	}
+	return nil
+}
+
+// GetReason returns the reason field value, or an empty slice if nil.
+func (r *Provenance) GetReason() []dt.CodeableConcept {
+	if r.Reason != nil {
+		return r.Reason
+	}
+	return nil
+}
+
+// GetRecorded returns the recorded field value, or the zero value if nil.
+func (r *Provenance) GetRecorded() dt.Instant {
+	if r.Recorded != nil {
+		return *r.Recorded
+	}
+	var zero dt.Instant
+	return zero
+}
+
+// GetSignature returns the signature field value, or an empty slice if nil.
+func (r *Provenance) GetSignature() []dt.Signature {
+	if r.Signature != nil {
+		return r.Signature
+	}
+	return nil
+}
+
+// GetTarget returns the target field value, or an empty slice if nil.
+func (r *Provenance) GetTarget() []dt.Reference {
+	if r.Target != nil {
+		return r.Target
+	}
+	return nil
+}

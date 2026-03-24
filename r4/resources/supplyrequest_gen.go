@@ -602,3 +602,196 @@ func (v *SupplyRequestOccurrence) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *SupplyRequest) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *SupplyRequest) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *SupplyRequest) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *SupplyRequest) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *SupplyRequest) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *SupplyRequest) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *SupplyRequest) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *SupplyRequest) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *SupplyRequest) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *SupplyRequest) GetStatus() SupplyRequestStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero SupplyRequestStatus
+	return zero
+}
+
+// GetAuthoredOn returns the authoredOn field value, or the zero value if nil.
+func (r *SupplyRequest) GetAuthoredOn() dt.DateTime {
+	if r.AuthoredOn != nil {
+		return *r.AuthoredOn
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetCategory returns the category field value, or the zero value if nil.
+func (r *SupplyRequest) GetCategory() dt.CodeableConcept {
+	if r.Category != nil {
+		return *r.Category
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetDeliverFrom returns the deliverFrom field value, or the zero value if nil.
+func (r *SupplyRequest) GetDeliverFrom() dt.Reference {
+	if r.DeliverFrom != nil {
+		return *r.DeliverFrom
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetDeliverTo returns the deliverTo field value, or the zero value if nil.
+func (r *SupplyRequest) GetDeliverTo() dt.Reference {
+	if r.DeliverTo != nil {
+		return *r.DeliverTo
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetItem returns the item field value, or a zero-value if nil.
+func (r *SupplyRequest) GetItem() SupplyRequestItem {
+	if r.Item != nil {
+		return *r.Item
+	}
+	return SupplyRequestItem{}
+}
+
+// GetOccurrence returns the occurrence field value, or a zero-value if nil.
+func (r *SupplyRequest) GetOccurrence() SupplyRequestOccurrence {
+	if r.Occurrence != nil {
+		return *r.Occurrence
+	}
+	return SupplyRequestOccurrence{}
+}
+
+// GetParameter returns the parameter field value, or an empty slice if nil.
+func (r *SupplyRequest) GetParameter() []SupplyRequestParameter {
+	if r.Parameter != nil {
+		return r.Parameter
+	}
+	return nil
+}
+
+// GetPriority returns the priority field value, or the zero value if nil.
+func (r *SupplyRequest) GetPriority() dt.Code {
+	if r.Priority != nil {
+		return *r.Priority
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetQuantity returns the quantity field value.
+func (r *SupplyRequest) GetQuantity() dt.Quantity {
+	return r.Quantity
+}
+
+// GetReasonCode returns the reasonCode field value, or an empty slice if nil.
+func (r *SupplyRequest) GetReasonCode() []dt.CodeableConcept {
+	if r.ReasonCode != nil {
+		return r.ReasonCode
+	}
+	return nil
+}
+
+// GetReasonReference returns the reasonReference field value, or an empty slice if nil.
+func (r *SupplyRequest) GetReasonReference() []dt.Reference {
+	if r.ReasonReference != nil {
+		return r.ReasonReference
+	}
+	return nil
+}
+
+// GetRequester returns the requester field value, or the zero value if nil.
+func (r *SupplyRequest) GetRequester() dt.Reference {
+	if r.Requester != nil {
+		return *r.Requester
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetSupplier returns the supplier field value, or an empty slice if nil.
+func (r *SupplyRequest) GetSupplier() []dt.Reference {
+	if r.Supplier != nil {
+		return r.Supplier
+	}
+	return nil
+}

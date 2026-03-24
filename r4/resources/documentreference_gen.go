@@ -382,3 +382,210 @@ type DocumentReferenceRelatesTo struct {
 	// Target The target document of this relationship.
 	Target dt.Reference `json:"target"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *DocumentReference) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *DocumentReference) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *DocumentReference) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *DocumentReference) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *DocumentReference) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *DocumentReference) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *DocumentReference) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *DocumentReference) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *DocumentReference) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *DocumentReference) GetStatus() DocumentReferenceStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero DocumentReferenceStatus
+	return zero
+}
+
+// GetAuthenticator returns the authenticator field value, or the zero value if nil.
+func (r *DocumentReference) GetAuthenticator() dt.Reference {
+	if r.Authenticator != nil {
+		return *r.Authenticator
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetAuthor returns the author field value, or an empty slice if nil.
+func (r *DocumentReference) GetAuthor() []dt.Reference {
+	if r.Author != nil {
+		return r.Author
+	}
+	return nil
+}
+
+// GetCategory returns the category field value, or an empty slice if nil.
+func (r *DocumentReference) GetCategory() []dt.CodeableConcept {
+	if r.Category != nil {
+		return r.Category
+	}
+	return nil
+}
+
+// GetContent returns the content field value, or an empty slice if nil.
+func (r *DocumentReference) GetContent() []DocumentReferenceContent {
+	if r.Content != nil {
+		return r.Content
+	}
+	return nil
+}
+
+// GetContext returns the context field value, or the zero value if nil.
+func (r *DocumentReference) GetContext() DocumentReferenceContext {
+	if r.Context != nil {
+		return *r.Context
+	}
+	var zero DocumentReferenceContext
+	return zero
+}
+
+// GetCustodian returns the custodian field value, or the zero value if nil.
+func (r *DocumentReference) GetCustodian() dt.Reference {
+	if r.Custodian != nil {
+		return *r.Custodian
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *DocumentReference) GetDate() dt.Instant {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.Instant
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *DocumentReference) GetDescription() string {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero string
+	return zero
+}
+
+// GetDocStatus returns the docStatus field value, or the zero value if nil.
+func (r *DocumentReference) GetDocStatus() dt.Code {
+	if r.DocStatus != nil {
+		return *r.DocStatus
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetMasterIdentifier returns the masterIdentifier field value, or the zero value if nil.
+func (r *DocumentReference) GetMasterIdentifier() dt.Identifier {
+	if r.MasterIdentifier != nil {
+		return *r.MasterIdentifier
+	}
+	var zero dt.Identifier
+	return zero
+}
+
+// GetRelatesTo returns the relatesTo field value, or an empty slice if nil.
+func (r *DocumentReference) GetRelatesTo() []DocumentReferenceRelatesTo {
+	if r.RelatesTo != nil {
+		return r.RelatesTo
+	}
+	return nil
+}
+
+// GetSecurityLabel returns the securityLabel field value, or an empty slice if nil.
+func (r *DocumentReference) GetSecurityLabel() []dt.CodeableConcept {
+	if r.SecurityLabel != nil {
+		return r.SecurityLabel
+	}
+	return nil
+}
+
+// GetSubject returns the subject field value, or the zero value if nil.
+func (r *DocumentReference) GetSubject() dt.Reference {
+	if r.Subject != nil {
+		return *r.Subject
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *DocumentReference) GetType() dt.CodeableConcept {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero dt.CodeableConcept
+	return zero
+}

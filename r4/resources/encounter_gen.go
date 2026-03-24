@@ -508,3 +508,262 @@ type EncounterStatusHistory struct {
 	// Period The time that the episode was in the specified status.
 	Period dt.Period `json:"period"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Encounter) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Encounter) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Encounter) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Encounter) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Encounter) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Encounter) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Encounter) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Encounter) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Encounter) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Encounter) GetStatus() EncounterStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero EncounterStatus
+	return zero
+}
+
+// GetAccount returns the account field value, or an empty slice if nil.
+func (r *Encounter) GetAccount() []dt.Reference {
+	if r.Account != nil {
+		return r.Account
+	}
+	return nil
+}
+
+// GetAppointment returns the appointment field value, or an empty slice if nil.
+func (r *Encounter) GetAppointment() []dt.Reference {
+	if r.Appointment != nil {
+		return r.Appointment
+	}
+	return nil
+}
+
+// GetBasedOn returns the basedOn field value, or an empty slice if nil.
+func (r *Encounter) GetBasedOn() []dt.Reference {
+	if r.BasedOn != nil {
+		return r.BasedOn
+	}
+	return nil
+}
+
+// GetClass returns the class field value.
+func (r *Encounter) GetClass() dt.Coding {
+	return r.Class
+}
+
+// GetClassHistory returns the classHistory field value, or an empty slice if nil.
+func (r *Encounter) GetClassHistory() []EncounterClassHistory {
+	if r.ClassHistory != nil {
+		return r.ClassHistory
+	}
+	return nil
+}
+
+// GetDiagnosis returns the diagnosis field value, or an empty slice if nil.
+func (r *Encounter) GetDiagnosis() []EncounterDiagnosis {
+	if r.Diagnosis != nil {
+		return r.Diagnosis
+	}
+	return nil
+}
+
+// GetEpisodeOfCare returns the episodeOfCare field value, or an empty slice if nil.
+func (r *Encounter) GetEpisodeOfCare() []dt.Reference {
+	if r.EpisodeOfCare != nil {
+		return r.EpisodeOfCare
+	}
+	return nil
+}
+
+// GetHospitalization returns the hospitalization field value, or the zero value if nil.
+func (r *Encounter) GetHospitalization() EncounterHospitalization {
+	if r.Hospitalization != nil {
+		return *r.Hospitalization
+	}
+	var zero EncounterHospitalization
+	return zero
+}
+
+// GetLength returns the length field value, or the zero value if nil.
+func (r *Encounter) GetLength() dt.Duration {
+	if r.Length != nil {
+		return *r.Length
+	}
+	var zero dt.Duration
+	return zero
+}
+
+// GetLocation returns the location field value, or an empty slice if nil.
+func (r *Encounter) GetLocation() []EncounterLocation {
+	if r.Location != nil {
+		return r.Location
+	}
+	return nil
+}
+
+// GetPartOf returns the partOf field value, or the zero value if nil.
+func (r *Encounter) GetPartOf() dt.Reference {
+	if r.PartOf != nil {
+		return *r.PartOf
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetParticipant returns the participant field value, or an empty slice if nil.
+func (r *Encounter) GetParticipant() []EncounterParticipant {
+	if r.Participant != nil {
+		return r.Participant
+	}
+	return nil
+}
+
+// GetPeriod returns the period field value, or the zero value if nil.
+func (r *Encounter) GetPeriod() dt.Period {
+	if r.Period != nil {
+		return *r.Period
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetPriority returns the priority field value, or the zero value if nil.
+func (r *Encounter) GetPriority() dt.CodeableConcept {
+	if r.Priority != nil {
+		return *r.Priority
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetReasonCode returns the reasonCode field value, or an empty slice if nil.
+func (r *Encounter) GetReasonCode() []dt.CodeableConcept {
+	if r.ReasonCode != nil {
+		return r.ReasonCode
+	}
+	return nil
+}
+
+// GetReasonReference returns the reasonReference field value, or an empty slice if nil.
+func (r *Encounter) GetReasonReference() []dt.Reference {
+	if r.ReasonReference != nil {
+		return r.ReasonReference
+	}
+	return nil
+}
+
+// GetServiceProvider returns the serviceProvider field value, or the zero value if nil.
+func (r *Encounter) GetServiceProvider() dt.Reference {
+	if r.ServiceProvider != nil {
+		return *r.ServiceProvider
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetServiceType returns the serviceType field value, or the zero value if nil.
+func (r *Encounter) GetServiceType() dt.CodeableConcept {
+	if r.ServiceType != nil {
+		return *r.ServiceType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetStatusHistory returns the statusHistory field value, or an empty slice if nil.
+func (r *Encounter) GetStatusHistory() []EncounterStatusHistory {
+	if r.StatusHistory != nil {
+		return r.StatusHistory
+	}
+	return nil
+}
+
+// GetSubject returns the subject field value, or the zero value if nil.
+func (r *Encounter) GetSubject() dt.Reference {
+	if r.Subject != nil {
+		return *r.Subject
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetType returns the type field value, or an empty slice if nil.
+func (r *Encounter) GetType() []dt.CodeableConcept {
+	if r.Type != nil {
+		return r.Type
+	}
+	return nil
+}

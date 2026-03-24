@@ -271,3 +271,130 @@ type SubscriptionChannel struct {
 	// TypeElement contains element extensions for type.
 	TypeElement *dt.Element `json:"_type,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Subscription) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Subscription) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Subscription) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Subscription) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Subscription) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Subscription) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Subscription) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Subscription) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Subscription) GetStatus() SubscriptionStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero SubscriptionStatus
+	return zero
+}
+
+// GetChannel returns the channel field value.
+func (r *Subscription) GetChannel() SubscriptionChannel {
+	return r.Channel
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *Subscription) GetContact() []dt.ContactPoint {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetCriteria returns the criteria field value, or the zero value if nil.
+func (r *Subscription) GetCriteria() string {
+	if r.Criteria != nil {
+		return *r.Criteria
+	}
+	var zero string
+	return zero
+}
+
+// GetEnd returns the end field value, or the zero value if nil.
+func (r *Subscription) GetEnd() dt.Instant {
+	if r.End != nil {
+		return *r.End
+	}
+	var zero dt.Instant
+	return zero
+}
+
+// GetError returns the error field value, or the zero value if nil.
+func (r *Subscription) GetError() string {
+	if r.Error != nil {
+		return *r.Error
+	}
+	var zero string
+	return zero
+}
+
+// GetReason returns the reason field value, or the zero value if nil.
+func (r *Subscription) GetReason() string {
+	if r.Reason != nil {
+		return *r.Reason
+	}
+	var zero string
+	return zero
+}

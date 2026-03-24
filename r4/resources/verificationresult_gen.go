@@ -380,3 +380,193 @@ type VerificationResultValidator struct {
 	// Organization Reference to the organization validating information.
 	Organization dt.Reference `json:"organization"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *VerificationResult) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *VerificationResult) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *VerificationResult) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *VerificationResult) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *VerificationResult) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *VerificationResult) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *VerificationResult) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *VerificationResult) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *VerificationResult) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetAttestation returns the attestation field value, or the zero value if nil.
+func (r *VerificationResult) GetAttestation() VerificationResultAttestation {
+	if r.Attestation != nil {
+		return *r.Attestation
+	}
+	var zero VerificationResultAttestation
+	return zero
+}
+
+// GetFailureAction returns the failureAction field value, or the zero value if nil.
+func (r *VerificationResult) GetFailureAction() dt.CodeableConcept {
+	if r.FailureAction != nil {
+		return *r.FailureAction
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetFrequency returns the frequency field value, or the zero value if nil.
+func (r *VerificationResult) GetFrequency() dt.Timing {
+	if r.Frequency != nil {
+		return *r.Frequency
+	}
+	var zero dt.Timing
+	return zero
+}
+
+// GetLastPerformed returns the lastPerformed field value, or the zero value if nil.
+func (r *VerificationResult) GetLastPerformed() dt.DateTime {
+	if r.LastPerformed != nil {
+		return *r.LastPerformed
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetNeed returns the need field value, or the zero value if nil.
+func (r *VerificationResult) GetNeed() dt.CodeableConcept {
+	if r.Need != nil {
+		return *r.Need
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetNextScheduled returns the nextScheduled field value, or the zero value if nil.
+func (r *VerificationResult) GetNextScheduled() dt.Date {
+	if r.NextScheduled != nil {
+		return *r.NextScheduled
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetPrimarySource returns the primarySource field value, or an empty slice if nil.
+func (r *VerificationResult) GetPrimarySource() []VerificationResultPrimarySource {
+	if r.PrimarySource != nil {
+		return r.PrimarySource
+	}
+	return nil
+}
+
+// GetStatusDate returns the statusDate field value, or the zero value if nil.
+func (r *VerificationResult) GetStatusDate() dt.DateTime {
+	if r.StatusDate != nil {
+		return *r.StatusDate
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetTarget returns the target field value, or an empty slice if nil.
+func (r *VerificationResult) GetTarget() []dt.Reference {
+	if r.Target != nil {
+		return r.Target
+	}
+	return nil
+}
+
+// GetTargetLocation returns the targetLocation field value, or an empty slice if nil.
+func (r *VerificationResult) GetTargetLocation() []string {
+	if r.TargetLocation != nil {
+		return r.TargetLocation
+	}
+	return nil
+}
+
+// GetValidationProcess returns the validationProcess field value, or an empty slice if nil.
+func (r *VerificationResult) GetValidationProcess() []dt.CodeableConcept {
+	if r.ValidationProcess != nil {
+		return r.ValidationProcess
+	}
+	return nil
+}
+
+// GetValidationType returns the validationType field value, or the zero value if nil.
+func (r *VerificationResult) GetValidationType() dt.CodeableConcept {
+	if r.ValidationType != nil {
+		return *r.ValidationType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetValidator returns the validator field value, or an empty slice if nil.
+func (r *VerificationResult) GetValidator() []VerificationResultValidator {
+	if r.Validator != nil {
+		return r.Validator
+	}
+	return nil
+}

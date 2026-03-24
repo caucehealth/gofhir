@@ -374,3 +374,210 @@ type GoalTarget struct {
 	// Measure The parameter whose value is being tracked, e.g. body weight, blood pressure, or hemoglobin A1c level.
 	Measure *dt.CodeableConcept `json:"measure,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Goal) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Goal) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Goal) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Goal) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Goal) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Goal) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Goal) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Goal) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Goal) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetAchievementStatus returns the achievementStatus field value, or the zero value if nil.
+func (r *Goal) GetAchievementStatus() dt.CodeableConcept {
+	if r.AchievementStatus != nil {
+		return *r.AchievementStatus
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetAddresses returns the addresses field value, or an empty slice if nil.
+func (r *Goal) GetAddresses() []dt.Reference {
+	if r.Addresses != nil {
+		return r.Addresses
+	}
+	return nil
+}
+
+// GetCategory returns the category field value, or an empty slice if nil.
+func (r *Goal) GetCategory() []dt.CodeableConcept {
+	if r.Category != nil {
+		return r.Category
+	}
+	return nil
+}
+
+// GetDescription returns the description field value.
+func (r *Goal) GetDescription() dt.CodeableConcept {
+	return r.Description
+}
+
+// GetExpressedBy returns the expressedBy field value, or the zero value if nil.
+func (r *Goal) GetExpressedBy() dt.Reference {
+	if r.ExpressedBy != nil {
+		return *r.ExpressedBy
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetLifecycleStatus returns the lifecycleStatus field value, or the zero value if nil.
+func (r *Goal) GetLifecycleStatus() GoalLifecycleStatus {
+	if r.LifecycleStatus != nil {
+		return *r.LifecycleStatus
+	}
+	var zero GoalLifecycleStatus
+	return zero
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *Goal) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetOutcomeCode returns the outcomeCode field value, or an empty slice if nil.
+func (r *Goal) GetOutcomeCode() []dt.CodeableConcept {
+	if r.OutcomeCode != nil {
+		return r.OutcomeCode
+	}
+	return nil
+}
+
+// GetOutcomeReference returns the outcomeReference field value, or an empty slice if nil.
+func (r *Goal) GetOutcomeReference() []dt.Reference {
+	if r.OutcomeReference != nil {
+		return r.OutcomeReference
+	}
+	return nil
+}
+
+// GetPriority returns the priority field value, or the zero value if nil.
+func (r *Goal) GetPriority() dt.CodeableConcept {
+	if r.Priority != nil {
+		return *r.Priority
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetStartCodeableConcept returns the startCodeableConcept field value, or the zero value if nil.
+func (r *Goal) GetStartCodeableConcept() dt.CodeableConcept {
+	if r.StartCodeableConcept != nil {
+		return *r.StartCodeableConcept
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetStartDate returns the startDate field value, or the zero value if nil.
+func (r *Goal) GetStartDate() string {
+	if r.StartDate != nil {
+		return *r.StartDate
+	}
+	var zero string
+	return zero
+}
+
+// GetStatusDate returns the statusDate field value, or the zero value if nil.
+func (r *Goal) GetStatusDate() dt.Date {
+	if r.StatusDate != nil {
+		return *r.StatusDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetStatusReason returns the statusReason field value, or the zero value if nil.
+func (r *Goal) GetStatusReason() string {
+	if r.StatusReason != nil {
+		return *r.StatusReason
+	}
+	var zero string
+	return zero
+}
+
+// GetSubject returns the subject field value.
+func (r *Goal) GetSubject() dt.Reference {
+	return r.Subject
+}
+
+// GetTarget returns the target field value, or an empty slice if nil.
+func (r *Goal) GetTarget() []GoalTarget {
+	if r.Target != nil {
+		return r.Target
+	}
+	return nil
+}

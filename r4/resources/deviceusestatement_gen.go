@@ -387,3 +387,174 @@ func (v *DeviceUseStatementTiming) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *DeviceUseStatement) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *DeviceUseStatement) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *DeviceUseStatement) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *DeviceUseStatement) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *DeviceUseStatement) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *DeviceUseStatement) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *DeviceUseStatement) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *DeviceUseStatement) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *DeviceUseStatement) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *DeviceUseStatement) GetStatus() DeviceUseStatementStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero DeviceUseStatementStatus
+	return zero
+}
+
+// GetBasedOn returns the basedOn field value, or an empty slice if nil.
+func (r *DeviceUseStatement) GetBasedOn() []dt.Reference {
+	if r.BasedOn != nil {
+		return r.BasedOn
+	}
+	return nil
+}
+
+// GetBodySite returns the bodySite field value, or the zero value if nil.
+func (r *DeviceUseStatement) GetBodySite() dt.CodeableConcept {
+	if r.BodySite != nil {
+		return *r.BodySite
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetDerivedFrom returns the derivedFrom field value, or an empty slice if nil.
+func (r *DeviceUseStatement) GetDerivedFrom() []dt.Reference {
+	if r.DerivedFrom != nil {
+		return r.DerivedFrom
+	}
+	return nil
+}
+
+// GetDevice returns the device field value.
+func (r *DeviceUseStatement) GetDevice() dt.Reference {
+	return r.Device
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *DeviceUseStatement) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetReasonCode returns the reasonCode field value, or an empty slice if nil.
+func (r *DeviceUseStatement) GetReasonCode() []dt.CodeableConcept {
+	if r.ReasonCode != nil {
+		return r.ReasonCode
+	}
+	return nil
+}
+
+// GetReasonReference returns the reasonReference field value, or an empty slice if nil.
+func (r *DeviceUseStatement) GetReasonReference() []dt.Reference {
+	if r.ReasonReference != nil {
+		return r.ReasonReference
+	}
+	return nil
+}
+
+// GetRecordedOn returns the recordedOn field value, or the zero value if nil.
+func (r *DeviceUseStatement) GetRecordedOn() dt.DateTime {
+	if r.RecordedOn != nil {
+		return *r.RecordedOn
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetSource returns the source field value, or the zero value if nil.
+func (r *DeviceUseStatement) GetSource() dt.Reference {
+	if r.Source != nil {
+		return *r.Source
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetSubject returns the subject field value.
+func (r *DeviceUseStatement) GetSubject() dt.Reference {
+	return r.Subject
+}
+
+// GetTiming returns the timing field value, or a zero-value if nil.
+func (r *DeviceUseStatement) GetTiming() DeviceUseStatementTiming {
+	if r.Timing != nil {
+		return *r.Timing
+	}
+	return DeviceUseStatementTiming{}
+}

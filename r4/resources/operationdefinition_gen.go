@@ -548,3 +548,300 @@ type OperationDefinitionReferencedFrom struct {
 	// SourceIdElement contains element extensions for sourceId.
 	SourceIdElement *dt.Element `json:"_sourceId,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *OperationDefinition) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *OperationDefinition) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *OperationDefinition) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *OperationDefinition) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *OperationDefinition) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *OperationDefinition) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *OperationDefinition) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *OperationDefinition) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *OperationDefinition) GetStatus() OperationDefinitionStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero OperationDefinitionStatus
+	return zero
+}
+
+// GetAffectsState returns the affectsState field value, or the zero value if nil.
+func (r *OperationDefinition) GetAffectsState() bool {
+	if r.AffectsState != nil {
+		return *r.AffectsState
+	}
+	var zero bool
+	return zero
+}
+
+// GetBase returns the base field value, or the zero value if nil.
+func (r *OperationDefinition) GetBase() dt.Canonical {
+	if r.Base != nil {
+		return *r.Base
+	}
+	var zero dt.Canonical
+	return zero
+}
+
+// GetCode returns the code field value, or the zero value if nil.
+func (r *OperationDefinition) GetCode() dt.Code {
+	if r.Code != nil {
+		return *r.Code
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetComment returns the comment field value, or the zero value if nil.
+func (r *OperationDefinition) GetComment() dt.Markdown {
+	if r.Comment != nil {
+		return *r.Comment
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *OperationDefinition) GetContact() []dt.ContactDetail {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *OperationDefinition) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *OperationDefinition) GetDescription() dt.Markdown {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetExperimental returns the experimental field value, or the zero value if nil.
+func (r *OperationDefinition) GetExperimental() bool {
+	if r.Experimental != nil {
+		return *r.Experimental
+	}
+	var zero bool
+	return zero
+}
+
+// GetInputProfile returns the inputProfile field value, or the zero value if nil.
+func (r *OperationDefinition) GetInputProfile() dt.Canonical {
+	if r.InputProfile != nil {
+		return *r.InputProfile
+	}
+	var zero dt.Canonical
+	return zero
+}
+
+// GetInstance returns the instance field value, or the zero value if nil.
+func (r *OperationDefinition) GetInstance() bool {
+	if r.Instance != nil {
+		return *r.Instance
+	}
+	var zero bool
+	return zero
+}
+
+// GetJurisdiction returns the jurisdiction field value, or an empty slice if nil.
+func (r *OperationDefinition) GetJurisdiction() []dt.CodeableConcept {
+	if r.Jurisdiction != nil {
+		return r.Jurisdiction
+	}
+	return nil
+}
+
+// GetKind returns the kind field value, or the zero value if nil.
+func (r *OperationDefinition) GetKind() OperationDefinitionKind {
+	if r.Kind != nil {
+		return *r.Kind
+	}
+	var zero OperationDefinitionKind
+	return zero
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *OperationDefinition) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetOutputProfile returns the outputProfile field value, or the zero value if nil.
+func (r *OperationDefinition) GetOutputProfile() dt.Canonical {
+	if r.OutputProfile != nil {
+		return *r.OutputProfile
+	}
+	var zero dt.Canonical
+	return zero
+}
+
+// GetOverload returns the overload field value, or an empty slice if nil.
+func (r *OperationDefinition) GetOverload() []OperationDefinitionOverload {
+	if r.Overload != nil {
+		return r.Overload
+	}
+	return nil
+}
+
+// GetParameter returns the parameter field value, or an empty slice if nil.
+func (r *OperationDefinition) GetParameter() []OperationDefinitionParameter {
+	if r.Parameter != nil {
+		return r.Parameter
+	}
+	return nil
+}
+
+// GetPublisher returns the publisher field value, or the zero value if nil.
+func (r *OperationDefinition) GetPublisher() string {
+	if r.Publisher != nil {
+		return *r.Publisher
+	}
+	var zero string
+	return zero
+}
+
+// GetPurpose returns the purpose field value, or the zero value if nil.
+func (r *OperationDefinition) GetPurpose() dt.Markdown {
+	if r.Purpose != nil {
+		return *r.Purpose
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetResource returns the resource field value, or an empty slice if nil.
+func (r *OperationDefinition) GetResource() []dt.Code {
+	if r.Resource != nil {
+		return r.Resource
+	}
+	return nil
+}
+
+// GetSystem returns the system field value, or the zero value if nil.
+func (r *OperationDefinition) GetSystem() bool {
+	if r.System != nil {
+		return *r.System
+	}
+	var zero bool
+	return zero
+}
+
+// GetTitle returns the title field value, or the zero value if nil.
+func (r *OperationDefinition) GetTitle() string {
+	if r.Title != nil {
+		return *r.Title
+	}
+	var zero string
+	return zero
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *OperationDefinition) GetType() bool {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero bool
+	return zero
+}
+
+// GetUrl returns the url field value, or the zero value if nil.
+func (r *OperationDefinition) GetUrl() dt.URI {
+	if r.Url != nil {
+		return *r.Url
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetUseContext returns the useContext field value, or an empty slice if nil.
+func (r *OperationDefinition) GetUseContext() []dt.UsageContext {
+	if r.UseContext != nil {
+		return r.UseContext
+	}
+	return nil
+}
+
+// GetVersion returns the version field value, or the zero value if nil.
+func (r *OperationDefinition) GetVersion() string {
+	if r.Version != nil {
+		return *r.Version
+	}
+	var zero string
+	return zero
+}

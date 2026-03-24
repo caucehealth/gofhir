@@ -771,6 +771,47 @@ type ActivityDefinitionParticipant struct {
 	TypeElement *dt.Element `json:"_type,omitempty"`
 }
 
+// ActivityDefinitionProduct represents a polymorphic choice type in FHIR.
+type ActivityDefinitionProduct struct {
+	CodeableConcept *dt.CodeableConcept `json:"productCodeableConcept,omitempty"` // Identifies the food, drug or other product being consumed or supplied in the activity.
+	Reference       *dt.Reference       `json:"productReference,omitempty"`       // Identifies the food, drug or other product being consumed or supplied in the activity.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ActivityDefinitionProduct.
+func (v ActivityDefinitionProduct) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.CodeableConcept != nil {
+		m["productCodeableConcept"] = v.CodeableConcept
+	}
+	if v.Reference != nil {
+		m["productReference"] = v.Reference
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ActivityDefinitionProduct.
+func (v *ActivityDefinitionProduct) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["productCodeableConcept"]; ok {
+		var val dt.CodeableConcept
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling productCodeableConcept: %w", err)
+		}
+		v.CodeableConcept = &val
+	}
+	if d, ok := raw["productReference"]; ok {
+		var val dt.Reference
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling productReference: %w", err)
+		}
+		v.Reference = &val
+	}
+	return nil
+}
+
 // ActivityDefinitionTiming represents a polymorphic choice type in FHIR.
 type ActivityDefinitionTiming struct {
 	Age      *dt.Age      `json:"timingAge,omitempty"`      // The period, timing or frequency upon which the described activity is to occur.
@@ -856,43 +897,474 @@ func (v *ActivityDefinitionTiming) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// ActivityDefinitionProduct represents a polymorphic choice type in FHIR.
-type ActivityDefinitionProduct struct {
-	CodeableConcept *dt.CodeableConcept `json:"productCodeableConcept,omitempty"` // Identifies the food, drug or other product being consumed or supplied in the activity.
-	Reference       *dt.Reference       `json:"productReference,omitempty"`       // Identifies the food, drug or other product being consumed or supplied in the activity.
+// GetId returns the id field value, or the zero value if nil.
+func (r *ActivityDefinition) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
 }
 
-// MarshalJSON implements the json.Marshaler interface for ActivityDefinitionProduct.
-func (v ActivityDefinitionProduct) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.CodeableConcept != nil {
-		m["productCodeableConcept"] = v.CodeableConcept
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *ActivityDefinition) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
 	}
-	if v.Reference != nil {
-		m["productReference"] = v.Reference
-	}
-	return json.Marshal(m)
+	var zero dt.Meta
+	return zero
 }
 
-// UnmarshalJSON implements the json.Unmarshaler interface for ActivityDefinitionProduct.
-func (v *ActivityDefinitionProduct) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *ActivityDefinition) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
 	}
-	if d, ok := raw["productCodeableConcept"]; ok {
-		var val dt.CodeableConcept
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling productCodeableConcept: %w", err)
-		}
-		v.CodeableConcept = &val
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *ActivityDefinition) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
 	}
-	if d, ok := raw["productReference"]; ok {
-		var val dt.Reference
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling productReference: %w", err)
-		}
-		v.Reference = &val
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *ActivityDefinition) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
 	}
 	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *ActivityDefinition) GetStatus() ActivityDefinitionStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero ActivityDefinitionStatus
+	return zero
+}
+
+// GetApprovalDate returns the approvalDate field value, or the zero value if nil.
+func (r *ActivityDefinition) GetApprovalDate() dt.Date {
+	if r.ApprovalDate != nil {
+		return *r.ApprovalDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetAuthor returns the author field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetAuthor() []dt.ContactDetail {
+	if r.Author != nil {
+		return r.Author
+	}
+	return nil
+}
+
+// GetBodySite returns the bodySite field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetBodySite() []dt.CodeableConcept {
+	if r.BodySite != nil {
+		return r.BodySite
+	}
+	return nil
+}
+
+// GetCode returns the code field value, or the zero value if nil.
+func (r *ActivityDefinition) GetCode() dt.CodeableConcept {
+	if r.Code != nil {
+		return *r.Code
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetContact() []dt.ContactDetail {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetCopyright returns the copyright field value, or the zero value if nil.
+func (r *ActivityDefinition) GetCopyright() dt.Markdown {
+	if r.Copyright != nil {
+		return *r.Copyright
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *ActivityDefinition) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *ActivityDefinition) GetDescription() dt.Markdown {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetDoNotPerform returns the doNotPerform field value, or the zero value if nil.
+func (r *ActivityDefinition) GetDoNotPerform() bool {
+	if r.DoNotPerform != nil {
+		return *r.DoNotPerform
+	}
+	var zero bool
+	return zero
+}
+
+// GetDosage returns the dosage field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetDosage() []dt.Dosage {
+	if r.Dosage != nil {
+		return r.Dosage
+	}
+	return nil
+}
+
+// GetDynamicValue returns the dynamicValue field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetDynamicValue() []ActivityDefinitionDynamicValue {
+	if r.DynamicValue != nil {
+		return r.DynamicValue
+	}
+	return nil
+}
+
+// GetEditor returns the editor field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetEditor() []dt.ContactDetail {
+	if r.Editor != nil {
+		return r.Editor
+	}
+	return nil
+}
+
+// GetEffectivePeriod returns the effectivePeriod field value, or the zero value if nil.
+func (r *ActivityDefinition) GetEffectivePeriod() dt.Period {
+	if r.EffectivePeriod != nil {
+		return *r.EffectivePeriod
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetEndorser returns the endorser field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetEndorser() []dt.ContactDetail {
+	if r.Endorser != nil {
+		return r.Endorser
+	}
+	return nil
+}
+
+// GetExperimental returns the experimental field value, or the zero value if nil.
+func (r *ActivityDefinition) GetExperimental() bool {
+	if r.Experimental != nil {
+		return *r.Experimental
+	}
+	var zero bool
+	return zero
+}
+
+// GetIntent returns the intent field value, or the zero value if nil.
+func (r *ActivityDefinition) GetIntent() dt.Code {
+	if r.Intent != nil {
+		return *r.Intent
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetJurisdiction returns the jurisdiction field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetJurisdiction() []dt.CodeableConcept {
+	if r.Jurisdiction != nil {
+		return r.Jurisdiction
+	}
+	return nil
+}
+
+// GetKind returns the kind field value, or the zero value if nil.
+func (r *ActivityDefinition) GetKind() dt.Code {
+	if r.Kind != nil {
+		return *r.Kind
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetLastReviewDate returns the lastReviewDate field value, or the zero value if nil.
+func (r *ActivityDefinition) GetLastReviewDate() dt.Date {
+	if r.LastReviewDate != nil {
+		return *r.LastReviewDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetLibrary returns the library field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetLibrary() []dt.Canonical {
+	if r.Library != nil {
+		return r.Library
+	}
+	return nil
+}
+
+// GetLocation returns the location field value, or the zero value if nil.
+func (r *ActivityDefinition) GetLocation() dt.Reference {
+	if r.Location != nil {
+		return *r.Location
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *ActivityDefinition) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetObservationRequirement returns the observationRequirement field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetObservationRequirement() []dt.Reference {
+	if r.ObservationRequirement != nil {
+		return r.ObservationRequirement
+	}
+	return nil
+}
+
+// GetObservationResultRequirement returns the observationResultRequirement field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetObservationResultRequirement() []dt.Reference {
+	if r.ObservationResultRequirement != nil {
+		return r.ObservationResultRequirement
+	}
+	return nil
+}
+
+// GetParticipant returns the participant field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetParticipant() []ActivityDefinitionParticipant {
+	if r.Participant != nil {
+		return r.Participant
+	}
+	return nil
+}
+
+// GetPriority returns the priority field value, or the zero value if nil.
+func (r *ActivityDefinition) GetPriority() dt.Code {
+	if r.Priority != nil {
+		return *r.Priority
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetProduct returns the product field value, or a zero-value if nil.
+func (r *ActivityDefinition) GetProduct() ActivityDefinitionProduct {
+	if r.Product != nil {
+		return *r.Product
+	}
+	return ActivityDefinitionProduct{}
+}
+
+// GetProfile returns the profile field value, or the zero value if nil.
+func (r *ActivityDefinition) GetProfile() dt.Canonical {
+	if r.Profile != nil {
+		return *r.Profile
+	}
+	var zero dt.Canonical
+	return zero
+}
+
+// GetPublisher returns the publisher field value, or the zero value if nil.
+func (r *ActivityDefinition) GetPublisher() string {
+	if r.Publisher != nil {
+		return *r.Publisher
+	}
+	var zero string
+	return zero
+}
+
+// GetPurpose returns the purpose field value, or the zero value if nil.
+func (r *ActivityDefinition) GetPurpose() dt.Markdown {
+	if r.Purpose != nil {
+		return *r.Purpose
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetQuantity returns the quantity field value, or the zero value if nil.
+func (r *ActivityDefinition) GetQuantity() dt.Quantity {
+	if r.Quantity != nil {
+		return *r.Quantity
+	}
+	var zero dt.Quantity
+	return zero
+}
+
+// GetRelatedArtifact returns the relatedArtifact field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetRelatedArtifact() []dt.RelatedArtifact {
+	if r.RelatedArtifact != nil {
+		return r.RelatedArtifact
+	}
+	return nil
+}
+
+// GetReviewer returns the reviewer field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetReviewer() []dt.ContactDetail {
+	if r.Reviewer != nil {
+		return r.Reviewer
+	}
+	return nil
+}
+
+// GetSpecimenRequirement returns the specimenRequirement field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetSpecimenRequirement() []dt.Reference {
+	if r.SpecimenRequirement != nil {
+		return r.SpecimenRequirement
+	}
+	return nil
+}
+
+// GetSubjectCodeableConcept returns the subjectCodeableConcept field value, or the zero value if nil.
+func (r *ActivityDefinition) GetSubjectCodeableConcept() dt.CodeableConcept {
+	if r.SubjectCodeableConcept != nil {
+		return *r.SubjectCodeableConcept
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSubjectReference returns the subjectReference field value, or the zero value if nil.
+func (r *ActivityDefinition) GetSubjectReference() dt.Reference {
+	if r.SubjectReference != nil {
+		return *r.SubjectReference
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetSubtitle returns the subtitle field value, or the zero value if nil.
+func (r *ActivityDefinition) GetSubtitle() string {
+	if r.Subtitle != nil {
+		return *r.Subtitle
+	}
+	var zero string
+	return zero
+}
+
+// GetTiming returns the timing field value, or a zero-value if nil.
+func (r *ActivityDefinition) GetTiming() ActivityDefinitionTiming {
+	if r.Timing != nil {
+		return *r.Timing
+	}
+	return ActivityDefinitionTiming{}
+}
+
+// GetTitle returns the title field value, or the zero value if nil.
+func (r *ActivityDefinition) GetTitle() string {
+	if r.Title != nil {
+		return *r.Title
+	}
+	var zero string
+	return zero
+}
+
+// GetTopic returns the topic field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetTopic() []dt.CodeableConcept {
+	if r.Topic != nil {
+		return r.Topic
+	}
+	return nil
+}
+
+// GetTransform returns the transform field value, or the zero value if nil.
+func (r *ActivityDefinition) GetTransform() dt.Canonical {
+	if r.Transform != nil {
+		return *r.Transform
+	}
+	var zero dt.Canonical
+	return zero
+}
+
+// GetUrl returns the url field value, or the zero value if nil.
+func (r *ActivityDefinition) GetUrl() dt.URI {
+	if r.Url != nil {
+		return *r.Url
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetUsage returns the usage field value, or the zero value if nil.
+func (r *ActivityDefinition) GetUsage() string {
+	if r.Usage != nil {
+		return *r.Usage
+	}
+	var zero string
+	return zero
+}
+
+// GetUseContext returns the useContext field value, or an empty slice if nil.
+func (r *ActivityDefinition) GetUseContext() []dt.UsageContext {
+	if r.UseContext != nil {
+		return r.UseContext
+	}
+	return nil
+}
+
+// GetVersion returns the version field value, or the zero value if nil.
+func (r *ActivityDefinition) GetVersion() string {
+	if r.Version != nil {
+		return *r.Version
+	}
+	var zero string
+	return zero
 }

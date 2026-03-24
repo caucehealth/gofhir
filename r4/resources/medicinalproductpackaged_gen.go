@@ -305,3 +305,147 @@ type MedicinalProductPackagedPackageItem struct {
 	// Type The physical type of the container of the medicine.
 	Type dt.CodeableConcept `json:"type"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *MedicinalProductPackaged) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *MedicinalProductPackaged) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *MedicinalProductPackaged) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *MedicinalProductPackaged) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *MedicinalProductPackaged) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *MedicinalProductPackaged) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *MedicinalProductPackaged) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *MedicinalProductPackaged) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *MedicinalProductPackaged) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetBatchIdentifier returns the batchIdentifier field value, or an empty slice if nil.
+func (r *MedicinalProductPackaged) GetBatchIdentifier() []MedicinalProductPackagedBatchIdentifier {
+	if r.BatchIdentifier != nil {
+		return r.BatchIdentifier
+	}
+	return nil
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *MedicinalProductPackaged) GetDescription() string {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero string
+	return zero
+}
+
+// GetLegalStatusOfSupply returns the legalStatusOfSupply field value, or the zero value if nil.
+func (r *MedicinalProductPackaged) GetLegalStatusOfSupply() dt.CodeableConcept {
+	if r.LegalStatusOfSupply != nil {
+		return *r.LegalStatusOfSupply
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetManufacturer returns the manufacturer field value, or an empty slice if nil.
+func (r *MedicinalProductPackaged) GetManufacturer() []dt.Reference {
+	if r.Manufacturer != nil {
+		return r.Manufacturer
+	}
+	return nil
+}
+
+// GetMarketingAuthorization returns the marketingAuthorization field value, or the zero value if nil.
+func (r *MedicinalProductPackaged) GetMarketingAuthorization() dt.Reference {
+	if r.MarketingAuthorization != nil {
+		return *r.MarketingAuthorization
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetMarketingStatus returns the marketingStatus field value, or an empty slice if nil.
+func (r *MedicinalProductPackaged) GetMarketingStatus() []dt.MarketingStatus {
+	if r.MarketingStatus != nil {
+		return r.MarketingStatus
+	}
+	return nil
+}
+
+// GetPackageItem returns the packageItem field value, or an empty slice if nil.
+func (r *MedicinalProductPackaged) GetPackageItem() []MedicinalProductPackagedPackageItem {
+	if r.PackageItem != nil {
+		return r.PackageItem
+	}
+	return nil
+}
+
+// GetSubject returns the subject field value, or an empty slice if nil.
+func (r *MedicinalProductPackaged) GetSubject() []dt.Reference {
+	if r.Subject != nil {
+		return r.Subject
+	}
+	return nil
+}

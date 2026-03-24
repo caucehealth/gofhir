@@ -563,3 +563,261 @@ func (v *CarePlanDetailProduct) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *CarePlan) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *CarePlan) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *CarePlan) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *CarePlan) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *CarePlan) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *CarePlan) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *CarePlan) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *CarePlan) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *CarePlan) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *CarePlan) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetActivity returns the activity field value, or an empty slice if nil.
+func (r *CarePlan) GetActivity() []CarePlanActivity {
+	if r.Activity != nil {
+		return r.Activity
+	}
+	return nil
+}
+
+// GetAddresses returns the addresses field value, or an empty slice if nil.
+func (r *CarePlan) GetAddresses() []dt.Reference {
+	if r.Addresses != nil {
+		return r.Addresses
+	}
+	return nil
+}
+
+// GetAuthor returns the author field value, or the zero value if nil.
+func (r *CarePlan) GetAuthor() dt.Reference {
+	if r.Author != nil {
+		return *r.Author
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetBasedOn returns the basedOn field value, or an empty slice if nil.
+func (r *CarePlan) GetBasedOn() []dt.Reference {
+	if r.BasedOn != nil {
+		return r.BasedOn
+	}
+	return nil
+}
+
+// GetCareTeam returns the careTeam field value, or an empty slice if nil.
+func (r *CarePlan) GetCareTeam() []dt.Reference {
+	if r.CareTeam != nil {
+		return r.CareTeam
+	}
+	return nil
+}
+
+// GetCategory returns the category field value, or an empty slice if nil.
+func (r *CarePlan) GetCategory() []dt.CodeableConcept {
+	if r.Category != nil {
+		return r.Category
+	}
+	return nil
+}
+
+// GetContributor returns the contributor field value, or an empty slice if nil.
+func (r *CarePlan) GetContributor() []dt.Reference {
+	if r.Contributor != nil {
+		return r.Contributor
+	}
+	return nil
+}
+
+// GetCreated returns the created field value, or the zero value if nil.
+func (r *CarePlan) GetCreated() dt.DateTime {
+	if r.Created != nil {
+		return *r.Created
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *CarePlan) GetDescription() string {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero string
+	return zero
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *CarePlan) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetGoal returns the goal field value, or an empty slice if nil.
+func (r *CarePlan) GetGoal() []dt.Reference {
+	if r.Goal != nil {
+		return r.Goal
+	}
+	return nil
+}
+
+// GetInstantiatesCanonical returns the instantiatesCanonical field value, or an empty slice if nil.
+func (r *CarePlan) GetInstantiatesCanonical() []dt.Canonical {
+	if r.InstantiatesCanonical != nil {
+		return r.InstantiatesCanonical
+	}
+	return nil
+}
+
+// GetInstantiatesUri returns the instantiatesUri field value, or an empty slice if nil.
+func (r *CarePlan) GetInstantiatesUri() []dt.URI {
+	if r.InstantiatesUri != nil {
+		return r.InstantiatesUri
+	}
+	return nil
+}
+
+// GetIntent returns the intent field value, or the zero value if nil.
+func (r *CarePlan) GetIntent() dt.Code {
+	if r.Intent != nil {
+		return *r.Intent
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *CarePlan) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetPartOf returns the partOf field value, or an empty slice if nil.
+func (r *CarePlan) GetPartOf() []dt.Reference {
+	if r.PartOf != nil {
+		return r.PartOf
+	}
+	return nil
+}
+
+// GetPeriod returns the period field value, or the zero value if nil.
+func (r *CarePlan) GetPeriod() dt.Period {
+	if r.Period != nil {
+		return *r.Period
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetReplaces returns the replaces field value, or an empty slice if nil.
+func (r *CarePlan) GetReplaces() []dt.Reference {
+	if r.Replaces != nil {
+		return r.Replaces
+	}
+	return nil
+}
+
+// GetSubject returns the subject field value.
+func (r *CarePlan) GetSubject() dt.Reference {
+	return r.Subject
+}
+
+// GetSupportingInfo returns the supportingInfo field value, or an empty slice if nil.
+func (r *CarePlan) GetSupportingInfo() []dt.Reference {
+	if r.SupportingInfo != nil {
+		return r.SupportingInfo
+	}
+	return nil
+}
+
+// GetTitle returns the title field value, or the zero value if nil.
+func (r *CarePlan) GetTitle() string {
+	if r.Title != nil {
+		return *r.Title
+	}
+	var zero string
+	return zero
+}

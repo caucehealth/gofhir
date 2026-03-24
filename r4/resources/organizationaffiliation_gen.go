@@ -272,3 +272,172 @@ func (b *OrganizationAffiliationBuilder) Build() (*OrganizationAffiliation, erro
 	r := b.resource
 	return &r, nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *OrganizationAffiliation) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *OrganizationAffiliation) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *OrganizationAffiliation) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *OrganizationAffiliation) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *OrganizationAffiliation) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *OrganizationAffiliation) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *OrganizationAffiliation) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *OrganizationAffiliation) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *OrganizationAffiliation) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetActive returns the active field value, or the zero value if nil.
+func (r *OrganizationAffiliation) GetActive() bool {
+	if r.Active != nil {
+		return *r.Active
+	}
+	var zero bool
+	return zero
+}
+
+// GetCode returns the code field value, or an empty slice if nil.
+func (r *OrganizationAffiliation) GetCode() []dt.CodeableConcept {
+	if r.Code != nil {
+		return r.Code
+	}
+	return nil
+}
+
+// GetEndpoint returns the endpoint field value, or an empty slice if nil.
+func (r *OrganizationAffiliation) GetEndpoint() []dt.Reference {
+	if r.Endpoint != nil {
+		return r.Endpoint
+	}
+	return nil
+}
+
+// GetHealthcareService returns the healthcareService field value, or an empty slice if nil.
+func (r *OrganizationAffiliation) GetHealthcareService() []dt.Reference {
+	if r.HealthcareService != nil {
+		return r.HealthcareService
+	}
+	return nil
+}
+
+// GetLocation returns the location field value, or an empty slice if nil.
+func (r *OrganizationAffiliation) GetLocation() []dt.Reference {
+	if r.Location != nil {
+		return r.Location
+	}
+	return nil
+}
+
+// GetNetwork returns the network field value, or an empty slice if nil.
+func (r *OrganizationAffiliation) GetNetwork() []dt.Reference {
+	if r.Network != nil {
+		return r.Network
+	}
+	return nil
+}
+
+// GetOrganization returns the organization field value, or the zero value if nil.
+func (r *OrganizationAffiliation) GetOrganization() dt.Reference {
+	if r.Organization != nil {
+		return *r.Organization
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetParticipatingOrganization returns the participatingOrganization field value, or the zero value if nil.
+func (r *OrganizationAffiliation) GetParticipatingOrganization() dt.Reference {
+	if r.ParticipatingOrganization != nil {
+		return *r.ParticipatingOrganization
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPeriod returns the period field value, or the zero value if nil.
+func (r *OrganizationAffiliation) GetPeriod() dt.Period {
+	if r.Period != nil {
+		return *r.Period
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetSpecialty returns the specialty field value, or an empty slice if nil.
+func (r *OrganizationAffiliation) GetSpecialty() []dt.CodeableConcept {
+	if r.Specialty != nil {
+		return r.Specialty
+	}
+	return nil
+}
+
+// GetTelecom returns the telecom field value, or an empty slice if nil.
+func (r *OrganizationAffiliation) GetTelecom() []dt.ContactPoint {
+	if r.Telecom != nil {
+		return r.Telecom
+	}
+	return nil
+}

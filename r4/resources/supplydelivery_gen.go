@@ -459,3 +459,166 @@ func (v *SupplyDeliveryOccurrence) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *SupplyDelivery) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *SupplyDelivery) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *SupplyDelivery) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *SupplyDelivery) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *SupplyDelivery) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *SupplyDelivery) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *SupplyDelivery) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *SupplyDelivery) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *SupplyDelivery) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *SupplyDelivery) GetStatus() SupplyDeliveryStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero SupplyDeliveryStatus
+	return zero
+}
+
+// GetBasedOn returns the basedOn field value, or an empty slice if nil.
+func (r *SupplyDelivery) GetBasedOn() []dt.Reference {
+	if r.BasedOn != nil {
+		return r.BasedOn
+	}
+	return nil
+}
+
+// GetDestination returns the destination field value, or the zero value if nil.
+func (r *SupplyDelivery) GetDestination() dt.Reference {
+	if r.Destination != nil {
+		return *r.Destination
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetOccurrence returns the occurrence field value, or a zero-value if nil.
+func (r *SupplyDelivery) GetOccurrence() SupplyDeliveryOccurrence {
+	if r.Occurrence != nil {
+		return *r.Occurrence
+	}
+	return SupplyDeliveryOccurrence{}
+}
+
+// GetPartOf returns the partOf field value, or an empty slice if nil.
+func (r *SupplyDelivery) GetPartOf() []dt.Reference {
+	if r.PartOf != nil {
+		return r.PartOf
+	}
+	return nil
+}
+
+// GetPatient returns the patient field value, or the zero value if nil.
+func (r *SupplyDelivery) GetPatient() dt.Reference {
+	if r.Patient != nil {
+		return *r.Patient
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetReceiver returns the receiver field value, or an empty slice if nil.
+func (r *SupplyDelivery) GetReceiver() []dt.Reference {
+	if r.Receiver != nil {
+		return r.Receiver
+	}
+	return nil
+}
+
+// GetSuppliedItem returns the suppliedItem field value, or the zero value if nil.
+func (r *SupplyDelivery) GetSuppliedItem() SupplyDeliverySuppliedItem {
+	if r.SuppliedItem != nil {
+		return *r.SuppliedItem
+	}
+	var zero SupplyDeliverySuppliedItem
+	return zero
+}
+
+// GetSupplier returns the supplier field value, or the zero value if nil.
+func (r *SupplyDelivery) GetSupplier() dt.Reference {
+	if r.Supplier != nil {
+		return *r.Supplier
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *SupplyDelivery) GetType() dt.CodeableConcept {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero dt.CodeableConcept
+	return zero
+}

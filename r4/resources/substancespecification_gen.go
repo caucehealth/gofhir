@@ -615,3 +615,236 @@ type SubstanceSpecificationStructure struct {
 	// Stereochemistry Stereochemistry type.
 	Stereochemistry *dt.CodeableConcept `json:"stereochemistry,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *SubstanceSpecification) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *SubstanceSpecification) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *SubstanceSpecification) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *SubstanceSpecification) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *SubstanceSpecification) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *SubstanceSpecification) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *SubstanceSpecification) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *SubstanceSpecification) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or the zero value if nil.
+func (r *SubstanceSpecification) GetIdentifier() dt.Identifier {
+	if r.Identifier != nil {
+		return *r.Identifier
+	}
+	var zero dt.Identifier
+	return zero
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *SubstanceSpecification) GetStatus() dt.CodeableConcept {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetCode returns the code field value, or an empty slice if nil.
+func (r *SubstanceSpecification) GetCode() []SubstanceSpecificationCode {
+	if r.Code != nil {
+		return r.Code
+	}
+	return nil
+}
+
+// GetComment returns the comment field value, or the zero value if nil.
+func (r *SubstanceSpecification) GetComment() string {
+	if r.Comment != nil {
+		return *r.Comment
+	}
+	var zero string
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *SubstanceSpecification) GetDescription() string {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero string
+	return zero
+}
+
+// GetDomain returns the domain field value, or the zero value if nil.
+func (r *SubstanceSpecification) GetDomain() dt.CodeableConcept {
+	if r.Domain != nil {
+		return *r.Domain
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetMoiety returns the moiety field value, or an empty slice if nil.
+func (r *SubstanceSpecification) GetMoiety() []SubstanceSpecificationMoiety {
+	if r.Moiety != nil {
+		return r.Moiety
+	}
+	return nil
+}
+
+// GetMolecularWeight returns the molecularWeight field value, or an empty slice if nil.
+func (r *SubstanceSpecification) GetMolecularWeight() []SubstanceSpecificationMolecularWeight {
+	if r.MolecularWeight != nil {
+		return r.MolecularWeight
+	}
+	return nil
+}
+
+// GetName returns the name field value, or an empty slice if nil.
+func (r *SubstanceSpecification) GetName() []SubstanceSpecificationName {
+	if r.Name != nil {
+		return r.Name
+	}
+	return nil
+}
+
+// GetNucleicAcid returns the nucleicAcid field value, or the zero value if nil.
+func (r *SubstanceSpecification) GetNucleicAcid() dt.Reference {
+	if r.NucleicAcid != nil {
+		return *r.NucleicAcid
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPolymer returns the polymer field value, or the zero value if nil.
+func (r *SubstanceSpecification) GetPolymer() dt.Reference {
+	if r.Polymer != nil {
+		return *r.Polymer
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetProperty returns the property field value, or an empty slice if nil.
+func (r *SubstanceSpecification) GetProperty() []SubstanceSpecificationProperty {
+	if r.Property != nil {
+		return r.Property
+	}
+	return nil
+}
+
+// GetProtein returns the protein field value, or the zero value if nil.
+func (r *SubstanceSpecification) GetProtein() dt.Reference {
+	if r.Protein != nil {
+		return *r.Protein
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetReferenceInformation returns the referenceInformation field value, or the zero value if nil.
+func (r *SubstanceSpecification) GetReferenceInformation() dt.Reference {
+	if r.ReferenceInformation != nil {
+		return *r.ReferenceInformation
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetRelationship returns the relationship field value, or an empty slice if nil.
+func (r *SubstanceSpecification) GetRelationship() []SubstanceSpecificationRelationship {
+	if r.Relationship != nil {
+		return r.Relationship
+	}
+	return nil
+}
+
+// GetSource returns the source field value, or an empty slice if nil.
+func (r *SubstanceSpecification) GetSource() []dt.Reference {
+	if r.Source != nil {
+		return r.Source
+	}
+	return nil
+}
+
+// GetSourceMaterial returns the sourceMaterial field value, or the zero value if nil.
+func (r *SubstanceSpecification) GetSourceMaterial() dt.Reference {
+	if r.SourceMaterial != nil {
+		return *r.SourceMaterial
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetStructure returns the structure field value, or the zero value if nil.
+func (r *SubstanceSpecification) GetStructure() SubstanceSpecificationStructure {
+	if r.Structure != nil {
+		return *r.Structure
+	}
+	var zero SubstanceSpecificationStructure
+	return zero
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *SubstanceSpecification) GetType() dt.CodeableConcept {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero dt.CodeableConcept
+	return zero
+}

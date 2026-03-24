@@ -636,3 +636,339 @@ type EffectEvidenceSynthesisSampleSize struct {
 	// NumberOfStudiesElement contains element extensions for numberOfStudies.
 	NumberOfStudiesElement *dt.Element `json:"_numberOfStudies,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *EffectEvidenceSynthesis) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *EffectEvidenceSynthesis) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *EffectEvidenceSynthesis) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *EffectEvidenceSynthesis) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetStatus() EffectEvidenceSynthesisStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero EffectEvidenceSynthesisStatus
+	return zero
+}
+
+// GetApprovalDate returns the approvalDate field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetApprovalDate() dt.Date {
+	if r.ApprovalDate != nil {
+		return *r.ApprovalDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetAuthor returns the author field value, or an empty slice if nil.
+func (r *EffectEvidenceSynthesis) GetAuthor() []dt.ContactDetail {
+	if r.Author != nil {
+		return r.Author
+	}
+	return nil
+}
+
+// GetCertainty returns the certainty field value, or an empty slice if nil.
+func (r *EffectEvidenceSynthesis) GetCertainty() []EffectEvidenceSynthesisCertainty {
+	if r.Certainty != nil {
+		return r.Certainty
+	}
+	return nil
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *EffectEvidenceSynthesis) GetContact() []dt.ContactDetail {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetCopyright returns the copyright field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetCopyright() dt.Markdown {
+	if r.Copyright != nil {
+		return *r.Copyright
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetDescription() dt.Markdown {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetEditor returns the editor field value, or an empty slice if nil.
+func (r *EffectEvidenceSynthesis) GetEditor() []dt.ContactDetail {
+	if r.Editor != nil {
+		return r.Editor
+	}
+	return nil
+}
+
+// GetEffectEstimate returns the effectEstimate field value, or an empty slice if nil.
+func (r *EffectEvidenceSynthesis) GetEffectEstimate() []EffectEvidenceSynthesisEffectEstimate {
+	if r.EffectEstimate != nil {
+		return r.EffectEstimate
+	}
+	return nil
+}
+
+// GetEffectivePeriod returns the effectivePeriod field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetEffectivePeriod() dt.Period {
+	if r.EffectivePeriod != nil {
+		return *r.EffectivePeriod
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetEndorser returns the endorser field value, or an empty slice if nil.
+func (r *EffectEvidenceSynthesis) GetEndorser() []dt.ContactDetail {
+	if r.Endorser != nil {
+		return r.Endorser
+	}
+	return nil
+}
+
+// GetExposure returns the exposure field value.
+func (r *EffectEvidenceSynthesis) GetExposure() dt.Reference {
+	return r.Exposure
+}
+
+// GetExposureAlternative returns the exposureAlternative field value.
+func (r *EffectEvidenceSynthesis) GetExposureAlternative() dt.Reference {
+	return r.ExposureAlternative
+}
+
+// GetJurisdiction returns the jurisdiction field value, or an empty slice if nil.
+func (r *EffectEvidenceSynthesis) GetJurisdiction() []dt.CodeableConcept {
+	if r.Jurisdiction != nil {
+		return r.Jurisdiction
+	}
+	return nil
+}
+
+// GetLastReviewDate returns the lastReviewDate field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetLastReviewDate() dt.Date {
+	if r.LastReviewDate != nil {
+		return *r.LastReviewDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *EffectEvidenceSynthesis) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetOutcome returns the outcome field value.
+func (r *EffectEvidenceSynthesis) GetOutcome() dt.Reference {
+	return r.Outcome
+}
+
+// GetPopulation returns the population field value.
+func (r *EffectEvidenceSynthesis) GetPopulation() dt.Reference {
+	return r.Population
+}
+
+// GetPublisher returns the publisher field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetPublisher() string {
+	if r.Publisher != nil {
+		return *r.Publisher
+	}
+	var zero string
+	return zero
+}
+
+// GetRelatedArtifact returns the relatedArtifact field value, or an empty slice if nil.
+func (r *EffectEvidenceSynthesis) GetRelatedArtifact() []dt.RelatedArtifact {
+	if r.RelatedArtifact != nil {
+		return r.RelatedArtifact
+	}
+	return nil
+}
+
+// GetResultsByExposure returns the resultsByExposure field value, or an empty slice if nil.
+func (r *EffectEvidenceSynthesis) GetResultsByExposure() []EffectEvidenceSynthesisResultsByExposure {
+	if r.ResultsByExposure != nil {
+		return r.ResultsByExposure
+	}
+	return nil
+}
+
+// GetReviewer returns the reviewer field value, or an empty slice if nil.
+func (r *EffectEvidenceSynthesis) GetReviewer() []dt.ContactDetail {
+	if r.Reviewer != nil {
+		return r.Reviewer
+	}
+	return nil
+}
+
+// GetSampleSize returns the sampleSize field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetSampleSize() EffectEvidenceSynthesisSampleSize {
+	if r.SampleSize != nil {
+		return *r.SampleSize
+	}
+	var zero EffectEvidenceSynthesisSampleSize
+	return zero
+}
+
+// GetStudyType returns the studyType field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetStudyType() dt.CodeableConcept {
+	if r.StudyType != nil {
+		return *r.StudyType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSynthesisType returns the synthesisType field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetSynthesisType() dt.CodeableConcept {
+	if r.SynthesisType != nil {
+		return *r.SynthesisType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetTitle returns the title field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetTitle() string {
+	if r.Title != nil {
+		return *r.Title
+	}
+	var zero string
+	return zero
+}
+
+// GetTopic returns the topic field value, or an empty slice if nil.
+func (r *EffectEvidenceSynthesis) GetTopic() []dt.CodeableConcept {
+	if r.Topic != nil {
+		return r.Topic
+	}
+	return nil
+}
+
+// GetUrl returns the url field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetUrl() dt.URI {
+	if r.Url != nil {
+		return *r.Url
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetUseContext returns the useContext field value, or an empty slice if nil.
+func (r *EffectEvidenceSynthesis) GetUseContext() []dt.UsageContext {
+	if r.UseContext != nil {
+		return r.UseContext
+	}
+	return nil
+}
+
+// GetVersion returns the version field value, or the zero value if nil.
+func (r *EffectEvidenceSynthesis) GetVersion() string {
+	if r.Version != nil {
+		return *r.Version
+	}
+	var zero string
+	return zero
+}

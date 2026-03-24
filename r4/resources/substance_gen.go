@@ -275,3 +275,127 @@ type SubstanceInstance struct {
 	// Quantity The amount of the substance.
 	Quantity *dt.Quantity `json:"quantity,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Substance) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Substance) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Substance) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Substance) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Substance) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Substance) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Substance) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Substance) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Substance) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Substance) GetStatus() SubstanceStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero SubstanceStatus
+	return zero
+}
+
+// GetCategory returns the category field value, or an empty slice if nil.
+func (r *Substance) GetCategory() []dt.CodeableConcept {
+	if r.Category != nil {
+		return r.Category
+	}
+	return nil
+}
+
+// GetCode returns the code field value.
+func (r *Substance) GetCode() dt.CodeableConcept {
+	return r.Code
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *Substance) GetDescription() string {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero string
+	return zero
+}
+
+// GetIngredient returns the ingredient field value, or an empty slice if nil.
+func (r *Substance) GetIngredient() []SubstanceIngredient {
+	if r.Ingredient != nil {
+		return r.Ingredient
+	}
+	return nil
+}
+
+// GetInstance returns the instance field value, or an empty slice if nil.
+func (r *Substance) GetInstance() []SubstanceInstance {
+	if r.Instance != nil {
+		return r.Instance
+	}
+	return nil
+}

@@ -702,3 +702,299 @@ func (v *CodeSystemProperty1Value) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *CodeSystem) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *CodeSystem) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *CodeSystem) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *CodeSystem) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *CodeSystem) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *CodeSystem) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *CodeSystem) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *CodeSystem) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *CodeSystem) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *CodeSystem) GetStatus() CodeSystemStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero CodeSystemStatus
+	return zero
+}
+
+// GetCaseSensitive returns the caseSensitive field value, or the zero value if nil.
+func (r *CodeSystem) GetCaseSensitive() bool {
+	if r.CaseSensitive != nil {
+		return *r.CaseSensitive
+	}
+	var zero bool
+	return zero
+}
+
+// GetCompositional returns the compositional field value, or the zero value if nil.
+func (r *CodeSystem) GetCompositional() bool {
+	if r.Compositional != nil {
+		return *r.Compositional
+	}
+	var zero bool
+	return zero
+}
+
+// GetConcept returns the concept field value, or an empty slice if nil.
+func (r *CodeSystem) GetConcept() []CodeSystemConcept {
+	if r.Concept != nil {
+		return r.Concept
+	}
+	return nil
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *CodeSystem) GetContact() []dt.ContactDetail {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetContent returns the content field value, or the zero value if nil.
+func (r *CodeSystem) GetContent() CodeSystemContent {
+	if r.Content != nil {
+		return *r.Content
+	}
+	var zero CodeSystemContent
+	return zero
+}
+
+// GetCopyright returns the copyright field value, or the zero value if nil.
+func (r *CodeSystem) GetCopyright() dt.Markdown {
+	if r.Copyright != nil {
+		return *r.Copyright
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetCount returns the count field value, or the zero value if nil.
+func (r *CodeSystem) GetCount() uint32 {
+	if r.Count != nil {
+		return *r.Count
+	}
+	var zero uint32
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *CodeSystem) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *CodeSystem) GetDescription() dt.Markdown {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetExperimental returns the experimental field value, or the zero value if nil.
+func (r *CodeSystem) GetExperimental() bool {
+	if r.Experimental != nil {
+		return *r.Experimental
+	}
+	var zero bool
+	return zero
+}
+
+// GetFilter returns the filter field value, or an empty slice if nil.
+func (r *CodeSystem) GetFilter() []CodeSystemFilter {
+	if r.Filter != nil {
+		return r.Filter
+	}
+	return nil
+}
+
+// GetHierarchyMeaning returns the hierarchyMeaning field value, or the zero value if nil.
+func (r *CodeSystem) GetHierarchyMeaning() CodeSystemHierarchyMeaning {
+	if r.HierarchyMeaning != nil {
+		return *r.HierarchyMeaning
+	}
+	var zero CodeSystemHierarchyMeaning
+	return zero
+}
+
+// GetJurisdiction returns the jurisdiction field value, or an empty slice if nil.
+func (r *CodeSystem) GetJurisdiction() []dt.CodeableConcept {
+	if r.Jurisdiction != nil {
+		return r.Jurisdiction
+	}
+	return nil
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *CodeSystem) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetProperty returns the property field value, or an empty slice if nil.
+func (r *CodeSystem) GetProperty() []CodeSystemProperty {
+	if r.Property != nil {
+		return r.Property
+	}
+	return nil
+}
+
+// GetPublisher returns the publisher field value, or the zero value if nil.
+func (r *CodeSystem) GetPublisher() string {
+	if r.Publisher != nil {
+		return *r.Publisher
+	}
+	var zero string
+	return zero
+}
+
+// GetPurpose returns the purpose field value, or the zero value if nil.
+func (r *CodeSystem) GetPurpose() dt.Markdown {
+	if r.Purpose != nil {
+		return *r.Purpose
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetSupplements returns the supplements field value, or the zero value if nil.
+func (r *CodeSystem) GetSupplements() dt.Canonical {
+	if r.Supplements != nil {
+		return *r.Supplements
+	}
+	var zero dt.Canonical
+	return zero
+}
+
+// GetTitle returns the title field value, or the zero value if nil.
+func (r *CodeSystem) GetTitle() string {
+	if r.Title != nil {
+		return *r.Title
+	}
+	var zero string
+	return zero
+}
+
+// GetUrl returns the url field value, or the zero value if nil.
+func (r *CodeSystem) GetUrl() dt.URI {
+	if r.Url != nil {
+		return *r.Url
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetUseContext returns the useContext field value, or an empty slice if nil.
+func (r *CodeSystem) GetUseContext() []dt.UsageContext {
+	if r.UseContext != nil {
+		return r.UseContext
+	}
+	return nil
+}
+
+// GetValueSet returns the valueSet field value, or the zero value if nil.
+func (r *CodeSystem) GetValueSet() dt.Canonical {
+	if r.ValueSet != nil {
+		return *r.ValueSet
+	}
+	var zero dt.Canonical
+	return zero
+}
+
+// GetVersion returns the version field value, or the zero value if nil.
+func (r *CodeSystem) GetVersion() string {
+	if r.Version != nil {
+		return *r.Version
+	}
+	var zero string
+	return zero
+}
+
+// GetVersionNeeded returns the versionNeeded field value, or the zero value if nil.
+func (r *CodeSystem) GetVersionNeeded() bool {
+	if r.VersionNeeded != nil {
+		return *r.VersionNeeded
+	}
+	var zero bool
+	return zero
+}

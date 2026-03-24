@@ -290,3 +290,156 @@ type DeviceMetricCalibration struct {
 	// TypeElement contains element extensions for type.
 	TypeElement *dt.Element `json:"_type,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *DeviceMetric) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *DeviceMetric) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *DeviceMetric) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *DeviceMetric) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *DeviceMetric) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *DeviceMetric) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *DeviceMetric) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *DeviceMetric) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *DeviceMetric) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetCalibration returns the calibration field value, or an empty slice if nil.
+func (r *DeviceMetric) GetCalibration() []DeviceMetricCalibration {
+	if r.Calibration != nil {
+		return r.Calibration
+	}
+	return nil
+}
+
+// GetCategory returns the category field value, or the zero value if nil.
+func (r *DeviceMetric) GetCategory() DeviceMetricCategory {
+	if r.Category != nil {
+		return *r.Category
+	}
+	var zero DeviceMetricCategory
+	return zero
+}
+
+// GetColor returns the color field value, or the zero value if nil.
+func (r *DeviceMetric) GetColor() DeviceMetricColor {
+	if r.Color != nil {
+		return *r.Color
+	}
+	var zero DeviceMetricColor
+	return zero
+}
+
+// GetMeasurementPeriod returns the measurementPeriod field value, or the zero value if nil.
+func (r *DeviceMetric) GetMeasurementPeriod() dt.Timing {
+	if r.MeasurementPeriod != nil {
+		return *r.MeasurementPeriod
+	}
+	var zero dt.Timing
+	return zero
+}
+
+// GetOperationalStatus returns the operationalStatus field value, or the zero value if nil.
+func (r *DeviceMetric) GetOperationalStatus() DeviceMetricOperationalStatus {
+	if r.OperationalStatus != nil {
+		return *r.OperationalStatus
+	}
+	var zero DeviceMetricOperationalStatus
+	return zero
+}
+
+// GetParent returns the parent field value, or the zero value if nil.
+func (r *DeviceMetric) GetParent() dt.Reference {
+	if r.Parent != nil {
+		return *r.Parent
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetSource returns the source field value, or the zero value if nil.
+func (r *DeviceMetric) GetSource() dt.Reference {
+	if r.Source != nil {
+		return *r.Source
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetType returns the type field value.
+func (r *DeviceMetric) GetType() dt.CodeableConcept {
+	return r.Type
+}
+
+// GetUnit returns the unit field value, or the zero value if nil.
+func (r *DeviceMetric) GetUnit() dt.CodeableConcept {
+	if r.Unit != nil {
+		return *r.Unit
+	}
+	var zero dt.CodeableConcept
+	return zero
+}

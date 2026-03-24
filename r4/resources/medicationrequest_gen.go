@@ -773,3 +773,341 @@ func (v *MedicationRequestReported) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *MedicationRequest) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *MedicationRequest) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *MedicationRequest) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *MedicationRequest) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *MedicationRequest) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *MedicationRequest) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *MedicationRequest) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *MedicationRequest) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *MedicationRequest) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *MedicationRequest) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetAuthoredOn returns the authoredOn field value, or the zero value if nil.
+func (r *MedicationRequest) GetAuthoredOn() dt.DateTime {
+	if r.AuthoredOn != nil {
+		return *r.AuthoredOn
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetBasedOn returns the basedOn field value, or an empty slice if nil.
+func (r *MedicationRequest) GetBasedOn() []dt.Reference {
+	if r.BasedOn != nil {
+		return r.BasedOn
+	}
+	return nil
+}
+
+// GetCategory returns the category field value, or an empty slice if nil.
+func (r *MedicationRequest) GetCategory() []dt.CodeableConcept {
+	if r.Category != nil {
+		return r.Category
+	}
+	return nil
+}
+
+// GetCourseOfTherapyType returns the courseOfTherapyType field value, or the zero value if nil.
+func (r *MedicationRequest) GetCourseOfTherapyType() dt.CodeableConcept {
+	if r.CourseOfTherapyType != nil {
+		return *r.CourseOfTherapyType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetDetectedIssue returns the detectedIssue field value, or an empty slice if nil.
+func (r *MedicationRequest) GetDetectedIssue() []dt.Reference {
+	if r.DetectedIssue != nil {
+		return r.DetectedIssue
+	}
+	return nil
+}
+
+// GetDispenseRequest returns the dispenseRequest field value, or the zero value if nil.
+func (r *MedicationRequest) GetDispenseRequest() MedicationRequestDispenseRequest {
+	if r.DispenseRequest != nil {
+		return *r.DispenseRequest
+	}
+	var zero MedicationRequestDispenseRequest
+	return zero
+}
+
+// GetDoNotPerform returns the doNotPerform field value, or the zero value if nil.
+func (r *MedicationRequest) GetDoNotPerform() bool {
+	if r.DoNotPerform != nil {
+		return *r.DoNotPerform
+	}
+	var zero bool
+	return zero
+}
+
+// GetDosageInstruction returns the dosageInstruction field value, or an empty slice if nil.
+func (r *MedicationRequest) GetDosageInstruction() []dt.Dosage {
+	if r.DosageInstruction != nil {
+		return r.DosageInstruction
+	}
+	return nil
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *MedicationRequest) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetEventHistory returns the eventHistory field value, or an empty slice if nil.
+func (r *MedicationRequest) GetEventHistory() []dt.Reference {
+	if r.EventHistory != nil {
+		return r.EventHistory
+	}
+	return nil
+}
+
+// GetGroupIdentifier returns the groupIdentifier field value, or the zero value if nil.
+func (r *MedicationRequest) GetGroupIdentifier() dt.Identifier {
+	if r.GroupIdentifier != nil {
+		return *r.GroupIdentifier
+	}
+	var zero dt.Identifier
+	return zero
+}
+
+// GetInstantiatesCanonical returns the instantiatesCanonical field value, or an empty slice if nil.
+func (r *MedicationRequest) GetInstantiatesCanonical() []dt.Canonical {
+	if r.InstantiatesCanonical != nil {
+		return r.InstantiatesCanonical
+	}
+	return nil
+}
+
+// GetInstantiatesUri returns the instantiatesUri field value, or an empty slice if nil.
+func (r *MedicationRequest) GetInstantiatesUri() []dt.URI {
+	if r.InstantiatesUri != nil {
+		return r.InstantiatesUri
+	}
+	return nil
+}
+
+// GetInsurance returns the insurance field value, or an empty slice if nil.
+func (r *MedicationRequest) GetInsurance() []dt.Reference {
+	if r.Insurance != nil {
+		return r.Insurance
+	}
+	return nil
+}
+
+// GetIntent returns the intent field value, or the zero value if nil.
+func (r *MedicationRequest) GetIntent() dt.Code {
+	if r.Intent != nil {
+		return *r.Intent
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetMedication returns the medication field value, or a zero-value if nil.
+func (r *MedicationRequest) GetMedication() MedicationRequestMedication {
+	if r.Medication != nil {
+		return *r.Medication
+	}
+	return MedicationRequestMedication{}
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *MedicationRequest) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetPerformer returns the performer field value, or the zero value if nil.
+func (r *MedicationRequest) GetPerformer() dt.Reference {
+	if r.Performer != nil {
+		return *r.Performer
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPerformerType returns the performerType field value, or the zero value if nil.
+func (r *MedicationRequest) GetPerformerType() dt.CodeableConcept {
+	if r.PerformerType != nil {
+		return *r.PerformerType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetPriorPrescription returns the priorPrescription field value, or the zero value if nil.
+func (r *MedicationRequest) GetPriorPrescription() dt.Reference {
+	if r.PriorPrescription != nil {
+		return *r.PriorPrescription
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPriority returns the priority field value, or the zero value if nil.
+func (r *MedicationRequest) GetPriority() dt.Code {
+	if r.Priority != nil {
+		return *r.Priority
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetReasonCode returns the reasonCode field value, or an empty slice if nil.
+func (r *MedicationRequest) GetReasonCode() []dt.CodeableConcept {
+	if r.ReasonCode != nil {
+		return r.ReasonCode
+	}
+	return nil
+}
+
+// GetReasonReference returns the reasonReference field value, or an empty slice if nil.
+func (r *MedicationRequest) GetReasonReference() []dt.Reference {
+	if r.ReasonReference != nil {
+		return r.ReasonReference
+	}
+	return nil
+}
+
+// GetRecorder returns the recorder field value, or the zero value if nil.
+func (r *MedicationRequest) GetRecorder() dt.Reference {
+	if r.Recorder != nil {
+		return *r.Recorder
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetReported returns the reported field value, or a zero-value if nil.
+func (r *MedicationRequest) GetReported() MedicationRequestReported {
+	if r.Reported != nil {
+		return *r.Reported
+	}
+	return MedicationRequestReported{}
+}
+
+// GetRequester returns the requester field value, or the zero value if nil.
+func (r *MedicationRequest) GetRequester() dt.Reference {
+	if r.Requester != nil {
+		return *r.Requester
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetStatusReason returns the statusReason field value, or the zero value if nil.
+func (r *MedicationRequest) GetStatusReason() dt.CodeableConcept {
+	if r.StatusReason != nil {
+		return *r.StatusReason
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSubject returns the subject field value.
+func (r *MedicationRequest) GetSubject() dt.Reference {
+	return r.Subject
+}
+
+// GetSubstitution returns the substitution field value, or the zero value if nil.
+func (r *MedicationRequest) GetSubstitution() MedicationRequestSubstitution {
+	if r.Substitution != nil {
+		return *r.Substitution
+	}
+	var zero MedicationRequestSubstitution
+	return zero
+}
+
+// GetSupportingInformation returns the supportingInformation field value, or an empty slice if nil.
+func (r *MedicationRequest) GetSupportingInformation() []dt.Reference {
+	if r.SupportingInformation != nil {
+		return r.SupportingInformation
+	}
+	return nil
+}

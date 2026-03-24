@@ -620,3 +620,284 @@ type TerminologyCapabilitiesVersion struct {
 	// PropertyElement contains element extensions for each property.
 	PropertyElement []dt.Element `json:"_property,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *TerminologyCapabilities) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *TerminologyCapabilities) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *TerminologyCapabilities) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetStatus() TerminologyCapabilitiesStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero TerminologyCapabilitiesStatus
+	return zero
+}
+
+// GetClosure returns the closure field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetClosure() TerminologyCapabilitiesClosure {
+	if r.Closure != nil {
+		return *r.Closure
+	}
+	var zero TerminologyCapabilitiesClosure
+	return zero
+}
+
+// GetCodeSearch returns the codeSearch field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetCodeSearch() TerminologyCapabilitiesCodeSearch {
+	if r.CodeSearch != nil {
+		return *r.CodeSearch
+	}
+	var zero TerminologyCapabilitiesCodeSearch
+	return zero
+}
+
+// GetCodeSystem returns the codeSystem field value, or an empty slice if nil.
+func (r *TerminologyCapabilities) GetCodeSystem() []TerminologyCapabilitiesCodeSystem {
+	if r.CodeSystem != nil {
+		return r.CodeSystem
+	}
+	return nil
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *TerminologyCapabilities) GetContact() []dt.ContactDetail {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetCopyright returns the copyright field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetCopyright() dt.Markdown {
+	if r.Copyright != nil {
+		return *r.Copyright
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetDescription() dt.Markdown {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetExpansion returns the expansion field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetExpansion() TerminologyCapabilitiesExpansion {
+	if r.Expansion != nil {
+		return *r.Expansion
+	}
+	var zero TerminologyCapabilitiesExpansion
+	return zero
+}
+
+// GetExperimental returns the experimental field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetExperimental() bool {
+	if r.Experimental != nil {
+		return *r.Experimental
+	}
+	var zero bool
+	return zero
+}
+
+// GetImplementation returns the implementation field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetImplementation() TerminologyCapabilitiesImplementation {
+	if r.Implementation != nil {
+		return *r.Implementation
+	}
+	var zero TerminologyCapabilitiesImplementation
+	return zero
+}
+
+// GetJurisdiction returns the jurisdiction field value, or an empty slice if nil.
+func (r *TerminologyCapabilities) GetJurisdiction() []dt.CodeableConcept {
+	if r.Jurisdiction != nil {
+		return r.Jurisdiction
+	}
+	return nil
+}
+
+// GetKind returns the kind field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetKind() dt.Code {
+	if r.Kind != nil {
+		return *r.Kind
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetLockedDate returns the lockedDate field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetLockedDate() bool {
+	if r.LockedDate != nil {
+		return *r.LockedDate
+	}
+	var zero bool
+	return zero
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetPublisher returns the publisher field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetPublisher() string {
+	if r.Publisher != nil {
+		return *r.Publisher
+	}
+	var zero string
+	return zero
+}
+
+// GetPurpose returns the purpose field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetPurpose() dt.Markdown {
+	if r.Purpose != nil {
+		return *r.Purpose
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetSoftware returns the software field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetSoftware() TerminologyCapabilitiesSoftware {
+	if r.Software != nil {
+		return *r.Software
+	}
+	var zero TerminologyCapabilitiesSoftware
+	return zero
+}
+
+// GetTitle returns the title field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetTitle() string {
+	if r.Title != nil {
+		return *r.Title
+	}
+	var zero string
+	return zero
+}
+
+// GetTranslation returns the translation field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetTranslation() TerminologyCapabilitiesTranslation {
+	if r.Translation != nil {
+		return *r.Translation
+	}
+	var zero TerminologyCapabilitiesTranslation
+	return zero
+}
+
+// GetUrl returns the url field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetUrl() dt.URI {
+	if r.Url != nil {
+		return *r.Url
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetUseContext returns the useContext field value, or an empty slice if nil.
+func (r *TerminologyCapabilities) GetUseContext() []dt.UsageContext {
+	if r.UseContext != nil {
+		return r.UseContext
+	}
+	return nil
+}
+
+// GetValidateCode returns the validateCode field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetValidateCode() TerminologyCapabilitiesValidateCode {
+	if r.ValidateCode != nil {
+		return *r.ValidateCode
+	}
+	var zero TerminologyCapabilitiesValidateCode
+	return zero
+}
+
+// GetVersion returns the version field value, or the zero value if nil.
+func (r *TerminologyCapabilities) GetVersion() string {
+	if r.Version != nil {
+		return *r.Version
+	}
+	var zero string
+	return zero
+}

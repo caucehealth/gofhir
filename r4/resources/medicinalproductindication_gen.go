@@ -346,3 +346,148 @@ func (v *MedicinalProductIndicationOtherTherapyMedication) UnmarshalJSON(data []
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *MedicinalProductIndication) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *MedicinalProductIndication) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *MedicinalProductIndication) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *MedicinalProductIndication) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *MedicinalProductIndication) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *MedicinalProductIndication) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *MedicinalProductIndication) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *MedicinalProductIndication) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetComorbidity returns the comorbidity field value, or an empty slice if nil.
+func (r *MedicinalProductIndication) GetComorbidity() []dt.CodeableConcept {
+	if r.Comorbidity != nil {
+		return r.Comorbidity
+	}
+	return nil
+}
+
+// GetDiseaseStatus returns the diseaseStatus field value, or the zero value if nil.
+func (r *MedicinalProductIndication) GetDiseaseStatus() dt.CodeableConcept {
+	if r.DiseaseStatus != nil {
+		return *r.DiseaseStatus
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetDiseaseSymptomProcedure returns the diseaseSymptomProcedure field value, or the zero value if nil.
+func (r *MedicinalProductIndication) GetDiseaseSymptomProcedure() dt.CodeableConcept {
+	if r.DiseaseSymptomProcedure != nil {
+		return *r.DiseaseSymptomProcedure
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetDuration returns the duration field value, or the zero value if nil.
+func (r *MedicinalProductIndication) GetDuration() dt.Quantity {
+	if r.Duration != nil {
+		return *r.Duration
+	}
+	var zero dt.Quantity
+	return zero
+}
+
+// GetIntendedEffect returns the intendedEffect field value, or the zero value if nil.
+func (r *MedicinalProductIndication) GetIntendedEffect() dt.CodeableConcept {
+	if r.IntendedEffect != nil {
+		return *r.IntendedEffect
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetOtherTherapy returns the otherTherapy field value, or an empty slice if nil.
+func (r *MedicinalProductIndication) GetOtherTherapy() []MedicinalProductIndicationOtherTherapy {
+	if r.OtherTherapy != nil {
+		return r.OtherTherapy
+	}
+	return nil
+}
+
+// GetPopulation returns the population field value, or an empty slice if nil.
+func (r *MedicinalProductIndication) GetPopulation() []dt.Population {
+	if r.Population != nil {
+		return r.Population
+	}
+	return nil
+}
+
+// GetSubject returns the subject field value, or an empty slice if nil.
+func (r *MedicinalProductIndication) GetSubject() []dt.Reference {
+	if r.Subject != nil {
+		return r.Subject
+	}
+	return nil
+}
+
+// GetUndesirableEffect returns the undesirableEffect field value, or an empty slice if nil.
+func (r *MedicinalProductIndication) GetUndesirableEffect() []dt.Reference {
+	if r.UndesirableEffect != nil {
+		return r.UndesirableEffect
+	}
+	return nil
+}

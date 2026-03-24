@@ -521,3 +521,371 @@ func (b *ResearchDefinitionBuilder) Build() (*ResearchDefinition, error) {
 	r := b.resource
 	return &r, nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *ResearchDefinition) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *ResearchDefinition) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *ResearchDefinition) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *ResearchDefinition) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *ResearchDefinition) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *ResearchDefinition) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *ResearchDefinition) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *ResearchDefinition) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *ResearchDefinition) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *ResearchDefinition) GetStatus() ResearchDefinitionStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero ResearchDefinitionStatus
+	return zero
+}
+
+// GetApprovalDate returns the approvalDate field value, or the zero value if nil.
+func (r *ResearchDefinition) GetApprovalDate() dt.Date {
+	if r.ApprovalDate != nil {
+		return *r.ApprovalDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetAuthor returns the author field value, or an empty slice if nil.
+func (r *ResearchDefinition) GetAuthor() []dt.ContactDetail {
+	if r.Author != nil {
+		return r.Author
+	}
+	return nil
+}
+
+// GetComment returns the comment field value, or an empty slice if nil.
+func (r *ResearchDefinition) GetComment() []string {
+	if r.Comment != nil {
+		return r.Comment
+	}
+	return nil
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *ResearchDefinition) GetContact() []dt.ContactDetail {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetCopyright returns the copyright field value, or the zero value if nil.
+func (r *ResearchDefinition) GetCopyright() dt.Markdown {
+	if r.Copyright != nil {
+		return *r.Copyright
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *ResearchDefinition) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *ResearchDefinition) GetDescription() dt.Markdown {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetEditor returns the editor field value, or an empty slice if nil.
+func (r *ResearchDefinition) GetEditor() []dt.ContactDetail {
+	if r.Editor != nil {
+		return r.Editor
+	}
+	return nil
+}
+
+// GetEffectivePeriod returns the effectivePeriod field value, or the zero value if nil.
+func (r *ResearchDefinition) GetEffectivePeriod() dt.Period {
+	if r.EffectivePeriod != nil {
+		return *r.EffectivePeriod
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetEndorser returns the endorser field value, or an empty slice if nil.
+func (r *ResearchDefinition) GetEndorser() []dt.ContactDetail {
+	if r.Endorser != nil {
+		return r.Endorser
+	}
+	return nil
+}
+
+// GetExperimental returns the experimental field value, or the zero value if nil.
+func (r *ResearchDefinition) GetExperimental() bool {
+	if r.Experimental != nil {
+		return *r.Experimental
+	}
+	var zero bool
+	return zero
+}
+
+// GetExposure returns the exposure field value, or the zero value if nil.
+func (r *ResearchDefinition) GetExposure() dt.Reference {
+	if r.Exposure != nil {
+		return *r.Exposure
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetExposureAlternative returns the exposureAlternative field value, or the zero value if nil.
+func (r *ResearchDefinition) GetExposureAlternative() dt.Reference {
+	if r.ExposureAlternative != nil {
+		return *r.ExposureAlternative
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetJurisdiction returns the jurisdiction field value, or an empty slice if nil.
+func (r *ResearchDefinition) GetJurisdiction() []dt.CodeableConcept {
+	if r.Jurisdiction != nil {
+		return r.Jurisdiction
+	}
+	return nil
+}
+
+// GetLastReviewDate returns the lastReviewDate field value, or the zero value if nil.
+func (r *ResearchDefinition) GetLastReviewDate() dt.Date {
+	if r.LastReviewDate != nil {
+		return *r.LastReviewDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetLibrary returns the library field value, or an empty slice if nil.
+func (r *ResearchDefinition) GetLibrary() []dt.Canonical {
+	if r.Library != nil {
+		return r.Library
+	}
+	return nil
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *ResearchDefinition) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetOutcome returns the outcome field value, or the zero value if nil.
+func (r *ResearchDefinition) GetOutcome() dt.Reference {
+	if r.Outcome != nil {
+		return *r.Outcome
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPopulation returns the population field value.
+func (r *ResearchDefinition) GetPopulation() dt.Reference {
+	return r.Population
+}
+
+// GetPublisher returns the publisher field value, or the zero value if nil.
+func (r *ResearchDefinition) GetPublisher() string {
+	if r.Publisher != nil {
+		return *r.Publisher
+	}
+	var zero string
+	return zero
+}
+
+// GetPurpose returns the purpose field value, or the zero value if nil.
+func (r *ResearchDefinition) GetPurpose() dt.Markdown {
+	if r.Purpose != nil {
+		return *r.Purpose
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetRelatedArtifact returns the relatedArtifact field value, or an empty slice if nil.
+func (r *ResearchDefinition) GetRelatedArtifact() []dt.RelatedArtifact {
+	if r.RelatedArtifact != nil {
+		return r.RelatedArtifact
+	}
+	return nil
+}
+
+// GetReviewer returns the reviewer field value, or an empty slice if nil.
+func (r *ResearchDefinition) GetReviewer() []dt.ContactDetail {
+	if r.Reviewer != nil {
+		return r.Reviewer
+	}
+	return nil
+}
+
+// GetShortTitle returns the shortTitle field value, or the zero value if nil.
+func (r *ResearchDefinition) GetShortTitle() string {
+	if r.ShortTitle != nil {
+		return *r.ShortTitle
+	}
+	var zero string
+	return zero
+}
+
+// GetSubjectCodeableConcept returns the subjectCodeableConcept field value, or the zero value if nil.
+func (r *ResearchDefinition) GetSubjectCodeableConcept() dt.CodeableConcept {
+	if r.SubjectCodeableConcept != nil {
+		return *r.SubjectCodeableConcept
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSubjectReference returns the subjectReference field value, or the zero value if nil.
+func (r *ResearchDefinition) GetSubjectReference() dt.Reference {
+	if r.SubjectReference != nil {
+		return *r.SubjectReference
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetSubtitle returns the subtitle field value, or the zero value if nil.
+func (r *ResearchDefinition) GetSubtitle() string {
+	if r.Subtitle != nil {
+		return *r.Subtitle
+	}
+	var zero string
+	return zero
+}
+
+// GetTitle returns the title field value, or the zero value if nil.
+func (r *ResearchDefinition) GetTitle() string {
+	if r.Title != nil {
+		return *r.Title
+	}
+	var zero string
+	return zero
+}
+
+// GetTopic returns the topic field value, or an empty slice if nil.
+func (r *ResearchDefinition) GetTopic() []dt.CodeableConcept {
+	if r.Topic != nil {
+		return r.Topic
+	}
+	return nil
+}
+
+// GetUrl returns the url field value, or the zero value if nil.
+func (r *ResearchDefinition) GetUrl() dt.URI {
+	if r.Url != nil {
+		return *r.Url
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetUsage returns the usage field value, or the zero value if nil.
+func (r *ResearchDefinition) GetUsage() string {
+	if r.Usage != nil {
+		return *r.Usage
+	}
+	var zero string
+	return zero
+}
+
+// GetUseContext returns the useContext field value, or an empty slice if nil.
+func (r *ResearchDefinition) GetUseContext() []dt.UsageContext {
+	if r.UseContext != nil {
+		return r.UseContext
+	}
+	return nil
+}
+
+// GetVersion returns the version field value, or the zero value if nil.
+func (r *ResearchDefinition) GetVersion() string {
+	if r.Version != nil {
+		return *r.Version
+	}
+	var zero string
+	return zero
+}

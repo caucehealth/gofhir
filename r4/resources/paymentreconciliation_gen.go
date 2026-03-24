@@ -369,3 +369,200 @@ type PaymentReconciliationProcessNote struct {
 	// TypeElement contains element extensions for type.
 	TypeElement *dt.Element `json:"_type,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *PaymentReconciliation) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *PaymentReconciliation) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *PaymentReconciliation) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *PaymentReconciliation) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *PaymentReconciliation) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *PaymentReconciliation) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *PaymentReconciliation) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *PaymentReconciliation) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *PaymentReconciliation) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *PaymentReconciliation) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetCreated returns the created field value, or the zero value if nil.
+func (r *PaymentReconciliation) GetCreated() dt.DateTime {
+	if r.Created != nil {
+		return *r.Created
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDetail returns the detail field value, or an empty slice if nil.
+func (r *PaymentReconciliation) GetDetail() []PaymentReconciliationDetail {
+	if r.Detail != nil {
+		return r.Detail
+	}
+	return nil
+}
+
+// GetDisposition returns the disposition field value, or the zero value if nil.
+func (r *PaymentReconciliation) GetDisposition() string {
+	if r.Disposition != nil {
+		return *r.Disposition
+	}
+	var zero string
+	return zero
+}
+
+// GetFormCode returns the formCode field value, or the zero value if nil.
+func (r *PaymentReconciliation) GetFormCode() dt.CodeableConcept {
+	if r.FormCode != nil {
+		return *r.FormCode
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetOutcome returns the outcome field value, or the zero value if nil.
+func (r *PaymentReconciliation) GetOutcome() PaymentReconciliationOutcome {
+	if r.Outcome != nil {
+		return *r.Outcome
+	}
+	var zero PaymentReconciliationOutcome
+	return zero
+}
+
+// GetPaymentAmount returns the paymentAmount field value.
+func (r *PaymentReconciliation) GetPaymentAmount() dt.Money {
+	return r.PaymentAmount
+}
+
+// GetPaymentDate returns the paymentDate field value, or the zero value if nil.
+func (r *PaymentReconciliation) GetPaymentDate() dt.Date {
+	if r.PaymentDate != nil {
+		return *r.PaymentDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetPaymentIdentifier returns the paymentIdentifier field value, or the zero value if nil.
+func (r *PaymentReconciliation) GetPaymentIdentifier() dt.Identifier {
+	if r.PaymentIdentifier != nil {
+		return *r.PaymentIdentifier
+	}
+	var zero dt.Identifier
+	return zero
+}
+
+// GetPaymentIssuer returns the paymentIssuer field value, or the zero value if nil.
+func (r *PaymentReconciliation) GetPaymentIssuer() dt.Reference {
+	if r.PaymentIssuer != nil {
+		return *r.PaymentIssuer
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPeriod returns the period field value, or the zero value if nil.
+func (r *PaymentReconciliation) GetPeriod() dt.Period {
+	if r.Period != nil {
+		return *r.Period
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetProcessNote returns the processNote field value, or an empty slice if nil.
+func (r *PaymentReconciliation) GetProcessNote() []PaymentReconciliationProcessNote {
+	if r.ProcessNote != nil {
+		return r.ProcessNote
+	}
+	return nil
+}
+
+// GetRequest returns the request field value, or the zero value if nil.
+func (r *PaymentReconciliation) GetRequest() dt.Reference {
+	if r.Request != nil {
+		return *r.Request
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetRequestor returns the requestor field value, or the zero value if nil.
+func (r *PaymentReconciliation) GetRequestor() dt.Reference {
+	if r.Requestor != nil {
+		return *r.Requestor
+	}
+	var zero dt.Reference
+	return zero
+}

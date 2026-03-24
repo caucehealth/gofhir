@@ -313,3 +313,179 @@ type CatalogEntryRelatedEntry struct {
 	// RelationtypeElement contains element extensions for relationtype.
 	RelationtypeElement *dt.Element `json:"_relationtype,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *CatalogEntry) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *CatalogEntry) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *CatalogEntry) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *CatalogEntry) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *CatalogEntry) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *CatalogEntry) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *CatalogEntry) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *CatalogEntry) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *CatalogEntry) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *CatalogEntry) GetStatus() CatalogEntryStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero CatalogEntryStatus
+	return zero
+}
+
+// GetAdditionalCharacteristic returns the additionalCharacteristic field value, or an empty slice if nil.
+func (r *CatalogEntry) GetAdditionalCharacteristic() []dt.CodeableConcept {
+	if r.AdditionalCharacteristic != nil {
+		return r.AdditionalCharacteristic
+	}
+	return nil
+}
+
+// GetAdditionalClassification returns the additionalClassification field value, or an empty slice if nil.
+func (r *CatalogEntry) GetAdditionalClassification() []dt.CodeableConcept {
+	if r.AdditionalClassification != nil {
+		return r.AdditionalClassification
+	}
+	return nil
+}
+
+// GetAdditionalIdentifier returns the additionalIdentifier field value, or an empty slice if nil.
+func (r *CatalogEntry) GetAdditionalIdentifier() []dt.Identifier {
+	if r.AdditionalIdentifier != nil {
+		return r.AdditionalIdentifier
+	}
+	return nil
+}
+
+// GetClassification returns the classification field value, or an empty slice if nil.
+func (r *CatalogEntry) GetClassification() []dt.CodeableConcept {
+	if r.Classification != nil {
+		return r.Classification
+	}
+	return nil
+}
+
+// GetLastUpdated returns the lastUpdated field value, or the zero value if nil.
+func (r *CatalogEntry) GetLastUpdated() dt.DateTime {
+	if r.LastUpdated != nil {
+		return *r.LastUpdated
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetOrderable returns the orderable field value, or the zero value if nil.
+func (r *CatalogEntry) GetOrderable() bool {
+	if r.Orderable != nil {
+		return *r.Orderable
+	}
+	var zero bool
+	return zero
+}
+
+// GetReferencedItem returns the referencedItem field value.
+func (r *CatalogEntry) GetReferencedItem() dt.Reference {
+	return r.ReferencedItem
+}
+
+// GetRelatedEntry returns the relatedEntry field value, or an empty slice if nil.
+func (r *CatalogEntry) GetRelatedEntry() []CatalogEntryRelatedEntry {
+	if r.RelatedEntry != nil {
+		return r.RelatedEntry
+	}
+	return nil
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *CatalogEntry) GetType() dt.CodeableConcept {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetValidTo returns the validTo field value, or the zero value if nil.
+func (r *CatalogEntry) GetValidTo() dt.DateTime {
+	if r.ValidTo != nil {
+		return *r.ValidTo
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetValidityPeriod returns the validityPeriod field value, or the zero value if nil.
+func (r *CatalogEntry) GetValidityPeriod() dt.Period {
+	if r.ValidityPeriod != nil {
+		return *r.ValidityPeriod
+	}
+	var zero dt.Period
+	return zero
+}

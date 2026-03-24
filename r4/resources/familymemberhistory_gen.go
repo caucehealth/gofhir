@@ -102,19 +102,6 @@ func (r FamilyMemberHistory) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Age != nil {
-		vData, err := json.Marshal(r.Age)
-		if err != nil {
-			return nil, err
-		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
-		}
-	}
 	if r.Born != nil {
 		vData, err := json.Marshal(r.Born)
 		if err != nil {
@@ -130,6 +117,19 @@ func (r FamilyMemberHistory) MarshalJSON() ([]byte, error) {
 	}
 	if r.Deceased != nil {
 		vData, err := json.Marshal(r.Deceased)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	if r.Age != nil {
+		vData, err := json.Marshal(r.Age)
 		if err != nil {
 			return nil, err
 		}
@@ -627,6 +627,80 @@ func (v *FamilyMemberHistoryConditionOnset) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// FamilyMemberHistoryDeceased represents a polymorphic choice type in FHIR.
+type FamilyMemberHistoryDeceased struct {
+	Age     *dt.Age   `json:"deceasedAge,omitempty"`     // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
+	Boolean *bool     `json:"deceasedBoolean,omitempty"` // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
+	Date    *string   `json:"deceasedDate,omitempty"`    // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
+	Range   *dt.Range `json:"deceasedRange,omitempty"`   // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
+	String  *string   `json:"deceasedString,omitempty"`  // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
+}
+
+// MarshalJSON implements the json.Marshaler interface for FamilyMemberHistoryDeceased.
+func (v FamilyMemberHistoryDeceased) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Age != nil {
+		m["deceasedAge"] = v.Age
+	}
+	if v.Boolean != nil {
+		m["deceasedBoolean"] = v.Boolean
+	}
+	if v.Date != nil {
+		m["deceasedDate"] = v.Date
+	}
+	if v.Range != nil {
+		m["deceasedRange"] = v.Range
+	}
+	if v.String != nil {
+		m["deceasedString"] = v.String
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for FamilyMemberHistoryDeceased.
+func (v *FamilyMemberHistoryDeceased) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["deceasedAge"]; ok {
+		var val dt.Age
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling deceasedAge: %w", err)
+		}
+		v.Age = &val
+	}
+	if d, ok := raw["deceasedBoolean"]; ok {
+		var val bool
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling deceasedBoolean: %w", err)
+		}
+		v.Boolean = &val
+	}
+	if d, ok := raw["deceasedDate"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling deceasedDate: %w", err)
+		}
+		v.Date = &val
+	}
+	if d, ok := raw["deceasedRange"]; ok {
+		var val dt.Range
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling deceasedRange: %w", err)
+		}
+		v.Range = &val
+	}
+	if d, ok := raw["deceasedString"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling deceasedString: %w", err)
+		}
+		v.String = &val
+	}
+	return nil
+}
+
 // FamilyMemberHistoryAge represents a polymorphic choice type in FHIR.
 type FamilyMemberHistoryAge struct {
 	Age    *dt.Age   `json:"ageAge,omitempty"`    // The age of the relative at the time the family member history is recorded.
@@ -731,76 +805,215 @@ func (v *FamilyMemberHistoryBorn) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// FamilyMemberHistoryDeceased represents a polymorphic choice type in FHIR.
-type FamilyMemberHistoryDeceased struct {
-	Age     *dt.Age   `json:"deceasedAge,omitempty"`     // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
-	Boolean *bool     `json:"deceasedBoolean,omitempty"` // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
-	Date    *string   `json:"deceasedDate,omitempty"`    // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
-	Range   *dt.Range `json:"deceasedRange,omitempty"`   // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
-	String  *string   `json:"deceasedString,omitempty"`  // Deceased flag or the actual or approximate age of the relative at the time of death for the family member history record.
+// GetId returns the id field value, or the zero value if nil.
+func (r *FamilyMemberHistory) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
 }
 
-// MarshalJSON implements the json.Marshaler interface for FamilyMemberHistoryDeceased.
-func (v FamilyMemberHistoryDeceased) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Age != nil {
-		m["deceasedAge"] = v.Age
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *FamilyMemberHistory) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
 	}
-	if v.Boolean != nil {
-		m["deceasedBoolean"] = v.Boolean
-	}
-	if v.Date != nil {
-		m["deceasedDate"] = v.Date
-	}
-	if v.Range != nil {
-		m["deceasedRange"] = v.Range
-	}
-	if v.String != nil {
-		m["deceasedString"] = v.String
-	}
-	return json.Marshal(m)
+	var zero dt.Meta
+	return zero
 }
 
-// UnmarshalJSON implements the json.Unmarshaler interface for FamilyMemberHistoryDeceased.
-func (v *FamilyMemberHistoryDeceased) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *FamilyMemberHistory) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
 	}
-	if d, ok := raw["deceasedAge"]; ok {
-		var val dt.Age
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling deceasedAge: %w", err)
-		}
-		v.Age = &val
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *FamilyMemberHistory) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
 	}
-	if d, ok := raw["deceasedBoolean"]; ok {
-		var val bool
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling deceasedBoolean: %w", err)
-		}
-		v.Boolean = &val
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *FamilyMemberHistory) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
 	}
-	if d, ok := raw["deceasedDate"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling deceasedDate: %w", err)
-		}
-		v.Date = &val
-	}
-	if d, ok := raw["deceasedRange"]; ok {
-		var val dt.Range
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling deceasedRange: %w", err)
-		}
-		v.Range = &val
-	}
-	if d, ok := raw["deceasedString"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling deceasedString: %w", err)
-		}
-		v.String = &val
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *FamilyMemberHistory) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
 	}
 	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *FamilyMemberHistory) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *FamilyMemberHistory) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *FamilyMemberHistory) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *FamilyMemberHistory) GetStatus() FamilyMemberHistoryStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero FamilyMemberHistoryStatus
+	return zero
+}
+
+// GetAge returns the age field value, or a zero-value if nil.
+func (r *FamilyMemberHistory) GetAge() FamilyMemberHistoryAge {
+	if r.Age != nil {
+		return *r.Age
+	}
+	return FamilyMemberHistoryAge{}
+}
+
+// GetBorn returns the born field value, or a zero-value if nil.
+func (r *FamilyMemberHistory) GetBorn() FamilyMemberHistoryBorn {
+	if r.Born != nil {
+		return *r.Born
+	}
+	return FamilyMemberHistoryBorn{}
+}
+
+// GetCondition returns the condition field value, or an empty slice if nil.
+func (r *FamilyMemberHistory) GetCondition() []FamilyMemberHistoryCondition {
+	if r.Condition != nil {
+		return r.Condition
+	}
+	return nil
+}
+
+// GetDataAbsentReason returns the dataAbsentReason field value, or the zero value if nil.
+func (r *FamilyMemberHistory) GetDataAbsentReason() dt.CodeableConcept {
+	if r.DataAbsentReason != nil {
+		return *r.DataAbsentReason
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *FamilyMemberHistory) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDeceased returns the deceased field value, or a zero-value if nil.
+func (r *FamilyMemberHistory) GetDeceased() FamilyMemberHistoryDeceased {
+	if r.Deceased != nil {
+		return *r.Deceased
+	}
+	return FamilyMemberHistoryDeceased{}
+}
+
+// GetEstimatedAge returns the estimatedAge field value, or the zero value if nil.
+func (r *FamilyMemberHistory) GetEstimatedAge() bool {
+	if r.EstimatedAge != nil {
+		return *r.EstimatedAge
+	}
+	var zero bool
+	return zero
+}
+
+// GetInstantiatesCanonical returns the instantiatesCanonical field value, or an empty slice if nil.
+func (r *FamilyMemberHistory) GetInstantiatesCanonical() []dt.Canonical {
+	if r.InstantiatesCanonical != nil {
+		return r.InstantiatesCanonical
+	}
+	return nil
+}
+
+// GetInstantiatesUri returns the instantiatesUri field value, or an empty slice if nil.
+func (r *FamilyMemberHistory) GetInstantiatesUri() []dt.URI {
+	if r.InstantiatesUri != nil {
+		return r.InstantiatesUri
+	}
+	return nil
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *FamilyMemberHistory) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *FamilyMemberHistory) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetPatient returns the patient field value.
+func (r *FamilyMemberHistory) GetPatient() dt.Reference {
+	return r.Patient
+}
+
+// GetReasonCode returns the reasonCode field value, or an empty slice if nil.
+func (r *FamilyMemberHistory) GetReasonCode() []dt.CodeableConcept {
+	if r.ReasonCode != nil {
+		return r.ReasonCode
+	}
+	return nil
+}
+
+// GetReasonReference returns the reasonReference field value, or an empty slice if nil.
+func (r *FamilyMemberHistory) GetReasonReference() []dt.Reference {
+	if r.ReasonReference != nil {
+		return r.ReasonReference
+	}
+	return nil
+}
+
+// GetRelationship returns the relationship field value.
+func (r *FamilyMemberHistory) GetRelationship() dt.CodeableConcept {
+	return r.Relationship
+}
+
+// GetSex returns the sex field value, or the zero value if nil.
+func (r *FamilyMemberHistory) GetSex() dt.CodeableConcept {
+	if r.Sex != nil {
+		return *r.Sex
+	}
+	var zero dt.CodeableConcept
+	return zero
 }

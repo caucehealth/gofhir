@@ -240,3 +240,106 @@ type SubstanceProteinSubunit struct {
 	// SubunitElement contains element extensions for subunit.
 	SubunitElement *dt.Element `json:"_subunit,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *SubstanceProtein) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *SubstanceProtein) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *SubstanceProtein) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *SubstanceProtein) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *SubstanceProtein) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *SubstanceProtein) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *SubstanceProtein) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *SubstanceProtein) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetDisulfideLinkage returns the disulfideLinkage field value, or an empty slice if nil.
+func (r *SubstanceProtein) GetDisulfideLinkage() []string {
+	if r.DisulfideLinkage != nil {
+		return r.DisulfideLinkage
+	}
+	return nil
+}
+
+// GetNumberOfSubunits returns the numberOfSubunits field value, or the zero value if nil.
+func (r *SubstanceProtein) GetNumberOfSubunits() int32 {
+	if r.NumberOfSubunits != nil {
+		return *r.NumberOfSubunits
+	}
+	var zero int32
+	return zero
+}
+
+// GetSequenceType returns the sequenceType field value, or the zero value if nil.
+func (r *SubstanceProtein) GetSequenceType() dt.CodeableConcept {
+	if r.SequenceType != nil {
+		return *r.SequenceType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSubunit returns the subunit field value, or an empty slice if nil.
+func (r *SubstanceProtein) GetSubunit() []SubstanceProteinSubunit {
+	if r.Subunit != nil {
+		return r.Subunit
+	}
+	return nil
+}

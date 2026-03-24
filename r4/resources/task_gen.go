@@ -1738,3 +1738,342 @@ type TaskRestriction struct {
 	// RepetitionsElement contains element extensions for repetitions.
 	RepetitionsElement *dt.Element `json:"_repetitions,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Task) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Task) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Task) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Task) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Task) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Task) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Task) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Task) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Task) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Task) GetStatus() TaskStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero TaskStatus
+	return zero
+}
+
+// GetAuthoredOn returns the authoredOn field value, or the zero value if nil.
+func (r *Task) GetAuthoredOn() dt.DateTime {
+	if r.AuthoredOn != nil {
+		return *r.AuthoredOn
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetBasedOn returns the basedOn field value, or an empty slice if nil.
+func (r *Task) GetBasedOn() []dt.Reference {
+	if r.BasedOn != nil {
+		return r.BasedOn
+	}
+	return nil
+}
+
+// GetBusinessStatus returns the businessStatus field value, or the zero value if nil.
+func (r *Task) GetBusinessStatus() dt.CodeableConcept {
+	if r.BusinessStatus != nil {
+		return *r.BusinessStatus
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetCode returns the code field value, or the zero value if nil.
+func (r *Task) GetCode() dt.CodeableConcept {
+	if r.Code != nil {
+		return *r.Code
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *Task) GetDescription() string {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero string
+	return zero
+}
+
+// GetEncounter returns the encounter field value, or the zero value if nil.
+func (r *Task) GetEncounter() dt.Reference {
+	if r.Encounter != nil {
+		return *r.Encounter
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetExecutionPeriod returns the executionPeriod field value, or the zero value if nil.
+func (r *Task) GetExecutionPeriod() dt.Period {
+	if r.ExecutionPeriod != nil {
+		return *r.ExecutionPeriod
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetFocus returns the focus field value, or the zero value if nil.
+func (r *Task) GetFocus() dt.Reference {
+	if r.Focus != nil {
+		return *r.Focus
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetFor returns the for field value, or the zero value if nil.
+func (r *Task) GetFor() dt.Reference {
+	if r.For != nil {
+		return *r.For
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetGroupIdentifier returns the groupIdentifier field value, or the zero value if nil.
+func (r *Task) GetGroupIdentifier() dt.Identifier {
+	if r.GroupIdentifier != nil {
+		return *r.GroupIdentifier
+	}
+	var zero dt.Identifier
+	return zero
+}
+
+// GetInput returns the input field value, or an empty slice if nil.
+func (r *Task) GetInput() []TaskInput {
+	if r.Input != nil {
+		return r.Input
+	}
+	return nil
+}
+
+// GetInstantiatesCanonical returns the instantiatesCanonical field value, or the zero value if nil.
+func (r *Task) GetInstantiatesCanonical() dt.Canonical {
+	if r.InstantiatesCanonical != nil {
+		return *r.InstantiatesCanonical
+	}
+	var zero dt.Canonical
+	return zero
+}
+
+// GetInstantiatesUri returns the instantiatesUri field value, or the zero value if nil.
+func (r *Task) GetInstantiatesUri() dt.URI {
+	if r.InstantiatesUri != nil {
+		return *r.InstantiatesUri
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetInsurance returns the insurance field value, or an empty slice if nil.
+func (r *Task) GetInsurance() []dt.Reference {
+	if r.Insurance != nil {
+		return r.Insurance
+	}
+	return nil
+}
+
+// GetIntent returns the intent field value, or the zero value if nil.
+func (r *Task) GetIntent() TaskIntent {
+	if r.Intent != nil {
+		return *r.Intent
+	}
+	var zero TaskIntent
+	return zero
+}
+
+// GetLastModified returns the lastModified field value, or the zero value if nil.
+func (r *Task) GetLastModified() dt.DateTime {
+	if r.LastModified != nil {
+		return *r.LastModified
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetLocation returns the location field value, or the zero value if nil.
+func (r *Task) GetLocation() dt.Reference {
+	if r.Location != nil {
+		return *r.Location
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetNote returns the note field value, or an empty slice if nil.
+func (r *Task) GetNote() []dt.Annotation {
+	if r.Note != nil {
+		return r.Note
+	}
+	return nil
+}
+
+// GetOutput returns the output field value, or an empty slice if nil.
+func (r *Task) GetOutput() []TaskOutput {
+	if r.Output != nil {
+		return r.Output
+	}
+	return nil
+}
+
+// GetOwner returns the owner field value, or the zero value if nil.
+func (r *Task) GetOwner() dt.Reference {
+	if r.Owner != nil {
+		return *r.Owner
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPartOf returns the partOf field value, or an empty slice if nil.
+func (r *Task) GetPartOf() []dt.Reference {
+	if r.PartOf != nil {
+		return r.PartOf
+	}
+	return nil
+}
+
+// GetPerformerType returns the performerType field value, or an empty slice if nil.
+func (r *Task) GetPerformerType() []dt.CodeableConcept {
+	if r.PerformerType != nil {
+		return r.PerformerType
+	}
+	return nil
+}
+
+// GetPriority returns the priority field value, or the zero value if nil.
+func (r *Task) GetPriority() dt.Code {
+	if r.Priority != nil {
+		return *r.Priority
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetReasonCode returns the reasonCode field value, or the zero value if nil.
+func (r *Task) GetReasonCode() dt.CodeableConcept {
+	if r.ReasonCode != nil {
+		return *r.ReasonCode
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetReasonReference returns the reasonReference field value, or the zero value if nil.
+func (r *Task) GetReasonReference() dt.Reference {
+	if r.ReasonReference != nil {
+		return *r.ReasonReference
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetRelevantHistory returns the relevantHistory field value, or an empty slice if nil.
+func (r *Task) GetRelevantHistory() []dt.Reference {
+	if r.RelevantHistory != nil {
+		return r.RelevantHistory
+	}
+	return nil
+}
+
+// GetRequester returns the requester field value, or the zero value if nil.
+func (r *Task) GetRequester() dt.Reference {
+	if r.Requester != nil {
+		return *r.Requester
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetRestriction returns the restriction field value, or the zero value if nil.
+func (r *Task) GetRestriction() TaskRestriction {
+	if r.Restriction != nil {
+		return *r.Restriction
+	}
+	var zero TaskRestriction
+	return zero
+}
+
+// GetStatusReason returns the statusReason field value, or the zero value if nil.
+func (r *Task) GetStatusReason() dt.CodeableConcept {
+	if r.StatusReason != nil {
+		return *r.StatusReason
+	}
+	var zero dt.CodeableConcept
+	return zero
+}

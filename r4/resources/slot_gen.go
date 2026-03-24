@@ -279,3 +279,163 @@ func (b *SlotBuilder) Build() (*Slot, error) {
 	r := b.resource
 	return &r, nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Slot) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Slot) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Slot) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Slot) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Slot) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Slot) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Slot) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Slot) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Slot) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Slot) GetStatus() SlotStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero SlotStatus
+	return zero
+}
+
+// GetAppointmentType returns the appointmentType field value, or the zero value if nil.
+func (r *Slot) GetAppointmentType() dt.CodeableConcept {
+	if r.AppointmentType != nil {
+		return *r.AppointmentType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetComment returns the comment field value, or the zero value if nil.
+func (r *Slot) GetComment() string {
+	if r.Comment != nil {
+		return *r.Comment
+	}
+	var zero string
+	return zero
+}
+
+// GetEnd returns the end field value, or the zero value if nil.
+func (r *Slot) GetEnd() dt.Instant {
+	if r.End != nil {
+		return *r.End
+	}
+	var zero dt.Instant
+	return zero
+}
+
+// GetOverbooked returns the overbooked field value, or the zero value if nil.
+func (r *Slot) GetOverbooked() bool {
+	if r.Overbooked != nil {
+		return *r.Overbooked
+	}
+	var zero bool
+	return zero
+}
+
+// GetSchedule returns the schedule field value.
+func (r *Slot) GetSchedule() dt.Reference {
+	return r.Schedule
+}
+
+// GetServiceCategory returns the serviceCategory field value, or an empty slice if nil.
+func (r *Slot) GetServiceCategory() []dt.CodeableConcept {
+	if r.ServiceCategory != nil {
+		return r.ServiceCategory
+	}
+	return nil
+}
+
+// GetServiceType returns the serviceType field value, or an empty slice if nil.
+func (r *Slot) GetServiceType() []dt.CodeableConcept {
+	if r.ServiceType != nil {
+		return r.ServiceType
+	}
+	return nil
+}
+
+// GetSpecialty returns the specialty field value, or an empty slice if nil.
+func (r *Slot) GetSpecialty() []dt.CodeableConcept {
+	if r.Specialty != nil {
+		return r.Specialty
+	}
+	return nil
+}
+
+// GetStart returns the start field value, or the zero value if nil.
+func (r *Slot) GetStart() dt.Instant {
+	if r.Start != nil {
+		return *r.Start
+	}
+	var zero dt.Instant
+	return zero
+}

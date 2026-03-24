@@ -276,3 +276,157 @@ type PersonLink struct {
 	// Target The resource to which this actual person is associated.
 	Target dt.Reference `json:"target"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Person) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Person) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Person) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Person) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Person) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Person) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Person) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Person) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Person) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetActive returns the active field value, or the zero value if nil.
+func (r *Person) GetActive() bool {
+	if r.Active != nil {
+		return *r.Active
+	}
+	var zero bool
+	return zero
+}
+
+// GetAddress returns the address field value, or an empty slice if nil.
+func (r *Person) GetAddress() []dt.Address {
+	if r.Address != nil {
+		return r.Address
+	}
+	return nil
+}
+
+// GetBirthDate returns the birthDate field value, or the zero value if nil.
+func (r *Person) GetBirthDate() dt.Date {
+	if r.BirthDate != nil {
+		return *r.BirthDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetGender returns the gender field value, or the zero value if nil.
+func (r *Person) GetGender() AdministrativeGender {
+	if r.Gender != nil {
+		return *r.Gender
+	}
+	var zero AdministrativeGender
+	return zero
+}
+
+// GetLink returns the link field value, or an empty slice if nil.
+func (r *Person) GetLink() []PersonLink {
+	if r.Link != nil {
+		return r.Link
+	}
+	return nil
+}
+
+// GetManagingOrganization returns the managingOrganization field value, or the zero value if nil.
+func (r *Person) GetManagingOrganization() dt.Reference {
+	if r.ManagingOrganization != nil {
+		return *r.ManagingOrganization
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetName returns the name field value, or an empty slice if nil.
+func (r *Person) GetName() []dt.HumanName {
+	if r.Name != nil {
+		return r.Name
+	}
+	return nil
+}
+
+// GetPhoto returns the photo field value, or the zero value if nil.
+func (r *Person) GetPhoto() dt.Attachment {
+	if r.Photo != nil {
+		return *r.Photo
+	}
+	var zero dt.Attachment
+	return zero
+}
+
+// GetTelecom returns the telecom field value, or an empty slice if nil.
+func (r *Person) GetTelecom() []dt.ContactPoint {
+	if r.Telecom != nil {
+		return r.Telecom
+	}
+	return nil
+}

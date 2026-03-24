@@ -1313,3 +1313,373 @@ func (v *ContractValuedItemEntity) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Contract) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Contract) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Contract) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Contract) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Contract) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Contract) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Contract) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Contract) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Contract) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Contract) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetAlias returns the alias field value, or an empty slice if nil.
+func (r *Contract) GetAlias() []string {
+	if r.Alias != nil {
+		return r.Alias
+	}
+	return nil
+}
+
+// GetApplies returns the applies field value, or the zero value if nil.
+func (r *Contract) GetApplies() dt.Period {
+	if r.Applies != nil {
+		return *r.Applies
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetAuthor returns the author field value, or the zero value if nil.
+func (r *Contract) GetAuthor() dt.Reference {
+	if r.Author != nil {
+		return *r.Author
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetAuthority returns the authority field value, or an empty slice if nil.
+func (r *Contract) GetAuthority() []dt.Reference {
+	if r.Authority != nil {
+		return r.Authority
+	}
+	return nil
+}
+
+// GetContentDefinition returns the contentDefinition field value, or the zero value if nil.
+func (r *Contract) GetContentDefinition() ContractContentDefinition {
+	if r.ContentDefinition != nil {
+		return *r.ContentDefinition
+	}
+	var zero ContractContentDefinition
+	return zero
+}
+
+// GetContentDerivative returns the contentDerivative field value, or the zero value if nil.
+func (r *Contract) GetContentDerivative() dt.CodeableConcept {
+	if r.ContentDerivative != nil {
+		return *r.ContentDerivative
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetDomain returns the domain field value, or an empty slice if nil.
+func (r *Contract) GetDomain() []dt.Reference {
+	if r.Domain != nil {
+		return r.Domain
+	}
+	return nil
+}
+
+// GetExpirationType returns the expirationType field value, or the zero value if nil.
+func (r *Contract) GetExpirationType() dt.CodeableConcept {
+	if r.ExpirationType != nil {
+		return *r.ExpirationType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetFriendly returns the friendly field value, or an empty slice if nil.
+func (r *Contract) GetFriendly() []ContractFriendly {
+	if r.Friendly != nil {
+		return r.Friendly
+	}
+	return nil
+}
+
+// GetInstantiatesCanonical returns the instantiatesCanonical field value, or the zero value if nil.
+func (r *Contract) GetInstantiatesCanonical() dt.Reference {
+	if r.InstantiatesCanonical != nil {
+		return *r.InstantiatesCanonical
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetInstantiatesUri returns the instantiatesUri field value, or the zero value if nil.
+func (r *Contract) GetInstantiatesUri() dt.URI {
+	if r.InstantiatesUri != nil {
+		return *r.InstantiatesUri
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetIssued returns the issued field value, or the zero value if nil.
+func (r *Contract) GetIssued() dt.DateTime {
+	if r.Issued != nil {
+		return *r.Issued
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetLegal returns the legal field value, or an empty slice if nil.
+func (r *Contract) GetLegal() []ContractLegal {
+	if r.Legal != nil {
+		return r.Legal
+	}
+	return nil
+}
+
+// GetLegalState returns the legalState field value, or the zero value if nil.
+func (r *Contract) GetLegalState() dt.CodeableConcept {
+	if r.LegalState != nil {
+		return *r.LegalState
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetLegallyBindingAttachment returns the legallyBindingAttachment field value, or the zero value if nil.
+func (r *Contract) GetLegallyBindingAttachment() dt.Attachment {
+	if r.LegallyBindingAttachment != nil {
+		return *r.LegallyBindingAttachment
+	}
+	var zero dt.Attachment
+	return zero
+}
+
+// GetLegallyBindingReference returns the legallyBindingReference field value, or the zero value if nil.
+func (r *Contract) GetLegallyBindingReference() dt.Reference {
+	if r.LegallyBindingReference != nil {
+		return *r.LegallyBindingReference
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *Contract) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetRelevantHistory returns the relevantHistory field value, or an empty slice if nil.
+func (r *Contract) GetRelevantHistory() []dt.Reference {
+	if r.RelevantHistory != nil {
+		return r.RelevantHistory
+	}
+	return nil
+}
+
+// GetRule returns the rule field value, or an empty slice if nil.
+func (r *Contract) GetRule() []ContractRule {
+	if r.Rule != nil {
+		return r.Rule
+	}
+	return nil
+}
+
+// GetScope returns the scope field value, or the zero value if nil.
+func (r *Contract) GetScope() dt.CodeableConcept {
+	if r.Scope != nil {
+		return *r.Scope
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSigner returns the signer field value, or an empty slice if nil.
+func (r *Contract) GetSigner() []ContractSigner {
+	if r.Signer != nil {
+		return r.Signer
+	}
+	return nil
+}
+
+// GetSite returns the site field value, or an empty slice if nil.
+func (r *Contract) GetSite() []dt.Reference {
+	if r.Site != nil {
+		return r.Site
+	}
+	return nil
+}
+
+// GetSubType returns the subType field value, or an empty slice if nil.
+func (r *Contract) GetSubType() []dt.CodeableConcept {
+	if r.SubType != nil {
+		return r.SubType
+	}
+	return nil
+}
+
+// GetSubject returns the subject field value, or an empty slice if nil.
+func (r *Contract) GetSubject() []dt.Reference {
+	if r.Subject != nil {
+		return r.Subject
+	}
+	return nil
+}
+
+// GetSubtitle returns the subtitle field value, or the zero value if nil.
+func (r *Contract) GetSubtitle() string {
+	if r.Subtitle != nil {
+		return *r.Subtitle
+	}
+	var zero string
+	return zero
+}
+
+// GetSupportingInfo returns the supportingInfo field value, or an empty slice if nil.
+func (r *Contract) GetSupportingInfo() []dt.Reference {
+	if r.SupportingInfo != nil {
+		return r.SupportingInfo
+	}
+	return nil
+}
+
+// GetTerm returns the term field value, or an empty slice if nil.
+func (r *Contract) GetTerm() []ContractTerm {
+	if r.Term != nil {
+		return r.Term
+	}
+	return nil
+}
+
+// GetTitle returns the title field value, or the zero value if nil.
+func (r *Contract) GetTitle() string {
+	if r.Title != nil {
+		return *r.Title
+	}
+	var zero string
+	return zero
+}
+
+// GetTopicCodeableConcept returns the topicCodeableConcept field value, or the zero value if nil.
+func (r *Contract) GetTopicCodeableConcept() dt.CodeableConcept {
+	if r.TopicCodeableConcept != nil {
+		return *r.TopicCodeableConcept
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetTopicReference returns the topicReference field value, or the zero value if nil.
+func (r *Contract) GetTopicReference() dt.Reference {
+	if r.TopicReference != nil {
+		return *r.TopicReference
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *Contract) GetType() dt.CodeableConcept {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetUrl returns the url field value, or the zero value if nil.
+func (r *Contract) GetUrl() dt.URI {
+	if r.Url != nil {
+		return *r.Url
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetVersion returns the version field value, or the zero value if nil.
+func (r *Contract) GetVersion() string {
+	if r.Version != nil {
+		return *r.Version
+	}
+	var zero string
+	return zero
+}

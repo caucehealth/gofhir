@@ -505,3 +505,159 @@ type AuditEventSource struct {
 	// Type Code specifying the type of source where event originated.
 	Type []dt.Coding `json:"type,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *AuditEvent) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *AuditEvent) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *AuditEvent) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *AuditEvent) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *AuditEvent) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *AuditEvent) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *AuditEvent) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *AuditEvent) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetAction returns the action field value, or the zero value if nil.
+func (r *AuditEvent) GetAction() AuditEventAction {
+	if r.Action != nil {
+		return *r.Action
+	}
+	var zero AuditEventAction
+	return zero
+}
+
+// GetAgent returns the agent field value, or an empty slice if nil.
+func (r *AuditEvent) GetAgent() []AuditEventAgent {
+	if r.Agent != nil {
+		return r.Agent
+	}
+	return nil
+}
+
+// GetEntity returns the entity field value, or an empty slice if nil.
+func (r *AuditEvent) GetEntity() []AuditEventEntity {
+	if r.Entity != nil {
+		return r.Entity
+	}
+	return nil
+}
+
+// GetOutcome returns the outcome field value, or the zero value if nil.
+func (r *AuditEvent) GetOutcome() AuditEventOutcome {
+	if r.Outcome != nil {
+		return *r.Outcome
+	}
+	var zero AuditEventOutcome
+	return zero
+}
+
+// GetOutcomeDesc returns the outcomeDesc field value, or the zero value if nil.
+func (r *AuditEvent) GetOutcomeDesc() string {
+	if r.OutcomeDesc != nil {
+		return *r.OutcomeDesc
+	}
+	var zero string
+	return zero
+}
+
+// GetPeriod returns the period field value, or the zero value if nil.
+func (r *AuditEvent) GetPeriod() dt.Period {
+	if r.Period != nil {
+		return *r.Period
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetPurposeOfEvent returns the purposeOfEvent field value, or an empty slice if nil.
+func (r *AuditEvent) GetPurposeOfEvent() []dt.CodeableConcept {
+	if r.PurposeOfEvent != nil {
+		return r.PurposeOfEvent
+	}
+	return nil
+}
+
+// GetRecorded returns the recorded field value, or the zero value if nil.
+func (r *AuditEvent) GetRecorded() dt.Instant {
+	if r.Recorded != nil {
+		return *r.Recorded
+	}
+	var zero dt.Instant
+	return zero
+}
+
+// GetSource returns the source field value.
+func (r *AuditEvent) GetSource() AuditEventSource {
+	return r.Source
+}
+
+// GetSubtype returns the subtype field value, or an empty slice if nil.
+func (r *AuditEvent) GetSubtype() []dt.Coding {
+	if r.Subtype != nil {
+		return r.Subtype
+	}
+	return nil
+}
+
+// GetType returns the type field value.
+func (r *AuditEvent) GetType() dt.Coding {
+	return r.Type
+}

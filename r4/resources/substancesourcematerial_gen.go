@@ -417,3 +417,183 @@ type SubstanceSourceMaterialPartDescription struct {
 	// PartLocation The detailed anatomic location when the part can be extracted from different anatomical locations of the organism. Multiple alternative locations may apply.
 	PartLocation *dt.CodeableConcept `json:"partLocation,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *SubstanceSourceMaterial) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *SubstanceSourceMaterial) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *SubstanceSourceMaterial) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *SubstanceSourceMaterial) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *SubstanceSourceMaterial) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *SubstanceSourceMaterial) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *SubstanceSourceMaterial) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *SubstanceSourceMaterial) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetCountryOfOrigin returns the countryOfOrigin field value, or an empty slice if nil.
+func (r *SubstanceSourceMaterial) GetCountryOfOrigin() []dt.CodeableConcept {
+	if r.CountryOfOrigin != nil {
+		return r.CountryOfOrigin
+	}
+	return nil
+}
+
+// GetDevelopmentStage returns the developmentStage field value, or the zero value if nil.
+func (r *SubstanceSourceMaterial) GetDevelopmentStage() dt.CodeableConcept {
+	if r.DevelopmentStage != nil {
+		return *r.DevelopmentStage
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetFractionDescription returns the fractionDescription field value, or an empty slice if nil.
+func (r *SubstanceSourceMaterial) GetFractionDescription() []SubstanceSourceMaterialFractionDescription {
+	if r.FractionDescription != nil {
+		return r.FractionDescription
+	}
+	return nil
+}
+
+// GetGeographicalLocation returns the geographicalLocation field value, or an empty slice if nil.
+func (r *SubstanceSourceMaterial) GetGeographicalLocation() []string {
+	if r.GeographicalLocation != nil {
+		return r.GeographicalLocation
+	}
+	return nil
+}
+
+// GetOrganism returns the organism field value, or the zero value if nil.
+func (r *SubstanceSourceMaterial) GetOrganism() SubstanceSourceMaterialOrganism {
+	if r.Organism != nil {
+		return *r.Organism
+	}
+	var zero SubstanceSourceMaterialOrganism
+	return zero
+}
+
+// GetOrganismId returns the organismId field value, or the zero value if nil.
+func (r *SubstanceSourceMaterial) GetOrganismId() dt.Identifier {
+	if r.OrganismId != nil {
+		return *r.OrganismId
+	}
+	var zero dt.Identifier
+	return zero
+}
+
+// GetOrganismName returns the organismName field value, or the zero value if nil.
+func (r *SubstanceSourceMaterial) GetOrganismName() string {
+	if r.OrganismName != nil {
+		return *r.OrganismName
+	}
+	var zero string
+	return zero
+}
+
+// GetParentSubstanceId returns the parentSubstanceId field value, or an empty slice if nil.
+func (r *SubstanceSourceMaterial) GetParentSubstanceId() []dt.Identifier {
+	if r.ParentSubstanceId != nil {
+		return r.ParentSubstanceId
+	}
+	return nil
+}
+
+// GetParentSubstanceName returns the parentSubstanceName field value, or an empty slice if nil.
+func (r *SubstanceSourceMaterial) GetParentSubstanceName() []string {
+	if r.ParentSubstanceName != nil {
+		return r.ParentSubstanceName
+	}
+	return nil
+}
+
+// GetPartDescription returns the partDescription field value, or an empty slice if nil.
+func (r *SubstanceSourceMaterial) GetPartDescription() []SubstanceSourceMaterialPartDescription {
+	if r.PartDescription != nil {
+		return r.PartDescription
+	}
+	return nil
+}
+
+// GetSourceMaterialClass returns the sourceMaterialClass field value, or the zero value if nil.
+func (r *SubstanceSourceMaterial) GetSourceMaterialClass() dt.CodeableConcept {
+	if r.SourceMaterialClass != nil {
+		return *r.SourceMaterialClass
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSourceMaterialState returns the sourceMaterialState field value, or the zero value if nil.
+func (r *SubstanceSourceMaterial) GetSourceMaterialState() dt.CodeableConcept {
+	if r.SourceMaterialState != nil {
+		return *r.SourceMaterialState
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetSourceMaterialType returns the sourceMaterialType field value, or the zero value if nil.
+func (r *SubstanceSourceMaterial) GetSourceMaterialType() dt.CodeableConcept {
+	if r.SourceMaterialType != nil {
+		return *r.SourceMaterialType
+	}
+	var zero dt.CodeableConcept
+	return zero
+}

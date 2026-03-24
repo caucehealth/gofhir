@@ -351,3 +351,181 @@ type ObservationDefinitionQuantitativeDetails struct {
 	// Unit SI unit used to report quantitative results of observations conforming to this ObservationDefinition.
 	Unit *dt.CodeableConcept `json:"unit,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *ObservationDefinition) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *ObservationDefinition) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *ObservationDefinition) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *ObservationDefinition) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *ObservationDefinition) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *ObservationDefinition) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *ObservationDefinition) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *ObservationDefinition) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *ObservationDefinition) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetAbnormalCodedValueSet returns the abnormalCodedValueSet field value, or the zero value if nil.
+func (r *ObservationDefinition) GetAbnormalCodedValueSet() dt.Reference {
+	if r.AbnormalCodedValueSet != nil {
+		return *r.AbnormalCodedValueSet
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetCategory returns the category field value, or an empty slice if nil.
+func (r *ObservationDefinition) GetCategory() []dt.CodeableConcept {
+	if r.Category != nil {
+		return r.Category
+	}
+	return nil
+}
+
+// GetCode returns the code field value.
+func (r *ObservationDefinition) GetCode() dt.CodeableConcept {
+	return r.Code
+}
+
+// GetCriticalCodedValueSet returns the criticalCodedValueSet field value, or the zero value if nil.
+func (r *ObservationDefinition) GetCriticalCodedValueSet() dt.Reference {
+	if r.CriticalCodedValueSet != nil {
+		return *r.CriticalCodedValueSet
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetMethod returns the method field value, or the zero value if nil.
+func (r *ObservationDefinition) GetMethod() dt.CodeableConcept {
+	if r.Method != nil {
+		return *r.Method
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetMultipleResultsAllowed returns the multipleResultsAllowed field value, or the zero value if nil.
+func (r *ObservationDefinition) GetMultipleResultsAllowed() bool {
+	if r.MultipleResultsAllowed != nil {
+		return *r.MultipleResultsAllowed
+	}
+	var zero bool
+	return zero
+}
+
+// GetNormalCodedValueSet returns the normalCodedValueSet field value, or the zero value if nil.
+func (r *ObservationDefinition) GetNormalCodedValueSet() dt.Reference {
+	if r.NormalCodedValueSet != nil {
+		return *r.NormalCodedValueSet
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPermittedDataType returns the permittedDataType field value, or an empty slice if nil.
+func (r *ObservationDefinition) GetPermittedDataType() []ObservationDefinitionPermittedDataType {
+	if r.PermittedDataType != nil {
+		return r.PermittedDataType
+	}
+	return nil
+}
+
+// GetPreferredReportName returns the preferredReportName field value, or the zero value if nil.
+func (r *ObservationDefinition) GetPreferredReportName() string {
+	if r.PreferredReportName != nil {
+		return *r.PreferredReportName
+	}
+	var zero string
+	return zero
+}
+
+// GetQualifiedInterval returns the qualifiedInterval field value, or an empty slice if nil.
+func (r *ObservationDefinition) GetQualifiedInterval() []ObservationDefinitionQualifiedInterval {
+	if r.QualifiedInterval != nil {
+		return r.QualifiedInterval
+	}
+	return nil
+}
+
+// GetQuantitativeDetails returns the quantitativeDetails field value, or the zero value if nil.
+func (r *ObservationDefinition) GetQuantitativeDetails() ObservationDefinitionQuantitativeDetails {
+	if r.QuantitativeDetails != nil {
+		return *r.QuantitativeDetails
+	}
+	var zero ObservationDefinitionQuantitativeDetails
+	return zero
+}
+
+// GetValidCodedValueSet returns the validCodedValueSet field value, or the zero value if nil.
+func (r *ObservationDefinition) GetValidCodedValueSet() dt.Reference {
+	if r.ValidCodedValueSet != nil {
+		return *r.ValidCodedValueSet
+	}
+	var zero dt.Reference
+	return zero
+}

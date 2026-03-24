@@ -340,3 +340,122 @@ type SubstancePolymerStructuralRepresentation struct {
 	// Type Todo.
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *SubstancePolymer) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *SubstancePolymer) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *SubstancePolymer) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *SubstancePolymer) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *SubstancePolymer) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *SubstancePolymer) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *SubstancePolymer) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *SubstancePolymer) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetClass returns the class field value, or the zero value if nil.
+func (r *SubstancePolymer) GetClass() dt.CodeableConcept {
+	if r.Class != nil {
+		return *r.Class
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetCopolymerConnectivity returns the copolymerConnectivity field value, or an empty slice if nil.
+func (r *SubstancePolymer) GetCopolymerConnectivity() []dt.CodeableConcept {
+	if r.CopolymerConnectivity != nil {
+		return r.CopolymerConnectivity
+	}
+	return nil
+}
+
+// GetGeometry returns the geometry field value, or the zero value if nil.
+func (r *SubstancePolymer) GetGeometry() dt.CodeableConcept {
+	if r.Geometry != nil {
+		return *r.Geometry
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetModification returns the modification field value, or an empty slice if nil.
+func (r *SubstancePolymer) GetModification() []string {
+	if r.Modification != nil {
+		return r.Modification
+	}
+	return nil
+}
+
+// GetMonomerSet returns the monomerSet field value, or an empty slice if nil.
+func (r *SubstancePolymer) GetMonomerSet() []SubstancePolymerMonomerSet {
+	if r.MonomerSet != nil {
+		return r.MonomerSet
+	}
+	return nil
+}
+
+// GetRepeat returns the repeat field value, or an empty slice if nil.
+func (r *SubstancePolymer) GetRepeat() []SubstancePolymerRepeat {
+	if r.Repeat != nil {
+		return r.Repeat
+	}
+	return nil
+}

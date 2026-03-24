@@ -460,3 +460,297 @@ type SearchParameterComponent struct {
 	// ExpressionElement contains element extensions for expression.
 	ExpressionElement *dt.Element `json:"_expression,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *SearchParameter) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *SearchParameter) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *SearchParameter) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *SearchParameter) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *SearchParameter) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *SearchParameter) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *SearchParameter) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *SearchParameter) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *SearchParameter) GetStatus() SearchParameterStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero SearchParameterStatus
+	return zero
+}
+
+// GetBase returns the base field value, or an empty slice if nil.
+func (r *SearchParameter) GetBase() []dt.Code {
+	if r.Base != nil {
+		return r.Base
+	}
+	return nil
+}
+
+// GetChain returns the chain field value, or an empty slice if nil.
+func (r *SearchParameter) GetChain() []string {
+	if r.Chain != nil {
+		return r.Chain
+	}
+	return nil
+}
+
+// GetCode returns the code field value, or the zero value if nil.
+func (r *SearchParameter) GetCode() dt.Code {
+	if r.Code != nil {
+		return *r.Code
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetComparator returns the comparator field value, or an empty slice if nil.
+func (r *SearchParameter) GetComparator() []SearchParameterComparator {
+	if r.Comparator != nil {
+		return r.Comparator
+	}
+	return nil
+}
+
+// GetComponent returns the component field value, or an empty slice if nil.
+func (r *SearchParameter) GetComponent() []SearchParameterComponent {
+	if r.Component != nil {
+		return r.Component
+	}
+	return nil
+}
+
+// GetContact returns the contact field value, or an empty slice if nil.
+func (r *SearchParameter) GetContact() []dt.ContactDetail {
+	if r.Contact != nil {
+		return r.Contact
+	}
+	return nil
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *SearchParameter) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDerivedFrom returns the derivedFrom field value, or the zero value if nil.
+func (r *SearchParameter) GetDerivedFrom() dt.Canonical {
+	if r.DerivedFrom != nil {
+		return *r.DerivedFrom
+	}
+	var zero dt.Canonical
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *SearchParameter) GetDescription() dt.Markdown {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetExperimental returns the experimental field value, or the zero value if nil.
+func (r *SearchParameter) GetExperimental() bool {
+	if r.Experimental != nil {
+		return *r.Experimental
+	}
+	var zero bool
+	return zero
+}
+
+// GetExpression returns the expression field value, or the zero value if nil.
+func (r *SearchParameter) GetExpression() string {
+	if r.Expression != nil {
+		return *r.Expression
+	}
+	var zero string
+	return zero
+}
+
+// GetJurisdiction returns the jurisdiction field value, or an empty slice if nil.
+func (r *SearchParameter) GetJurisdiction() []dt.CodeableConcept {
+	if r.Jurisdiction != nil {
+		return r.Jurisdiction
+	}
+	return nil
+}
+
+// GetModifier returns the modifier field value, or an empty slice if nil.
+func (r *SearchParameter) GetModifier() []SearchParameterModifier {
+	if r.Modifier != nil {
+		return r.Modifier
+	}
+	return nil
+}
+
+// GetMultipleAnd returns the multipleAnd field value, or the zero value if nil.
+func (r *SearchParameter) GetMultipleAnd() bool {
+	if r.MultipleAnd != nil {
+		return *r.MultipleAnd
+	}
+	var zero bool
+	return zero
+}
+
+// GetMultipleOr returns the multipleOr field value, or the zero value if nil.
+func (r *SearchParameter) GetMultipleOr() bool {
+	if r.MultipleOr != nil {
+		return *r.MultipleOr
+	}
+	var zero bool
+	return zero
+}
+
+// GetName returns the name field value, or the zero value if nil.
+func (r *SearchParameter) GetName() string {
+	if r.Name != nil {
+		return *r.Name
+	}
+	var zero string
+	return zero
+}
+
+// GetPublisher returns the publisher field value, or the zero value if nil.
+func (r *SearchParameter) GetPublisher() string {
+	if r.Publisher != nil {
+		return *r.Publisher
+	}
+	var zero string
+	return zero
+}
+
+// GetPurpose returns the purpose field value, or the zero value if nil.
+func (r *SearchParameter) GetPurpose() dt.Markdown {
+	if r.Purpose != nil {
+		return *r.Purpose
+	}
+	var zero dt.Markdown
+	return zero
+}
+
+// GetTarget returns the target field value, or an empty slice if nil.
+func (r *SearchParameter) GetTarget() []dt.Code {
+	if r.Target != nil {
+		return r.Target
+	}
+	return nil
+}
+
+// GetType returns the type field value, or the zero value if nil.
+func (r *SearchParameter) GetType() SearchParameterType {
+	if r.Type != nil {
+		return *r.Type
+	}
+	var zero SearchParameterType
+	return zero
+}
+
+// GetUrl returns the url field value, or the zero value if nil.
+func (r *SearchParameter) GetUrl() dt.URI {
+	if r.Url != nil {
+		return *r.Url
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetUseContext returns the useContext field value, or an empty slice if nil.
+func (r *SearchParameter) GetUseContext() []dt.UsageContext {
+	if r.UseContext != nil {
+		return r.UseContext
+	}
+	return nil
+}
+
+// GetVersion returns the version field value, or the zero value if nil.
+func (r *SearchParameter) GetVersion() string {
+	if r.Version != nil {
+		return *r.Version
+	}
+	var zero string
+	return zero
+}
+
+// GetXpath returns the xpath field value, or the zero value if nil.
+func (r *SearchParameter) GetXpath() string {
+	if r.Xpath != nil {
+		return *r.Xpath
+	}
+	var zero string
+	return zero
+}
+
+// GetXpathUsage returns the xpathUsage field value, or the zero value if nil.
+func (r *SearchParameter) GetXpathUsage() SearchParameterXpathUsage {
+	if r.XpathUsage != nil {
+		return *r.XpathUsage
+	}
+	var zero SearchParameterXpathUsage
+	return zero
+}

@@ -413,3 +413,166 @@ func (v *ImmunizationEvaluationDose) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *ImmunizationEvaluation) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *ImmunizationEvaluation) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *ImmunizationEvaluation) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *ImmunizationEvaluation) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *ImmunizationEvaluation) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *ImmunizationEvaluation) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *ImmunizationEvaluation) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *ImmunizationEvaluation) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *ImmunizationEvaluation) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *ImmunizationEvaluation) GetStatus() dt.Code {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetAuthority returns the authority field value, or the zero value if nil.
+func (r *ImmunizationEvaluation) GetAuthority() dt.Reference {
+	if r.Authority != nil {
+		return *r.Authority
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetDate returns the date field value, or the zero value if nil.
+func (r *ImmunizationEvaluation) GetDate() dt.DateTime {
+	if r.Date != nil {
+		return *r.Date
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *ImmunizationEvaluation) GetDescription() string {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero string
+	return zero
+}
+
+// GetDose returns the dose field value, or a zero-value if nil.
+func (r *ImmunizationEvaluation) GetDose() ImmunizationEvaluationDose {
+	if r.Dose != nil {
+		return *r.Dose
+	}
+	return ImmunizationEvaluationDose{}
+}
+
+// GetImmunizationEvent returns the immunizationEvent field value.
+func (r *ImmunizationEvaluation) GetImmunizationEvent() dt.Reference {
+	return r.ImmunizationEvent
+}
+
+// GetPatient returns the patient field value.
+func (r *ImmunizationEvaluation) GetPatient() dt.Reference {
+	return r.Patient
+}
+
+// GetSeries returns the series field value, or the zero value if nil.
+func (r *ImmunizationEvaluation) GetSeries() string {
+	if r.Series != nil {
+		return *r.Series
+	}
+	var zero string
+	return zero
+}
+
+// GetSeriesDosesPositiveInt returns the seriesDosesPositiveInt field value, or the zero value if nil.
+func (r *ImmunizationEvaluation) GetSeriesDosesPositiveInt() float64 {
+	if r.SeriesDosesPositiveInt != nil {
+		return *r.SeriesDosesPositiveInt
+	}
+	var zero float64
+	return zero
+}
+
+// GetSeriesDosesString returns the seriesDosesString field value, or the zero value if nil.
+func (r *ImmunizationEvaluation) GetSeriesDosesString() string {
+	if r.SeriesDosesString != nil {
+		return *r.SeriesDosesString
+	}
+	var zero string
+	return zero
+}
+
+// GetTargetDisease returns the targetDisease field value.
+func (r *ImmunizationEvaluation) GetTargetDisease() dt.CodeableConcept {
+	return r.TargetDisease
+}

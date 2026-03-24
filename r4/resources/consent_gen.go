@@ -415,3 +415,188 @@ type ConsentVerification struct {
 	// VerifiedWith Who verified the instruction (Patient, Relative or other Authorized Person).
 	VerifiedWith *dt.Reference `json:"verifiedWith,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *Consent) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *Consent) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *Consent) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *Consent) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *Consent) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *Consent) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *Consent) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *Consent) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *Consent) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetStatus returns the status field value, or the zero value if nil.
+func (r *Consent) GetStatus() ConsentStatus {
+	if r.Status != nil {
+		return *r.Status
+	}
+	var zero ConsentStatus
+	return zero
+}
+
+// GetCategory returns the category field value, or an empty slice if nil.
+func (r *Consent) GetCategory() []dt.CodeableConcept {
+	if r.Category != nil {
+		return r.Category
+	}
+	return nil
+}
+
+// GetDateTime returns the dateTime field value, or the zero value if nil.
+func (r *Consent) GetDateTime() dt.DateTime {
+	if r.DateTime != nil {
+		return *r.DateTime
+	}
+	var zero dt.DateTime
+	return zero
+}
+
+// GetOrganization returns the organization field value, or an empty slice if nil.
+func (r *Consent) GetOrganization() []dt.Reference {
+	if r.Organization != nil {
+		return r.Organization
+	}
+	return nil
+}
+
+// GetPatient returns the patient field value, or the zero value if nil.
+func (r *Consent) GetPatient() dt.Reference {
+	if r.Patient != nil {
+		return *r.Patient
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetPerformer returns the performer field value, or an empty slice if nil.
+func (r *Consent) GetPerformer() []dt.Reference {
+	if r.Performer != nil {
+		return r.Performer
+	}
+	return nil
+}
+
+// GetPolicy returns the policy field value, or an empty slice if nil.
+func (r *Consent) GetPolicy() []ConsentPolicy {
+	if r.Policy != nil {
+		return r.Policy
+	}
+	return nil
+}
+
+// GetPolicyRule returns the policyRule field value, or the zero value if nil.
+func (r *Consent) GetPolicyRule() dt.CodeableConcept {
+	if r.PolicyRule != nil {
+		return *r.PolicyRule
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetProvision returns the provision field value, or the zero value if nil.
+func (r *Consent) GetProvision() ConsentProvision {
+	if r.Provision != nil {
+		return *r.Provision
+	}
+	var zero ConsentProvision
+	return zero
+}
+
+// GetScope returns the scope field value.
+func (r *Consent) GetScope() dt.CodeableConcept {
+	return r.Scope
+}
+
+// GetSourceAttachment returns the sourceAttachment field value, or the zero value if nil.
+func (r *Consent) GetSourceAttachment() dt.Attachment {
+	if r.SourceAttachment != nil {
+		return *r.SourceAttachment
+	}
+	var zero dt.Attachment
+	return zero
+}
+
+// GetSourceReference returns the sourceReference field value, or the zero value if nil.
+func (r *Consent) GetSourceReference() dt.Reference {
+	if r.SourceReference != nil {
+		return *r.SourceReference
+	}
+	var zero dt.Reference
+	return zero
+}
+
+// GetVerification returns the verification field value, or an empty slice if nil.
+func (r *Consent) GetVerification() []ConsentVerification {
+	if r.Verification != nil {
+		return r.Verification
+	}
+	return nil
+}

@@ -302,3 +302,169 @@ type RelatedPersonCommunication struct {
 	// PreferredElement contains element extensions for preferred.
 	PreferredElement *dt.Element `json:"_preferred,omitempty"`
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *RelatedPerson) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *RelatedPerson) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *RelatedPerson) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *RelatedPerson) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *RelatedPerson) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *RelatedPerson) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *RelatedPerson) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *RelatedPerson) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *RelatedPerson) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetActive returns the active field value, or the zero value if nil.
+func (r *RelatedPerson) GetActive() bool {
+	if r.Active != nil {
+		return *r.Active
+	}
+	var zero bool
+	return zero
+}
+
+// GetAddress returns the address field value, or an empty slice if nil.
+func (r *RelatedPerson) GetAddress() []dt.Address {
+	if r.Address != nil {
+		return r.Address
+	}
+	return nil
+}
+
+// GetBirthDate returns the birthDate field value, or the zero value if nil.
+func (r *RelatedPerson) GetBirthDate() dt.Date {
+	if r.BirthDate != nil {
+		return *r.BirthDate
+	}
+	var zero dt.Date
+	return zero
+}
+
+// GetCommunication returns the communication field value, or an empty slice if nil.
+func (r *RelatedPerson) GetCommunication() []RelatedPersonCommunication {
+	if r.Communication != nil {
+		return r.Communication
+	}
+	return nil
+}
+
+// GetGender returns the gender field value, or the zero value if nil.
+func (r *RelatedPerson) GetGender() AdministrativeGender {
+	if r.Gender != nil {
+		return *r.Gender
+	}
+	var zero AdministrativeGender
+	return zero
+}
+
+// GetName returns the name field value, or an empty slice if nil.
+func (r *RelatedPerson) GetName() []dt.HumanName {
+	if r.Name != nil {
+		return r.Name
+	}
+	return nil
+}
+
+// GetPatient returns the patient field value.
+func (r *RelatedPerson) GetPatient() dt.Reference {
+	return r.Patient
+}
+
+// GetPeriod returns the period field value, or the zero value if nil.
+func (r *RelatedPerson) GetPeriod() dt.Period {
+	if r.Period != nil {
+		return *r.Period
+	}
+	var zero dt.Period
+	return zero
+}
+
+// GetPhoto returns the photo field value, or an empty slice if nil.
+func (r *RelatedPerson) GetPhoto() []dt.Attachment {
+	if r.Photo != nil {
+		return r.Photo
+	}
+	return nil
+}
+
+// GetRelationship returns the relationship field value, or an empty slice if nil.
+func (r *RelatedPerson) GetRelationship() []dt.CodeableConcept {
+	if r.Relationship != nil {
+		return r.Relationship
+	}
+	return nil
+}
+
+// GetTelecom returns the telecom field value, or an empty slice if nil.
+func (r *RelatedPerson) GetTelecom() []dt.ContactPoint {
+	if r.Telecom != nil {
+		return r.Telecom
+	}
+	return nil
+}

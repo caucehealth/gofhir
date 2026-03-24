@@ -246,3 +246,137 @@ func (b *BodyStructureBuilder) Build() (*BodyStructure, error) {
 	r := b.resource
 	return &r, nil
 }
+
+// GetId returns the id field value, or the zero value if nil.
+func (r *BodyStructure) GetId() dt.ID {
+	if r.Id != nil {
+		return *r.Id
+	}
+	var zero dt.ID
+	return zero
+}
+
+// GetMeta returns the meta field value, or the zero value if nil.
+func (r *BodyStructure) GetMeta() dt.Meta {
+	if r.Meta != nil {
+		return *r.Meta
+	}
+	var zero dt.Meta
+	return zero
+}
+
+// GetImplicitRules returns the implicitRules field value, or the zero value if nil.
+func (r *BodyStructure) GetImplicitRules() dt.URI {
+	if r.ImplicitRules != nil {
+		return *r.ImplicitRules
+	}
+	var zero dt.URI
+	return zero
+}
+
+// GetLanguage returns the language field value, or the zero value if nil.
+func (r *BodyStructure) GetLanguage() dt.Code {
+	if r.Language != nil {
+		return *r.Language
+	}
+	var zero dt.Code
+	return zero
+}
+
+// GetText returns the text field value, or the zero value if nil.
+func (r *BodyStructure) GetText() dt.Narrative {
+	if r.Text != nil {
+		return *r.Text
+	}
+	var zero dt.Narrative
+	return zero
+}
+
+// GetContained returns the contained field value, or an empty slice if nil.
+func (r *BodyStructure) GetContained() []json.RawMessage {
+	if r.Contained != nil {
+		return r.Contained
+	}
+	return nil
+}
+
+// GetExtension returns the extension field value, or an empty slice if nil.
+func (r *BodyStructure) GetExtension() []dt.Extension {
+	if r.Extension != nil {
+		return r.Extension
+	}
+	return nil
+}
+
+// GetModifierExtension returns the modifierExtension field value, or an empty slice if nil.
+func (r *BodyStructure) GetModifierExtension() []dt.Extension {
+	if r.ModifierExtension != nil {
+		return r.ModifierExtension
+	}
+	return nil
+}
+
+// GetIdentifier returns the identifier field value, or an empty slice if nil.
+func (r *BodyStructure) GetIdentifier() []dt.Identifier {
+	if r.Identifier != nil {
+		return r.Identifier
+	}
+	return nil
+}
+
+// GetActive returns the active field value, or the zero value if nil.
+func (r *BodyStructure) GetActive() bool {
+	if r.Active != nil {
+		return *r.Active
+	}
+	var zero bool
+	return zero
+}
+
+// GetDescription returns the description field value, or the zero value if nil.
+func (r *BodyStructure) GetDescription() string {
+	if r.Description != nil {
+		return *r.Description
+	}
+	var zero string
+	return zero
+}
+
+// GetImage returns the image field value, or an empty slice if nil.
+func (r *BodyStructure) GetImage() []dt.Attachment {
+	if r.Image != nil {
+		return r.Image
+	}
+	return nil
+}
+
+// GetLocation returns the location field value, or the zero value if nil.
+func (r *BodyStructure) GetLocation() dt.CodeableConcept {
+	if r.Location != nil {
+		return *r.Location
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetLocationQualifier returns the locationQualifier field value, or an empty slice if nil.
+func (r *BodyStructure) GetLocationQualifier() []dt.CodeableConcept {
+	if r.LocationQualifier != nil {
+		return r.LocationQualifier
+	}
+	return nil
+}
+
+// GetMorphology returns the morphology field value, or the zero value if nil.
+func (r *BodyStructure) GetMorphology() dt.CodeableConcept {
+	if r.Morphology != nil {
+		return *r.Morphology
+	}
+	var zero dt.CodeableConcept
+	return zero
+}
+
+// GetPatient returns the patient field value.
+func (r *BodyStructure) GetPatient() dt.Reference {
+	return r.Patient
+}
