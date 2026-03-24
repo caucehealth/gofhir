@@ -307,6 +307,51 @@ type QuestionnaireAnswerOption struct {
 	Value *QuestionnaireAnswerOptionValue `json:"-"` // polymorphic
 }
 
+// MarshalJSON implements the json.Marshaler interface for QuestionnaireAnswerOption.
+func (r QuestionnaireAnswerOption) MarshalJSON() ([]byte, error) {
+	type Alias QuestionnaireAnswerOption
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Value != nil {
+		vData, err := json.Marshal(r.Value)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for QuestionnaireAnswerOption.
+func (r *QuestionnaireAnswerOption) UnmarshalJSON(data []byte) error {
+	type Alias QuestionnaireAnswerOption
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = QuestionnaireAnswerOption(alias)
+	var valueVal QuestionnaireAnswerOptionValue
+	if err := valueVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if valueVal.Coding != nil || valueVal.Date != nil || valueVal.Integer != nil || valueVal.Reference != nil || valueVal.String != nil || valueVal.Time != nil {
+		r.Value = &valueVal
+	}
+	return nil
+}
+
 // QuestionnaireAnswerOptionValue represents a polymorphic choice type in FHIR.
 type QuestionnaireAnswerOptionValue struct {
 	Coding    *dt.Coding    `json:"valueCoding,omitempty"`    // A potential answer that's allowed as the answer to this question.
@@ -436,6 +481,51 @@ type QuestionnaireInitial struct {
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Value The actual value to for an initial answer.
 	Value *QuestionnaireInitialValue `json:"-"` // polymorphic
+}
+
+// MarshalJSON implements the json.Marshaler interface for QuestionnaireInitial.
+func (r QuestionnaireInitial) MarshalJSON() ([]byte, error) {
+	type Alias QuestionnaireInitial
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Value != nil {
+		vData, err := json.Marshal(r.Value)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for QuestionnaireInitial.
+func (r *QuestionnaireInitial) UnmarshalJSON(data []byte) error {
+	type Alias QuestionnaireInitial
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = QuestionnaireInitial(alias)
+	var valueVal QuestionnaireInitialValue
+	if err := valueVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if valueVal.Attachment != nil || valueVal.Boolean != nil || valueVal.Coding != nil || valueVal.Date != nil || valueVal.DateTime != nil || valueVal.Decimal != nil || valueVal.Integer != nil || valueVal.Quantity != nil || valueVal.Reference != nil || valueVal.String != nil || valueVal.Time != nil || valueVal.Uri != nil {
+		r.Value = &valueVal
+	}
+	return nil
 }
 
 // QuestionnaireInitialValue represents a polymorphic choice type in FHIR.

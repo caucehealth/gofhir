@@ -123,19 +123,19 @@ func (r *MedicationAdministration) UnmarshalJSON(data []byte) error {
 	}
 	*r = MedicationAdministration(alias)
 	// Unmarshal polymorphic fields
-	var effectiveVal MedicationAdministrationEffective
-	if err := effectiveVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if effectiveVal.DateTime != nil || effectiveVal.Period != nil {
-		r.Effective = &effectiveVal
-	}
 	var medicationVal MedicationAdministrationMedication
 	if err := medicationVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if medicationVal.CodeableConcept != nil || medicationVal.Reference != nil {
 		r.Medication = &medicationVal
+	}
+	var effectiveVal MedicationAdministrationEffective
+	if err := effectiveVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if effectiveVal.DateTime != nil || effectiveVal.Period != nil {
+		r.Effective = &effectiveVal
 	}
 	return nil
 }
@@ -363,6 +363,51 @@ type MedicationAdministrationDosage struct {
 	Route *dt.CodeableConcept `json:"route,omitempty"`
 	// Site A coded specification of the anatomic site where the medication first entered the body.  For example, "left arm".
 	Site *dt.CodeableConcept `json:"site,omitempty"`
+}
+
+// MarshalJSON implements the json.Marshaler interface for MedicationAdministrationDosage.
+func (r MedicationAdministrationDosage) MarshalJSON() ([]byte, error) {
+	type Alias MedicationAdministrationDosage
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Rate != nil {
+		vData, err := json.Marshal(r.Rate)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for MedicationAdministrationDosage.
+func (r *MedicationAdministrationDosage) UnmarshalJSON(data []byte) error {
+	type Alias MedicationAdministrationDosage
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = MedicationAdministrationDosage(alias)
+	var rateVal MedicationAdministrationDosageRate
+	if err := rateVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if rateVal.Quantity != nil || rateVal.Ratio != nil {
+		r.Rate = &rateVal
+	}
+	return nil
 }
 
 // MedicationAdministrationDosageRate represents a polymorphic choice type in FHIR.

@@ -334,6 +334,51 @@ type StructureMapParameter struct {
 	Value *StructureMapParameterValue `json:"-"` // polymorphic
 }
 
+// MarshalJSON implements the json.Marshaler interface for StructureMapParameter.
+func (r StructureMapParameter) MarshalJSON() ([]byte, error) {
+	type Alias StructureMapParameter
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Value != nil {
+		vData, err := json.Marshal(r.Value)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for StructureMapParameter.
+func (r *StructureMapParameter) UnmarshalJSON(data []byte) error {
+	type Alias StructureMapParameter
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = StructureMapParameter(alias)
+	var valueVal StructureMapParameterValue
+	if err := valueVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if valueVal.Boolean != nil || valueVal.Decimal != nil || valueVal.Id != nil || valueVal.Integer != nil || valueVal.String != nil {
+		r.Value = &valueVal
+	}
+	return nil
+}
+
 // StructureMapParameterValue represents a polymorphic choice type in FHIR.
 type StructureMapParameterValue struct {
 	Boolean *bool    `json:"valueBoolean,omitempty"` // Parameter value - variable or literal.
@@ -460,6 +505,51 @@ type StructureMapSource struct {
 	Type *string `json:"type,omitempty"`
 	// Variable Named context for field, if a field is specified.
 	Variable *dt.ID `json:"variable,omitempty"`
+}
+
+// MarshalJSON implements the json.Marshaler interface for StructureMapSource.
+func (r StructureMapSource) MarshalJSON() ([]byte, error) {
+	type Alias StructureMapSource
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.DefaultValue != nil {
+		vData, err := json.Marshal(r.DefaultValue)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for StructureMapSource.
+func (r *StructureMapSource) UnmarshalJSON(data []byte) error {
+	type Alias StructureMapSource
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = StructureMapSource(alias)
+	var defaultValueVal StructureMapSourceDefaultValue
+	if err := defaultValueVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if defaultValueVal.Address != nil || defaultValueVal.Age != nil || defaultValueVal.Annotation != nil || defaultValueVal.Attachment != nil || defaultValueVal.Base64Binary != nil || defaultValueVal.Boolean != nil || defaultValueVal.Canonical != nil || defaultValueVal.Code != nil || defaultValueVal.CodeableConcept != nil || defaultValueVal.Coding != nil || defaultValueVal.ContactDetail != nil || defaultValueVal.ContactPoint != nil || defaultValueVal.Contributor != nil || defaultValueVal.Count != nil || defaultValueVal.DataRequirement != nil || defaultValueVal.Date != nil || defaultValueVal.DateTime != nil || defaultValueVal.Decimal != nil || defaultValueVal.Distance != nil || defaultValueVal.Dosage != nil || defaultValueVal.Duration != nil || defaultValueVal.Expression != nil || defaultValueVal.HumanName != nil || defaultValueVal.Id != nil || defaultValueVal.Identifier != nil || defaultValueVal.Instant != nil || defaultValueVal.Integer != nil || defaultValueVal.Markdown != nil || defaultValueVal.Meta != nil || defaultValueVal.Money != nil || defaultValueVal.Oid != nil || defaultValueVal.ParameterDefinition != nil || defaultValueVal.Period != nil || defaultValueVal.PositiveInt != nil || defaultValueVal.Quantity != nil || defaultValueVal.Range != nil || defaultValueVal.Ratio != nil || defaultValueVal.Reference != nil || defaultValueVal.RelatedArtifact != nil || defaultValueVal.SampledData != nil || defaultValueVal.Signature != nil || defaultValueVal.String != nil || defaultValueVal.Time != nil || defaultValueVal.Timing != nil || defaultValueVal.TriggerDefinition != nil || defaultValueVal.UnsignedInt != nil || defaultValueVal.Uri != nil || defaultValueVal.Url != nil || defaultValueVal.UsageContext != nil || defaultValueVal.Uuid != nil {
+		r.DefaultValue = &defaultValueVal
+	}
+	return nil
 }
 
 // StructureMapSourceDefaultValue represents a polymorphic choice type in FHIR.

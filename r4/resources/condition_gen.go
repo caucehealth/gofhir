@@ -81,8 +81,8 @@ func (r Condition) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Abatement != nil {
-		vData, err := json.Marshal(r.Abatement)
+	if r.Onset != nil {
+		vData, err := json.Marshal(r.Onset)
 		if err != nil {
 			return nil, err
 		}
@@ -94,8 +94,8 @@ func (r Condition) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Onset != nil {
-		vData, err := json.Marshal(r.Onset)
+	if r.Abatement != nil {
+		vData, err := json.Marshal(r.Abatement)
 		if err != nil {
 			return nil, err
 		}

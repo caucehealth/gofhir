@@ -333,6 +333,51 @@ type ClinicalImpressionFinding struct {
 	Item *ClinicalImpressionFindingItem `json:"-"` // polymorphic
 }
 
+// MarshalJSON implements the json.Marshaler interface for ClinicalImpressionFinding.
+func (r ClinicalImpressionFinding) MarshalJSON() ([]byte, error) {
+	type Alias ClinicalImpressionFinding
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Item != nil {
+		vData, err := json.Marshal(r.Item)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ClinicalImpressionFinding.
+func (r *ClinicalImpressionFinding) UnmarshalJSON(data []byte) error {
+	type Alias ClinicalImpressionFinding
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = ClinicalImpressionFinding(alias)
+	var itemVal ClinicalImpressionFindingItem
+	if err := itemVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if itemVal.CodeableConcept != nil || itemVal.Reference != nil {
+		r.Item = &itemVal
+	}
+	return nil
+}
+
 // ClinicalImpressionFindingItem represents a polymorphic choice type in FHIR.
 type ClinicalImpressionFindingItem struct {
 	CodeableConcept *dt.CodeableConcept `json:"itemCodeableConcept,omitempty"` // Specific text or code for finding or diagnosis, which may include ruled-out or resolved conditions.

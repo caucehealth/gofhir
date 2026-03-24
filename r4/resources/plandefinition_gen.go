@@ -439,6 +439,71 @@ type PlanDefinitionAction struct {
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 }
 
+// MarshalJSON implements the json.Marshaler interface for PlanDefinitionAction.
+func (r PlanDefinitionAction) MarshalJSON() ([]byte, error) {
+	type Alias PlanDefinitionAction
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Definition != nil {
+		vData, err := json.Marshal(r.Definition)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	if r.Timing != nil {
+		vData, err := json.Marshal(r.Timing)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for PlanDefinitionAction.
+func (r *PlanDefinitionAction) UnmarshalJSON(data []byte) error {
+	type Alias PlanDefinitionAction
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = PlanDefinitionAction(alias)
+	var timingVal PlanDefinitionActionTiming
+	if err := timingVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if timingVal.Age != nil || timingVal.DateTime != nil || timingVal.Duration != nil || timingVal.Period != nil || timingVal.Range != nil || timingVal.Timing != nil {
+		r.Timing = &timingVal
+	}
+	var definitionVal PlanDefinitionActionDefinition
+	if err := definitionVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if definitionVal.Canonical != nil || definitionVal.Uri != nil {
+		r.Definition = &definitionVal
+	}
+	return nil
+}
+
 // PlanDefinitionActionDefinition represents a polymorphic choice type in FHIR.
 type PlanDefinitionActionDefinition struct {
 	Canonical *string `json:"definitionCanonical,omitempty"` // A reference to an ActivityDefinition that describes the action to be taken in detail, or a PlanDefinition that describes a series of actions to be taken.

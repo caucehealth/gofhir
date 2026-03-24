@@ -375,6 +375,12 @@ func generateResource(res *spec.ResourceDef, fhirSpec *spec.FHIRSpec) error {
 		}
 		buf.WriteString("}\n\n")
 
+		// MarshalJSON/UnmarshalJSON for backbone elements with value[x]
+		if len(beValueGroups) > 0 {
+			writeBackboneMarshalJSON(&buf, goName, beValueGroups)
+			writeBackboneUnmarshalJSON(&buf, goName, beValueGroups, fhirSpec)
+		}
+
 		// Value[x] union types for backbone elements
 		for groupName, fields := range beValueGroups {
 			unionName := goName + exportName(groupName)
@@ -747,6 +753,70 @@ func isCustomPrimitive(goType string) bool {
 		return true
 	}
 	return false
+}
+
+func writeBackboneMarshalJSON(buf *bytes.Buffer, typeName string, valueGroups map[string][]*spec.FieldDef) {
+	fmt.Fprintf(buf, "// MarshalJSON implements the json.Marshaler interface for %s.\n", typeName)
+	fmt.Fprintf(buf, "func (r %s) MarshalJSON() ([]byte, error) {\n", typeName)
+	fmt.Fprintf(buf, "\ttype Alias %s\n", typeName)
+	buf.WriteString("\tdata, err := json.Marshal((Alias)(r))\n")
+	buf.WriteString("\tif err != nil {\n")
+	buf.WriteString("\t\treturn nil, err\n")
+	buf.WriteString("\t}\n")
+	buf.WriteString("\tvar m map[string]json.RawMessage\n")
+	buf.WriteString("\tif err := json.Unmarshal(data, &m); err != nil {\n")
+	buf.WriteString("\t\treturn nil, err\n")
+	buf.WriteString("\t}\n")
+	for prefix := range valueGroups {
+		fieldName := exportName(prefix)
+		fmt.Fprintf(buf, "\tif r.%s != nil {\n", fieldName)
+		fmt.Fprintf(buf, "\t\tvData, err := json.Marshal(r.%s)\n", fieldName)
+		fmt.Fprintf(buf, "\t\tif err != nil {\n")
+		fmt.Fprintf(buf, "\t\t\treturn nil, err\n")
+		fmt.Fprintf(buf, "\t\t}\n")
+		buf.WriteString("\t\tvar vm map[string]json.RawMessage\n")
+		buf.WriteString("\t\tif err := json.Unmarshal(vData, &vm); err != nil {\n")
+		buf.WriteString("\t\t\treturn nil, err\n")
+		buf.WriteString("\t\t}\n")
+		buf.WriteString("\t\tfor k, v := range vm {\n")
+		buf.WriteString("\t\t\tm[k] = v\n")
+		buf.WriteString("\t\t}\n")
+		fmt.Fprintf(buf, "\t}\n")
+	}
+	buf.WriteString("\treturn json.Marshal(m)\n")
+	buf.WriteString("}\n\n")
+}
+
+func writeBackboneUnmarshalJSON(buf *bytes.Buffer, typeName string, valueGroups map[string][]*spec.FieldDef, fhirSpec *spec.FHIRSpec) {
+	fmt.Fprintf(buf, "// UnmarshalJSON implements the json.Unmarshaler interface for %s.\n", typeName)
+	fmt.Fprintf(buf, "func (r *%s) UnmarshalJSON(data []byte) error {\n", typeName)
+	fmt.Fprintf(buf, "\ttype Alias %s\n", typeName)
+	buf.WriteString("\tvar alias Alias\n")
+	buf.WriteString("\tif err := json.Unmarshal(data, &alias); err != nil {\n")
+	buf.WriteString("\t\treturn err\n")
+	buf.WriteString("\t}\n")
+	fmt.Fprintf(buf, "\t*r = %s(alias)\n", typeName)
+	for prefix, fields := range valueGroups {
+		fieldName := exportName(prefix)
+		unionTypeName := typeName + exportName(prefix)
+		fmt.Fprintf(buf, "\tvar %sVal %s\n", prefix, unionTypeName)
+		fmt.Fprintf(buf, "\tif err := %sVal.UnmarshalJSON(data); err != nil {\n", prefix)
+		buf.WriteString("\t\treturn err\n")
+		buf.WriteString("\t}\n")
+		fmt.Fprintf(buf, "\tif ")
+		for i, f := range fields {
+			fn := getValueXFieldName(f.JSONName)
+			if i > 0 {
+				buf.WriteString(" || ")
+			}
+			fmt.Fprintf(buf, "%sVal.%s != nil", prefix, fn)
+		}
+		buf.WriteString(" {\n")
+		fmt.Fprintf(buf, "\t\tr.%s = &%sVal\n", fieldName, prefix)
+		buf.WriteString("\t}\n")
+	}
+	buf.WriteString("\treturn nil\n")
+	buf.WriteString("}\n\n")
 }
 
 func writeResourceMarshalJSON(buf *bytes.Buffer, res *spec.ResourceDef, fhirSpec *spec.FHIRSpec) {

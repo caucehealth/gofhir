@@ -187,6 +187,51 @@ type MedicinalProductContraindicationOtherTherapy struct {
 	TherapyRelationshipType dt.CodeableConcept `json:"therapyRelationshipType"`
 }
 
+// MarshalJSON implements the json.Marshaler interface for MedicinalProductContraindicationOtherTherapy.
+func (r MedicinalProductContraindicationOtherTherapy) MarshalJSON() ([]byte, error) {
+	type Alias MedicinalProductContraindicationOtherTherapy
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Medication != nil {
+		vData, err := json.Marshal(r.Medication)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for MedicinalProductContraindicationOtherTherapy.
+func (r *MedicinalProductContraindicationOtherTherapy) UnmarshalJSON(data []byte) error {
+	type Alias MedicinalProductContraindicationOtherTherapy
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = MedicinalProductContraindicationOtherTherapy(alias)
+	var medicationVal MedicinalProductContraindicationOtherTherapyMedication
+	if err := medicationVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if medicationVal.CodeableConcept != nil || medicationVal.Reference != nil {
+		r.Medication = &medicationVal
+	}
+	return nil
+}
+
 // MedicinalProductContraindicationOtherTherapyMedication represents a polymorphic choice type in FHIR.
 type MedicinalProductContraindicationOtherTherapyMedication struct {
 	CodeableConcept *dt.CodeableConcept `json:"medicationCodeableConcept,omitempty"` // Reference to a specific medication (active substance, medicinal product or class of products) as part of an indication or contraindication.

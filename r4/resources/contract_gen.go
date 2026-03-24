@@ -449,6 +449,51 @@ type ContractAction struct {
 	Type dt.CodeableConcept `json:"type"`
 }
 
+// MarshalJSON implements the json.Marshaler interface for ContractAction.
+func (r ContractAction) MarshalJSON() ([]byte, error) {
+	type Alias ContractAction
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Occurrence != nil {
+		vData, err := json.Marshal(r.Occurrence)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ContractAction.
+func (r *ContractAction) UnmarshalJSON(data []byte) error {
+	type Alias ContractAction
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = ContractAction(alias)
+	var occurrenceVal ContractActionOccurrence
+	if err := occurrenceVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if occurrenceVal.DateTime != nil || occurrenceVal.Period != nil || occurrenceVal.Timing != nil {
+		r.Occurrence = &occurrenceVal
+	}
+	return nil
+}
+
 // ContractActionOccurrence represents a polymorphic choice type in FHIR.
 type ContractActionOccurrence struct {
 	DateTime *string    `json:"occurrenceDateTime,omitempty"` // When action happens.
@@ -511,6 +556,51 @@ type ContractAnswer struct {
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Value Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whethe...
 	Value *ContractAnswerValue `json:"-"` // polymorphic
+}
+
+// MarshalJSON implements the json.Marshaler interface for ContractAnswer.
+func (r ContractAnswer) MarshalJSON() ([]byte, error) {
+	type Alias ContractAnswer
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Value != nil {
+		vData, err := json.Marshal(r.Value)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ContractAnswer.
+func (r *ContractAnswer) UnmarshalJSON(data []byte) error {
+	type Alias ContractAnswer
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = ContractAnswer(alias)
+	var valueVal ContractAnswerValue
+	if err := valueVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if valueVal.Attachment != nil || valueVal.Boolean != nil || valueVal.Coding != nil || valueVal.Date != nil || valueVal.DateTime != nil || valueVal.Decimal != nil || valueVal.Integer != nil || valueVal.Quantity != nil || valueVal.Reference != nil || valueVal.String != nil || valueVal.Time != nil || valueVal.Uri != nil {
+		r.Value = &valueVal
+	}
+	return nil
 }
 
 // ContractAnswerValue represents a polymorphic choice type in FHIR.
@@ -948,6 +1038,51 @@ type ContractValuedItem struct {
 	SecurityLabelNumber []uint32 `json:"securityLabelNumber,omitempty"`
 	// UnitPrice A Contract Valued Item unit valuation measure.
 	UnitPrice *dt.Money `json:"unitPrice,omitempty"`
+}
+
+// MarshalJSON implements the json.Marshaler interface for ContractValuedItem.
+func (r ContractValuedItem) MarshalJSON() ([]byte, error) {
+	type Alias ContractValuedItem
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Entity != nil {
+		vData, err := json.Marshal(r.Entity)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ContractValuedItem.
+func (r *ContractValuedItem) UnmarshalJSON(data []byte) error {
+	type Alias ContractValuedItem
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = ContractValuedItem(alias)
+	var entityVal ContractValuedItemEntity
+	if err := entityVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if entityVal.CodeableConcept != nil || entityVal.Reference != nil {
+		r.Entity = &entityVal
+	}
+	return nil
 }
 
 // ContractValuedItemEntity represents a polymorphic choice type in FHIR.

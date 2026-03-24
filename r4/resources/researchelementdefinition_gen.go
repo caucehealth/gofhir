@@ -442,6 +442,51 @@ type ResearchElementDefinitionCharacteristic struct {
 	UsageContext []dt.UsageContext `json:"usageContext,omitempty"`
 }
 
+// MarshalJSON implements the json.Marshaler interface for ResearchElementDefinitionCharacteristic.
+func (r ResearchElementDefinitionCharacteristic) MarshalJSON() ([]byte, error) {
+	type Alias ResearchElementDefinitionCharacteristic
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Definition != nil {
+		vData, err := json.Marshal(r.Definition)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ResearchElementDefinitionCharacteristic.
+func (r *ResearchElementDefinitionCharacteristic) UnmarshalJSON(data []byte) error {
+	type Alias ResearchElementDefinitionCharacteristic
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = ResearchElementDefinitionCharacteristic(alias)
+	var definitionVal ResearchElementDefinitionCharacteristicDefinition
+	if err := definitionVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if definitionVal.Canonical != nil || definitionVal.CodeableConcept != nil || definitionVal.DataRequirement != nil || definitionVal.Expression != nil {
+		r.Definition = &definitionVal
+	}
+	return nil
+}
+
 // ResearchElementDefinitionCharacteristicDefinition represents a polymorphic choice type in FHIR.
 type ResearchElementDefinitionCharacteristicDefinition struct {
 	Canonical       *string             `json:"definitionCanonical,omitempty"`       // Define members of the research element using Codes (such as condition, medication, or observation), Expressions ( using an expression language such as FHIRPath or CQL) or DataRequirements (such as ...

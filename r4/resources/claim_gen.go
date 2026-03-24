@@ -356,6 +356,51 @@ type ClaimAccident struct {
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 }
 
+// MarshalJSON implements the json.Marshaler interface for ClaimAccident.
+func (r ClaimAccident) MarshalJSON() ([]byte, error) {
+	type Alias ClaimAccident
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Location != nil {
+		vData, err := json.Marshal(r.Location)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ClaimAccident.
+func (r *ClaimAccident) UnmarshalJSON(data []byte) error {
+	type Alias ClaimAccident
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = ClaimAccident(alias)
+	var locationVal ClaimAccidentLocation
+	if err := locationVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if locationVal.Address != nil || locationVal.Reference != nil {
+		r.Location = &locationVal
+	}
+	return nil
+}
+
 // ClaimAccidentLocation represents a polymorphic choice type in FHIR.
 type ClaimAccidentLocation struct {
 	Address   *dt.Address   `json:"locationAddress,omitempty"`   // The physical location of the accident event.
@@ -469,6 +514,51 @@ type ClaimDiagnosis struct {
 	Sequence *uint32 `json:"sequence,omitempty"`
 	// Type When the condition was observed or the relative ranking.
 	Type []dt.CodeableConcept `json:"type,omitempty"`
+}
+
+// MarshalJSON implements the json.Marshaler interface for ClaimDiagnosis.
+func (r ClaimDiagnosis) MarshalJSON() ([]byte, error) {
+	type Alias ClaimDiagnosis
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Diagnosis != nil {
+		vData, err := json.Marshal(r.Diagnosis)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ClaimDiagnosis.
+func (r *ClaimDiagnosis) UnmarshalJSON(data []byte) error {
+	type Alias ClaimDiagnosis
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = ClaimDiagnosis(alias)
+	var diagnosisVal ClaimDiagnosisDiagnosis
+	if err := diagnosisVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if diagnosisVal.CodeableConcept != nil || diagnosisVal.Reference != nil {
+		r.Diagnosis = &diagnosisVal
+	}
+	return nil
 }
 
 // ClaimDiagnosisDiagnosis represents a polymorphic choice type in FHIR.
@@ -586,6 +676,71 @@ type ClaimItem struct {
 	Udi []dt.Reference `json:"udi,omitempty"`
 	// UnitPrice If the item is not a group then this is the fee for the product or service, otherwise this is the total of the fees for the details of the group.
 	UnitPrice *dt.Money `json:"unitPrice,omitempty"`
+}
+
+// MarshalJSON implements the json.Marshaler interface for ClaimItem.
+func (r ClaimItem) MarshalJSON() ([]byte, error) {
+	type Alias ClaimItem
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Serviced != nil {
+		vData, err := json.Marshal(r.Serviced)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	if r.Location != nil {
+		vData, err := json.Marshal(r.Location)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ClaimItem.
+func (r *ClaimItem) UnmarshalJSON(data []byte) error {
+	type Alias ClaimItem
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = ClaimItem(alias)
+	var locationVal ClaimItemLocation
+	if err := locationVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if locationVal.Address != nil || locationVal.CodeableConcept != nil || locationVal.Reference != nil {
+		r.Location = &locationVal
+	}
+	var servicedVal ClaimItemServiced
+	if err := servicedVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if servicedVal.Date != nil || servicedVal.Period != nil {
+		r.Serviced = &servicedVal
+	}
+	return nil
 }
 
 // ClaimItemServiced represents a polymorphic choice type in FHIR.
@@ -715,6 +870,51 @@ type ClaimProcedure struct {
 	Udi []dt.Reference `json:"udi,omitempty"`
 }
 
+// MarshalJSON implements the json.Marshaler interface for ClaimProcedure.
+func (r ClaimProcedure) MarshalJSON() ([]byte, error) {
+	type Alias ClaimProcedure
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Procedure != nil {
+		vData, err := json.Marshal(r.Procedure)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ClaimProcedure.
+func (r *ClaimProcedure) UnmarshalJSON(data []byte) error {
+	type Alias ClaimProcedure
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = ClaimProcedure(alias)
+	var procedureVal ClaimProcedureProcedure
+	if err := procedureVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if procedureVal.CodeableConcept != nil || procedureVal.Reference != nil {
+		r.Procedure = &procedureVal
+	}
+	return nil
+}
+
 // ClaimProcedureProcedure represents a polymorphic choice type in FHIR.
 type ClaimProcedureProcedure struct {
 	CodeableConcept *dt.CodeableConcept `json:"procedureCodeableConcept,omitempty"` // The code or reference to a Procedure resource which identifies the clinical intervention performed.
@@ -824,6 +1024,71 @@ type ClaimSupportingInfo struct {
 	Timing *ClaimSupportingInfoTiming `json:"-"` // polymorphic
 	// Value Additional data or information such as resources, documents, images etc. including references to the data or the actual inclusion of the data.
 	Value *ClaimSupportingInfoValue `json:"-"` // polymorphic
+}
+
+// MarshalJSON implements the json.Marshaler interface for ClaimSupportingInfo.
+func (r ClaimSupportingInfo) MarshalJSON() ([]byte, error) {
+	type Alias ClaimSupportingInfo
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Timing != nil {
+		vData, err := json.Marshal(r.Timing)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	if r.Value != nil {
+		vData, err := json.Marshal(r.Value)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ClaimSupportingInfo.
+func (r *ClaimSupportingInfo) UnmarshalJSON(data []byte) error {
+	type Alias ClaimSupportingInfo
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = ClaimSupportingInfo(alias)
+	var timingVal ClaimSupportingInfoTiming
+	if err := timingVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if timingVal.Date != nil || timingVal.Period != nil {
+		r.Timing = &timingVal
+	}
+	var valueVal ClaimSupportingInfoValue
+	if err := valueVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if valueVal.Attachment != nil || valueVal.Boolean != nil || valueVal.Quantity != nil || valueVal.Reference != nil || valueVal.String != nil {
+		r.Value = &valueVal
+	}
+	return nil
 }
 
 // ClaimSupportingInfoTiming represents a polymorphic choice type in FHIR.

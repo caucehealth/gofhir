@@ -379,6 +379,51 @@ type TaskInput struct {
 	Value *TaskInputValue `json:"-"` // polymorphic
 }
 
+// MarshalJSON implements the json.Marshaler interface for TaskInput.
+func (r TaskInput) MarshalJSON() ([]byte, error) {
+	type Alias TaskInput
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Value != nil {
+		vData, err := json.Marshal(r.Value)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for TaskInput.
+func (r *TaskInput) UnmarshalJSON(data []byte) error {
+	type Alias TaskInput
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = TaskInput(alias)
+	var valueVal TaskInputValue
+	if err := valueVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if valueVal.Address != nil || valueVal.Age != nil || valueVal.Annotation != nil || valueVal.Attachment != nil || valueVal.Base64Binary != nil || valueVal.Boolean != nil || valueVal.Canonical != nil || valueVal.Code != nil || valueVal.CodeableConcept != nil || valueVal.Coding != nil || valueVal.ContactDetail != nil || valueVal.ContactPoint != nil || valueVal.Contributor != nil || valueVal.Count != nil || valueVal.DataRequirement != nil || valueVal.Date != nil || valueVal.DateTime != nil || valueVal.Decimal != nil || valueVal.Distance != nil || valueVal.Dosage != nil || valueVal.Duration != nil || valueVal.Expression != nil || valueVal.HumanName != nil || valueVal.Id != nil || valueVal.Identifier != nil || valueVal.Instant != nil || valueVal.Integer != nil || valueVal.Markdown != nil || valueVal.Meta != nil || valueVal.Money != nil || valueVal.Oid != nil || valueVal.ParameterDefinition != nil || valueVal.Period != nil || valueVal.PositiveInt != nil || valueVal.Quantity != nil || valueVal.Range != nil || valueVal.Ratio != nil || valueVal.Reference != nil || valueVal.RelatedArtifact != nil || valueVal.SampledData != nil || valueVal.Signature != nil || valueVal.String != nil || valueVal.Time != nil || valueVal.Timing != nil || valueVal.TriggerDefinition != nil || valueVal.UnsignedInt != nil || valueVal.Uri != nil || valueVal.Url != nil || valueVal.UsageContext != nil || valueVal.Uuid != nil {
+		r.Value = &valueVal
+	}
+	return nil
+}
+
 // TaskInputValue represents a polymorphic choice type in FHIR.
 type TaskInputValue struct {
 	Address             *dt.Address             `json:"valueAddress,omitempty"`             // The value of the input parameter as a basic type.
@@ -960,6 +1005,51 @@ type TaskOutput struct {
 	Type dt.CodeableConcept `json:"type"`
 	// Value The value of the Output parameter as a basic type.
 	Value *TaskOutputValue `json:"-"` // polymorphic
+}
+
+// MarshalJSON implements the json.Marshaler interface for TaskOutput.
+func (r TaskOutput) MarshalJSON() ([]byte, error) {
+	type Alias TaskOutput
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Value != nil {
+		vData, err := json.Marshal(r.Value)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for TaskOutput.
+func (r *TaskOutput) UnmarshalJSON(data []byte) error {
+	type Alias TaskOutput
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = TaskOutput(alias)
+	var valueVal TaskOutputValue
+	if err := valueVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if valueVal.Address != nil || valueVal.Age != nil || valueVal.Annotation != nil || valueVal.Attachment != nil || valueVal.Base64Binary != nil || valueVal.Boolean != nil || valueVal.Canonical != nil || valueVal.Code != nil || valueVal.CodeableConcept != nil || valueVal.Coding != nil || valueVal.ContactDetail != nil || valueVal.ContactPoint != nil || valueVal.Contributor != nil || valueVal.Count != nil || valueVal.DataRequirement != nil || valueVal.Date != nil || valueVal.DateTime != nil || valueVal.Decimal != nil || valueVal.Distance != nil || valueVal.Dosage != nil || valueVal.Duration != nil || valueVal.Expression != nil || valueVal.HumanName != nil || valueVal.Id != nil || valueVal.Identifier != nil || valueVal.Instant != nil || valueVal.Integer != nil || valueVal.Markdown != nil || valueVal.Meta != nil || valueVal.Money != nil || valueVal.Oid != nil || valueVal.ParameterDefinition != nil || valueVal.Period != nil || valueVal.PositiveInt != nil || valueVal.Quantity != nil || valueVal.Range != nil || valueVal.Ratio != nil || valueVal.Reference != nil || valueVal.RelatedArtifact != nil || valueVal.SampledData != nil || valueVal.Signature != nil || valueVal.String != nil || valueVal.Time != nil || valueVal.Timing != nil || valueVal.TriggerDefinition != nil || valueVal.UnsignedInt != nil || valueVal.Uri != nil || valueVal.Url != nil || valueVal.UsageContext != nil || valueVal.Uuid != nil {
+		r.Value = &valueVal
+	}
+	return nil
 }
 
 // TaskOutputValue represents a polymorphic choice type in FHIR.

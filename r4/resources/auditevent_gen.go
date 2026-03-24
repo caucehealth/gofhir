@@ -258,6 +258,51 @@ type AuditEventDetail struct {
 	Value *AuditEventDetailValue `json:"-"` // polymorphic
 }
 
+// MarshalJSON implements the json.Marshaler interface for AuditEventDetail.
+func (r AuditEventDetail) MarshalJSON() ([]byte, error) {
+	type Alias AuditEventDetail
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Value != nil {
+		vData, err := json.Marshal(r.Value)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for AuditEventDetail.
+func (r *AuditEventDetail) UnmarshalJSON(data []byte) error {
+	type Alias AuditEventDetail
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = AuditEventDetail(alias)
+	var valueVal AuditEventDetailValue
+	if err := valueVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if valueVal.Base64Binary != nil || valueVal.String != nil {
+		r.Value = &valueVal
+	}
+	return nil
+}
+
 // AuditEventDetailValue represents a polymorphic choice type in FHIR.
 type AuditEventDetailValue struct {
 	Base64Binary *string `json:"valueBase64Binary,omitempty"` // The  value of the extra detail.

@@ -148,13 +148,6 @@ func (r *ChargeItem) UnmarshalJSON(data []byte) error {
 	}
 	*r = ChargeItem(alias)
 	// Unmarshal polymorphic fields
-	var definitionVal ChargeItemDefinitionChoice
-	if err := definitionVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if definitionVal.Canonical != nil || definitionVal.Uri != nil {
-		r.Definition = &definitionVal
-	}
 	var occurrenceVal ChargeItemOccurrence
 	if err := occurrenceVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -168,6 +161,13 @@ func (r *ChargeItem) UnmarshalJSON(data []byte) error {
 	}
 	if productVal.CodeableConcept != nil || productVal.Reference != nil {
 		r.Product = &productVal
+	}
+	var definitionVal ChargeItemDefinitionChoice
+	if err := definitionVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if definitionVal.Canonical != nil || definitionVal.Uri != nil {
+		r.Definition = &definitionVal
 	}
 	return nil
 }

@@ -508,6 +508,51 @@ type MedicationRequestSubstitution struct {
 	Reason *dt.CodeableConcept `json:"reason,omitempty"`
 }
 
+// MarshalJSON implements the json.Marshaler interface for MedicationRequestSubstitution.
+func (r MedicationRequestSubstitution) MarshalJSON() ([]byte, error) {
+	type Alias MedicationRequestSubstitution
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Allowed != nil {
+		vData, err := json.Marshal(r.Allowed)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for MedicationRequestSubstitution.
+func (r *MedicationRequestSubstitution) UnmarshalJSON(data []byte) error {
+	type Alias MedicationRequestSubstitution
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = MedicationRequestSubstitution(alias)
+	var allowedVal MedicationRequestSubstitutionAllowed
+	if err := allowedVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if allowedVal.Boolean != nil || allowedVal.CodeableConcept != nil {
+		r.Allowed = &allowedVal
+	}
+	return nil
+}
+
 // MedicationRequestSubstitutionAllowed represents a polymorphic choice type in FHIR.
 type MedicationRequestSubstitutionAllowed struct {
 	Boolean         *bool               `json:"allowedBoolean,omitempty"`         // True if the prescriber allows a different drug to be dispensed from what was prescribed.

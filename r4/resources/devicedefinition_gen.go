@@ -359,6 +359,51 @@ type DeviceDefinitionProperty struct {
 	Value *DeviceDefinitionPropertyValue `json:"-"` // polymorphic
 }
 
+// MarshalJSON implements the json.Marshaler interface for DeviceDefinitionProperty.
+func (r DeviceDefinitionProperty) MarshalJSON() ([]byte, error) {
+	type Alias DeviceDefinitionProperty
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Value != nil {
+		vData, err := json.Marshal(r.Value)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for DeviceDefinitionProperty.
+func (r *DeviceDefinitionProperty) UnmarshalJSON(data []byte) error {
+	type Alias DeviceDefinitionProperty
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = DeviceDefinitionProperty(alias)
+	var valueVal DeviceDefinitionPropertyValue
+	if err := valueVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if valueVal.Code != nil || valueVal.Quantity != nil {
+		r.Value = &valueVal
+	}
+	return nil
+}
+
 // DeviceDefinitionPropertyValue represents a polymorphic choice type in FHIR.
 type DeviceDefinitionPropertyValue struct {
 	Code     []dt.CodeableConcept `json:"valueCode,omitempty"`     // Property value as a code, e.g., NTP4 (synced to NTP).

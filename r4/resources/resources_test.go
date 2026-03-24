@@ -271,11 +271,7 @@ func TestMedicationRequestHL7Example(t *testing.T) {
 	data := loadTestData(t, "medicationrequest0301.json")
 	var mr resources.MedicationRequest
 
-	// NOTE: This example has substitution.allowedBoolean which is a value[x]
-	// on a backbone element. Our generator doesn't yet produce MarshalJSON for
-	// backbone elements, so this field is lost on round-trip. This is tracked
-	// as a known issue. We skip full round-trip comparison here.
-	// assertJSONRoundTrip(t, data, mr)
+	assertJSONRoundTrip(t, data, mr)
 
 	if err := json.Unmarshal(data, &mr); err != nil {
 		t.Fatal(err)

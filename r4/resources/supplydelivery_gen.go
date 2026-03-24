@@ -270,6 +270,51 @@ type SupplyDeliverySuppliedItem struct {
 	Quantity *dt.Quantity `json:"quantity,omitempty"`
 }
 
+// MarshalJSON implements the json.Marshaler interface for SupplyDeliverySuppliedItem.
+func (r SupplyDeliverySuppliedItem) MarshalJSON() ([]byte, error) {
+	type Alias SupplyDeliverySuppliedItem
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Item != nil {
+		vData, err := json.Marshal(r.Item)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for SupplyDeliverySuppliedItem.
+func (r *SupplyDeliverySuppliedItem) UnmarshalJSON(data []byte) error {
+	type Alias SupplyDeliverySuppliedItem
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = SupplyDeliverySuppliedItem(alias)
+	var itemVal SupplyDeliverySuppliedItemItem
+	if err := itemVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if itemVal.CodeableConcept != nil || itemVal.Reference != nil {
+		r.Item = &itemVal
+	}
+	return nil
+}
+
 // SupplyDeliverySuppliedItemItem represents a polymorphic choice type in FHIR.
 type SupplyDeliverySuppliedItemItem struct {
 	CodeableConcept *dt.CodeableConcept `json:"itemCodeableConcept,omitempty"` // Identifies the medication, substance or device being dispensed. This is either a link to a resource representing the details of the item or a code that identifies the item from a known list.

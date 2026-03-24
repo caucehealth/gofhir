@@ -111,6 +111,51 @@ type ParametersParameter struct {
 	Value *ParametersParameterValue `json:"-"` // polymorphic
 }
 
+// MarshalJSON implements the json.Marshaler interface for ParametersParameter.
+func (r ParametersParameter) MarshalJSON() ([]byte, error) {
+	type Alias ParametersParameter
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Value != nil {
+		vData, err := json.Marshal(r.Value)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ParametersParameter.
+func (r *ParametersParameter) UnmarshalJSON(data []byte) error {
+	type Alias ParametersParameter
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = ParametersParameter(alias)
+	var valueVal ParametersParameterValue
+	if err := valueVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if valueVal.Address != nil || valueVal.Age != nil || valueVal.Annotation != nil || valueVal.Attachment != nil || valueVal.Base64Binary != nil || valueVal.Boolean != nil || valueVal.Canonical != nil || valueVal.Code != nil || valueVal.CodeableConcept != nil || valueVal.Coding != nil || valueVal.ContactDetail != nil || valueVal.ContactPoint != nil || valueVal.Contributor != nil || valueVal.Count != nil || valueVal.DataRequirement != nil || valueVal.Date != nil || valueVal.DateTime != nil || valueVal.Decimal != nil || valueVal.Distance != nil || valueVal.Dosage != nil || valueVal.Duration != nil || valueVal.Expression != nil || valueVal.HumanName != nil || valueVal.Id != nil || valueVal.Identifier != nil || valueVal.Instant != nil || valueVal.Integer != nil || valueVal.Markdown != nil || valueVal.Meta != nil || valueVal.Money != nil || valueVal.Oid != nil || valueVal.ParameterDefinition != nil || valueVal.Period != nil || valueVal.PositiveInt != nil || valueVal.Quantity != nil || valueVal.Range != nil || valueVal.Ratio != nil || valueVal.Reference != nil || valueVal.RelatedArtifact != nil || valueVal.SampledData != nil || valueVal.Signature != nil || valueVal.String != nil || valueVal.Time != nil || valueVal.Timing != nil || valueVal.TriggerDefinition != nil || valueVal.UnsignedInt != nil || valueVal.Uri != nil || valueVal.Url != nil || valueVal.UsageContext != nil || valueVal.Uuid != nil {
+		r.Value = &valueVal
+	}
+	return nil
+}
+
 // ParametersParameterValue represents a polymorphic choice type in FHIR.
 type ParametersParameterValue struct {
 	Address             *dt.Address             `json:"valueAddress,omitempty"`             // If the parameter is a data type.

@@ -283,6 +283,51 @@ type CoverageEligibilityRequestDiagnosis struct {
 	Diagnosis *CoverageEligibilityRequestDiagnosisDiagnosis `json:"-"` // polymorphic
 }
 
+// MarshalJSON implements the json.Marshaler interface for CoverageEligibilityRequestDiagnosis.
+func (r CoverageEligibilityRequestDiagnosis) MarshalJSON() ([]byte, error) {
+	type Alias CoverageEligibilityRequestDiagnosis
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Diagnosis != nil {
+		vData, err := json.Marshal(r.Diagnosis)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for CoverageEligibilityRequestDiagnosis.
+func (r *CoverageEligibilityRequestDiagnosis) UnmarshalJSON(data []byte) error {
+	type Alias CoverageEligibilityRequestDiagnosis
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = CoverageEligibilityRequestDiagnosis(alias)
+	var diagnosisVal CoverageEligibilityRequestDiagnosisDiagnosis
+	if err := diagnosisVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if diagnosisVal.CodeableConcept != nil || diagnosisVal.Reference != nil {
+		r.Diagnosis = &diagnosisVal
+	}
+	return nil
+}
+
 // CoverageEligibilityRequestDiagnosisDiagnosis represents a polymorphic choice type in FHIR.
 type CoverageEligibilityRequestDiagnosisDiagnosis struct {
 	CodeableConcept *dt.CodeableConcept `json:"diagnosisCodeableConcept,omitempty"` // The nature of illness or problem in a coded form or as a reference to an external defined Condition.

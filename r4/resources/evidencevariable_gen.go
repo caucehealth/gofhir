@@ -370,6 +370,51 @@ type EvidenceVariableCharacteristic struct {
 	UsageContext []dt.UsageContext `json:"usageContext,omitempty"`
 }
 
+// MarshalJSON implements the json.Marshaler interface for EvidenceVariableCharacteristic.
+func (r EvidenceVariableCharacteristic) MarshalJSON() ([]byte, error) {
+	type Alias EvidenceVariableCharacteristic
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Definition != nil {
+		vData, err := json.Marshal(r.Definition)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for EvidenceVariableCharacteristic.
+func (r *EvidenceVariableCharacteristic) UnmarshalJSON(data []byte) error {
+	type Alias EvidenceVariableCharacteristic
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = EvidenceVariableCharacteristic(alias)
+	var definitionVal EvidenceVariableCharacteristicDefinition
+	if err := definitionVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if definitionVal.Canonical != nil || definitionVal.CodeableConcept != nil || definitionVal.DataRequirement != nil || definitionVal.Expression != nil || definitionVal.Reference != nil || definitionVal.TriggerDefinition != nil {
+		r.Definition = &definitionVal
+	}
+	return nil
+}
+
 // EvidenceVariableCharacteristicDefinition represents a polymorphic choice type in FHIR.
 type EvidenceVariableCharacteristicDefinition struct {
 	Canonical         *string               `json:"definitionCanonical,omitempty"`         // Define members of the evidence element using Codes (such as condition, medication, or observation), Expressions ( using an expression language such as FHIRPath or CQL) or DataRequirements (such as ...

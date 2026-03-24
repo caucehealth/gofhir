@@ -433,6 +433,51 @@ type ImplementationGuideResource struct {
 	Reference dt.Reference `json:"reference"`
 }
 
+// MarshalJSON implements the json.Marshaler interface for ImplementationGuideResource.
+func (r ImplementationGuideResource) MarshalJSON() ([]byte, error) {
+	type Alias ImplementationGuideResource
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Example != nil {
+		vData, err := json.Marshal(r.Example)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ImplementationGuideResource.
+func (r *ImplementationGuideResource) UnmarshalJSON(data []byte) error {
+	type Alias ImplementationGuideResource
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = ImplementationGuideResource(alias)
+	var exampleVal ImplementationGuideResourceExample
+	if err := exampleVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if exampleVal.Boolean != nil || exampleVal.Canonical != nil {
+		r.Example = &exampleVal
+	}
+	return nil
+}
+
 // ImplementationGuideResourceExample represents a polymorphic choice type in FHIR.
 type ImplementationGuideResourceExample struct {
 	Boolean   *bool   `json:"exampleBoolean,omitempty"`   // If true or a reference, indicates the resource is an example instance.  If a reference is present, indicates that the example is an example of the specified profile.
@@ -488,6 +533,51 @@ type ImplementationGuideResource1 struct {
 	Reference dt.Reference `json:"reference"`
 	// RelativePath The relative path for primary page for this resource within the IG.
 	RelativePath *dt.URL `json:"relativePath,omitempty"`
+}
+
+// MarshalJSON implements the json.Marshaler interface for ImplementationGuideResource1.
+func (r ImplementationGuideResource1) MarshalJSON() ([]byte, error) {
+	type Alias ImplementationGuideResource1
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Example != nil {
+		vData, err := json.Marshal(r.Example)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ImplementationGuideResource1.
+func (r *ImplementationGuideResource1) UnmarshalJSON(data []byte) error {
+	type Alias ImplementationGuideResource1
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = ImplementationGuideResource1(alias)
+	var exampleVal ImplementationGuideResource1Example
+	if err := exampleVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if exampleVal.Boolean != nil || exampleVal.Canonical != nil {
+		r.Example = &exampleVal
+	}
+	return nil
 }
 
 // ImplementationGuideResource1Example represents a polymorphic choice type in FHIR.

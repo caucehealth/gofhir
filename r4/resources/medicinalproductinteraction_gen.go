@@ -185,6 +185,51 @@ type MedicinalProductInteractionInteractant struct {
 	Item *MedicinalProductInteractionInteractantItem `json:"-"` // polymorphic
 }
 
+// MarshalJSON implements the json.Marshaler interface for MedicinalProductInteractionInteractant.
+func (r MedicinalProductInteractionInteractant) MarshalJSON() ([]byte, error) {
+	type Alias MedicinalProductInteractionInteractant
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Item != nil {
+		vData, err := json.Marshal(r.Item)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for MedicinalProductInteractionInteractant.
+func (r *MedicinalProductInteractionInteractant) UnmarshalJSON(data []byte) error {
+	type Alias MedicinalProductInteractionInteractant
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = MedicinalProductInteractionInteractant(alias)
+	var itemVal MedicinalProductInteractionInteractantItem
+	if err := itemVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if itemVal.CodeableConcept != nil || itemVal.Reference != nil {
+		r.Item = &itemVal
+	}
+	return nil
+}
+
 // MedicinalProductInteractionInteractantItem represents a polymorphic choice type in FHIR.
 type MedicinalProductInteractionInteractantItem struct {
 	CodeableConcept *dt.CodeableConcept `json:"itemCodeableConcept,omitempty"` // The specific medication, food or laboratory test that interacts.

@@ -413,6 +413,51 @@ type CodeSystemProperty1 struct {
 	Value *CodeSystemProperty1Value `json:"-"` // polymorphic
 }
 
+// MarshalJSON implements the json.Marshaler interface for CodeSystemProperty1.
+func (r CodeSystemProperty1) MarshalJSON() ([]byte, error) {
+	type Alias CodeSystemProperty1
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Value != nil {
+		vData, err := json.Marshal(r.Value)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for CodeSystemProperty1.
+func (r *CodeSystemProperty1) UnmarshalJSON(data []byte) error {
+	type Alias CodeSystemProperty1
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = CodeSystemProperty1(alias)
+	var valueVal CodeSystemProperty1Value
+	if err := valueVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if valueVal.Boolean != nil || valueVal.Code != nil || valueVal.Coding != nil || valueVal.DateTime != nil || valueVal.Decimal != nil || valueVal.Integer != nil || valueVal.String != nil {
+		r.Value = &valueVal
+	}
+	return nil
+}
+
 // CodeSystemProperty1Value represents a polymorphic choice type in FHIR.
 type CodeSystemProperty1Value struct {
 	Boolean  *bool      `json:"valueBoolean,omitempty"`  // The value of this property.

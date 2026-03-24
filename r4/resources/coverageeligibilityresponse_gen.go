@@ -295,6 +295,71 @@ type CoverageEligibilityResponseBenefit struct {
 	Used *CoverageEligibilityResponseBenefitUsed `json:"-"` // polymorphic
 }
 
+// MarshalJSON implements the json.Marshaler interface for CoverageEligibilityResponseBenefit.
+func (r CoverageEligibilityResponseBenefit) MarshalJSON() ([]byte, error) {
+	type Alias CoverageEligibilityResponseBenefit
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Allowed != nil {
+		vData, err := json.Marshal(r.Allowed)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	if r.Used != nil {
+		vData, err := json.Marshal(r.Used)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for CoverageEligibilityResponseBenefit.
+func (r *CoverageEligibilityResponseBenefit) UnmarshalJSON(data []byte) error {
+	type Alias CoverageEligibilityResponseBenefit
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = CoverageEligibilityResponseBenefit(alias)
+	var allowedVal CoverageEligibilityResponseBenefitAllowed
+	if err := allowedVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if allowedVal.Money != nil || allowedVal.String != nil || allowedVal.UnsignedInt != nil {
+		r.Allowed = &allowedVal
+	}
+	var usedVal CoverageEligibilityResponseBenefitUsed
+	if err := usedVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if usedVal.Money != nil || usedVal.String != nil || usedVal.UnsignedInt != nil {
+		r.Used = &usedVal
+	}
+	return nil
+}
+
 // CoverageEligibilityResponseBenefitAllowed represents a polymorphic choice type in FHIR.
 type CoverageEligibilityResponseBenefitAllowed struct {
 	Money       *dt.Money `json:"allowedMoney,omitempty"`       // The quantity of the benefit which is permitted under the coverage.

@@ -379,6 +379,71 @@ type ClaimResponseAddItem struct {
 	UnitPrice *dt.Money `json:"unitPrice,omitempty"`
 }
 
+// MarshalJSON implements the json.Marshaler interface for ClaimResponseAddItem.
+func (r ClaimResponseAddItem) MarshalJSON() ([]byte, error) {
+	type Alias ClaimResponseAddItem
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Location != nil {
+		vData, err := json.Marshal(r.Location)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	if r.Serviced != nil {
+		vData, err := json.Marshal(r.Serviced)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ClaimResponseAddItem.
+func (r *ClaimResponseAddItem) UnmarshalJSON(data []byte) error {
+	type Alias ClaimResponseAddItem
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = ClaimResponseAddItem(alias)
+	var servicedVal ClaimResponseAddItemServiced
+	if err := servicedVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if servicedVal.Date != nil || servicedVal.Period != nil {
+		r.Serviced = &servicedVal
+	}
+	var locationVal ClaimResponseAddItemLocation
+	if err := locationVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if locationVal.Address != nil || locationVal.CodeableConcept != nil || locationVal.Reference != nil {
+		r.Location = &locationVal
+	}
+	return nil
+}
+
 // ClaimResponseAddItemLocation represents a polymorphic choice type in FHIR.
 type ClaimResponseAddItemLocation struct {
 	Address         *dt.Address         `json:"locationAddress,omitempty"`         // Where the product or service was provided.

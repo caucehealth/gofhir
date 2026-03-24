@@ -83,19 +83,6 @@ func (r FamilyMemberHistory) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Age != nil {
-		vData, err := json.Marshal(r.Age)
-		if err != nil {
-			return nil, err
-		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
-		}
-	}
 	if r.Born != nil {
 		vData, err := json.Marshal(r.Born)
 		if err != nil {
@@ -111,6 +98,19 @@ func (r FamilyMemberHistory) MarshalJSON() ([]byte, error) {
 	}
 	if r.Deceased != nil {
 		vData, err := json.Marshal(r.Deceased)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	if r.Age != nil {
+		vData, err := json.Marshal(r.Age)
 		if err != nil {
 			return nil, err
 		}
@@ -430,6 +430,51 @@ type FamilyMemberHistoryCondition struct {
 	Onset *FamilyMemberHistoryConditionOnset `json:"-"` // polymorphic
 	// Outcome Indicates what happened following the condition.  If the condition resulted in death, deceased date is captured on the relation.
 	Outcome *dt.CodeableConcept `json:"outcome,omitempty"`
+}
+
+// MarshalJSON implements the json.Marshaler interface for FamilyMemberHistoryCondition.
+func (r FamilyMemberHistoryCondition) MarshalJSON() ([]byte, error) {
+	type Alias FamilyMemberHistoryCondition
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Onset != nil {
+		vData, err := json.Marshal(r.Onset)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for FamilyMemberHistoryCondition.
+func (r *FamilyMemberHistoryCondition) UnmarshalJSON(data []byte) error {
+	type Alias FamilyMemberHistoryCondition
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = FamilyMemberHistoryCondition(alias)
+	var onsetVal FamilyMemberHistoryConditionOnset
+	if err := onsetVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if onsetVal.Age != nil || onsetVal.Period != nil || onsetVal.Range != nil || onsetVal.String != nil {
+		r.Onset = &onsetVal
+	}
+	return nil
 }
 
 // FamilyMemberHistoryConditionOnset represents a polymorphic choice type in FHIR.

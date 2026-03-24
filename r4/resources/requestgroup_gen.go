@@ -309,6 +309,51 @@ type RequestGroupAction struct {
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 }
 
+// MarshalJSON implements the json.Marshaler interface for RequestGroupAction.
+func (r RequestGroupAction) MarshalJSON() ([]byte, error) {
+	type Alias RequestGroupAction
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Timing != nil {
+		vData, err := json.Marshal(r.Timing)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for RequestGroupAction.
+func (r *RequestGroupAction) UnmarshalJSON(data []byte) error {
+	type Alias RequestGroupAction
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = RequestGroupAction(alias)
+	var timingVal RequestGroupActionTiming
+	if err := timingVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if timingVal.Age != nil || timingVal.DateTime != nil || timingVal.Duration != nil || timingVal.Period != nil || timingVal.Range != nil || timingVal.Timing != nil {
+		r.Timing = &timingVal
+	}
+	return nil
+}
+
 // RequestGroupActionTiming represents a polymorphic choice type in FHIR.
 type RequestGroupActionTiming struct {
 	Age      *dt.Age      `json:"timingAge,omitempty"`      // An optional value describing when the action should be performed.

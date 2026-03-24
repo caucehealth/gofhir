@@ -214,6 +214,51 @@ type ImmunizationRecommendationRecommendation struct {
 	VaccineCode []dt.CodeableConcept `json:"vaccineCode,omitempty"`
 }
 
+// MarshalJSON implements the json.Marshaler interface for ImmunizationRecommendationRecommendation.
+func (r ImmunizationRecommendationRecommendation) MarshalJSON() ([]byte, error) {
+	type Alias ImmunizationRecommendationRecommendation
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Dose != nil {
+		vData, err := json.Marshal(r.Dose)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ImmunizationRecommendationRecommendation.
+func (r *ImmunizationRecommendationRecommendation) UnmarshalJSON(data []byte) error {
+	type Alias ImmunizationRecommendationRecommendation
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = ImmunizationRecommendationRecommendation(alias)
+	var doseVal ImmunizationRecommendationRecommendationDose
+	if err := doseVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if doseVal.NumberPositiveInt != nil || doseVal.NumberString != nil {
+		r.Dose = &doseVal
+	}
+	return nil
+}
+
 // ImmunizationRecommendationRecommendationDose represents a polymorphic choice type in FHIR.
 type ImmunizationRecommendationRecommendationDose struct {
 	NumberPositiveInt *float64 `json:"doseNumberPositiveInt,omitempty"` // Nominal position of the recommended dose in a series (e.g. dose 2 is the next recommended dose).

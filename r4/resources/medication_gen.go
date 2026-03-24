@@ -211,6 +211,51 @@ type MedicationIngredient struct {
 	Strength *dt.Ratio `json:"strength,omitempty"`
 }
 
+// MarshalJSON implements the json.Marshaler interface for MedicationIngredient.
+func (r MedicationIngredient) MarshalJSON() ([]byte, error) {
+	type Alias MedicationIngredient
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Item != nil {
+		vData, err := json.Marshal(r.Item)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for MedicationIngredient.
+func (r *MedicationIngredient) UnmarshalJSON(data []byte) error {
+	type Alias MedicationIngredient
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = MedicationIngredient(alias)
+	var itemVal MedicationIngredientItem
+	if err := itemVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if itemVal.CodeableConcept != nil || itemVal.Reference != nil {
+		r.Item = &itemVal
+	}
+	return nil
+}
+
 // MedicationIngredientItem represents a polymorphic choice type in FHIR.
 type MedicationIngredientItem struct {
 	CodeableConcept *dt.CodeableConcept `json:"itemCodeableConcept,omitempty"` // The actual ingredient - either a substance (simple ingredient) or another medication of a medication.

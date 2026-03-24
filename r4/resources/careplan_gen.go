@@ -369,6 +369,51 @@ type CarePlanDetail struct {
 	StatusReason *dt.CodeableConcept `json:"statusReason,omitempty"`
 }
 
+// MarshalJSON implements the json.Marshaler interface for CarePlanDetail.
+func (r CarePlanDetail) MarshalJSON() ([]byte, error) {
+	type Alias CarePlanDetail
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Product != nil {
+		vData, err := json.Marshal(r.Product)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for CarePlanDetail.
+func (r *CarePlanDetail) UnmarshalJSON(data []byte) error {
+	type Alias CarePlanDetail
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = CarePlanDetail(alias)
+	var productVal CarePlanDetailProduct
+	if err := productVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if productVal.CodeableConcept != nil || productVal.Reference != nil {
+		r.Product = &productVal
+	}
+	return nil
+}
+
 // CarePlanDetailProduct represents a polymorphic choice type in FHIR.
 type CarePlanDetailProduct struct {
 	CodeableConcept *dt.CodeableConcept `json:"productCodeableConcept,omitempty"` // Identifies the food, drug or other product to be consumed or supplied in the activity.

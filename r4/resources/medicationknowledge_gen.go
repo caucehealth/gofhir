@@ -355,6 +355,51 @@ type MedicationKnowledgeDrugCharacteristic struct {
 	Value *MedicationKnowledgeDrugCharacteristicValue `json:"-"` // polymorphic
 }
 
+// MarshalJSON implements the json.Marshaler interface for MedicationKnowledgeDrugCharacteristic.
+func (r MedicationKnowledgeDrugCharacteristic) MarshalJSON() ([]byte, error) {
+	type Alias MedicationKnowledgeDrugCharacteristic
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Value != nil {
+		vData, err := json.Marshal(r.Value)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for MedicationKnowledgeDrugCharacteristic.
+func (r *MedicationKnowledgeDrugCharacteristic) UnmarshalJSON(data []byte) error {
+	type Alias MedicationKnowledgeDrugCharacteristic
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = MedicationKnowledgeDrugCharacteristic(alias)
+	var valueVal MedicationKnowledgeDrugCharacteristicValue
+	if err := valueVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if valueVal.Base64Binary != nil || valueVal.CodeableConcept != nil || valueVal.Quantity != nil || valueVal.String != nil {
+		r.Value = &valueVal
+	}
+	return nil
+}
+
 // MedicationKnowledgeDrugCharacteristicValue represents a polymorphic choice type in FHIR.
 type MedicationKnowledgeDrugCharacteristicValue struct {
 	Base64Binary    *string             `json:"valueBase64Binary,omitempty"`    // Description of the characteristic.
@@ -432,6 +477,51 @@ type MedicationKnowledgeIngredient struct {
 	Item *MedicationKnowledgeIngredientItem `json:"-"` // polymorphic
 	// Strength Specifies how many (or how much) of the items there are in this Medication.  For example, 250 mg per tablet.  This is expressed as a ratio where the numerator is 250mg and the denominator is 1 tablet.
 	Strength *dt.Ratio `json:"strength,omitempty"`
+}
+
+// MarshalJSON implements the json.Marshaler interface for MedicationKnowledgeIngredient.
+func (r MedicationKnowledgeIngredient) MarshalJSON() ([]byte, error) {
+	type Alias MedicationKnowledgeIngredient
+	data, err := json.Marshal((Alias)(r))
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return nil, err
+	}
+	if r.Item != nil {
+		vData, err := json.Marshal(r.Item)
+		if err != nil {
+			return nil, err
+		}
+		var vm map[string]json.RawMessage
+		if err := json.Unmarshal(vData, &vm); err != nil {
+			return nil, err
+		}
+		for k, v := range vm {
+			m[k] = v
+		}
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for MedicationKnowledgeIngredient.
+func (r *MedicationKnowledgeIngredient) UnmarshalJSON(data []byte) error {
+	type Alias MedicationKnowledgeIngredient
+	var alias Alias
+	if err := json.Unmarshal(data, &alias); err != nil {
+		return err
+	}
+	*r = MedicationKnowledgeIngredient(alias)
+	var itemVal MedicationKnowledgeIngredientItem
+	if err := itemVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if itemVal.CodeableConcept != nil || itemVal.Reference != nil {
+		r.Item = &itemVal
+	}
+	return nil
 }
 
 // MedicationKnowledgeIngredientItem represents a polymorphic choice type in FHIR.
