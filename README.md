@@ -68,7 +68,16 @@ gofhir/
 
 ## Code Generation
 
-The types are generated from the official FHIR R4 JSON schema:
+The types are generated from the official FHIR R4 JSON schema. Use `make` to download the schema, generate code, build, test, and lint:
+
+```bash
+make          # download schema + generate + build + test + vet + lint
+make schema   # download fhir.schema.json only
+make generate # run code generator
+make test     # run tests
+```
+
+Or run the generator directly (requires the schema to already be downloaded):
 
 ```bash
 go generate ./...
