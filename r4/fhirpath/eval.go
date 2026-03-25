@@ -173,6 +173,9 @@ func (ctx *evalContext) eval(node Node, input Collection) (Collection, error) {
 	case *TypeNode:
 		return ctx.evalType(n.Op, n.Expr, n.TypeName, input)
 
+	case *QuantityNode:
+		return Collection{quantityValue{Value: n.Value, Unit: n.Unit}}, nil
+
 	case *EmptyNode:
 		return nil, nil
 
@@ -1036,6 +1039,43 @@ func (ctx *evalContext) evalExtension(input Collection, url string) (Collection,
 	return result, nil
 }
 
+// quantityValue represents a FHIRPath quantity literal (e.g., 5 'mg').
+type quantityValue struct {
+	Value float64
+	Unit  string
+}
+
+func (q quantityValue) String() string {
+	return fmt.Sprintf("%v '%s'", q.Value, q.Unit)
+}
+
+// toQuantity extracts a quantity from a value (Quantity struct or quantityValue).
+func toQuantity(v any) (float64, string, bool) {
+	switch q := v.(type) {
+	case quantityValue:
+		return q.Value, q.Unit, true
+	default:
+		// Try to extract from a Quantity struct via reflection
+		val := getField(v, "value")
+		unit := getField(v, "unit")
+		if len(val) > 0 {
+			u := ""
+			if len(unit) > 0 {
+				u = toString(unit[0])
+			}
+			// Also check code field for UCUM
+			if u == "" {
+				code := getField(v, "code")
+				if len(code) > 0 {
+					u = toString(code[0])
+				}
+			}
+			return toFloat(val[0]), u, true
+		}
+	}
+	return 0, "", false
+}
+
 // --- Reflection helpers ---
 
 func allChildren(obj any) Collection {
@@ -1221,6 +1261,15 @@ func negate(v any) any {
 }
 
 func valEqual(a, b any) bool {
+	// Quantity comparison
+	qa, ua, isQA := toQuantity(a)
+	qb, ub, isQB := toQuantity(b)
+	if isQA && isQB {
+		if ua != "" && ub != "" && ua != ub {
+			return false // different units
+		}
+		return qa == qb
+	}
 	return fmt.Sprintf("%v", a) == fmt.Sprintf("%v", b)
 }
 
@@ -1240,6 +1289,19 @@ func collEqual(a, b Collection) bool {
 }
 
 func compareValues(a, b any) int {
+	// Quantity comparison
+	qa, ua, isQA := toQuantity(a)
+	qb, ub, isQB := toQuantity(b)
+	if isQA && isQB && (ua == ub || ua == "" || ub == "") {
+		if qa < qb {
+			return -1
+		}
+		if qa > qb {
+			return 1
+		}
+		return 0
+	}
+
 	sa := toString(a)
 	sb := toString(b)
 

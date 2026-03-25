@@ -75,6 +75,14 @@ type TypeNode struct {
 
 func (n *TypeNode) nodeType() string { return "type" }
 
+// QuantityNode represents a quantity literal: 5 'mg'
+type QuantityNode struct {
+	Value float64
+	Unit  string
+}
+
+func (n *QuantityNode) nodeType() string { return "quantity" }
+
 // EmptyNode represents the empty collection {}
 type EmptyNode struct{}
 
@@ -314,6 +322,19 @@ func (p *Parser) parsePrimary() (Node, error) {
 	switch tok.Type {
 	case TokenNumber:
 		p.advance()
+		// Check for quantity literal: number followed by string (unit)
+		if p.current().Type == TokenString {
+			unit := p.advance()
+			num := parseNumber(tok.Value)
+			var f float64
+			switch n := num.(type) {
+			case int64:
+				f = float64(n)
+			case float64:
+				f = n
+			}
+			return &QuantityNode{Value: f, Unit: unit.Value}, nil
+		}
 		return &LiteralNode{Value: parseNumber(tok.Value), Raw: tok.Value}, nil
 
 	case TokenString:

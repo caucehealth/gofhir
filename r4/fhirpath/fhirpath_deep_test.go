@@ -530,6 +530,78 @@ func TestResourceEnvironment(t *testing.T) {
 // Compiled expression with resolver
 // ============================================================================
 
+// ============================================================================
+// Quantity literals and comparison
+// ============================================================================
+
+func TestQuantityLiteral(t *testing.T) {
+	result, err := fhirpath.Evaluate(patient(), "5 'mg'")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result) != 1 {
+		t.Fatalf("expected 1 result, got %d", len(result))
+	}
+	if result.String() != "5 'mg'" {
+		t.Errorf("got %q", result.String())
+	}
+}
+
+func TestQuantityComparison(t *testing.T) {
+	tests := []struct {
+		expr string
+		want bool
+	}{
+		{"5 'mg' < 10 'mg'", true},
+		{"10 'mg' > 5 'mg'", true},
+		{"5 'mg' = 5 'mg'", true},
+		{"5 'mg' != 10 'mg'", true},
+		{"5 'mg' <= 5 'mg'", true},
+		{"5 'mg' >= 5 'mg'", true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.expr, func(t *testing.T) {
+			b, err := fhirpath.EvaluateBool(patient(), tt.expr)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if b != tt.want {
+				t.Errorf("got %v, want %v", b, tt.want)
+			}
+		})
+	}
+}
+
+func TestQuantityComparisonDifferentUnits(t *testing.T) {
+	// Different units — should not be equal
+	b, _ := fhirpath.EvaluateBool(patient(), "5 'mg' = 5 'kg'")
+	if b {
+		t.Error("5 mg should not equal 5 kg")
+	}
+}
+
+func TestQuantityFromResource(t *testing.T) {
+	obs := observation()
+
+	// Navigate into value[x] Quantity via the union's Quantity field
+	result, err := fhirpath.Evaluate(obs, "value.Quantity.value")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result) == 0 {
+		t.Fatal("value.Quantity.value should not be empty")
+	}
+
+	// Component quantities
+	result, err = fhirpath.Evaluate(obs, "component.value.Quantity.value")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result) != 2 {
+		t.Errorf("expected 2 component values, got %d", len(result))
+	}
+}
+
 func TestCompiledWithResolver(t *testing.T) {
 	expr, _ := fhirpath.Compile("subject.resolve().name.family")
 	expr.WithResolver(func(ref string) any {
