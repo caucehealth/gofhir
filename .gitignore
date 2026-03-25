@@ -34,6 +34,7 @@ vendor/
 /bin/
 /dist/
 
-# FHIR schema (downloaded, not committed)
+# FHIR schema and examples (downloaded, not committed)
 internal/spec/fhir.schema.json
+r4/resources/testdata/hl7-examples/
 TODO.md

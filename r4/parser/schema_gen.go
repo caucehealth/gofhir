@@ -10999,3 +10999,446 @@ func IsNumericField(parentType, fieldName string) bool {
 	}
 	return false
 }
+
+// booleanFields maps parent type to fields that hold boolean values.
+var booleanFields = map[string]map[string]bool{
+	"AccountGuarantor": {
+		"onHold": true,
+	},
+	"ActivityDefinition": {
+		"doNotPerform": true,
+		"experimental": true,
+	},
+	"AuditEventAgent": {
+		"requestor": true,
+	},
+	"BodyStructure": {
+		"active": true,
+	},
+	"CapabilityStatement": {
+		"experimental": true,
+	},
+	"CapabilityStatementResource": {
+		"conditionalCreate": true,
+		"conditionalUpdate": true,
+		"readHistory":       true,
+		"updateCreate":      true,
+	},
+	"CapabilityStatementSecurity": {
+		"cors": true,
+	},
+	"CarePlanDetail": {
+		"doNotPerform": true,
+	},
+	"CatalogEntry": {
+		"orderable": true,
+	},
+	"ChargeItemDefinition": {
+		"experimental": true,
+	},
+	"ClaimCareTeam": {
+		"responsible": true,
+	},
+	"ClaimInsurance": {
+		"focal": true,
+	},
+	"ClaimResponseInsurance": {
+		"focal": true,
+	},
+	"ClaimSupportingInfo": {
+		"valueBoolean": true,
+	},
+	"CodeSystem": {
+		"caseSensitive": true,
+		"compositional": true,
+		"experimental":  true,
+		"versionNeeded": true,
+	},
+	"CodeSystemProperty1": {
+		"valueBoolean": true,
+	},
+	"Coding": {
+		"userSelected": true,
+	},
+	"CommunicationRequest": {
+		"doNotPerform": true,
+	},
+	"CompartmentDefinition": {
+		"experimental": true,
+		"search":       true,
+	},
+	"ConceptMap": {
+		"experimental": true,
+	},
+	"ConsentVerification": {
+		"verified": true,
+	},
+	"ContractAction": {
+		"doNotPerform": true,
+	},
+	"ContractAnswer": {
+		"valueBoolean": true,
+	},
+	"Coverage": {
+		"subrogation": true,
+	},
+	"CoverageEligibilityRequestInsurance": {
+		"focal": true,
+	},
+	"CoverageEligibilityRequestSupportingInfo": {
+		"appliesToAll": true,
+	},
+	"CoverageEligibilityResponseInsurance": {
+		"inforce": true,
+	},
+	"CoverageEligibilityResponseItem": {
+		"authorizationRequired": true,
+		"excluded":              true,
+	},
+	"DeviceDefinitionMaterial": {
+		"allergenicIndicator": true,
+		"alternate":           true,
+	},
+	"DeviceRequestParameter": {
+		"valueBoolean": true,
+	},
+	"Dosage": {
+		"asNeededBoolean": true,
+	},
+	"ElementDefinition": {
+		"defaultValueBoolean": true,
+		"fixedBoolean":        true,
+		"isModifier":          true,
+		"isSummary":           true,
+		"mustSupport":         true,
+		"patternBoolean":      true,
+		"sliceIsConstraining": true,
+	},
+	"ElementDefinitionExample": {
+		"valueBoolean": true,
+	},
+	"ElementDefinitionSlicing": {
+		"ordered": true,
+	},
+	"EventDefinition": {
+		"experimental": true,
+	},
+	"EvidenceVariableCharacteristic": {
+		"exclude": true,
+	},
+	"ExampleScenario": {
+		"experimental": true,
+	},
+	"ExampleScenarioOperation": {
+		"initiatorActive": true,
+		"receiverActive":  true,
+	},
+	"ExampleScenarioStep": {
+		"pause": true,
+	},
+	"ExplanationOfBenefitBenefitBalance": {
+		"excluded": true,
+	},
+	"ExplanationOfBenefitCareTeam": {
+		"responsible": true,
+	},
+	"ExplanationOfBenefitInsurance": {
+		"focal": true,
+	},
+	"ExplanationOfBenefitSupportingInfo": {
+		"valueBoolean": true,
+	},
+	"Extension": {
+		"valueBoolean": true,
+	},
+	"FamilyMemberHistory": {
+		"deceasedBoolean": true,
+		"estimatedAge":    true,
+	},
+	"FamilyMemberHistoryCondition": {
+		"contributedToDeath": true,
+	},
+	"GoalTarget": {
+		"detailBoolean": true,
+	},
+	"GraphDefinition": {
+		"experimental": true,
+	},
+	"Group": {
+		"active": true,
+		"actual": true,
+	},
+	"GroupCharacteristic": {
+		"exclude":      true,
+		"valueBoolean": true,
+	},
+	"GroupMember": {
+		"inactive": true,
+	},
+	"HealthcareService": {
+		"active":              true,
+		"appointmentRequired": true,
+	},
+	"HealthcareServiceAvailableTime": {
+		"allDay": true,
+	},
+	"Immunization": {
+		"isSubpotent":   true,
+		"primarySource": true,
+	},
+	"ImmunizationReaction": {
+		"reported": true,
+	},
+	"ImplementationGuide": {
+		"experimental": true,
+	},
+	"ImplementationGuideResource": {
+		"exampleBoolean": true,
+	},
+	"ImplementationGuideResource1": {
+		"exampleBoolean": true,
+	},
+	"Library": {
+		"experimental": true,
+	},
+	"Linkage": {
+		"active": true,
+	},
+	"ListEntry": {
+		"deleted": true,
+	},
+	"LocationHoursOfOperation": {
+		"allDay": true,
+	},
+	"Measure": {
+		"experimental": true,
+	},
+	"MedicationDispenseSubstitution": {
+		"wasSubstituted": true,
+	},
+	"MedicationIngredient": {
+		"isActive": true,
+	},
+	"MedicationKnowledgeIngredient": {
+		"isActive": true,
+	},
+	"MedicationKnowledgeSubstitution": {
+		"allowed": true,
+	},
+	"MedicationRequest": {
+		"doNotPerform":    true,
+		"reportedBoolean": true,
+	},
+	"MedicationRequestSubstitution": {
+		"allowedBoolean": true,
+	},
+	"MedicinalProductIngredient": {
+		"allergenicIndicator": true,
+	},
+	"MessageDefinition": {
+		"experimental": true,
+	},
+	"MolecularSequenceStructureVariant": {
+		"exact": true,
+	},
+	"NamingSystemUniqueId": {
+		"preferred": true,
+	},
+	"Observation": {
+		"valueBoolean": true,
+	},
+	"ObservationComponent": {
+		"valueBoolean": true,
+	},
+	"ObservationDefinition": {
+		"multipleResultsAllowed": true,
+	},
+	"OperationDefinition": {
+		"affectsState": true,
+		"experimental": true,
+		"instance":     true,
+		"system":       true,
+		"type":         true,
+	},
+	"Organization": {
+		"active": true,
+	},
+	"OrganizationAffiliation": {
+		"active": true,
+	},
+	"ParametersParameter": {
+		"valueBoolean": true,
+	},
+	"Patient": {
+		"active":               true,
+		"deceasedBoolean":      true,
+		"multipleBirthBoolean": true,
+	},
+	"PatientCommunication": {
+		"preferred": true,
+	},
+	"Person": {
+		"active": true,
+	},
+	"PlanDefinition": {
+		"experimental": true,
+	},
+	"Practitioner": {
+		"active": true,
+	},
+	"PractitionerRole": {
+		"active": true,
+	},
+	"PractitionerRoleAvailableTime": {
+		"allDay": true,
+	},
+	"Questionnaire": {
+		"experimental": true,
+	},
+	"QuestionnaireAnswerOption": {
+		"initialSelected": true,
+	},
+	"QuestionnaireEnableWhen": {
+		"answerBoolean": true,
+	},
+	"QuestionnaireInitial": {
+		"valueBoolean": true,
+	},
+	"QuestionnaireItem": {
+		"readOnly": true,
+		"repeats":  true,
+		"required": true,
+	},
+	"QuestionnaireResponseAnswer": {
+		"valueBoolean": true,
+	},
+	"RelatedPerson": {
+		"active": true,
+	},
+	"RelatedPersonCommunication": {
+		"preferred": true,
+	},
+	"ResearchDefinition": {
+		"experimental": true,
+	},
+	"ResearchElementDefinition": {
+		"experimental": true,
+	},
+	"ResearchElementDefinitionCharacteristic": {
+		"exclude": true,
+	},
+	"Schedule": {
+		"active": true,
+	},
+	"SearchParameter": {
+		"experimental": true,
+		"multipleAnd":  true,
+		"multipleOr":   true,
+	},
+	"ServiceRequest": {
+		"asNeededBoolean": true,
+		"doNotPerform":    true,
+	},
+	"Slot": {
+		"overbooked": true,
+	},
+	"SpecimenDefinitionTypeTested": {
+		"isDerived": true,
+	},
+	"StructureDefinition": {
+		"abstract":     true,
+		"experimental": true,
+	},
+	"StructureMap": {
+		"experimental": true,
+	},
+	"StructureMapParameter": {
+		"valueBoolean": true,
+	},
+	"StructureMapSource": {
+		"defaultValueBoolean": true,
+	},
+	"SubstancePolymerStartingMaterial": {
+		"isDefining": true,
+	},
+	"SubstanceSpecificationName": {
+		"preferred": true,
+	},
+	"SubstanceSpecificationRelationship": {
+		"isDefining": true,
+	},
+	"SupplyRequestParameter": {
+		"valueBoolean": true,
+	},
+	"TaskInput": {
+		"valueBoolean": true,
+	},
+	"TaskOutput": {
+		"valueBoolean": true,
+	},
+	"TerminologyCapabilities": {
+		"experimental": true,
+		"lockedDate":   true,
+	},
+	"TerminologyCapabilitiesClosure": {
+		"translation": true,
+	},
+	"TerminologyCapabilitiesCodeSystem": {
+		"subsumption": true,
+	},
+	"TerminologyCapabilitiesExpansion": {
+		"hierarchical": true,
+		"incomplete":   true,
+		"paging":       true,
+	},
+	"TerminologyCapabilitiesTranslation": {
+		"needsMap": true,
+	},
+	"TerminologyCapabilitiesValidateCode": {
+		"translations": true,
+	},
+	"TerminologyCapabilitiesVersion": {
+		"compositional": true,
+		"isDefault":     true,
+	},
+	"TestScript": {
+		"experimental": true,
+	},
+	"TestScriptAssert": {
+		"navigationLinks": true,
+		"warningOnly":     true,
+	},
+	"TestScriptCapability": {
+		"required":  true,
+		"validated": true,
+	},
+	"TestScriptFixture": {
+		"autocreate": true,
+		"autodelete": true,
+	},
+	"TestScriptOperation": {
+		"encodeRequestUrl": true,
+	},
+	"ValueSet": {
+		"experimental": true,
+		"immutable":    true,
+	},
+	"ValueSetCompose": {
+		"inactive": true,
+	},
+	"ValueSetContains": {
+		"abstract": true,
+		"inactive": true,
+	},
+	"ValueSetParameter": {
+		"valueBoolean": true,
+	},
+}
+
+// IsBooleanField returns true if the given field holds a boolean value.
+func IsBooleanField(parentType, fieldName string) bool {
+	if fields, ok := booleanFields[parentType]; ok {
+		return fields[fieldName]
+	}
+	return false
+}

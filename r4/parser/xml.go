@@ -480,6 +480,10 @@ func fixArrayFields(m map[string]any, typeName string) {
 			if IsArrayField(typeName, k) {
 				m[k] = []any{val}
 			}
+		case json.Number:
+			if IsArrayField(typeName, k) {
+				m[k] = []any{val}
+			}
 		case float64:
 			if IsArrayField(typeName, k) {
 				m[k] = []any{val}
@@ -644,23 +648,13 @@ func coerceXMLValue(parentType, fieldName, s string) any {
 }
 
 func isBooleanContext(parentType, fieldName string) bool {
-	boolFields := map[string]bool{
-		"active": true, "focal": true, "allDay": true,
-		"primarySource": true, "isSubpotent": true, "doNotPerform": true,
-		"experimental": true, "abstract": true, "required": true,
-		"repeats": true, "readOnly": true, "multiple": true,
-		"preferred": true, "implicitRules": false,
-	}
-	if v, ok := boolFields[fieldName]; ok {
-		return v
-	}
-	if strings.HasPrefix(fieldName, "is") || strings.HasPrefix(fieldName, "has") ||
-		strings.HasSuffix(fieldName, "Boolean") {
+	// Use schema-generated metadata for accurate boolean detection.
+	// Falls back to name-based heuristic for value[x] Boolean variants.
+	if IsBooleanField(parentType, fieldName) {
 		return true
 	}
-	if fieldName == "deceasedBoolean" || fieldName == "multipleBirthBoolean" ||
-		fieldName == "asNeededBoolean" || fieldName == "allowedBoolean" ||
-		fieldName == "reportedBoolean" {
+	// value[x] Boolean variants
+	if strings.HasSuffix(fieldName, "Boolean") {
 		return true
 	}
 	return false

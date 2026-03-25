@@ -702,6 +702,36 @@ func generateSchemaMetadata(fhirSpec *spec.FHIRSpec, skip map[string]bool) error
 	buf.WriteString("\t\treturn fields[fieldName]\n")
 	buf.WriteString("\t}\n")
 	buf.WriteString("\treturn false\n")
+	buf.WriteString("}\n\n")
+
+	// Generate boolean field metadata
+	buf.WriteString("// booleanFields maps parent type to fields that hold boolean values.\n")
+	buf.WriteString("var booleanFields = map[string]map[string]bool{\n")
+	for _, name := range allTypeNames {
+		fields := allTypes[name]
+		var bools []string
+		for _, f := range fields {
+			ftype := f.FHIRType
+			if f.IsRef {
+				ftype = f.RefTarget
+			}
+			if ftype == "boolean" {
+				bools = append(bools, f.JSONName)
+			}
+		}
+		if len(bools) > 0 {
+			sort.Strings(bools)
+			writeFieldMap(&buf, name, bools)
+		}
+	}
+	buf.WriteString("}\n\n")
+
+	buf.WriteString("// IsBooleanField returns true if the given field holds a boolean value.\n")
+	buf.WriteString("func IsBooleanField(parentType, fieldName string) bool {\n")
+	buf.WriteString("\tif fields, ok := booleanFields[parentType]; ok {\n")
+	buf.WriteString("\t\treturn fields[fieldName]\n")
+	buf.WriteString("\t}\n")
+	buf.WriteString("\treturn false\n")
 	buf.WriteString("}\n")
 
 	return writeGoFile("r4/parser/schema_gen.go", buf.Bytes())
