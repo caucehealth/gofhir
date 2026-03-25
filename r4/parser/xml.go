@@ -193,6 +193,15 @@ func (e *xmlEncoder) encodeMap(m map[string]any) {
 		if key == "resourceType" {
 			continue // already emitted as root element name
 		}
+		// XHTML div content — embed as raw XML, not as value attribute
+		if key == "div" {
+			if s, ok := val.(string); ok {
+				e.writeIndent()
+				e.buf.WriteString(s)
+				e.writeNewline()
+				continue
+			}
+		}
 		e.encodeField(key, val, m["_"+key])
 	}
 }
@@ -318,12 +327,20 @@ func decodeXMLElement(decoder *xml.Decoder) (any, error) {
 				}
 			}
 
-			if hasValue {
-				// Self-closing primitive element
-				decoder.Skip()
+			if name == "div" {
+				divContent, err := readRawXMLElement(decoder, t)
+				if err != nil {
+					return nil, err
+				}
+				addToMap(m, "div", divContent)
+			} else if hasValue {
+				// Primitive with value — may also have child extensions
 				addToMap(m, name, coerceXMLValue(resourceType, name, valueAttr))
+				elemExt := decodePrimitiveExtensions(decoder)
+				if elemExt != nil {
+					m["_"+name] = elemExt
+				}
 			} else {
-				// Complex child element
 				childType := inferChildType(resourceType, name)
 				child, err := decodeXMLChild(decoder, childType)
 				if err != nil {
@@ -360,9 +377,18 @@ func decodeXMLChild(decoder *xml.Decoder, typeName string) (any, error) {
 				}
 			}
 
-			if hasValue {
-				decoder.Skip()
+			if name == "div" {
+				divContent, err := readRawXMLElement(decoder, t)
+				if err != nil {
+					return nil, err
+				}
+				addToMap(m, "div", divContent)
+			} else if hasValue {
 				addToMap(m, name, coerceXMLValue(typeName, name, valueAttr))
+				elemExt := decodePrimitiveExtensions(decoder)
+				if elemExt != nil {
+					m["_"+name] = elemExt
+				}
 			} else {
 				childType := inferChildType(typeName, name)
 				child, err := decodeXMLChild(decoder, childType)
@@ -374,13 +400,6 @@ func decodeXMLChild(decoder *xml.Decoder, typeName string) (any, error) {
 
 		case xml.EndElement:
 			return m, nil
-
-		case xml.CharData:
-			// Text content in FHIR XML (e.g. div content)
-			text := strings.TrimSpace(string(t))
-			if text != "" {
-				m["div"] = text
-			}
 		}
 	}
 }
@@ -388,11 +407,12 @@ func decodeXMLChild(decoder *xml.Decoder, typeName string) (any, error) {
 // coerceXMLValue converts string values from XML value="" attributes to
 // their appropriate JSON types using schema-generated metadata.
 func coerceXMLValue(parentType, fieldName, s string) any {
-	// Boolean fields
-	if s == "true" || s == "false" {
+	// Boolean fields — only when schema says it's boolean or value is exactly true/false
+	// and the field is known to be boolean in context
+	if (s == "true" || s == "false") && isBooleanContext(parentType, fieldName) {
 		return s == "true"
 	}
-	// Use schema-generated numeric field metadata
+	// Use schema-generated numeric field metadata — ONLY coerce when schema confirms
 	if IsNumericField(parentType, fieldName) {
 		if len(s) > 0 && (s[0] == '-' || s[0] == '.' || (s[0] >= '0' && s[0] <= '9')) {
 			var f float64
@@ -401,16 +421,147 @@ func coerceXMLValue(parentType, fieldName, s string) any {
 			}
 		}
 	}
-	// Fallback: try numeric coercion for "value" field (common in Quantity, etc.)
-	if fieldName == "value" {
-		if len(s) > 0 && (s[0] == '-' || s[0] == '.' || (s[0] >= '0' && s[0] <= '9')) {
-			var f float64
-			if _, err := fmt.Sscanf(s, "%g", &f); err == nil {
-				return f
+	return s
+}
+
+// isBooleanContext checks if a field is expected to be boolean.
+// Uses known FHIR boolean field names.
+func isBooleanContext(parentType, fieldName string) bool {
+	boolFields := map[string]bool{
+		"active": true, "focal": true, "allDay": true,
+		"primarySource": true, "isSubpotent": true, "doNotPerform": true,
+		"experimental": true, "abstract": true, "required": true,
+		"repeats": true, "readOnly": true, "multiple": true,
+		"preferred": true, "implicitRules": false,
+	}
+	if v, ok := boolFields[fieldName]; ok {
+		return v
+	}
+	// Fields starting with "is", "has", "can", or ending with "Boolean"
+	if strings.HasPrefix(fieldName, "is") || strings.HasPrefix(fieldName, "has") ||
+		strings.HasSuffix(fieldName, "Boolean") {
+		return true
+	}
+	// Check for known value[x] boolean variants
+	if fieldName == "deceasedBoolean" || fieldName == "multipleBirthBoolean" ||
+		fieldName == "asNeededBoolean" || fieldName == "allowedBoolean" ||
+		fieldName == "reportedBoolean" {
+		return true
+	}
+	return false
+}
+
+// decodePrimitiveExtensions reads any child elements inside a primitive element
+// (id, extension) and returns them as a map for the _field companion.
+// If there are no children (self-closing element), returns nil.
+func decodePrimitiveExtensions(decoder *xml.Decoder) map[string]any {
+	m := make(map[string]any)
+	hasContent := false
+
+	for {
+		token, err := decoder.Token()
+		if err != nil {
+			break
+		}
+		switch t := token.(type) {
+		case xml.StartElement:
+			hasContent = true
+			name := t.Name.Local
+			if name == "extension" {
+				child, err := decodeXMLChild(decoder, "Extension")
+				if err == nil {
+					for _, attr := range t.Attr {
+						if attr.Name.Local == "url" {
+							if cm, ok := child.(map[string]any); ok {
+								cm["url"] = attr.Value
+							}
+						}
+					}
+					// Always store extensions as array
+					if existing, ok := m["extension"]; ok {
+						if arr, ok := existing.([]any); ok {
+							m["extension"] = append(arr, child)
+						}
+					} else {
+						m["extension"] = []any{child}
+					}
+				}
+			} else if name == "id" {
+				for _, attr := range t.Attr {
+					if attr.Name.Local == "value" {
+						m["id"] = attr.Value
+					}
+				}
+				decoder.Skip()
+			} else {
+				decoder.Skip()
 			}
+		case xml.EndElement:
+			if !hasContent {
+				return nil
+			}
+			return m
+		case xml.CharData:
+			// ignore whitespace
 		}
 	}
-	return s
+	if !hasContent {
+		return nil
+	}
+	return m
+}
+
+// readRawXMLElement reads all content of an XML element (including nested elements)
+// as a raw XHTML string. Used for the narrative div element.
+func readRawXMLElement(decoder *xml.Decoder, start xml.StartElement) (string, error) {
+	var buf strings.Builder
+	// Reconstruct the opening tag
+	buf.WriteByte('<')
+	buf.WriteString(start.Name.Local)
+	for _, attr := range start.Attr {
+		buf.WriteByte(' ')
+		if attr.Name.Space != "" {
+			buf.WriteString(attr.Name.Space)
+			buf.WriteByte(':')
+		}
+		buf.WriteString(attr.Name.Local)
+		buf.WriteString(`="`)
+		buf.WriteString(xmlEscape(attr.Value))
+		buf.WriteByte('"')
+	}
+	buf.WriteByte('>')
+
+	depth := 1
+	for depth > 0 {
+		token, err := decoder.Token()
+		if err != nil {
+			break
+		}
+		switch t := token.(type) {
+		case xml.StartElement:
+			depth++
+			buf.WriteByte('<')
+			buf.WriteString(t.Name.Local)
+			for _, attr := range t.Attr {
+				buf.WriteByte(' ')
+				buf.WriteString(attr.Name.Local)
+				buf.WriteString(`="`)
+				buf.WriteString(xmlEscape(attr.Value))
+				buf.WriteByte('"')
+			}
+			buf.WriteByte('>')
+		case xml.EndElement:
+			depth--
+			if depth >= 0 {
+				buf.WriteString("</")
+				buf.WriteString(t.Name.Local)
+				buf.WriteByte('>')
+			}
+		case xml.CharData:
+			buf.WriteString(xmlEscape(string(t)))
+		}
+	}
+	return buf.String(), nil
 }
 
 func addToMap(m map[string]any, key string, val any) {

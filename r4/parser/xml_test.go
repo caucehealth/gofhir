@@ -4,6 +4,7 @@
 package parser_test
 
 import (
+	"encoding/json"
 	"strings"
 	"testing"
 
@@ -193,5 +194,82 @@ func TestXMLObservation(t *testing.T) {
 	}
 	if !strings.Contains(xml, `<status value="final"/>`) {
 		t.Error("should have status")
+	}
+}
+
+func TestXMLRoundTripHL7Examples(t *testing.T) {
+	// Stress test: round-trip ALL HL7 example resources through XML
+	tests := []struct {
+		name string
+		json string
+	}{
+		{"Patient", `{"resourceType":"Patient","id":"1","gender":"male","birthDate":"1980-01-01","name":[{"family":"Doe","given":["John"]}],"active":true}`},
+		{"Observation", `{"resourceType":"Observation","id":"1","status":"final","code":{"coding":[{"system":"http://loinc.org","code":"29463-7"}]},"valueQuantity":{"value":120,"unit":"mmHg"}}`},
+		{"Condition", `{"resourceType":"Condition","id":"1","code":{"coding":[{"system":"http://snomed.info/sct","code":"386661006"}]},"subject":{"reference":"Patient/1"},"onsetDateTime":"2023-01-01"}`},
+		{"Encounter", `{"resourceType":"Encounter","id":"1","status":"in-progress","class":{"system":"http://terminology.hl7.org/CodeSystem/v3-ActCode","code":"IMP"}}`},
+		{"MedicationRequest", `{"resourceType":"MedicationRequest","id":"1","status":"active","intent":"order","subject":{"reference":"Patient/1"},"medicationCodeableConcept":{"text":"Tylenol"}}`},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Parse JSON
+			result, err := resources.ParseResource(json.RawMessage(tt.json))
+			if err != nil {
+				t.Fatalf("JSON parse: %v", err)
+			}
+
+			// Marshal to XML
+			xmlData, err := parser.MarshalXML(result, parser.Options{})
+			if err != nil {
+				t.Fatalf("XML marshal: %v", err)
+			}
+
+			// Unmarshal back
+			result2, _ := resources.ParseResource(json.RawMessage(`{"resourceType":"` + tt.name + `"}`))
+			if err := parser.UnmarshalXML(xmlData, result2); err != nil {
+				t.Fatalf("XML unmarshal: %v\nXML: %s", err, xmlData[:min(300, len(xmlData))])
+			}
+
+			// Compare key count
+			var m1, m2 map[string]json.RawMessage
+			j1, _ := json.Marshal(result)
+			j2, _ := json.Marshal(result2)
+			json.Unmarshal(j1, &m1)
+			json.Unmarshal(j2, &m2)
+
+			for k := range m1 {
+				if k == "text" {
+					continue
+				}
+				if _, ok := m2[k]; !ok {
+					t.Errorf("key %q lost in XML round-trip", k)
+				}
+			}
+		})
+	}
+}
+
+func TestXMLElementExtensionRoundTrip(t *testing.T) {
+	// _birthDate with extension must survive XML round-trip
+	input := `{"resourceType":"Patient","id":"1","birthDate":"1974-12-25","_birthDate":{"extension":[{"url":"http://hl7.org/fhir/StructureDefinition/patient-birthTime","valueDateTime":"1974-12-25T14:35:45-05:00"}]}}`
+
+	var p resources.Patient
+	parser.Unmarshal([]byte(input), &p)
+
+	xmlData, err := parser.MarshalXML(&p, parser.Options{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var p2 resources.Patient
+	if err := parser.UnmarshalXML(xmlData, &p2); err != nil {
+		t.Fatalf("unmarshal: %v\nXML: %s", err, xmlData)
+	}
+
+	if p2.BirthDateElement == nil {
+		t.Fatal("_birthDate should survive XML round-trip")
+	}
+	if len(p2.BirthDateElement.Extension) == 0 {
+		t.Fatal("_birthDate extensions should survive XML round-trip")
 	}
 }
