@@ -184,6 +184,12 @@ func (l *Lexer) lex() error {
 			num := l.readNumber()
 			l.tokens = append(l.tokens, Token{Type: TokenNumber, Value: num, Pos: l.pos})
 
+		case ch == '%':
+			// Environment variable: %resource, %context
+			l.pos++ // skip %
+			ident := l.readIdent()
+			l.tokens = append(l.tokens, Token{Type: TokenIdent, Value: "%" + ident, Pos: l.pos})
+
 		case isIdentStart(ch):
 			ident := l.readIdent()
 			tok := Token{Value: ident, Pos: l.pos}
@@ -193,6 +199,15 @@ func (l *Lexer) lex() error {
 				tok.Type = TokenIdent
 			}
 			l.tokens = append(l.tokens, tok)
+
+		case ch == '@':
+			// Date/time literal: @2024-01-01 or @2024-01-01T10:30:00Z
+			l.pos++
+			start := l.pos
+			for l.pos < len(l.input) && !isWhitespace(l.input[l.pos]) && l.input[l.pos] != ')' && l.input[l.pos] != ']' {
+				l.pos++
+			}
+			l.tokens = append(l.tokens, Token{Type: TokenString, Value: l.input[start:l.pos], Pos: start})
 
 		case ch == '`':
 			// Backtick-quoted identifier (for reserved words as field names)
@@ -294,6 +309,10 @@ func (l *Lexer) readBacktickIdent() (string, error) {
 	ident := l.input[start:l.pos]
 	l.pos++ // skip closing `
 	return ident, nil
+}
+
+func isWhitespace(ch byte) bool {
+	return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r'
 }
 
 func isIdentStart(ch byte) bool {

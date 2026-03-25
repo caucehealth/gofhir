@@ -30,10 +30,15 @@ import (
 // In FHIRPath, everything is a collection (even single values).
 type Collection []any
 
+// Resolver resolves a FHIR reference (e.g., "Patient/123") to a resource.
+// Used by the resolve() function. Return nil if the reference cannot be resolved.
+type Resolver func(reference string) any
+
 // Expression is a compiled FHIRPath expression.
 type Expression struct {
-	source string
-	ast    Node
+	source   string
+	ast      Node
+	resolver Resolver
 }
 
 // Compile parses a FHIRPath expression for repeated evaluation.
@@ -45,9 +50,18 @@ func Compile(expr string) (*Expression, error) {
 	return &Expression{source: expr, ast: ast}, nil
 }
 
+// WithResolver sets a reference resolver for the resolve() function.
+func (e *Expression) WithResolver(r Resolver) *Expression {
+	e.resolver = r
+	return e
+}
+
 // Evaluate evaluates the compiled expression against a resource.
 func (e *Expression) Evaluate(resource any) (Collection, error) {
-	ctx := &evalContext{}
+	ctx := &evalContext{
+		resource: resource,
+		resolver: e.resolver,
+	}
 	input := Collection{resource}
 	return ctx.eval(e.ast, input)
 }
@@ -61,6 +75,16 @@ func Evaluate(resource any, expr string) (Collection, error) {
 	if err != nil {
 		return nil, err
 	}
+	return compiled.Evaluate(resource)
+}
+
+// EvaluateWithResolver parses and evaluates with a reference resolver.
+func EvaluateWithResolver(resource any, expr string, resolver Resolver) (Collection, error) {
+	compiled, err := Compile(expr)
+	if err != nil {
+		return nil, err
+	}
+	compiled.resolver = resolver
 	return compiled.Evaluate(resource)
 }
 
@@ -99,7 +123,10 @@ func (c Collection) String() string {
 }
 
 // evalContext holds state during evaluation.
-type evalContext struct{}
+type evalContext struct {
+	resource any      // root resource (for %resource)
+	resolver Resolver // reference resolver (for resolve())
+}
 
 func (ctx *evalContext) eval(node Node, input Collection) (Collection, error) {
 	switch n := node.(type) {
@@ -155,6 +182,17 @@ func (ctx *evalContext) eval(node Node, input Collection) (Collection, error) {
 }
 
 func (ctx *evalContext) evalIdent(name string, input Collection) (Collection, error) {
+	// Environment variables
+	switch name {
+	case "%resource", "$this":
+		if ctx.resource != nil {
+			return Collection{ctx.resource}, nil
+		}
+		return input, nil
+	case "%context":
+		return input, nil
+	}
+
 	var result Collection
 	for _, item := range input {
 		vals := getField(item, name)
@@ -681,6 +719,31 @@ func (ctx *evalContext) evalFunction(name string, args []Node, input Collection)
 		}
 		return result, nil
 
+	// resolve() — follow a Reference
+	case "resolve":
+		if ctx.resolver == nil {
+			return nil, nil // no resolver configured
+		}
+		var result Collection
+		for _, item := range input {
+			ref := ""
+			// Get reference string from Reference object or string
+			refVals := getField(item, "reference")
+			if len(refVals) > 0 {
+				ref = toString(refVals[0])
+			} else {
+				ref = toString(item)
+			}
+			if ref == "" {
+				continue
+			}
+			resolved := ctx.resolver(ref)
+			if resolved != nil {
+				result = append(result, resolved)
+			}
+		}
+		return result, nil
+
 	// FHIR-specific
 	case "extension":
 		if len(args) != 1 {
@@ -1177,6 +1240,21 @@ func collEqual(a, b Collection) bool {
 }
 
 func compareValues(a, b any) int {
+	sa := toString(a)
+	sb := toString(b)
+
+	// Try date comparison (dates are strings that sort lexicographically)
+	if isDateLike(sa) && isDateLike(sb) {
+		if sa < sb {
+			return -1
+		}
+		if sa > sb {
+			return 1
+		}
+		return 0
+	}
+
+	// Try numeric comparison
 	fa := toFloat(a)
 	fb := toFloat(b)
 	if fa < fb {
@@ -1185,9 +1263,8 @@ func compareValues(a, b any) int {
 	if fa > fb {
 		return 1
 	}
-	// Try string comparison
-	sa := toString(a)
-	sb := toString(b)
+
+	// String comparison
 	if sa < sb {
 		return -1
 	}
@@ -1195,6 +1272,13 @@ func compareValues(a, b any) int {
 		return 1
 	}
 	return 0
+}
+
+func isDateLike(s string) bool {
+	// FHIR dates start with 4 digits
+	return len(s) >= 4 && s[0] >= '0' && s[0] <= '9' && s[1] >= '0' && s[1] <= '9' &&
+		s[2] >= '0' && s[2] <= '9' && s[3] >= '0' && s[3] <= '9' &&
+		(len(s) == 4 || s[4] == '-')
 }
 
 func isType(v any, typeName string) bool {

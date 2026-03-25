@@ -438,3 +438,109 @@ func TestInOperator(t *testing.T) {
 		t.Error("male should be in (male | female)")
 	}
 }
+
+// ============================================================================
+// resolve() with resolver callback
+// ============================================================================
+
+func TestResolve(t *testing.T) {
+	obs := observation()
+
+	// Create a resolver that returns a Patient for "Patient/example"
+	resolver := func(ref string) any {
+		if ref == "Patient/example" {
+			return patient()
+		}
+		return nil
+	}
+
+	result, err := fhirpath.EvaluateWithResolver(obs, "subject.resolve().name.family", resolver)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result) == 0 || result.String() != "Doe" {
+		t.Errorf("resolve().name.family = %v, want [Doe]", result)
+	}
+}
+
+func TestResolveNoResolver(t *testing.T) {
+	obs := observation()
+	result, err := fhirpath.Evaluate(obs, "subject.resolve()")
+	if err != nil {
+		t.Fatal(err)
+	}
+	// No resolver → empty
+	if len(result) != 0 {
+		t.Error("resolve without resolver should return empty")
+	}
+}
+
+// ============================================================================
+// Date literals and comparison
+// ============================================================================
+
+func TestDateLiteralComparison(t *testing.T) {
+	tests := []struct {
+		expr string
+		want bool
+	}{
+		{"@2024-01-01 < @2024-06-15", true},
+		{"@2024-06-15 > @2024-01-01", true},
+		{"@2024-01-01 = @2024-01-01", true},
+		{"@2024-01-01 != @2024-06-15", true},
+		{"@2023 < @2024", true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.expr, func(t *testing.T) {
+			b, err := fhirpath.EvaluateBool(patient(), tt.expr)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if b != tt.want {
+				t.Errorf("got %v, want %v", b, tt.want)
+			}
+		})
+	}
+}
+
+func TestDateFieldComparison(t *testing.T) {
+	b, err := fhirpath.EvaluateBool(patient(), "birthDate < @2000-01-01")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !b {
+		t.Error("1980-01-01 should be < 2000-01-01")
+	}
+}
+
+// ============================================================================
+// %resource and $this
+// ============================================================================
+
+func TestResourceEnvironment(t *testing.T) {
+	p := patient()
+
+	result, _ := fhirpath.Evaluate(p, "%resource.id")
+	if result.String() != "example" {
+		t.Errorf("%%resource.id = %q, want example", result.String())
+	}
+}
+
+// ============================================================================
+// Compiled expression with resolver
+// ============================================================================
+
+func TestCompiledWithResolver(t *testing.T) {
+	expr, _ := fhirpath.Compile("subject.resolve().name.family")
+	expr.WithResolver(func(ref string) any {
+		if ref == "Patient/example" {
+			return patient()
+		}
+		return nil
+	})
+
+	result, _ := expr.Evaluate(observation())
+	if result.String() != "Doe" {
+		t.Errorf("got %q, want Doe", result.String())
+	}
+}
