@@ -226,6 +226,30 @@ func TestStripVersionsFromReferences(t *testing.T) {
 	}
 }
 
+func TestStripVersionsFromReferencesInArrays(t *testing.T) {
+	input := `{"resourceType":"Procedure","id":"1","status":"completed","code":{"text":"test"},"subject":{"reference":"Patient/1/_history/1"},"performer":[{"actor":{"reference":"Practitioner/2/_history/3"}},{"actor":{"reference":"Practitioner/5/_history/1"}}]}`
+	var proc resources.Procedure
+	json.Unmarshal([]byte(input), &proc)
+
+	out, err := parser.Marshal(&proc, parser.Options{StripVersionsFromReferences: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := string(out)
+	if strings.Contains(s, "/_history/") {
+		t.Errorf("all versions should be stripped, got: %s", s)
+	}
+	if !strings.Contains(s, `"Patient/1"`) {
+		t.Error("subject reference base should be preserved")
+	}
+	if !strings.Contains(s, `"Practitioner/2"`) {
+		t.Error("performer[0] reference should be stripped")
+	}
+	if !strings.Contains(s, `"Practitioner/5"`) {
+		t.Error("performer[1] reference should be stripped")
+	}
+}
+
 func TestParseErrorString(t *testing.T) {
 	pe := parser.ParseError{
 		Type:         parser.ErrorUnknownField,

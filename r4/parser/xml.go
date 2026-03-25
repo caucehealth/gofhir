@@ -142,9 +142,12 @@ func (e *xmlEncoder) handleDashField(field reflect.StructField, val reflect.Valu
 }
 
 // encodeRawJSON encodes a raw JSON value as XML.
+// Uses json.Decoder with UseNumber to preserve decimal precision.
 func (e *xmlEncoder) encodeRawJSON(name string, raw json.RawMessage, opts Options) {
+	dec := json.NewDecoder(strings.NewReader(string(raw)))
+	dec.UseNumber()
 	var val any
-	if err := json.Unmarshal(raw, &val); err != nil {
+	if err := dec.Decode(&val); err != nil {
 		return
 	}
 	e.encodeAnyValue(name, val, nil, opts)
@@ -281,6 +284,9 @@ func (e *xmlEncoder) encodeAnyValue(name string, val any, elemExt any, opts Opti
 		} else {
 			e.writeValueElement(name, v)
 		}
+	case json.Number:
+		// Preserves exact decimal precision (e.g., "1.00" stays "1.00")
+		e.writeValueElement(name, v.String())
 	case float64:
 		s := fmt.Sprintf("%v", v)
 		e.writeValueElement(name, s)
@@ -630,10 +636,8 @@ func coerceXMLValue(parentType, fieldName, s string) any {
 	}
 	if IsNumericField(parentType, fieldName) {
 		if len(s) > 0 && (s[0] == '-' || s[0] == '.' || (s[0] >= '0' && s[0] <= '9')) {
-			var f float64
-			if _, err := fmt.Sscanf(s, "%g", &f); err == nil {
-				return f
-			}
+			// Use json.Number to preserve exact decimal precision (e.g., "1.00" stays "1.00")
+			return json.Number(s)
 		}
 	}
 	return s

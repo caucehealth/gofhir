@@ -338,3 +338,41 @@ func TestXMLEmptyResource(t *testing.T) {
 		t.Errorf("resourceType = %q, want Patient", p.ResourceType)
 	}
 }
+
+func TestXMLDecimalPrecisionRoundTrip(t *testing.T) {
+	// Decimal "1.00" must survive XML round-trip as "1.00", not "1"
+	input := `{"resourceType":"Observation","status":"final","code":{"text":"test"},"valueQuantity":{"value":1.00,"unit":"mg"}}`
+	var obs resources.Observation
+	parser.Unmarshal([]byte(input), &obs)
+
+	if obs.Value == nil || obs.Value.Quantity == nil {
+		t.Fatal("valueQuantity should be parsed")
+	}
+	if obs.Value.Quantity.Value.String() != "1.00" {
+		t.Fatalf("precision before XML: got %q, want 1.00", obs.Value.Quantity.Value.String())
+	}
+
+	// Marshal to XML
+	xmlData, err := parser.MarshalXML(&obs, parser.Options{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Verify XML contains the precise value
+	if !strings.Contains(string(xmlData), `value="1.00"`) {
+		t.Errorf("XML should contain value=\"1.00\", got: %s", xmlData)
+	}
+
+	// Unmarshal back from XML
+	var obs2 resources.Observation
+	if err := parser.UnmarshalXML(xmlData, &obs2); err != nil {
+		t.Fatal(err)
+	}
+
+	if obs2.Value == nil || obs2.Value.Quantity == nil || obs2.Value.Quantity.Value == nil {
+		t.Fatal("valueQuantity should survive XML round-trip")
+	}
+	if obs2.Value.Quantity.Value.String() != "1.00" {
+		t.Errorf("decimal precision lost in XML round-trip: got %q, want 1.00", obs2.Value.Quantity.Value.String())
+	}
+}

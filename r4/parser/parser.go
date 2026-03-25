@@ -237,7 +237,7 @@ func applyOptions(m map[string]json.RawMessage, opts Options) {
 func omitDefaults(m map[string]json.RawMessage) {
 	for key, val := range m {
 		s := strings.TrimSpace(string(val))
-		if s == "false" || s == "0" || s == `""` || s == "0.0" {
+		if s == "false" || s == "0" || s == "0.0" || s == `""` {
 			delete(m, key)
 			// Also remove companion _field if present
 			delete(m, "_"+key)
@@ -249,22 +249,41 @@ func omitDefaults(m map[string]json.RawMessage) {
 func stripVersions(m map[string]json.RawMessage) {
 	for key, val := range m {
 		s := string(val)
-		// Check if this looks like a reference field containing /_history/
-		if strings.Contains(s, "/_history/") {
-			if len(s) >= 2 && s[0] == '"' {
-				// Simple string value — strip version
-				unquoted := s[1 : len(s)-1]
-				if idx := strings.Index(unquoted, "/_history/"); idx != -1 {
-					stripped := unquoted[:idx]
-					m[key], _ = json.Marshal(stripped)
+		if !strings.Contains(s, "/_history/") {
+			continue
+		}
+		if len(s) < 2 {
+			continue
+		}
+		switch s[0] {
+		case '"':
+			// Simple string value — strip version
+			unquoted := s[1 : len(s)-1]
+			if idx := strings.Index(unquoted, "/_history/"); idx != -1 {
+				m[key], _ = json.Marshal(unquoted[:idx])
+			}
+		case '{':
+			// Nested object — recurse
+			var nested map[string]json.RawMessage
+			if json.Unmarshal(val, &nested) == nil {
+				stripVersions(nested)
+				m[key], _ = json.Marshal(nested)
+			}
+		case '[':
+			// Array — recurse into each element
+			var arr []json.RawMessage
+			if json.Unmarshal(val, &arr) == nil {
+				for i, item := range arr {
+					si := string(item)
+					if strings.Contains(si, "/_history/") && len(si) >= 2 && si[0] == '{' {
+						var nested map[string]json.RawMessage
+						if json.Unmarshal(item, &nested) == nil {
+							stripVersions(nested)
+							arr[i], _ = json.Marshal(nested)
+						}
+					}
 				}
-			} else if s[0] == '{' {
-				// Nested object — recurse
-				var nested map[string]json.RawMessage
-				if json.Unmarshal(val, &nested) == nil {
-					stripVersions(nested)
-					m[key], _ = json.Marshal(nested)
-				}
+				m[key], _ = json.Marshal(arr)
 			}
 		}
 	}
