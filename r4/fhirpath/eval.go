@@ -20,7 +20,10 @@ import (
 	"fmt"
 	"math"
 	"reflect"
+	"regexp"
+	"strconv"
 	"strings"
+	"time"
 )
 
 // Collection is the result of evaluating a FHIRPath expression.
@@ -562,8 +565,6 @@ func (ctx *evalContext) evalFunction(name string, args []Node, input Collection)
 		return ctx.stringFunc(input, args, func(s, arg string) any { return strings.HasSuffix(s, arg) })
 	case "contains":
 		return ctx.stringFunc(input, args, func(s, arg string) any { return strings.Contains(s, arg) })
-	case "matches":
-		return ctx.stringFunc(input, args, func(s, arg string) any { return strings.Contains(s, arg) })
 	case "replace":
 		if len(args) != 2 || len(input) == 0 {
 			return nil, nil
@@ -692,6 +693,252 @@ func (ctx *evalContext) evalFunction(name string, args []Node, input Collection)
 		url := toString(urlColl[0])
 		return ctx.evalExtension(input, url)
 
+	// Math functions
+	case "abs":
+		if len(input) == 0 {
+			return nil, nil
+		}
+		return Collection{math.Abs(toFloat(input[0]))}, nil
+	case "ceiling":
+		if len(input) == 0 {
+			return nil, nil
+		}
+		return Collection{math.Ceil(toFloat(input[0]))}, nil
+	case "floor":
+		if len(input) == 0 {
+			return nil, nil
+		}
+		return Collection{math.Floor(toFloat(input[0]))}, nil
+	case "round":
+		if len(input) == 0 {
+			return nil, nil
+		}
+		precision := 0
+		if len(args) > 0 {
+			pColl, _ := ctx.eval(args[0], input)
+			if len(pColl) > 0 {
+				precision = int(toInt(pColl[0]))
+			}
+		}
+		factor := math.Pow(10, float64(precision))
+		return Collection{math.Round(toFloat(input[0])*factor) / factor}, nil
+	case "ln":
+		if len(input) == 0 {
+			return nil, nil
+		}
+		return Collection{math.Log(toFloat(input[0]))}, nil
+	case "log":
+		if len(input) == 0 || len(args) < 1 {
+			return nil, nil
+		}
+		baseColl, _ := ctx.eval(args[0], input)
+		base := toFloat(baseColl[0])
+		return Collection{math.Log(toFloat(input[0])) / math.Log(base)}, nil
+	case "exp":
+		if len(input) == 0 {
+			return nil, nil
+		}
+		return Collection{math.Exp(toFloat(input[0]))}, nil
+	case "sqrt":
+		if len(input) == 0 {
+			return nil, nil
+		}
+		return Collection{math.Sqrt(toFloat(input[0]))}, nil
+	case "power":
+		if len(input) == 0 || len(args) < 1 {
+			return nil, nil
+		}
+		expColl, _ := ctx.eval(args[0], input)
+		return Collection{math.Pow(toFloat(input[0]), toFloat(expColl[0]))}, nil
+
+	// Regex matches
+	case "matches":
+		if len(input) == 0 || len(args) < 1 {
+			return nil, nil
+		}
+		s := toString(input[0])
+		patColl, err := ctx.eval(args[0], input)
+		if err != nil {
+			return nil, err
+		}
+		pat := toString(patColl[0])
+		re, err := regexp.Compile(pat)
+		if err != nil {
+			return Collection{false}, nil
+		}
+		return Collection{re.MatchString(s)}, nil
+
+	case "replaceMatches":
+		if len(input) == 0 || len(args) < 2 {
+			return nil, nil
+		}
+		s := toString(input[0])
+		patColl, _ := ctx.eval(args[0], input)
+		repColl, _ := ctx.eval(args[1], input)
+		re, err := regexp.Compile(toString(patColl[0]))
+		if err != nil {
+			return Collection{s}, nil
+		}
+		return Collection{re.ReplaceAllString(s, toString(repColl[0]))}, nil
+
+	// Date/time functions
+	case "now":
+		return Collection{time.Now().Format(time.RFC3339)}, nil
+	case "today":
+		return Collection{time.Now().Format("2006-01-02")}, nil
+	case "timeOfDay":
+		return Collection{time.Now().Format("15:04:05")}, nil
+
+	// Type check functions (without conversion)
+	case "convertsToInteger":
+		if len(input) == 0 {
+			return Collection{false}, nil
+		}
+		_, err := strconv.ParseInt(toString(input[0]), 10, 64)
+		return Collection{err == nil}, nil
+	case "convertsToDecimal":
+		if len(input) == 0 {
+			return Collection{false}, nil
+		}
+		_, err := strconv.ParseFloat(toString(input[0]), 64)
+		return Collection{err == nil}, nil
+	case "convertsToBoolean":
+		if len(input) == 0 {
+			return Collection{false}, nil
+		}
+		s := strings.ToLower(toString(input[0]))
+		return Collection{s == "true" || s == "false" || s == "1" || s == "0"}, nil
+	case "convertsToString":
+		return Collection{len(input) > 0}, nil
+
+	// Collection traversal
+	case "children":
+		var result Collection
+		for _, item := range input {
+			result = append(result, allChildren(item)...)
+		}
+		return result, nil
+	case "descendants":
+		var result Collection
+		for _, item := range input {
+			result = append(result, allDescendants(item)...)
+		}
+		return result, nil
+
+	// repeat(expr) — recursive expansion
+	case "repeat":
+		if len(args) != 1 {
+			return nil, fmt.Errorf("repeat() requires 1 argument")
+		}
+		seen := make(map[string]bool)
+		var result Collection
+		current := input
+		for len(current) > 0 {
+			var next Collection
+			for _, item := range current {
+				key := fmt.Sprintf("%p", item)
+				if seen[key] {
+					continue
+				}
+				seen[key] = true
+				result = append(result, item)
+				val, err := ctx.eval(args[0], Collection{item})
+				if err != nil {
+					return nil, err
+				}
+				next = append(next, val...)
+			}
+			current = next
+		}
+		return result, nil
+
+	// aggregate(expr, init)
+	case "aggregate":
+		if len(args) < 1 {
+			return nil, fmt.Errorf("aggregate() requires at least 1 argument")
+		}
+		var total any
+		if len(args) > 1 {
+			initColl, _ := ctx.eval(args[1], input)
+			if len(initColl) > 0 {
+				total = initColl[0]
+			}
+		}
+		// For simplicity, aggregate with $total not fully supported
+		// Just sum numeric values
+		for _, item := range input {
+			if total == nil {
+				total = item
+			} else {
+				total = toFloat(total) + toFloat(item)
+			}
+		}
+		if total == nil {
+			return nil, nil
+		}
+		return Collection{total}, nil
+
+	// trace(name) — debugging, just passes through
+	case "trace":
+		return input, nil
+
+	// Utility
+	case "type":
+		if len(input) == 0 {
+			return nil, nil
+		}
+		rv := reflect.ValueOf(input[0])
+		if rv.Kind() == reflect.Ptr {
+			rv = rv.Elem()
+		}
+		return Collection{rv.Type().Name()}, nil
+
+	case "single":
+		if len(input) != 1 {
+			return nil, nil
+		}
+		return input, nil
+
+	case "indexOf":
+		if len(input) == 0 || len(args) < 1 {
+			return nil, nil
+		}
+		s := toString(input[0])
+		subColl, _ := ctx.eval(args[0], input)
+		sub := toString(subColl[0])
+		return Collection{int64(strings.Index(s, sub))}, nil
+
+	case "split":
+		if len(input) == 0 || len(args) < 1 {
+			return nil, nil
+		}
+		s := toString(input[0])
+		sepColl, _ := ctx.eval(args[0], input)
+		sep := toString(sepColl[0])
+		parts := strings.Split(s, sep)
+		var result Collection
+		for _, p := range parts {
+			result = append(result, p)
+		}
+		return result, nil
+
+	case "join":
+		if len(input) == 0 {
+			return Collection{""}, nil
+		}
+		sep := ""
+		if len(args) > 0 {
+			sepColl, _ := ctx.eval(args[0], input)
+			if len(sepColl) > 0 {
+				sep = toString(sepColl[0])
+			}
+		}
+		var parts []string
+		for _, item := range input {
+			parts = append(parts, toString(item))
+		}
+		return Collection{strings.Join(parts, sep)}, nil
+
 	default:
 		return nil, fmt.Errorf("fhirpath: unknown function %q", name)
 	}
@@ -727,6 +974,39 @@ func (ctx *evalContext) evalExtension(input Collection, url string) (Collection,
 }
 
 // --- Reflection helpers ---
+
+func allChildren(obj any) Collection {
+	v := reflect.ValueOf(obj)
+	if v.Kind() == reflect.Ptr {
+		if v.IsNil() {
+			return nil
+		}
+		v = v.Elem()
+	}
+	if v.Kind() != reflect.Struct {
+		return nil
+	}
+	var result Collection
+	t := v.Type()
+	for i := 0; i < t.NumField(); i++ {
+		tag := t.Field(i).Tag.Get("json")
+		if tag == "" || tag == "-" || strings.HasPrefix(strings.Split(tag, ",")[0], "_") {
+			continue
+		}
+		result = append(result, reflectToCollection(v.Field(i))...)
+	}
+	return result
+}
+
+func allDescendants(obj any) Collection {
+	var result Collection
+	children := allChildren(obj)
+	for _, child := range children {
+		result = append(result, child)
+		result = append(result, allDescendants(child)...)
+	}
+	return result
+}
 
 func getField(obj any, name string) Collection {
 	v := reflect.ValueOf(obj)

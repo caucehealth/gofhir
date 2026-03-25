@@ -5,6 +5,7 @@ package fhirpath_test
 
 import (
 	"encoding/json"
+	"math"
 	"testing"
 
 	"github.com/caucehealth/gofhir/r4/fhirpath"
@@ -429,5 +430,165 @@ func TestIif(t *testing.T) {
 	}
 	if result.String() != "yes" {
 		t.Errorf("iif = %q, want yes", result.String())
+	}
+}
+
+// === Math functions ===
+
+func TestMathFunctions(t *testing.T) {
+	tests := []struct {
+		expr string
+		want float64
+	}{
+		{"(-5).abs()", 5},
+		{"1.7.ceiling()", 2},
+		{"1.7.floor()", 1},
+		{"3.14159.round(2)", 3.14},
+		{"9.sqrt()", 3},
+		{"2.power(10)", 1024},
+	}
+	for _, tt := range tests {
+		t.Run(tt.expr, func(t *testing.T) {
+			result, err := fhirpath.Evaluate(patient(), tt.expr)
+			if err != nil {
+				t.Fatal(err)
+			}
+			got := fhirpath.ToFloat(result[0])
+			if math.Abs(got-tt.want) > 0.001 {
+				t.Errorf("got %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// === Regex matches ===
+
+func TestMatches(t *testing.T) {
+	b, err := fhirpath.EvaluateBool(patient(), "id.matches('^[a-z]+')")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !b {
+		t.Error("id should match ^[a-z]+")
+	}
+
+	b, err = fhirpath.EvaluateBool(patient(), "id.matches('^[0-9]+')")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if b {
+		t.Error("id should not match ^[0-9]+")
+	}
+}
+
+// === String functions ===
+
+func TestStringFunctionsExtended(t *testing.T) {
+	tests := []struct {
+		expr string
+		want string
+	}{
+		{"'hello world'.upper()", "HELLO WORLD"},
+		{"'Hello'.lower()", "hello"},
+		{"'  hello  '.trim()", "hello"},
+		{"'a-b-c'.split('-').count()", "3"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.expr, func(t *testing.T) {
+			result, err := fhirpath.Evaluate(patient(), tt.expr)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if result.String() != tt.want {
+				t.Errorf("got %q, want %q", result.String(), tt.want)
+			}
+		})
+	}
+}
+
+func TestJoin(t *testing.T) {
+	result, err := fhirpath.Evaluate(patient(), "name.given.join(', ')")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.String() != "John, James, Johnny" {
+		t.Errorf("join = %q, want 'John, James, Johnny'", result.String())
+	}
+}
+
+func TestIndexOf(t *testing.T) {
+	result, err := fhirpath.Evaluate(patient(), "'hello world'.indexOf('world')")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result[0].(int64) != 6 {
+		t.Errorf("indexOf = %v, want 6", result[0])
+	}
+}
+
+// === Date functions ===
+
+func TestDateFunctions(t *testing.T) {
+	result, err := fhirpath.Evaluate(patient(), "today()")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result) != 1 {
+		t.Fatal("today() should return 1 value")
+	}
+	s := result.String()
+	if len(s) != 10 { // YYYY-MM-DD
+		t.Errorf("today() = %q, expected YYYY-MM-DD format", s)
+	}
+}
+
+// === convertsTo functions ===
+
+func TestConvertsTo(t *testing.T) {
+	tests := []struct {
+		expr string
+		want bool
+	}{
+		{"'123'.convertsToInteger()", true},
+		{"'abc'.convertsToInteger()", false},
+		{"'3.14'.convertsToDecimal()", true},
+		{"'true'.convertsToBoolean()", true},
+		{"'hello'.convertsToString()", true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.expr, func(t *testing.T) {
+			b, err := fhirpath.EvaluateBool(patient(), tt.expr)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if b != tt.want {
+				t.Errorf("got %v, want %v", b, tt.want)
+			}
+		})
+	}
+}
+
+// === children/descendants ===
+
+func TestChildren(t *testing.T) {
+	result, err := fhirpath.Evaluate(patient(), "name[0].children()")
+	if err != nil {
+		t.Fatal(err)
+	}
+	// name[0] has: use, family, given (3 fields with values)
+	if len(result) < 3 {
+		t.Errorf("children should have >= 3 items, got %d: %v", len(result), result)
+	}
+}
+
+// === replaceMatches ===
+
+func TestReplaceMatches(t *testing.T) {
+	result, err := fhirpath.Evaluate(patient(), "'555-1234'.replaceMatches('[0-9]', 'X')")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.String() != "XXX-XXXX" {
+		t.Errorf("replaceMatches = %q, want XXX-XXXX", result.String())
 	}
 }
