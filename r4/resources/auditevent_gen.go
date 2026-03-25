@@ -460,7 +460,7 @@ type AuditEventEntity struct {
 	// NameElement contains element extensions for name.
 	NameElement *dt.Element `json:"_name,omitempty"`
 	// Query The query parameters for a query-type entities.
-	Query []byte `json:"query,omitempty"`
+	Query *dt.Base64Binary `json:"query,omitempty"`
 	// QueryElement contains element extensions for query.
 	QueryElement *dt.Element `json:"_query,omitempty"`
 	// Role Code representing the role the entity played in the event being audited.

@@ -65,12 +65,6 @@ func TestHL7ExamplesJSONRoundTrip(t *testing.T) {
 					t.Skipf("Bundle: %v", err)
 					return
 				}
-				// base64 with whitespace — known Go json limitation
-				if strings.Contains(err.Error(), "base64") {
-					skipped++
-					t.Skipf("base64 whitespace: %v", err)
-					return
-				}
 				failed++
 				failedFiles = append(failedFiles, entry.Name())
 				t.Fatalf("ParseResource(%s): %v", header.ResourceType, err)
@@ -212,11 +206,6 @@ func TestHL7ExamplesXMLRoundTrip(t *testing.T) {
 				return
 			}
 			if err := parser.UnmarshalXML(xmlData, res2); err != nil {
-				// Known: deeply nested extension arrays in XML need type context
-				if strings.Contains(err.Error(), "cannot unmarshal") {
-					t.Skipf("XML unmarshal type coercion: %v", err)
-					return
-				}
 				failed++
 				t.Fatalf("UnmarshalXML(%s): %v\nXML prefix: %s",
 					header.ResourceType, err,
@@ -232,8 +221,16 @@ func TestHL7ExamplesXMLRoundTrip(t *testing.T) {
 			json.Unmarshal(out2, &m2)
 
 			for k := range m1 {
-				if k == "text" || strings.HasPrefix(k, "_") {
-					continue // element extensions may not survive XML round-trip for all types
+				if k == "text" {
+					continue
+				}
+				// _field without corresponding field (extension-only primitive)
+				// is a rare edge case not yet supported in XML round-trip
+				if strings.HasPrefix(k, "_") {
+					baseField := k[1:]
+					if _, hasBase := m1[baseField]; !hasBase {
+						continue
+					}
 				}
 				if _, ok := m2[k]; !ok {
 					t.Errorf("key %q lost in XML round-trip for %s", k, header.ResourceType)

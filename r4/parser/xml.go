@@ -466,12 +466,25 @@ func UnmarshalXML(data []byte, resource any) error {
 // the FHIR spec defines the field as repeating.
 func fixArrayFields(m map[string]any, typeName string) {
 	for k, v := range m {
-		if strings.HasPrefix(k, "_") || k == "resourceType" {
+		if k == "resourceType" {
+			continue
+		}
+		// For _field element extensions, recurse into their content
+		if strings.HasPrefix(k, "_") {
+			if sub, ok := v.(map[string]any); ok {
+				fixExtensionArrays(sub)
+			}
 			continue
 		}
 		switch val := v.(type) {
 		case map[string]any:
 			childType := inferChildType(typeName, k)
+			// If no type found but this looks like an extension (has "url"), treat as Extension
+			if childType == "" {
+				if _, hasURL := val["url"]; hasURL {
+					childType = "Extension"
+				}
+			}
 			fixArrayFields(val, childType)
 			if IsArrayField(typeName, k) {
 				m[k] = []any{val}
@@ -497,6 +510,25 @@ func fixArrayFields(m map[string]any, typeName string) {
 				if sub, ok := item.(map[string]any); ok {
 					childType := inferChildType(typeName, k)
 					fixArrayFields(sub, childType)
+				}
+			}
+		}
+	}
+}
+
+// fixExtensionArrays handles array fixing within _field element extension maps.
+// These maps have the structure: {"id": "...", "extension": [{...}]}
+func fixExtensionArrays(m map[string]any) {
+	// Fix the extension field itself — always an array
+	if ext, ok := m["extension"]; ok {
+		if sub, ok := ext.(map[string]any); ok {
+			// Single extension — wrap in array
+			fixArrayFields(sub, "Extension")
+			m["extension"] = []any{sub}
+		} else if arr, ok := ext.([]any); ok {
+			for _, item := range arr {
+				if sub, ok := item.(map[string]any); ok {
+					fixArrayFields(sub, "Extension")
 				}
 			}
 		}

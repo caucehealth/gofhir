@@ -94,8 +94,8 @@ func (r MedicationAdministration) MarshalJSON() ([]byte, error) {
 	}
 	// Collect additional fields to splice into JSON
 	var extra []byte
-	if r.Effective != nil {
-		vData, err := json.Marshal(r.Effective)
+	if r.Medication != nil {
+		vData, err := json.Marshal(r.Medication)
 		if err != nil {
 			return nil, err
 		}
@@ -104,8 +104,8 @@ func (r MedicationAdministration) MarshalJSON() ([]byte, error) {
 			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
-	if r.Medication != nil {
-		vData, err := json.Marshal(r.Medication)
+	if r.Effective != nil {
+		vData, err := json.Marshal(r.Effective)
 		if err != nil {
 			return nil, err
 		}

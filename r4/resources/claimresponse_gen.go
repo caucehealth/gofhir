@@ -545,13 +545,6 @@ func (r *ClaimResponseAddItem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ClaimResponseAddItem(alias)
-	var locationVal ClaimResponseAddItemLocation
-	if err := locationVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if locationVal.Address != nil || locationVal.CodeableConcept != nil || locationVal.Reference != nil {
-		r.Location = &locationVal
-	}
 	var servicedVal ClaimResponseAddItemServiced
 	if err := servicedVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -559,46 +552,12 @@ func (r *ClaimResponseAddItem) UnmarshalJSON(data []byte) error {
 	if servicedVal.Date != nil || servicedVal.Period != nil {
 		r.Serviced = &servicedVal
 	}
-	return nil
-}
-
-// ClaimResponseAddItemServiced represents a polymorphic choice type in FHIR.
-type ClaimResponseAddItemServiced struct {
-	Date   *string    `json:"servicedDate,omitempty"`   // The date or dates when the service or product was supplied, performed or completed.
-	Period *dt.Period `json:"servicedPeriod,omitempty"` // The date or dates when the service or product was supplied, performed or completed.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ClaimResponseAddItemServiced.
-func (v ClaimResponseAddItemServiced) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Date != nil {
-		m["servicedDate"] = v.Date
-	}
-	if v.Period != nil {
-		m["servicedPeriod"] = v.Period
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ClaimResponseAddItemServiced.
-func (v *ClaimResponseAddItemServiced) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
+	var locationVal ClaimResponseAddItemLocation
+	if err := locationVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
-	if d, ok := raw["servicedDate"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling servicedDate: %w", err)
-		}
-		v.Date = &val
-	}
-	if d, ok := raw["servicedPeriod"]; ok {
-		var val dt.Period
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling servicedPeriod: %w", err)
-		}
-		v.Period = &val
+	if locationVal.Address != nil || locationVal.CodeableConcept != nil || locationVal.Reference != nil {
+		r.Location = &locationVal
 	}
 	return nil
 }
@@ -651,6 +610,47 @@ func (v *ClaimResponseAddItemLocation) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling locationReference: %w", err)
 		}
 		v.Reference = &val
+	}
+	return nil
+}
+
+// ClaimResponseAddItemServiced represents a polymorphic choice type in FHIR.
+type ClaimResponseAddItemServiced struct {
+	Date   *string    `json:"servicedDate,omitempty"`   // The date or dates when the service or product was supplied, performed or completed.
+	Period *dt.Period `json:"servicedPeriod,omitempty"` // The date or dates when the service or product was supplied, performed or completed.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ClaimResponseAddItemServiced.
+func (v ClaimResponseAddItemServiced) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Date != nil {
+		m["servicedDate"] = v.Date
+	}
+	if v.Period != nil {
+		m["servicedPeriod"] = v.Period
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ClaimResponseAddItemServiced.
+func (v *ClaimResponseAddItemServiced) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["servicedDate"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling servicedDate: %w", err)
+		}
+		v.Date = &val
+	}
+	if d, ok := raw["servicedPeriod"]; ok {
+		var val dt.Period
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling servicedPeriod: %w", err)
+		}
+		v.Period = &val
 	}
 	return nil
 }

@@ -197,11 +197,11 @@ type Attachment struct {
 	// CreationElement contains element extensions for creation.
 	CreationElement *Element `json:"_creation,omitempty"`
 	// Data The actual data of the attachment - a sequence of bytes, base64 encoded.
-	Data []byte `json:"data,omitempty"`
+	Data *Base64Binary `json:"data,omitempty"`
 	// DataElement contains element extensions for data.
 	DataElement *Element `json:"_data,omitempty"`
 	// Hash The calculated hash of the data using SHA-1. Represented using base64.
-	Hash []byte `json:"hash,omitempty"`
+	Hash *Base64Binary `json:"hash,omitempty"`
 	// HashElement contains element extensions for hash.
 	HashElement *Element `json:"_hash,omitempty"`
 	// Size The number of bytes of data that make up this attachment (before base64 encoding, if that is done).
@@ -1733,7 +1733,7 @@ type Signature struct {
 	// Extension May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  appl...
 	Extension []Extension `json:"extension,omitempty"`
 	// Data The base64 encoding of the Signature content. When signature is not recorded electronically this element would be empty.
-	Data []byte `json:"data,omitempty"`
+	Data *Base64Binary `json:"data,omitempty"`
 	// DataElement contains element extensions for data.
 	DataElement *Element `json:"_data,omitempty"`
 	// OnBehalfOf A reference to an application-usable description of the identity that is represented by the signature.

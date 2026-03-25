@@ -43,7 +43,7 @@ var primitiveGoType = map[string]string{
 	"date":         "Date",
 	"dateTime":     "DateTime",
 	"instant":      "Instant",
-	"base64Binary": "[]byte",
+	"base64Binary": "Base64Binary",
 	"id":           "ID",
 	"markdown":     "Markdown",
 	"oid":          "OID",
@@ -1186,7 +1186,7 @@ func backboneGoName(name string, fhirSpec *spec.FHIRSpec) string {
 func isCustomPrimitive(goType string) bool {
 	switch goType {
 	case "URI", "URL", "Canonical", "Code", "Date", "DateTime", "Instant",
-		"ID", "Markdown", "OID", "Time", "UUID", "Decimal":
+		"ID", "Markdown", "OID", "Time", "UUID", "Decimal", "Base64Binary":
 		return true
 	}
 	return false

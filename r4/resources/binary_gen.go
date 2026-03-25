@@ -34,7 +34,7 @@ type Binary struct {
 	// ContentTypeElement contains element extensions for contentType.
 	ContentTypeElement *dt.Element `json:"_contentType,omitempty"`
 	// Data The actual content, base64 encoded.
-	Data []byte `json:"data,omitempty"`
+	Data *dt.Base64Binary `json:"data,omitempty"`
 	// DataElement contains element extensions for data.
 	DataElement *dt.Element `json:"_data,omitempty"`
 	// SecurityContext This element identifies another resource that can be used as a proxy of the security sensitivity to use when deciding and enforcing access control rules for the Binary resource. Given that the Bina...
@@ -145,8 +145,8 @@ func (b *BinaryBuilder) WithContentType(v dt.Code) *BinaryBuilder {
 }
 
 // WithData sets the data field.
-func (b *BinaryBuilder) WithData(v []byte) *BinaryBuilder {
-	b.resource.Data = v
+func (b *BinaryBuilder) WithData(v dt.Base64Binary) *BinaryBuilder {
+	b.resource.Data = &v
 	b.fieldsSet["data"] = true
 	return b
 }
@@ -210,9 +210,13 @@ func (r *Binary) GetContentType() dt.Code {
 	return zero
 }
 
-// GetData returns the data field value.
-func (r *Binary) GetData() []byte {
-	return r.Data
+// GetData returns the data field value, or the zero value if nil.
+func (r *Binary) GetData() dt.Base64Binary {
+	if r.Data != nil {
+		return *r.Data
+	}
+	var zero dt.Base64Binary
+	return zero
 }
 
 // GetSecurityContext returns the securityContext field value, or the zero value if nil.

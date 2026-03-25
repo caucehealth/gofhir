@@ -695,47 +695,6 @@ func (v *MedicationRequestSubstitutionAllowed) UnmarshalJSON(data []byte) error 
 	return nil
 }
 
-// MedicationRequestReported represents a polymorphic choice type in FHIR.
-type MedicationRequestReported struct {
-	Boolean   *bool         `json:"reportedBoolean,omitempty"`   // Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.
-	Reference *dt.Reference `json:"reportedReference,omitempty"` // Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.
-}
-
-// MarshalJSON implements the json.Marshaler interface for MedicationRequestReported.
-func (v MedicationRequestReported) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Boolean != nil {
-		m["reportedBoolean"] = v.Boolean
-	}
-	if v.Reference != nil {
-		m["reportedReference"] = v.Reference
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for MedicationRequestReported.
-func (v *MedicationRequestReported) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["reportedBoolean"]; ok {
-		var val bool
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling reportedBoolean: %w", err)
-		}
-		v.Boolean = &val
-	}
-	if d, ok := raw["reportedReference"]; ok {
-		var val dt.Reference
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling reportedReference: %w", err)
-		}
-		v.Reference = &val
-	}
-	return nil
-}
-
 // MedicationRequestMedication represents a polymorphic choice type in FHIR.
 type MedicationRequestMedication struct {
 	CodeableConcept *dt.CodeableConcept `json:"medicationCodeableConcept,omitempty"` // Identifies the medication being requested. This is a link to a resource that represents the medication which may be the details of the medication or simply an attribute carrying a code that identif...
@@ -771,6 +730,47 @@ func (v *MedicationRequestMedication) UnmarshalJSON(data []byte) error {
 		var val dt.Reference
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling medicationReference: %w", err)
+		}
+		v.Reference = &val
+	}
+	return nil
+}
+
+// MedicationRequestReported represents a polymorphic choice type in FHIR.
+type MedicationRequestReported struct {
+	Boolean   *bool         `json:"reportedBoolean,omitempty"`   // Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.
+	Reference *dt.Reference `json:"reportedReference,omitempty"` // Indicates if this record was captured as a secondary 'reported' record rather than as an original primary source-of-truth record.  It may also indicate the source of the report.
+}
+
+// MarshalJSON implements the json.Marshaler interface for MedicationRequestReported.
+func (v MedicationRequestReported) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Boolean != nil {
+		m["reportedBoolean"] = v.Boolean
+	}
+	if v.Reference != nil {
+		m["reportedReference"] = v.Reference
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for MedicationRequestReported.
+func (v *MedicationRequestReported) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["reportedBoolean"]; ok {
+		var val bool
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling reportedBoolean: %w", err)
+		}
+		v.Boolean = &val
+	}
+	if d, ok := raw["reportedReference"]; ok {
+		var val dt.Reference
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling reportedReference: %w", err)
 		}
 		v.Reference = &val
 	}

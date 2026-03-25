@@ -576,7 +576,7 @@ type DeviceUdiCarrier struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// CarrierAIDC The full UDI carrier of the Automatic Identification and Data Capture (AIDC) technology representation of the barcode string as printed on the packaging of the device - e.g., a barcode or RFID.   B...
-	CarrierAIDC []byte `json:"carrierAIDC,omitempty"`
+	CarrierAIDC *dt.Base64Binary `json:"carrierAIDC,omitempty"`
 	// CarrierAIDCElement contains element extensions for carrierAIDC.
 	CarrierAIDCElement *dt.Element `json:"_carrierAIDC,omitempty"`
 	// CarrierHRF The full UDI carrier as the human readable form (HRF) representation of the barcode string as printed on the packaging of the device.

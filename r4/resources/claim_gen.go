@@ -832,8 +832,8 @@ func (r ClaimItem) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Location != nil {
-		vData, err := json.Marshal(r.Location)
+	if r.Serviced != nil {
+		vData, err := json.Marshal(r.Serviced)
 		if err != nil {
 			return nil, err
 		}
@@ -845,8 +845,8 @@ func (r ClaimItem) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Serviced != nil {
-		vData, err := json.Marshal(r.Serviced)
+	if r.Location != nil {
+		vData, err := json.Marshal(r.Location)
 		if err != nil {
 			return nil, err
 		}
@@ -1237,19 +1237,19 @@ func (r *ClaimSupportingInfo) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ClaimSupportingInfo(alias)
-	var timingVal ClaimSupportingInfoTiming
-	if err := timingVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if timingVal.Date != nil || timingVal.Period != nil {
-		r.Timing = &timingVal
-	}
 	var valueVal ClaimSupportingInfoValue
 	if err := valueVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if valueVal.Attachment != nil || valueVal.Boolean != nil || valueVal.Quantity != nil || valueVal.Reference != nil || valueVal.String != nil {
 		r.Value = &valueVal
+	}
+	var timingVal ClaimSupportingInfoTiming
+	if err := timingVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if timingVal.Date != nil || timingVal.Period != nil {
+		r.Timing = &timingVal
 	}
 	return nil
 }

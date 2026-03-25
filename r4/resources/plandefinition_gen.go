@@ -594,8 +594,8 @@ func (r PlanDefinitionAction) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Timing != nil {
-		vData, err := json.Marshal(r.Timing)
+	if r.Definition != nil {
+		vData, err := json.Marshal(r.Definition)
 		if err != nil {
 			return nil, err
 		}
@@ -607,8 +607,8 @@ func (r PlanDefinitionAction) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Definition != nil {
-		vData, err := json.Marshal(r.Definition)
+	if r.Timing != nil {
+		vData, err := json.Marshal(r.Timing)
 		if err != nil {
 			return nil, err
 		}
@@ -631,13 +631,6 @@ func (r *PlanDefinitionAction) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = PlanDefinitionAction(alias)
-	var timingVal PlanDefinitionActionTiming
-	if err := timingVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if timingVal.Age != nil || timingVal.DateTime != nil || timingVal.Duration != nil || timingVal.Period != nil || timingVal.Range != nil || timingVal.Timing != nil {
-		r.Timing = &timingVal
-	}
 	var definitionVal PlanDefinitionActionDefinition
 	if err := definitionVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -645,46 +638,12 @@ func (r *PlanDefinitionAction) UnmarshalJSON(data []byte) error {
 	if definitionVal.Canonical != nil || definitionVal.Uri != nil {
 		r.Definition = &definitionVal
 	}
-	return nil
-}
-
-// PlanDefinitionActionDefinition represents a polymorphic choice type in FHIR.
-type PlanDefinitionActionDefinition struct {
-	Canonical *string `json:"definitionCanonical,omitempty"` // A reference to an ActivityDefinition that describes the action to be taken in detail, or a PlanDefinition that describes a series of actions to be taken.
-	Uri       *string `json:"definitionUri,omitempty"`       // A reference to an ActivityDefinition that describes the action to be taken in detail, or a PlanDefinition that describes a series of actions to be taken.
-}
-
-// MarshalJSON implements the json.Marshaler interface for PlanDefinitionActionDefinition.
-func (v PlanDefinitionActionDefinition) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Canonical != nil {
-		m["definitionCanonical"] = v.Canonical
-	}
-	if v.Uri != nil {
-		m["definitionUri"] = v.Uri
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for PlanDefinitionActionDefinition.
-func (v *PlanDefinitionActionDefinition) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
+	var timingVal PlanDefinitionActionTiming
+	if err := timingVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
-	if d, ok := raw["definitionCanonical"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling definitionCanonical: %w", err)
-		}
-		v.Canonical = &val
-	}
-	if d, ok := raw["definitionUri"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling definitionUri: %w", err)
-		}
-		v.Uri = &val
+	if timingVal.Age != nil || timingVal.DateTime != nil || timingVal.Duration != nil || timingVal.Period != nil || timingVal.Range != nil || timingVal.Timing != nil {
+		r.Timing = &timingVal
 	}
 	return nil
 }
@@ -770,6 +729,47 @@ func (v *PlanDefinitionActionTiming) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling timingTiming: %w", err)
 		}
 		v.Timing = &val
+	}
+	return nil
+}
+
+// PlanDefinitionActionDefinition represents a polymorphic choice type in FHIR.
+type PlanDefinitionActionDefinition struct {
+	Canonical *string `json:"definitionCanonical,omitempty"` // A reference to an ActivityDefinition that describes the action to be taken in detail, or a PlanDefinition that describes a series of actions to be taken.
+	Uri       *string `json:"definitionUri,omitempty"`       // A reference to an ActivityDefinition that describes the action to be taken in detail, or a PlanDefinition that describes a series of actions to be taken.
+}
+
+// MarshalJSON implements the json.Marshaler interface for PlanDefinitionActionDefinition.
+func (v PlanDefinitionActionDefinition) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Canonical != nil {
+		m["definitionCanonical"] = v.Canonical
+	}
+	if v.Uri != nil {
+		m["definitionUri"] = v.Uri
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for PlanDefinitionActionDefinition.
+func (v *PlanDefinitionActionDefinition) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["definitionCanonical"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling definitionCanonical: %w", err)
+		}
+		v.Canonical = &val
+	}
+	if d, ok := raw["definitionUri"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling definitionUri: %w", err)
+		}
+		v.Uri = &val
 	}
 	return nil
 }

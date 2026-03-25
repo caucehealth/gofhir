@@ -1268,47 +1268,6 @@ func (r *ExplanationOfBenefitFinancial) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// ExplanationOfBenefitFinancialUsed represents a polymorphic choice type in FHIR.
-type ExplanationOfBenefitFinancialUsed struct {
-	Money       *dt.Money `json:"usedMoney,omitempty"`       // The quantity of the benefit which have been consumed to date.
-	UnsignedInt *uint32   `json:"usedUnsignedInt,omitempty"` // The quantity of the benefit which have been consumed to date.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ExplanationOfBenefitFinancialUsed.
-func (v ExplanationOfBenefitFinancialUsed) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Money != nil {
-		m["usedMoney"] = v.Money
-	}
-	if v.UnsignedInt != nil {
-		m["usedUnsignedInt"] = v.UnsignedInt
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ExplanationOfBenefitFinancialUsed.
-func (v *ExplanationOfBenefitFinancialUsed) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["usedMoney"]; ok {
-		var val dt.Money
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling usedMoney: %w", err)
-		}
-		v.Money = &val
-	}
-	if d, ok := raw["usedUnsignedInt"]; ok {
-		var val uint32
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling usedUnsignedInt: %w", err)
-		}
-		v.UnsignedInt = &val
-	}
-	return nil
-}
-
 // ExplanationOfBenefitFinancialAllowed represents a polymorphic choice type in FHIR.
 type ExplanationOfBenefitFinancialAllowed struct {
 	Money       *dt.Money `json:"allowedMoney,omitempty"`       // The quantity of the benefit which is permitted under the coverage.
@@ -1355,6 +1314,47 @@ func (v *ExplanationOfBenefitFinancialAllowed) UnmarshalJSON(data []byte) error 
 		var val uint32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling allowedUnsignedInt: %w", err)
+		}
+		v.UnsignedInt = &val
+	}
+	return nil
+}
+
+// ExplanationOfBenefitFinancialUsed represents a polymorphic choice type in FHIR.
+type ExplanationOfBenefitFinancialUsed struct {
+	Money       *dt.Money `json:"usedMoney,omitempty"`       // The quantity of the benefit which have been consumed to date.
+	UnsignedInt *uint32   `json:"usedUnsignedInt,omitempty"` // The quantity of the benefit which have been consumed to date.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ExplanationOfBenefitFinancialUsed.
+func (v ExplanationOfBenefitFinancialUsed) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Money != nil {
+		m["usedMoney"] = v.Money
+	}
+	if v.UnsignedInt != nil {
+		m["usedUnsignedInt"] = v.UnsignedInt
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ExplanationOfBenefitFinancialUsed.
+func (v *ExplanationOfBenefitFinancialUsed) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["usedMoney"]; ok {
+		var val dt.Money
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling usedMoney: %w", err)
+		}
+		v.Money = &val
+	}
+	if d, ok := raw["usedUnsignedInt"]; ok {
+		var val uint32
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling usedUnsignedInt: %w", err)
 		}
 		v.UnsignedInt = &val
 	}

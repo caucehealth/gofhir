@@ -390,8 +390,8 @@ func (r CoverageEligibilityResponseBenefit) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Used != nil {
-		vData, err := json.Marshal(r.Used)
+	if r.Allowed != nil {
+		vData, err := json.Marshal(r.Allowed)
 		if err != nil {
 			return nil, err
 		}
@@ -403,8 +403,8 @@ func (r CoverageEligibilityResponseBenefit) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Allowed != nil {
-		vData, err := json.Marshal(r.Allowed)
+	if r.Used != nil {
+		vData, err := json.Marshal(r.Used)
 		if err != nil {
 			return nil, err
 		}

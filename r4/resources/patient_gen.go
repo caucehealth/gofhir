@@ -90,8 +90,8 @@ func (r Patient) MarshalJSON() ([]byte, error) {
 	}
 	// Collect additional fields to splice into JSON
 	var extra []byte
-	if r.MultipleBirth != nil {
-		vData, err := json.Marshal(r.MultipleBirth)
+	if r.Deceased != nil {
+		vData, err := json.Marshal(r.Deceased)
 		if err != nil {
 			return nil, err
 		}
@@ -100,8 +100,8 @@ func (r Patient) MarshalJSON() ([]byte, error) {
 			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
-	if r.Deceased != nil {
-		vData, err := json.Marshal(r.Deceased)
+	if r.MultipleBirth != nil {
+		vData, err := json.Marshal(r.MultipleBirth)
 		if err != nil {
 			return nil, err
 		}
@@ -136,19 +136,19 @@ func (r *Patient) UnmarshalJSON(data []byte) error {
 	}
 	*r = Patient(alias)
 	// Unmarshal polymorphic fields
-	var deceasedVal PatientDeceased
-	if err := deceasedVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if deceasedVal.Boolean != nil || deceasedVal.DateTime != nil {
-		r.Deceased = &deceasedVal
-	}
 	var multipleBirthVal PatientMultipleBirth
 	if err := multipleBirthVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if multipleBirthVal.Boolean != nil || multipleBirthVal.Integer != nil {
 		r.MultipleBirth = &multipleBirthVal
+	}
+	var deceasedVal PatientDeceased
+	if err := deceasedVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if deceasedVal.Boolean != nil || deceasedVal.DateTime != nil {
+		r.Deceased = &deceasedVal
 	}
 	// Capture unknown fields
 	var raw map[string]json.RawMessage
