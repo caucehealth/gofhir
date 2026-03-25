@@ -277,6 +277,12 @@ func parseMethodOutcome(data []byte) (*MethodOutcome, error) {
 
 // --- HTTP helpers ---
 
+// Get performs a raw GET request to the given URL. Used by terminology
+// and other services that need direct HTTP access.
+func (c *Client) Get(ctx context.Context, url string) ([]byte, error) {
+	return c.doGet(ctx, url)
+}
+
 func (c *Client) doGet(ctx context.Context, url string) ([]byte, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
