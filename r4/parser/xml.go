@@ -94,6 +94,41 @@ func (e *xmlEncoder) encodeStruct(v reflect.Value, opts Options) {
 
 		e.encodeFieldValue(name, fieldVal, companion, opts)
 	}
+
+	// Second pass: emit _field companions whose primitive is nil
+	// (extension-only primitives — value absent but metadata present)
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
+		tag := field.Tag.Get("json")
+		if tag == "" {
+			continue
+		}
+		name, _ := parseTag(tag)
+		if !strings.HasPrefix(name, "_") {
+			continue
+		}
+
+		companionVal := v.Field(i)
+		if isZero(companionVal) {
+			continue
+		}
+		// Only handle *Element companions, not []Element (array element extensions)
+		if companionVal.Kind() != reflect.Ptr {
+			continue
+		}
+
+		// Check if the corresponding primitive was already written
+		baseName := name[1:]
+		baseVal := findFieldByJSONTag(v, t, baseName)
+		if baseVal.IsValid() && !isZero(baseVal) {
+			continue // primitive was written, companion was handled inline
+		}
+
+		// Primitive is nil/zero but companion exists — write element with extensions only
+		e.writeStart(baseName, nil)
+		e.encodeElementExtension(companionVal.Elem())
+		e.writeEnd(baseName)
+	}
 }
 
 // handleDashField handles json:"-" fields: Extra map and value[x] unions.
@@ -330,6 +365,17 @@ func (e *xmlEncoder) encodeAnyElementExtensions(ext map[string]any) {
 }
 
 // findCompanion looks for a _fieldName companion Element field.
+func findFieldByJSONTag(v reflect.Value, t reflect.Type, jsonName string) reflect.Value {
+	for i := 0; i < t.NumField(); i++ {
+		tag := t.Field(i).Tag.Get("json")
+		name, _ := parseTag(tag)
+		if name == jsonName {
+			return v.Field(i)
+		}
+	}
+	return reflect.Value{}
+}
+
 func findCompanion(v reflect.Value, t reflect.Type, fieldName string) reflect.Value {
 	companionTag := "_" + fieldName
 	for i := 0; i < t.NumField(); i++ {
@@ -535,6 +581,38 @@ func fixExtensionArrays(m map[string]any) {
 	}
 }
 
+// isPrimitiveFieldContext returns true if a field is a primitive type that
+// could have extension-only values (no value, just _field companions).
+// Complex types (CodeableConcept, Reference, etc.) can legitimately have
+// only extension children.
+func isPrimitiveFieldContext(parentType, fieldName string) bool {
+	// If the field maps to a known complex type, it's NOT a primitive
+	ft := FieldType(parentType, fieldName)
+	if ft != "" {
+		// Known complex types are NOT primitives
+		return false
+	}
+	// No field type mapping → likely a primitive (string, boolean, code, etc.)
+	// Also check boolean and numeric metadata
+	return IsBooleanField(parentType, fieldName) ||
+		IsNumericField(parentType, fieldName) ||
+		ft == "" // primitives like string, code, date, uri have no FieldType mapping
+}
+
+// isElementExtensionOnly returns true if a map contains only element extension
+// fields (id, extension) — indicating an extension-only primitive with no value.
+func isElementExtensionOnly(m map[string]any) bool {
+	if len(m) == 0 {
+		return false
+	}
+	for k := range m {
+		if k != "id" && k != "extension" {
+			return false
+		}
+	}
+	return true
+}
+
 func inferChildType(parentType, fieldName string) string {
 	if ft := FieldType(parentType, fieldName); ft != "" {
 		return ft
@@ -608,7 +686,12 @@ func decodeXMLElement(decoder *xml.Decoder) (any, error) {
 				if err != nil {
 					return nil, err
 				}
-				addToMap(m, name, child)
+				// Check if this is an extension-only primitive (no value, only extensions)
+				if childMap, ok := child.(map[string]any); ok && isElementExtensionOnly(childMap) && isPrimitiveFieldContext(resourceType, name) {
+					m["_"+name] = childMap
+				} else {
+					addToMap(m, name, child)
+				}
 			}
 
 		case xml.EndElement:
@@ -657,7 +740,11 @@ func decodeXMLChild(decoder *xml.Decoder, typeName string) (any, error) {
 				if err != nil {
 					return nil, err
 				}
-				addToMap(m, name, child)
+				if childMap, ok := child.(map[string]any); ok && isElementExtensionOnly(childMap) && isPrimitiveFieldContext(typeName, name) {
+					m["_"+name] = childMap
+				} else {
+					addToMap(m, name, child)
+				}
 			}
 
 		case xml.EndElement:

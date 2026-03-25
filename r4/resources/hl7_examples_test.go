@@ -224,14 +224,6 @@ func TestHL7ExamplesXMLRoundTrip(t *testing.T) {
 				if k == "text" {
 					continue
 				}
-				// _field without corresponding field (extension-only primitive)
-				// is a rare edge case not yet supported in XML round-trip
-				if strings.HasPrefix(k, "_") {
-					baseField := k[1:]
-					if _, hasBase := m1[baseField]; !hasBase {
-						continue
-					}
-				}
 				if _, ok := m2[k]; !ok {
 					t.Errorf("key %q lost in XML round-trip for %s", k, header.ResourceType)
 				}
