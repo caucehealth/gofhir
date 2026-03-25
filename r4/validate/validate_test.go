@@ -265,3 +265,128 @@ func TestValidateMultipleResources(t *testing.T) {
 		t.Error("Encounter without class should fail validation")
 	}
 }
+
+func TestValidateStructureDefCardinality(t *testing.T) {
+	// Observation.status is required per StructureDefinition but NOT in JSON schema.
+	// Our cardinality augmentation should catch this.
+	obs := &resources.Observation{ResourceType: "Observation"}
+
+	v := validate.New()
+	result := v.Validate(obs)
+
+	foundStatus := false
+	foundCode := false
+	for _, issue := range result.Errors() {
+		if strings.Contains(issue.Path, "status") && issue.Code == validate.CodeRequired {
+			foundStatus = true
+		}
+		if strings.Contains(issue.Path, "code") && issue.Code == validate.CodeRequired {
+			foundCode = true
+		}
+	}
+	if !foundStatus {
+		t.Error("Observation.status should be required (from StructureDefinition)")
+	}
+	if !foundCode {
+		t.Error("Observation.code should be required (from JSON schema)")
+	}
+}
+
+func TestValidatePrimitiveFormats(t *testing.T) {
+	// ID too long
+	longID := dt.ID(strings.Repeat("a", 65))
+	p := &resources.Patient{ResourceType: "Patient", Id: &longID}
+
+	v := validate.New()
+	result := v.Validate(p)
+
+	found := false
+	for _, issue := range result.Issues {
+		if strings.Contains(issue.Message, "64") {
+			found = true
+		}
+	}
+	if !found {
+		t.Error("ID > 64 chars should be flagged")
+	}
+
+	// Valid ID
+	goodID := dt.ID("valid-id-123")
+	p2 := &resources.Patient{ResourceType: "Patient", Id: &goodID}
+	result2 := v.Validate(p2)
+	for _, issue := range result2.Issues {
+		if strings.Contains(issue.Path, "id") && issue.Code == validate.CodeValue {
+			t.Errorf("valid ID should not be flagged: %s", issue.Message)
+		}
+	}
+}
+
+func TestValidateIDPattern(t *testing.T) {
+	badID := dt.ID("has spaces!")
+	p := &resources.Patient{ResourceType: "Patient", Id: &badID}
+
+	v := validate.New()
+	result := v.Validate(p)
+
+	found := false
+	for _, issue := range result.Issues {
+		if issue.Code == validate.CodeValue && strings.Contains(issue.Message, "pattern") {
+			found = true
+		}
+	}
+	if !found {
+		t.Error("ID with spaces should fail pattern validation")
+	}
+}
+
+func TestValidateDateFormat(t *testing.T) {
+	tests := []struct {
+		date  string
+		valid bool
+	}{
+		{"2024", true},
+		{"2024-03", true},
+		{"2024-03-15", true},
+		{"2024-13-01", true}, // regex allows — semantic date validation is separate
+		{"not-a-date", false},
+		{"24-03-15", false},
+	}
+
+	v := validate.New()
+	for _, tt := range tests {
+		d := dt.Date(tt.date)
+		p := &resources.Patient{ResourceType: "Patient", BirthDate: &d}
+		result := v.Validate(p)
+
+		hasDateError := false
+		for _, issue := range result.Issues {
+			if strings.Contains(issue.Path, "birthDate") && issue.Code == validate.CodeValue {
+				hasDateError = true
+			}
+		}
+		if tt.valid && hasDateError {
+			t.Errorf("date %q should be valid", tt.date)
+		}
+		if !tt.valid && !hasDateError {
+			t.Errorf("date %q should be invalid", tt.date)
+		}
+	}
+}
+
+func TestValidateCodeNoWhitespace(t *testing.T) {
+	badCode := dt.Code("has space")
+	p := &resources.Patient{ResourceType: "Patient", Language: &badCode}
+
+	v := validate.New()
+	result := v.Validate(p)
+
+	found := false
+	for _, issue := range result.Issues {
+		if issue.Code == validate.CodeValue && strings.Contains(issue.Message, "whitespace") {
+			found = true
+		}
+	}
+	if !found {
+		t.Error("code with spaces should fail validation")
+	}
+}

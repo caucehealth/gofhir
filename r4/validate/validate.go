@@ -21,10 +21,20 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"regexp"
 	"strings"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 	"github.com/caucehealth/gofhir/r4/resources"
+)
+
+// FHIR primitive format patterns
+var (
+	idPattern       = regexp.MustCompile(`^[A-Za-z0-9\-.]{1,64}$`)
+	datePattern     = regexp.MustCompile(`^\d{4}(-\d{2}(-\d{2})?)?$`)
+	dateTimePattern = regexp.MustCompile(`^\d{4}(-\d{2}(-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})?)?)?)?$`)
+	instantPattern  = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$`)
+	oidPattern      = regexp.MustCompile(`^urn:oid:[0-2](\.\d+)+$`)
 )
 
 // Validator validates FHIR resources using a chain of rules.
@@ -342,15 +352,62 @@ func (r *primitiveFormatRule) Validate(resource resources.Resource) []Issue {
 			fieldVal = fieldVal.Elem()
 		}
 
-		// Validate ID format
-		if fieldVal.Type() == reflect.TypeOf(dt.ID("")) {
+		path := rt + "." + name
+		typeName := fieldVal.Type().Name()
+
+		switch typeName {
+		case "ID":
 			id := string(fieldVal.Interface().(dt.ID))
 			if len(id) > 64 {
 				issues = append(issues, Issue{
-					Severity: SeverityError,
-					Code:     CodeValue,
-					Path:     rt + "." + name,
-					Message:  fmt.Sprintf("%s.%s: id length %d exceeds maximum 64", rt, name, len(id)),
+					Severity: SeverityError, Code: CodeValue, Path: path,
+					Message: fmt.Sprintf("%s: id length %d exceeds maximum 64", path, len(id)),
+				})
+			}
+			if id != "" && !idPattern.MatchString(id) {
+				issues = append(issues, Issue{
+					Severity: SeverityError, Code: CodeValue, Path: path,
+					Message: fmt.Sprintf("%s: id %q does not match pattern [A-Za-z0-9\\-.]{1,64}", path, id),
+				})
+			}
+		case "Date":
+			s := string(fieldVal.Interface().(dt.Date))
+			if s != "" && !datePattern.MatchString(s) {
+				issues = append(issues, Issue{
+					Severity: SeverityError, Code: CodeValue, Path: path,
+					Message: fmt.Sprintf("%s: date %q does not match YYYY, YYYY-MM, or YYYY-MM-DD", path, s),
+				})
+			}
+		case "DateTime":
+			s := string(fieldVal.Interface().(dt.DateTime))
+			if s != "" && !dateTimePattern.MatchString(s) {
+				issues = append(issues, Issue{
+					Severity: SeverityError, Code: CodeValue, Path: path,
+					Message: fmt.Sprintf("%s: dateTime %q is not valid", path, s),
+				})
+			}
+		case "Instant":
+			s := string(fieldVal.Interface().(dt.Instant))
+			if s != "" && !instantPattern.MatchString(s) {
+				issues = append(issues, Issue{
+					Severity: SeverityError, Code: CodeValue, Path: path,
+					Message: fmt.Sprintf("%s: instant %q must include timezone", path, s),
+				})
+			}
+		case "OID":
+			s := string(fieldVal.Interface().(dt.OID))
+			if s != "" && !oidPattern.MatchString(s) {
+				issues = append(issues, Issue{
+					Severity: SeverityError, Code: CodeValue, Path: path,
+					Message: fmt.Sprintf("%s: oid %q must start with urn:oid:", path, s),
+				})
+			}
+		case "Code":
+			s := string(fieldVal.Interface().(dt.Code))
+			if s != "" && strings.ContainsAny(s, " \t\n\r") {
+				issues = append(issues, Issue{
+					Severity: SeverityError, Code: CodeValue, Path: path,
+					Message: fmt.Sprintf("%s: code %q must not contain whitespace", path, s),
 				})
 			}
 		}
