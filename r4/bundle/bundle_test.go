@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/caucehealth/gofhir/r4/bundle"
+	dt "github.com/caucehealth/gofhir/r4/datatypes"
 	"github.com/caucehealth/gofhir/r4/resources"
 )
 
@@ -149,5 +150,158 @@ func TestBundleEmptyEntries(t *testing.T) {
 	// Empty entries should be omitted
 	if _, ok := m["entry"]; ok {
 		t.Error("empty entry array should be omitted")
+	}
+}
+
+func TestBundleWithLinks(t *testing.T) {
+	b := bundle.New(bundle.TypeSearchset).
+		WithTotal(100).
+		WithLink("self", "http://example.com/Patient?page=2").
+		WithLink("next", "http://example.com/Patient?page=3").
+		WithLink("previous", "http://example.com/Patient?page=1").
+		Build()
+
+	if len(b.Link) != 3 {
+		t.Fatalf("expected 3 links, got %d", len(b.Link))
+	}
+	if b.Link[0].Relation != "self" {
+		t.Error("first link should be self")
+	}
+	if string(b.Link[1].URL) != "http://example.com/Patient?page=3" {
+		t.Error("next link URL mismatch")
+	}
+
+	// Round-trip
+	data, _ := json.Marshal(b)
+	var m map[string]json.RawMessage
+	json.Unmarshal(data, &m)
+	if _, ok := m["link"]; !ok {
+		t.Error("link should be present in JSON")
+	}
+
+	var b2 bundle.Bundle
+	json.Unmarshal(data, &b2)
+	if len(b2.Link) != 3 {
+		t.Error("links should survive round-trip")
+	}
+}
+
+func TestBundleWithLinkRoundTrip(t *testing.T) {
+	input := `{
+		"resourceType": "Bundle",
+		"type": "searchset",
+		"total": 50,
+		"link": [
+			{"relation": "self", "url": "http://example.com/Patient"},
+			{"relation": "next", "url": "http://example.com/Patient?page=2"}
+		],
+		"entry": [{"resource": {"resourceType": "Patient", "id": "1"}}]
+	}`
+
+	var b bundle.Bundle
+	if err := json.Unmarshal([]byte(input), &b); err != nil {
+		t.Fatal(err)
+	}
+	if len(b.Link) != 2 {
+		t.Fatalf("expected 2 links, got %d", len(b.Link))
+	}
+
+	out, _ := json.Marshal(&b)
+	var b2 bundle.Bundle
+	json.Unmarshal(out, &b2)
+	if len(b2.Link) != 2 {
+		t.Error("links should survive round-trip")
+	}
+	if b2.Link[1].Relation != "next" {
+		t.Error("link relation mismatch")
+	}
+}
+
+func TestBundleTransaction(t *testing.T) {
+	p, _ := resources.NewPatient().
+		WithName("Jane", "Doe").
+		Build()
+
+	b := bundle.New(bundle.TypeTransaction).
+		WithTransactionEntry("POST", "Patient", p).
+		Build()
+
+	if len(b.Entry) != 1 {
+		t.Fatal("should have one entry")
+	}
+	if b.Entry[0].Request == nil {
+		t.Fatal("entry should have request")
+	}
+	if b.Entry[0].Request.Method != "POST" {
+		t.Error("method should be POST")
+	}
+	if string(b.Entry[0].Request.URL) != "Patient" {
+		t.Error("URL should be Patient")
+	}
+
+	// Round-trip
+	data, _ := json.Marshal(b)
+	var b2 bundle.Bundle
+	json.Unmarshal(data, &b2)
+	if b2.Entry[0].Request == nil || b2.Entry[0].Request.Method != "POST" {
+		t.Error("request should survive round-trip")
+	}
+}
+
+func TestBundleTransactionResponse(t *testing.T) {
+	input := `{
+		"resourceType": "Bundle",
+		"type": "transaction-response",
+		"entry": [{
+			"response": {
+				"status": "201 Created",
+				"location": "Patient/123/_history/1",
+				"etag": "W/\"1\"",
+				"lastModified": "2024-01-15T10:00:00Z"
+			}
+		}]
+	}`
+
+	var b bundle.Bundle
+	if err := json.Unmarshal([]byte(input), &b); err != nil {
+		t.Fatal(err)
+	}
+	if len(b.Entry) != 1 || b.Entry[0].Response == nil {
+		t.Fatal("should have entry with response")
+	}
+	if b.Entry[0].Response.Status != "201 Created" {
+		t.Error("status mismatch")
+	}
+	if b.Entry[0].Response.Etag == nil || *b.Entry[0].Response.Etag != `W/"1"` {
+		t.Error("etag mismatch")
+	}
+
+	// Round-trip
+	out, _ := json.Marshal(&b)
+	var b2 bundle.Bundle
+	json.Unmarshal(out, &b2)
+	if b2.Entry[0].Response == nil || b2.Entry[0].Response.Status != "201 Created" {
+		t.Error("response should survive round-trip")
+	}
+}
+
+func TestBundleWithMeta(t *testing.T) {
+	b := bundle.New(bundle.TypeSearchset).
+		WithMeta(dt.NewMeta().WithLastUpdated("2024-01-15T10:00:00Z").Build()).
+		WithTimestamp("2024-01-15T10:00:00Z").
+		Build()
+
+	if b.Meta == nil {
+		t.Fatal("meta should be present")
+	}
+
+	data, _ := json.Marshal(b)
+	var m map[string]json.RawMessage
+	json.Unmarshal(data, &m)
+	if _, ok := m["meta"]; !ok {
+		t.Error("meta should be in JSON")
+	}
+	if _, ok := m["timestamp"]; !ok {
+		t.Error("timestamp should be in JSON")
 	}
 }
