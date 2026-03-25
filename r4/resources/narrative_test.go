@@ -57,10 +57,63 @@ func TestGenerateNarrativeObservation(t *testing.T) {
 }
 
 func TestGenerateNarrativeUnsupported(t *testing.T) {
-	// Resource type without narrative support returns nil
-	loc, _ := resources.NewLocation().Build()
-	narrative := resources.GenerateNarrative(loc)
+	// Resource type without narrative template returns nil
+	binary := &resources.Binary{ResourceType: "Binary"}
+	narrative := resources.GenerateNarrative(binary)
 	if narrative != nil {
 		t.Error("unsupported type should return nil narrative")
+	}
+}
+
+func TestGenerateNarrativeCustomTemplate(t *testing.T) {
+	gen := resources.NewNarrativeGenerator()
+	gen.RegisterTemplate("Patient", `<tr><td>Custom</td><td>{{.GetGender}}</td></tr>`)
+
+	p, _ := resources.NewPatient().
+		WithGender(resources.AdministrativeGenderFemale).
+		Build()
+
+	n := gen.Generate(p)
+	if n == nil {
+		t.Fatal("narrative should not be nil")
+	}
+	if !strings.Contains(n.Div, "Custom") {
+		t.Error("should use custom template")
+	}
+	if !strings.Contains(n.Div, "female") {
+		t.Error("should contain gender from custom template")
+	}
+}
+
+func TestGenerateNarrativeNewResourceTypes(t *testing.T) {
+	// Test that newly added templates work
+	tests := []struct {
+		name string
+		res  resources.Resource
+		want string
+	}{
+		{"Organization", func() resources.Resource {
+			o, _ := resources.NewOrganization().Build()
+			name := "Acme Corp"
+			o.Name = &name
+			return o
+		}(), "Acme Corp"},
+		{"Encounter", func() resources.Resource {
+			s := resources.EncounterStatusFinished
+			e := &resources.Encounter{ResourceType: "Encounter", Status: &s}
+			return e
+		}(), "finished"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			n := resources.GenerateNarrative(tt.res)
+			if n == nil {
+				t.Fatal("narrative should not be nil")
+			}
+			if !strings.Contains(n.Div, tt.want) {
+				t.Errorf("narrative should contain %q, got: %s", tt.want, n.Div)
+			}
+		})
 	}
 }

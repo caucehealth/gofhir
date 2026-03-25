@@ -4,203 +4,196 @@
 package resources
 
 import (
+	"bytes"
 	"fmt"
-	"html"
+	"html/template"
 	"strings"
+	"sync"
 
 	dt "github.com/caucehealth/gofhir/r4/datatypes"
 )
 
-// GenerateNarrative creates a simple HTML narrative (text.div) for a resource
-// based on its key fields. The narrative status is set to "generated".
-// Supports Patient, Observation, Condition, Encounter, Practitioner,
-// DiagnosticReport, and MedicationRequest.
-func GenerateNarrative(resource Resource) *dt.Narrative {
-	var rows []string
+// NarrativeGenerator creates XHTML narratives for FHIR resources using
+// Go html/template. It ships with default templates for common resources
+// and supports registering custom templates per resource type.
+type NarrativeGenerator struct {
+	mu        sync.RWMutex
+	templates map[string]*template.Template
+}
 
-	switch r := resource.(type) {
-	case *Patient:
-		rows = patientNarrative(r)
-	case *Observation:
-		rows = observationNarrative(r)
-	case *Condition:
-		rows = conditionNarrative(r)
-	case *Encounter:
-		rows = encounterNarrative(r)
-	case *Practitioner:
-		rows = practitionerNarrative(r)
-	case *DiagnosticReport:
-		rows = diagnosticReportNarrative(r)
-	case *MedicationRequest:
-		rows = medicationRequestNarrative(r)
-	default:
+// DefaultNarrativeGenerator is the package-level generator with built-in templates.
+var DefaultNarrativeGenerator = newDefaultGenerator()
+
+// GenerateNarrative creates a simple HTML narrative for a resource using
+// the default generator. Returns nil for unsupported resource types.
+func GenerateNarrative(resource Resource) *dt.Narrative {
+	return DefaultNarrativeGenerator.Generate(resource)
+}
+
+// NewNarrativeGenerator creates a generator with the default templates.
+func NewNarrativeGenerator() *NarrativeGenerator {
+	return newDefaultGenerator()
+}
+
+// RegisterTemplate adds or replaces a template for a resource type.
+// The template receives the resource struct as its data context.
+// It must produce table rows (<tr>...</tr>) for the narrative table.
+func (g *NarrativeGenerator) RegisterTemplate(resourceType string, tmpl string) error {
+	t, err := template.New(resourceType).Funcs(narrativeFuncs).Parse(tmpl)
+	if err != nil {
+		return fmt.Errorf("narrative template %s: %w", resourceType, err)
+	}
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	g.templates[resourceType] = t
+	return nil
+}
+
+// Generate creates an XHTML narrative for a resource.
+func (g *NarrativeGenerator) Generate(resource Resource) *dt.Narrative {
+	rt := resource.GetResourceType()
+
+	g.mu.RLock()
+	tmpl, ok := g.templates[rt]
+	g.mu.RUnlock()
+
+	if !ok {
 		return nil
 	}
 
-	if len(rows) == 0 {
+	var buf bytes.Buffer
+	if err := tmpl.Execute(&buf, resource); err != nil {
+		return nil
+	}
+
+	rows := buf.String()
+	if strings.TrimSpace(rows) == "" {
 		return nil
 	}
 
 	status := "generated"
-	div := buildDiv(rows)
+	div := `<div xmlns="http://www.w3.org/1999/xhtml"><table><tbody>` + rows + `</tbody></table></div>`
 	return &dt.Narrative{Status: &status, Div: div}
 }
 
-func patientNarrative(p *Patient) []string {
-	var rows []string
-	if len(p.Name) > 0 {
-		name := formatHumanName(p.Name[0])
-		if name != "" {
-			rows = append(rows, row("Name", name))
+// Template helper functions available to all narrative templates.
+var narrativeFuncs = template.FuncMap{
+	"humanName": func(n dt.HumanName) string {
+		var parts []string
+		if n.Family != nil {
+			parts = append(parts, *n.Family)
 		}
-	}
-	if p.Gender != nil {
-		rows = append(rows, row("Gender", string(*p.Gender)))
-	}
-	if p.BirthDate != nil {
-		rows = append(rows, row("Birth Date", string(*p.BirthDate)))
-	}
-	if len(p.Identifier) > 0 {
-		rows = append(rows, row("Identifier", formatIdentifier(p.Identifier[0])))
-	}
-	return rows
-}
-
-func observationNarrative(o *Observation) []string {
-	var rows []string
-	rows = append(rows, row("Code", formatCodeableConcept(o.Code)))
-	if o.Status != nil {
-		rows = append(rows, row("Status", string(*o.Status)))
-	}
-	if o.Value != nil {
-		if o.Value.Quantity != nil {
-			rows = append(rows, row("Value", formatQuantity(*o.Value.Quantity)))
-		} else if o.Value.String != nil {
-			rows = append(rows, row("Value", *o.Value.String))
-		} else if o.Value.CodeableConcept != nil {
-			rows = append(rows, row("Value", formatCodeableConcept(*o.Value.CodeableConcept)))
+		parts = append(parts, n.Given...)
+		return strings.Join(parts, ", ")
+	},
+	"codeableConcept": func(cc dt.CodeableConcept) string {
+		if cc.Text != nil {
+			return *cc.Text
 		}
-	}
-	if o.Subject != nil && o.Subject.Reference != nil {
-		rows = append(rows, row("Subject", *o.Subject.Reference))
-	}
-	return rows
-}
-
-func conditionNarrative(c *Condition) []string {
-	var rows []string
-	if c.Code != nil {
-		rows = append(rows, row("Code", formatCodeableConcept(*c.Code)))
-	}
-	if c.Subject.Reference != nil {
-		rows = append(rows, row("Subject", *c.Subject.Reference))
-	}
-	if c.Severity != nil {
-		rows = append(rows, row("Severity", formatCodeableConcept(*c.Severity)))
-	}
-	return rows
-}
-
-func encounterNarrative(e *Encounter) []string {
-	var rows []string
-	if e.Status != nil {
-		rows = append(rows, row("Status", string(*e.Status)))
-	}
-	if e.Subject != nil && e.Subject.Reference != nil {
-		rows = append(rows, row("Subject", *e.Subject.Reference))
-	}
-	return rows
-}
-
-func practitionerNarrative(p *Practitioner) []string {
-	var rows []string
-	if len(p.Name) > 0 {
-		name := formatHumanName(p.Name[0])
-		if name != "" {
-			rows = append(rows, row("Name", name))
+		if len(cc.Coding) > 0 && cc.Coding[0].Display != nil {
+			return *cc.Coding[0].Display
 		}
-	}
-	return rows
+		if len(cc.Coding) > 0 && cc.Coding[0].Code != nil {
+			return string(*cc.Coding[0].Code)
+		}
+		return ""
+	},
+	"quantity": func(q dt.Quantity) string {
+		if q.Value != nil && q.Unit != nil {
+			return fmt.Sprintf("%s %s", q.Value.String(), *q.Unit)
+		}
+		if q.Value != nil {
+			return q.Value.String()
+		}
+		return ""
+	},
+	"identifier": func(id dt.Identifier) string {
+		if id.Value != nil {
+			return *id.Value
+		}
+		return ""
+	},
+	"deref": func(s *string) string {
+		if s == nil {
+			return ""
+		}
+		return *s
+	},
 }
 
-func diagnosticReportNarrative(d *DiagnosticReport) []string {
-	var rows []string
-	rows = append(rows, row("Code", formatCodeableConcept(d.Code)))
-	if d.Status != nil {
-		rows = append(rows, row("Status", string(*d.Status)))
-	}
-	if d.Subject != nil && d.Subject.Reference != nil {
-		rows = append(rows, row("Subject", *d.Subject.Reference))
-	}
-	return rows
-}
+func newDefaultGenerator() *NarrativeGenerator {
+	g := &NarrativeGenerator{templates: make(map[string]*template.Template)}
 
-func medicationRequestNarrative(m *MedicationRequest) []string {
-	var rows []string
-	if m.Status != nil {
-		rows = append(rows, row("Status", string(*m.Status)))
+	// Register default templates for common resource types
+	defaults := map[string]string{
+		"Patient": `
+{{- range .Name}}<tr><td>Name</td><td>{{humanName .}}</td></tr>{{end -}}
+{{- if .Gender}}<tr><td>Gender</td><td>{{.GetGender}}</td></tr>{{end -}}
+{{- if .BirthDate}}<tr><td>Birth Date</td><td>{{.GetBirthDate}}</td></tr>{{end -}}
+{{- range .Identifier}}<tr><td>Identifier</td><td>{{identifier .}}</td></tr>{{end -}}
+`,
+		"Observation": `
+{{- if .Code}}<tr><td>Code</td><td>{{codeableConcept .Code}}</td></tr>{{end -}}
+{{- if .Status}}<tr><td>Status</td><td>{{.GetStatus}}</td></tr>{{end -}}
+{{- if .Value}}{{if .Value.Quantity}}<tr><td>Value</td><td>{{quantity .Value.Quantity}}</td></tr>{{end -}}
+{{- if .Value.String}}<tr><td>Value</td><td>{{deref .Value.String}}</td></tr>{{end -}}
+{{- if .Value.CodeableConcept}}<tr><td>Value</td><td>{{codeableConcept .Value.CodeableConcept}}</td></tr>{{end}}{{end -}}
+{{- if .Subject}}{{if .Subject.Reference}}<tr><td>Subject</td><td>{{deref .Subject.Reference}}</td></tr>{{end}}{{end -}}
+`,
+		"Condition": `
+{{- if .Code}}<tr><td>Code</td><td>{{codeableConcept .Code}}</td></tr>{{end -}}
+{{- if .Subject}}{{if .Subject.Reference}}<tr><td>Subject</td><td>{{deref .Subject.Reference}}</td></tr>{{end}}{{end -}}
+{{- if .Severity}}<tr><td>Severity</td><td>{{codeableConcept .Severity}}</td></tr>{{end -}}
+`,
+		"Encounter": `
+{{- if .Status}}<tr><td>Status</td><td>{{.GetStatus}}</td></tr>{{end -}}
+{{- if .Subject}}{{if .Subject.Reference}}<tr><td>Subject</td><td>{{deref .Subject.Reference}}</td></tr>{{end}}{{end -}}
+`,
+		"Practitioner": `
+{{- range .Name}}<tr><td>Name</td><td>{{humanName .}}</td></tr>{{end -}}
+`,
+		"DiagnosticReport": `
+{{- if .Code}}<tr><td>Code</td><td>{{codeableConcept .Code}}</td></tr>{{end -}}
+{{- if .Status}}<tr><td>Status</td><td>{{.GetStatus}}</td></tr>{{end -}}
+{{- if .Subject}}{{if .Subject.Reference}}<tr><td>Subject</td><td>{{deref .Subject.Reference}}</td></tr>{{end}}{{end -}}
+`,
+		"MedicationRequest": `
+{{- if .Status}}<tr><td>Status</td><td>{{.GetStatus}}</td></tr>{{end -}}
+{{- if .Intent}}<tr><td>Intent</td><td>{{.GetIntent}}</td></tr>{{end -}}
+{{- if .Medication}}{{if .Medication.CodeableConcept}}<tr><td>Medication</td><td>{{codeableConcept .Medication.CodeableConcept}}</td></tr>{{end}}{{end -}}
+`,
+		"Organization": `
+{{- if .Name}}<tr><td>Name</td><td>{{deref .Name}}</td></tr>{{end -}}
+{{- range .Identifier}}<tr><td>Identifier</td><td>{{identifier .}}</td></tr>{{end -}}
+`,
+		"Location": `
+{{- if .Name}}<tr><td>Name</td><td>{{deref .Name}}</td></tr>{{end -}}
+{{- if .Status}}<tr><td>Status</td><td>{{.GetStatus}}</td></tr>{{end -}}
+{{- if .Address}}<tr><td>City</td><td>{{deref .Address.City}}</td></tr>{{end -}}
+`,
+		"Procedure": `
+{{- if .Code}}<tr><td>Code</td><td>{{codeableConcept .Code}}</td></tr>{{end -}}
+{{- if .Status}}<tr><td>Status</td><td>{{.GetStatus}}</td></tr>{{end -}}
+{{- if .Subject}}{{if .Subject.Reference}}<tr><td>Subject</td><td>{{deref .Subject.Reference}}</td></tr>{{end}}{{end -}}
+`,
+		"Immunization": `
+{{- if .VaccineCode}}<tr><td>Vaccine</td><td>{{codeableConcept .VaccineCode}}</td></tr>{{end -}}
+{{- if .Status}}<tr><td>Status</td><td>{{.GetStatus}}</td></tr>{{end -}}
+{{- if .Patient}}{{if .Patient.Reference}}<tr><td>Patient</td><td>{{deref .Patient.Reference}}</td></tr>{{end}}{{end -}}
+`,
+		"AllergyIntolerance": `
+{{- if .Code}}<tr><td>Code</td><td>{{codeableConcept .Code}}</td></tr>{{end -}}
+{{- if .Patient}}{{if .Patient.Reference}}<tr><td>Patient</td><td>{{deref .Patient.Reference}}</td></tr>{{end}}{{end -}}
+`,
+		"CarePlan": `
+{{- if .Status}}<tr><td>Status</td><td>{{.GetStatus}}</td></tr>{{end -}}
+{{- if .Intent}}<tr><td>Intent</td><td>{{.GetIntent}}</td></tr>{{end -}}
+{{- if .Subject}}{{if .Subject.Reference}}<tr><td>Subject</td><td>{{deref .Subject.Reference}}</td></tr>{{end}}{{end -}}
+`,
 	}
-	if m.Intent != nil {
-		rows = append(rows, row("Intent", string(*m.Intent)))
-	}
-	if m.Medication != nil && m.Medication.CodeableConcept != nil {
-		rows = append(rows, row("Medication", formatCodeableConcept(*m.Medication.CodeableConcept)))
-	}
-	return rows
-}
 
-func formatHumanName(n dt.HumanName) string {
-	var parts []string
-	if n.Family != nil {
-		parts = append(parts, *n.Family)
+	for rt, tmpl := range defaults {
+		g.RegisterTemplate(rt, tmpl)
 	}
-	parts = append(parts, n.Given...)
-	return strings.Join(parts, ", ")
-}
-
-func formatCodeableConcept(cc dt.CodeableConcept) string {
-	if cc.Text != nil {
-		return *cc.Text
-	}
-	if len(cc.Coding) > 0 && cc.Coding[0].Display != nil {
-		return *cc.Coding[0].Display
-	}
-	if len(cc.Coding) > 0 && cc.Coding[0].Code != nil {
-		return string(*cc.Coding[0].Code)
-	}
-	return ""
-}
-
-func formatQuantity(q dt.Quantity) string {
-	if q.Value != nil && q.Unit != nil {
-		return fmt.Sprintf("%v %s", *q.Value, *q.Unit)
-	}
-	if q.Value != nil {
-		return fmt.Sprintf("%v", *q.Value)
-	}
-	return ""
-}
-
-func formatIdentifier(id dt.Identifier) string {
-	if id.Value != nil {
-		return *id.Value
-	}
-	return ""
-}
-
-func row(label, value string) string {
-	return fmt.Sprintf("<tr><td>%s</td><td>%s</td></tr>",
-		html.EscapeString(label), html.EscapeString(value))
-}
-
-func buildDiv(rows []string) string {
-	var b strings.Builder
-	b.WriteString(`<div xmlns="http://www.w3.org/1999/xhtml">`)
-	b.WriteString("<table><tbody>")
-	for _, r := range rows {
-		b.WriteString(r)
-	}
-	b.WriteString("</tbody></table>")
-	b.WriteString("</div>")
-	return b.String()
+	return g
 }
