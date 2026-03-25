@@ -1024,7 +1024,16 @@ func getField(obj any, name string) Collection {
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
 		tag := field.Tag.Get("json")
-		if tag == "" || tag == "-" {
+
+		if tag == "-" {
+			// json:"-" fields are value[x] unions and Extra — match by Go name
+			if strings.EqualFold(field.Name, name) {
+				fv := v.Field(i)
+				return reflectToCollection(fv)
+			}
+			continue
+		}
+		if tag == "" {
 			continue
 		}
 		jsonName := strings.Split(tag, ",")[0]
