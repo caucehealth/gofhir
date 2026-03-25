@@ -131,14 +131,21 @@ func (r Task) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Task.
@@ -539,7 +546,7 @@ type TaskInputValue struct {
 	DataRequirement     *dt.DataRequirement     `json:"valueDataRequirement,omitempty"`     // The value of the input parameter as a basic type.
 	Date                *string                 `json:"valueDate,omitempty"`                // The value of the input parameter as a basic type.
 	DateTime            *string                 `json:"valueDateTime,omitempty"`            // The value of the input parameter as a basic type.
-	Decimal             *float64                `json:"valueDecimal,omitempty"`             // The value of the input parameter as a basic type.
+	Decimal             *dt.Decimal             `json:"valueDecimal,omitempty"`             // The value of the input parameter as a basic type.
 	Distance            *dt.Distance            `json:"valueDistance,omitempty"`            // The value of the input parameter as a basic type.
 	Dosage              *dt.Dosage              `json:"valueDosage,omitempty"`              // The value of the input parameter as a basic type.
 	Duration            *dt.Duration            `json:"valueDuration,omitempty"`            // The value of the input parameter as a basic type.
@@ -548,14 +555,14 @@ type TaskInputValue struct {
 	Id                  *string                 `json:"valueId,omitempty"`                  // The value of the input parameter as a basic type.
 	Identifier          *dt.Identifier          `json:"valueIdentifier,omitempty"`          // The value of the input parameter as a basic type.
 	Instant             *string                 `json:"valueInstant,omitempty"`             // The value of the input parameter as a basic type.
-	Integer             *float64                `json:"valueInteger,omitempty"`             // The value of the input parameter as a basic type.
+	Integer             *int32                  `json:"valueInteger,omitempty"`             // The value of the input parameter as a basic type.
 	Markdown            *string                 `json:"valueMarkdown,omitempty"`            // The value of the input parameter as a basic type.
 	Meta                *dt.Meta                `json:"valueMeta,omitempty"`                // The value of the input parameter as a basic type.
 	Money               *dt.Money               `json:"valueMoney,omitempty"`               // The value of the input parameter as a basic type.
 	Oid                 *string                 `json:"valueOid,omitempty"`                 // The value of the input parameter as a basic type.
 	ParameterDefinition *dt.ParameterDefinition `json:"valueParameterDefinition,omitempty"` // The value of the input parameter as a basic type.
 	Period              *dt.Period              `json:"valuePeriod,omitempty"`              // The value of the input parameter as a basic type.
-	PositiveInt         *float64                `json:"valuePositiveInt,omitempty"`         // The value of the input parameter as a basic type.
+	PositiveInt         *uint32                 `json:"valuePositiveInt,omitempty"`         // The value of the input parameter as a basic type.
 	Quantity            *dt.Quantity            `json:"valueQuantity,omitempty"`            // The value of the input parameter as a basic type.
 	Range               *dt.Range               `json:"valueRange,omitempty"`               // The value of the input parameter as a basic type.
 	Ratio               *dt.Ratio               `json:"valueRatio,omitempty"`               // The value of the input parameter as a basic type.
@@ -567,7 +574,7 @@ type TaskInputValue struct {
 	Time                *string                 `json:"valueTime,omitempty"`                // The value of the input parameter as a basic type.
 	Timing              *dt.Timing              `json:"valueTiming,omitempty"`              // The value of the input parameter as a basic type.
 	TriggerDefinition   *dt.TriggerDefinition   `json:"valueTriggerDefinition,omitempty"`   // The value of the input parameter as a basic type.
-	UnsignedInt         *float64                `json:"valueUnsignedInt,omitempty"`         // The value of the input parameter as a basic type.
+	UnsignedInt         *uint32                 `json:"valueUnsignedInt,omitempty"`         // The value of the input parameter as a basic type.
 	Uri                 *string                 `json:"valueUri,omitempty"`                 // The value of the input parameter as a basic type.
 	Url                 *string                 `json:"valueUrl,omitempty"`                 // The value of the input parameter as a basic type.
 	UsageContext        *dt.UsageContext        `json:"valueUsageContext,omitempty"`        // The value of the input parameter as a basic type.
@@ -856,7 +863,7 @@ func (v *TaskInputValue) UnmarshalJSON(data []byte) error {
 		v.DateTime = &val
 	}
 	if d, ok := raw["valueDecimal"]; ok {
-		var val float64
+		var val dt.Decimal
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueDecimal: %w", err)
 		}
@@ -919,7 +926,7 @@ func (v *TaskInputValue) UnmarshalJSON(data []byte) error {
 		v.Instant = &val
 	}
 	if d, ok := raw["valueInteger"]; ok {
-		var val float64
+		var val int32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueInteger: %w", err)
 		}
@@ -968,7 +975,7 @@ func (v *TaskInputValue) UnmarshalJSON(data []byte) error {
 		v.Period = &val
 	}
 	if d, ok := raw["valuePositiveInt"]; ok {
-		var val float64
+		var val uint32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valuePositiveInt: %w", err)
 		}
@@ -1052,7 +1059,7 @@ func (v *TaskInputValue) UnmarshalJSON(data []byte) error {
 		v.TriggerDefinition = &val
 	}
 	if d, ok := raw["valueUnsignedInt"]; ok {
-		var val float64
+		var val uint32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueUnsignedInt: %w", err)
 		}
@@ -1169,7 +1176,7 @@ type TaskOutputValue struct {
 	DataRequirement     *dt.DataRequirement     `json:"valueDataRequirement,omitempty"`     // The value of the Output parameter as a basic type.
 	Date                *string                 `json:"valueDate,omitempty"`                // The value of the Output parameter as a basic type.
 	DateTime            *string                 `json:"valueDateTime,omitempty"`            // The value of the Output parameter as a basic type.
-	Decimal             *float64                `json:"valueDecimal,omitempty"`             // The value of the Output parameter as a basic type.
+	Decimal             *dt.Decimal             `json:"valueDecimal,omitempty"`             // The value of the Output parameter as a basic type.
 	Distance            *dt.Distance            `json:"valueDistance,omitempty"`            // The value of the Output parameter as a basic type.
 	Dosage              *dt.Dosage              `json:"valueDosage,omitempty"`              // The value of the Output parameter as a basic type.
 	Duration            *dt.Duration            `json:"valueDuration,omitempty"`            // The value of the Output parameter as a basic type.
@@ -1178,14 +1185,14 @@ type TaskOutputValue struct {
 	Id                  *string                 `json:"valueId,omitempty"`                  // The value of the Output parameter as a basic type.
 	Identifier          *dt.Identifier          `json:"valueIdentifier,omitempty"`          // The value of the Output parameter as a basic type.
 	Instant             *string                 `json:"valueInstant,omitempty"`             // The value of the Output parameter as a basic type.
-	Integer             *float64                `json:"valueInteger,omitempty"`             // The value of the Output parameter as a basic type.
+	Integer             *int32                  `json:"valueInteger,omitempty"`             // The value of the Output parameter as a basic type.
 	Markdown            *string                 `json:"valueMarkdown,omitempty"`            // The value of the Output parameter as a basic type.
 	Meta                *dt.Meta                `json:"valueMeta,omitempty"`                // The value of the Output parameter as a basic type.
 	Money               *dt.Money               `json:"valueMoney,omitempty"`               // The value of the Output parameter as a basic type.
 	Oid                 *string                 `json:"valueOid,omitempty"`                 // The value of the Output parameter as a basic type.
 	ParameterDefinition *dt.ParameterDefinition `json:"valueParameterDefinition,omitempty"` // The value of the Output parameter as a basic type.
 	Period              *dt.Period              `json:"valuePeriod,omitempty"`              // The value of the Output parameter as a basic type.
-	PositiveInt         *float64                `json:"valuePositiveInt,omitempty"`         // The value of the Output parameter as a basic type.
+	PositiveInt         *uint32                 `json:"valuePositiveInt,omitempty"`         // The value of the Output parameter as a basic type.
 	Quantity            *dt.Quantity            `json:"valueQuantity,omitempty"`            // The value of the Output parameter as a basic type.
 	Range               *dt.Range               `json:"valueRange,omitempty"`               // The value of the Output parameter as a basic type.
 	Ratio               *dt.Ratio               `json:"valueRatio,omitempty"`               // The value of the Output parameter as a basic type.
@@ -1197,7 +1204,7 @@ type TaskOutputValue struct {
 	Time                *string                 `json:"valueTime,omitempty"`                // The value of the Output parameter as a basic type.
 	Timing              *dt.Timing              `json:"valueTiming,omitempty"`              // The value of the Output parameter as a basic type.
 	TriggerDefinition   *dt.TriggerDefinition   `json:"valueTriggerDefinition,omitempty"`   // The value of the Output parameter as a basic type.
-	UnsignedInt         *float64                `json:"valueUnsignedInt,omitempty"`         // The value of the Output parameter as a basic type.
+	UnsignedInt         *uint32                 `json:"valueUnsignedInt,omitempty"`         // The value of the Output parameter as a basic type.
 	Uri                 *string                 `json:"valueUri,omitempty"`                 // The value of the Output parameter as a basic type.
 	Url                 *string                 `json:"valueUrl,omitempty"`                 // The value of the Output parameter as a basic type.
 	UsageContext        *dt.UsageContext        `json:"valueUsageContext,omitempty"`        // The value of the Output parameter as a basic type.
@@ -1486,7 +1493,7 @@ func (v *TaskOutputValue) UnmarshalJSON(data []byte) error {
 		v.DateTime = &val
 	}
 	if d, ok := raw["valueDecimal"]; ok {
-		var val float64
+		var val dt.Decimal
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueDecimal: %w", err)
 		}
@@ -1549,7 +1556,7 @@ func (v *TaskOutputValue) UnmarshalJSON(data []byte) error {
 		v.Instant = &val
 	}
 	if d, ok := raw["valueInteger"]; ok {
-		var val float64
+		var val int32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueInteger: %w", err)
 		}
@@ -1598,7 +1605,7 @@ func (v *TaskOutputValue) UnmarshalJSON(data []byte) error {
 		v.Period = &val
 	}
 	if d, ok := raw["valuePositiveInt"]; ok {
-		var val float64
+		var val uint32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valuePositiveInt: %w", err)
 		}
@@ -1682,7 +1689,7 @@ func (v *TaskOutputValue) UnmarshalJSON(data []byte) error {
 		v.TriggerDefinition = &val
 	}
 	if d, ok := raw["valueUnsignedInt"]; ok {
-		var val float64
+		var val uint32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueUnsignedInt: %w", err)
 		}
@@ -2076,4 +2083,14 @@ func (r *Task) GetStatusReason() dt.CodeableConcept {
 	}
 	var zero dt.CodeableConcept
 	return zero
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *Task) GetResourceType() string {
+	return "Task"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *Task) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

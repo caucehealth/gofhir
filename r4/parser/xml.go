@@ -7,35 +7,32 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
+	"reflect"
 	"strings"
 )
 
 const fhirNamespace = "http://hl7.org/fhir"
 
-// MarshalXML serializes a FHIR resource to XML. The resource is first
-// marshaled to JSON (the canonical in-memory format), then converted to
-// FHIR-conformant XML with the hl7.org/fhir namespace.
+// MarshalXML serializes a FHIR resource to XML using direct struct reflection.
+// No JSON intermediary is used — struct fields are walked directly.
 func MarshalXML(resource any, opts Options) ([]byte, error) {
-	// Marshal to JSON first (canonical format)
-	jsonData, err := json.Marshal(resource)
-	if err != nil {
-		return nil, fmt.Errorf("xml: json marshal: %w", err)
+	v := reflect.ValueOf(resource)
+	if v.Kind() == reflect.Ptr {
+		if v.IsNil() {
+			return nil, fmt.Errorf("xml: nil resource")
+		}
+		v = v.Elem()
+	}
+	if v.Kind() != reflect.Struct {
+		return nil, fmt.Errorf("xml: expected struct, got %s", v.Kind())
 	}
 
-	var m map[string]any
-	if err := json.Unmarshal(jsonData, &m); err != nil {
-		return nil, fmt.Errorf("xml: json unmarshal: %w", err)
+	// Get resourceType from the struct's ResourceType field
+	rtField := v.FieldByName("ResourceType")
+	if !rtField.IsValid() || rtField.String() == "" {
+		return nil, fmt.Errorf("xml: missing ResourceType field")
 	}
-
-	if opts.SuppressNarrative {
-		delete(m, "text")
-	}
-
-	resourceType, _ := m["resourceType"].(string)
-	if resourceType == "" {
-		return nil, fmt.Errorf("xml: missing resourceType")
-	}
-	delete(m, "resourceType")
+	resourceType := rtField.String()
 
 	var buf strings.Builder
 	buf.WriteString(xml.Header)
@@ -45,89 +42,333 @@ func MarshalXML(resource any, opts Options) ([]byte, error) {
 		indent = "  "
 	}
 
-	encoder := &xmlEncoder{
+	e := &xmlEncoder{
 		buf:    &buf,
 		indent: indent,
 		level:  0,
 		pretty: opts.PrettyPrint,
 	}
 
-	encoder.writeStart(resourceType, map[string]string{"xmlns": fhirNamespace})
-	encoder.encodeMap(m)
-	encoder.writeEnd(resourceType)
+	e.writeStart(resourceType, map[string]string{"xmlns": fhirNamespace})
+	e.encodeStruct(v, opts)
+	e.writeEnd(resourceType)
 
 	return []byte(buf.String()), nil
 }
 
-// UnmarshalXML deserializes FHIR XML into a resource. The XML is first
-// converted to FHIR JSON, then unmarshaled into the target struct.
-// Single XML elements that map to array fields are automatically wrapped.
-func UnmarshalXML(data []byte, resource any) error {
-	m, err := xmlToMap(data)
-	if err != nil {
-		return fmt.Errorf("xml: parse: %w", err)
-	}
+// encodeStruct writes all fields of a struct as XML child elements.
+func (e *xmlEncoder) encodeStruct(v reflect.Value, opts Options) {
+	t := v.Type()
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
+		fieldVal := v.Field(i)
 
-	// Use schema metadata to fix array fields
-	resourceType, _ := m["resourceType"].(string)
-	fixArrayFields(m, resourceType)
-
-	jsonData, err := json.Marshal(m)
-	if err != nil {
-		return fmt.Errorf("xml: json re-convert: %w", err)
-	}
-
-	return json.Unmarshal(jsonData, resource)
-}
-
-// fixArrayFields uses schema metadata to wrap single values in arrays where
-// the FHIR spec defines the field as repeating. Recurses into nested maps.
-func fixArrayFields(m map[string]any, typeName string) {
-	for k, v := range m {
-		if strings.HasPrefix(k, "_") || k == "resourceType" {
+		tag := field.Tag.Get("json")
+		if tag == "" || tag == "-" {
+			// Handle json:"-" fields: Extra and value[x] unions
+			e.handleDashField(field, fieldVal, opts)
 			continue
 		}
-		switch val := v.(type) {
-		case map[string]any:
-			// Determine child type name for recursion
-			childType := inferChildType(typeName, k)
-			fixArrayFields(val, childType)
-			if IsArrayField(typeName, k) {
-				m[k] = []any{val}
+
+		name, omitempty := parseTag(tag)
+		if name == "resourceType" {
+			continue
+		}
+
+		// Skip _field companions — they're handled with their primitive
+		if strings.HasPrefix(name, "_") {
+			continue
+		}
+
+		// Options filtering
+		if opts.SuppressNarrative && name == "text" {
+			continue
+		}
+
+		if omitempty && isZero(fieldVal) {
+			continue
+		}
+
+		// Find companion _field for element extensions
+		companion := findCompanion(v, t, name)
+
+		e.encodeFieldValue(name, fieldVal, companion, opts)
+	}
+}
+
+// handleDashField handles json:"-" fields: Extra map and value[x] unions.
+func (e *xmlEncoder) handleDashField(field reflect.StructField, val reflect.Value, opts Options) {
+	if field.Name == "Extra" {
+		// Encode unknown fields from Extra map
+		if val.IsNil() {
+			return
+		}
+		iter := val.MapRange()
+		for iter.Next() {
+			key := iter.Key().String()
+			raw := iter.Value().Interface().(json.RawMessage)
+			e.encodeRawJSON(key, raw, opts)
+		}
+		return
+	}
+
+	// value[x] union fields — has MarshalJSON that produces flat key-value pairs
+	if val.Kind() == reflect.Ptr && val.IsNil() {
+		return
+	}
+
+	// Call MarshalJSON on the union struct
+	marshaler, ok := val.Interface().(json.Marshaler)
+	if !ok && val.Kind() == reflect.Ptr {
+		marshaler, ok = val.Elem().Interface().(json.Marshaler)
+	}
+	if !ok {
+		return
+	}
+
+	data, err := marshaler.MarshalJSON()
+	if err != nil {
+		return
+	}
+
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(data, &m); err != nil {
+		return
+	}
+
+	for key, raw := range m {
+		e.encodeRawJSON(key, raw, opts)
+	}
+}
+
+// encodeRawJSON encodes a raw JSON value as XML.
+func (e *xmlEncoder) encodeRawJSON(name string, raw json.RawMessage, opts Options) {
+	var val any
+	if err := json.Unmarshal(raw, &val); err != nil {
+		return
+	}
+	e.encodeAnyValue(name, val, nil, opts)
+}
+
+// encodeFieldValue writes a single struct field as XML.
+func (e *xmlEncoder) encodeFieldValue(name string, val reflect.Value, companion reflect.Value, opts Options) {
+	// Dereference pointer
+	if val.Kind() == reflect.Ptr {
+		if val.IsNil() {
+			return
+		}
+		val = val.Elem()
+	}
+
+	switch val.Kind() {
+	case reflect.String:
+		s := val.String()
+		if s == "" {
+			return
+		}
+		e.encodePrimitive(name, s, companion)
+
+	case reflect.Bool:
+		s := "false"
+		if val.Bool() {
+			s = "true"
+		}
+		e.encodePrimitive(name, s, companion)
+
+	case reflect.Int32:
+		s := fmt.Sprintf("%d", val.Int())
+		e.encodePrimitive(name, s, companion)
+
+	case reflect.Uint32:
+		s := fmt.Sprintf("%d", val.Uint())
+		e.encodePrimitive(name, s, companion)
+
+	case reflect.Float64:
+		s := fmt.Sprintf("%v", val.Float())
+		e.encodePrimitive(name, s, companion)
+
+	case reflect.Struct:
+		e.writeStart(name, nil)
+		e.encodeStruct(val, opts)
+		e.writeEnd(name)
+
+	case reflect.Slice:
+		if val.Type().Elem().Kind() == reflect.Uint8 {
+			// []byte — base64 encoded, but json.Marshal handles this
+			// For XML, encode as value attribute
+			data, _ := json.Marshal(val.Interface())
+			// Remove quotes from JSON string
+			s := strings.Trim(string(data), `"`)
+			e.encodePrimitive(name, s, companion)
+		} else {
+			for j := 0; j < val.Len(); j++ {
+				e.encodeFieldValue(name, val.Index(j), reflect.Value{}, opts)
 			}
-		case string:
-			if IsArrayField(typeName, k) {
-				m[k] = []any{val}
-			}
-		case float64:
-			if IsArrayField(typeName, k) {
-				m[k] = []any{val}
-			}
-		case bool:
-			if IsArrayField(typeName, k) {
-				m[k] = []any{val}
-			}
-		case []any:
-			for _, item := range val {
-				if sub, ok := item.(map[string]any); ok {
-					childType := inferChildType(typeName, k)
-					fixArrayFields(sub, childType)
-				}
-			}
+		}
+
+	case reflect.Interface:
+		// json.RawMessage stored as []byte in interface
+		if raw, ok := val.Interface().(json.RawMessage); ok {
+			e.encodeRawJSON(name, raw, opts)
+		}
+
+	case reflect.Map:
+		// Skip maps (like Extra) — handled separately
+	}
+}
+
+// encodePrimitive writes a FHIR primitive as <name value="..."/> or with
+// element extensions if a companion _field exists.
+func (e *xmlEncoder) encodePrimitive(name, value string, companion reflect.Value) {
+	// Check for XHTML div — embed raw, not as value attribute
+	if name == "div" {
+		e.writeIndent()
+		e.buf.WriteString(value)
+		e.writeNewline()
+		return
+	}
+
+	hasCompanion := companion.IsValid() && companion.Kind() == reflect.Ptr && !companion.IsNil()
+	if hasCompanion {
+		e.writeStart(name, map[string]string{"value": value})
+		e.encodeElementExtension(companion.Elem())
+		e.writeEnd(name)
+	} else {
+		e.writeValueElement(name, value)
+	}
+}
+
+// encodeElementExtension writes the id and extension children from an Element struct.
+func (e *xmlEncoder) encodeElementExtension(elem reflect.Value) {
+	if elem.Kind() != reflect.Struct {
+		return
+	}
+
+	// Element has Id *string and Extension []Extension
+	idField := elem.FieldByName("Id")
+	if idField.IsValid() && idField.Kind() == reflect.Ptr && !idField.IsNil() {
+		e.writeValueElement("id", idField.Elem().String())
+	}
+
+	extField := elem.FieldByName("Extension")
+	if extField.IsValid() && extField.Kind() == reflect.Slice && extField.Len() > 0 {
+		for i := 0; i < extField.Len(); i++ {
+			ext := extField.Index(i)
+			e.writeStart("extension", nil)
+			e.encodeStruct(ext, Options{})
+			e.writeEnd("extension")
 		}
 	}
 }
 
-// inferChildType returns the FHIR type name for a nested element using
-// schema-generated metadata. Falls back to a heuristic if no metadata found.
-func inferChildType(parentType, fieldName string) string {
-	// Use schema-generated field type map
-	if ft := FieldType(parentType, fieldName); ft != "" {
-		return ft
+// encodeAnyValue encodes a generic any value (from JSON unmarshal) as XML.
+// Used for Extra fields and value[x] union content.
+func (e *xmlEncoder) encodeAnyValue(name string, val any, elemExt any, opts Options) {
+	switch v := val.(type) {
+	case nil:
+		// skip
+	case string:
+		if name == "div" {
+			e.writeIndent()
+			e.buf.WriteString(v)
+			e.writeNewline()
+		} else if elemExt != nil {
+			e.writeStart(name, map[string]string{"value": v})
+			if ext, ok := elemExt.(map[string]any); ok {
+				e.encodeAnyElementExtensions(ext)
+			}
+			e.writeEnd(name)
+		} else {
+			e.writeValueElement(name, v)
+		}
+	case float64:
+		s := fmt.Sprintf("%v", v)
+		e.writeValueElement(name, s)
+	case bool:
+		s := "false"
+		if v {
+			s = "true"
+		}
+		e.writeValueElement(name, s)
+	case map[string]any:
+		e.writeStart(name, nil)
+		e.encodeAnyMap(v, opts)
+		e.writeEnd(name)
+	case []any:
+		for _, item := range v {
+			e.encodeAnyValue(name, item, nil, opts)
+		}
 	}
-	// Fallback for backbone elements: ParentFieldName
-	return ""
 }
+
+// encodeAnyMap encodes a generic map as XML children.
+func (e *xmlEncoder) encodeAnyMap(m map[string]any, opts Options) {
+	for key, val := range m {
+		if strings.HasPrefix(key, "_") || key == "resourceType" {
+			continue
+		}
+		e.encodeAnyValue(key, val, m["_"+key], opts)
+	}
+}
+
+// encodeAnyElementExtensions writes element extension children from a map.
+func (e *xmlEncoder) encodeAnyElementExtensions(ext map[string]any) {
+	if id, ok := ext["id"]; ok {
+		if idStr, ok := id.(string); ok {
+			e.writeValueElement("id", idStr)
+		}
+	}
+	if exts, ok := ext["extension"]; ok {
+		e.encodeAnyValue("extension", exts, nil, Options{})
+	}
+}
+
+// findCompanion looks for a _fieldName companion Element field.
+func findCompanion(v reflect.Value, t reflect.Type, fieldName string) reflect.Value {
+	companionTag := "_" + fieldName
+	for i := 0; i < t.NumField(); i++ {
+		tag := t.Field(i).Tag.Get("json")
+		name, _ := parseTag(tag)
+		if name == companionTag {
+			return v.Field(i)
+		}
+	}
+	return reflect.Value{}
+}
+
+func parseTag(tag string) (name string, omitempty bool) {
+	parts := strings.Split(tag, ",")
+	name = parts[0]
+	for _, p := range parts[1:] {
+		if p == "omitempty" {
+			omitempty = true
+		}
+	}
+	return
+}
+
+func isZero(v reflect.Value) bool {
+	switch v.Kind() {
+	case reflect.Ptr, reflect.Interface:
+		return v.IsNil()
+	case reflect.Slice, reflect.Map:
+		return v.IsNil() || v.Len() == 0
+	case reflect.String:
+		return v.String() == ""
+	case reflect.Bool:
+		return !v.Bool()
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return v.Int() == 0
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return v.Uint() == 0
+	case reflect.Float32, reflect.Float64:
+		return v.Float() == 0
+	default:
+		return false
+	}
+}
+
+// --- XML encoder primitives ---
 
 type xmlEncoder struct {
 	buf    *strings.Builder
@@ -185,90 +426,6 @@ func (e *xmlEncoder) writeValueElement(name, value string) {
 	e.writeNewline()
 }
 
-func (e *xmlEncoder) encodeMap(m map[string]any) {
-	for key, val := range m {
-		if strings.HasPrefix(key, "_") {
-			continue // handled alongside their primitive via m["_"+key]
-		}
-		if key == "resourceType" {
-			continue // already emitted as root element name
-		}
-		// XHTML div content — embed as raw XML, not as value attribute
-		if key == "div" {
-			if s, ok := val.(string); ok {
-				e.writeIndent()
-				e.buf.WriteString(s)
-				e.writeNewline()
-				continue
-			}
-		}
-		e.encodeField(key, val, m["_"+key])
-	}
-}
-
-func (e *xmlEncoder) encodeField(name string, val any, elemExt any) {
-	switch v := val.(type) {
-	case nil:
-		// skip
-	case string:
-		if elemExt != nil {
-			// Primitive with element extensions — container element
-			e.writeStart(name, map[string]string{"value": v})
-			if ext, ok := elemExt.(map[string]any); ok {
-				e.encodeElementExtensions(ext)
-			}
-			e.writeEnd(name)
-		} else {
-			e.writeValueElement(name, v)
-		}
-	case float64:
-		s := fmt.Sprintf("%v", v)
-		if elemExt != nil {
-			e.writeStart(name, map[string]string{"value": s})
-			if ext, ok := elemExt.(map[string]any); ok {
-				e.encodeElementExtensions(ext)
-			}
-			e.writeEnd(name)
-		} else {
-			e.writeValueElement(name, s)
-		}
-	case bool:
-		s := "false"
-		if v {
-			s = "true"
-		}
-		if elemExt != nil {
-			e.writeStart(name, map[string]string{"value": s})
-			if ext, ok := elemExt.(map[string]any); ok {
-				e.encodeElementExtensions(ext)
-			}
-			e.writeEnd(name)
-		} else {
-			e.writeValueElement(name, s)
-		}
-	case map[string]any:
-		e.writeStart(name, nil)
-		e.encodeMap(v)
-		e.writeEnd(name)
-	case []any:
-		for _, item := range v {
-			e.encodeField(name, item, nil)
-		}
-	}
-}
-
-// encodeElementExtensions writes the id and extension children of an element extension.
-func (e *xmlEncoder) encodeElementExtensions(ext map[string]any) {
-	if id, ok := ext["id"]; ok {
-		if idStr, ok := id.(string); ok {
-			e.writeValueElement("id", idStr)
-		}
-	}
-	if exts, ok := ext["extension"]; ok {
-		e.encodeField("extension", exts, nil)
-	}
-}
-
 func xmlEscape(s string) string {
 	s = strings.ReplaceAll(s, "&", "&amp;")
 	s = strings.ReplaceAll(s, "<", "&lt;")
@@ -278,8 +435,76 @@ func xmlEscape(s string) string {
 	return s
 }
 
+// --- XML decoder (XML → map → JSON → struct) ---
+// The decoder uses schema metadata to correctly interpret XML elements.
+
+// UnmarshalXML deserializes FHIR XML into a resource.
+func UnmarshalXML(data []byte, resource any) error {
+	m, err := xmlToMap(data)
+	if err != nil {
+		return fmt.Errorf("xml: parse: %w", err)
+	}
+
+	resourceType, _ := m["resourceType"].(string)
+	fixArrayFields(m, resourceType)
+
+	jsonData, err := json.Marshal(m)
+	if err != nil {
+		return fmt.Errorf("xml: json re-convert: %w", err)
+	}
+
+	return json.Unmarshal(jsonData, resource)
+}
+
+// fixArrayFields uses schema metadata to wrap single values in arrays where
+// the FHIR spec defines the field as repeating.
+func fixArrayFields(m map[string]any, typeName string) {
+	for k, v := range m {
+		if strings.HasPrefix(k, "_") || k == "resourceType" {
+			continue
+		}
+		switch val := v.(type) {
+		case map[string]any:
+			childType := inferChildType(typeName, k)
+			fixArrayFields(val, childType)
+			if IsArrayField(typeName, k) {
+				m[k] = []any{val}
+			}
+		case string:
+			if IsArrayField(typeName, k) {
+				m[k] = []any{val}
+			}
+		case float64:
+			if IsArrayField(typeName, k) {
+				m[k] = []any{val}
+			}
+		case bool:
+			if IsArrayField(typeName, k) {
+				m[k] = []any{val}
+			}
+		case []any:
+			for _, item := range val {
+				if sub, ok := item.(map[string]any); ok {
+					childType := inferChildType(typeName, k)
+					fixArrayFields(sub, childType)
+				}
+			}
+		}
+	}
+}
+
+func inferChildType(parentType, fieldName string) string {
+	if ft := FieldType(parentType, fieldName); ft != "" {
+		return ft
+	}
+	return ""
+}
+
 // xmlToMap converts FHIR XML to a JSON-compatible map.
 func xmlToMap(data []byte) (map[string]any, error) {
+	if len(data) == 0 {
+		return nil, fmt.Errorf("empty XML input")
+	}
 	decoder := xml.NewDecoder(strings.NewReader(string(data)))
 	m, err := decodeXMLElement(decoder)
 	if err != nil {
@@ -288,6 +513,9 @@ func xmlToMap(data []byte) (map[string]any, error) {
 	result, ok := m.(map[string]any)
 	if !ok {
 		return nil, fmt.Errorf("expected map, got %T", m)
+	}
+	if _, hasRT := result["resourceType"]; !hasRT {
+		return nil, fmt.Errorf("no FHIR resource root element found")
 	}
 	return result, nil
 }
@@ -308,16 +536,9 @@ func decodeXMLElement(decoder *xml.Decoder) (any, error) {
 			if resourceType == "" {
 				resourceType = name
 				m["resourceType"] = name
-				// Process attributes
-				for _, attr := range t.Attr {
-					if attr.Name.Local == "xmlns" {
-						continue
-					}
-				}
 				continue
 			}
 
-			// Check for value attribute (FHIR primitives)
 			var valueAttr string
 			hasValue := false
 			for _, attr := range t.Attr {
@@ -334,7 +555,6 @@ func decodeXMLElement(decoder *xml.Decoder) (any, error) {
 				}
 				addToMap(m, "div", divContent)
 			} else if hasValue {
-				// Primitive with value — may also have child extensions
 				addToMap(m, name, coerceXMLValue(resourceType, name, valueAttr))
 				elemExt := decodePrimitiveExtensions(decoder)
 				if elemExt != nil {
@@ -404,15 +624,10 @@ func decodeXMLChild(decoder *xml.Decoder, typeName string) (any, error) {
 	}
 }
 
-// coerceXMLValue converts string values from XML value="" attributes to
-// their appropriate JSON types using schema-generated metadata.
 func coerceXMLValue(parentType, fieldName, s string) any {
-	// Boolean fields — only when schema says it's boolean or value is exactly true/false
-	// and the field is known to be boolean in context
 	if (s == "true" || s == "false") && isBooleanContext(parentType, fieldName) {
 		return s == "true"
 	}
-	// Use schema-generated numeric field metadata — ONLY coerce when schema confirms
 	if IsNumericField(parentType, fieldName) {
 		if len(s) > 0 && (s[0] == '-' || s[0] == '.' || (s[0] >= '0' && s[0] <= '9')) {
 			var f float64
@@ -424,8 +639,6 @@ func coerceXMLValue(parentType, fieldName, s string) any {
 	return s
 }
 
-// isBooleanContext checks if a field is expected to be boolean.
-// Uses known FHIR boolean field names.
 func isBooleanContext(parentType, fieldName string) bool {
 	boolFields := map[string]bool{
 		"active": true, "focal": true, "allDay": true,
@@ -437,12 +650,10 @@ func isBooleanContext(parentType, fieldName string) bool {
 	if v, ok := boolFields[fieldName]; ok {
 		return v
 	}
-	// Fields starting with "is", "has", "can", or ending with "Boolean"
 	if strings.HasPrefix(fieldName, "is") || strings.HasPrefix(fieldName, "has") ||
 		strings.HasSuffix(fieldName, "Boolean") {
 		return true
 	}
-	// Check for known value[x] boolean variants
 	if fieldName == "deceasedBoolean" || fieldName == "multipleBirthBoolean" ||
 		fieldName == "asNeededBoolean" || fieldName == "allowedBoolean" ||
 		fieldName == "reportedBoolean" {
@@ -451,9 +662,6 @@ func isBooleanContext(parentType, fieldName string) bool {
 	return false
 }
 
-// decodePrimitiveExtensions reads any child elements inside a primitive element
-// (id, extension) and returns them as a map for the _field companion.
-// If there are no children (self-closing element), returns nil.
 func decodePrimitiveExtensions(decoder *xml.Decoder) map[string]any {
 	m := make(map[string]any)
 	hasContent := false
@@ -477,7 +685,6 @@ func decodePrimitiveExtensions(decoder *xml.Decoder) map[string]any {
 							}
 						}
 					}
-					// Always store extensions as array
 					if existing, ok := m["extension"]; ok {
 						if arr, ok := existing.([]any); ok {
 							m["extension"] = append(arr, child)
@@ -511,11 +718,8 @@ func decodePrimitiveExtensions(decoder *xml.Decoder) map[string]any {
 	return m
 }
 
-// readRawXMLElement reads all content of an XML element (including nested elements)
-// as a raw XHTML string. Used for the narrative div element.
 func readRawXMLElement(decoder *xml.Decoder, start xml.StartElement) (string, error) {
 	var buf strings.Builder
-	// Reconstruct the opening tag
 	buf.WriteByte('<')
 	buf.WriteString(start.Name.Local)
 	for _, attr := range start.Attr {
@@ -570,7 +774,6 @@ func addToMap(m map[string]any, key string, val any) {
 		m[key] = val
 		return
 	}
-	// Multiple elements with same name → make array
 	switch e := existing.(type) {
 	case []any:
 		m[key] = append(e, val)

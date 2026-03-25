@@ -63,7 +63,7 @@ type ChargeItem struct {
 	// Enterer The device, practitioner, etc. who entered the charge item.
 	Enterer *dt.Reference `json:"enterer,omitempty"`
 	// FactorOverride Factor overriding the factor determined by the rules associated with the code.
-	FactorOverride *float64 `json:"factorOverride,omitempty"`
+	FactorOverride *dt.Decimal `json:"factorOverride,omitempty"`
 	// FactorOverrideElement contains element extensions for factorOverride.
 	FactorOverrideElement *dt.Element `json:"_factorOverride,omitempty"`
 	// Note Comments made about the event by the performer, subject or other participants.
@@ -108,34 +108,16 @@ func (r ChargeItem) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
-	if r.Definition != nil {
-		vData, err := json.Marshal(r.Definition)
-		if err != nil {
-			return nil, err
-		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
-		}
-	}
+	// Collect additional fields to splice into JSON
+	var extra []byte
 	if r.Occurrence != nil {
 		vData, err := json.Marshal(r.Occurrence)
 		if err != nil {
 			return nil, err
 		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
 	if r.Product != nil {
@@ -143,18 +125,36 @@ func (r ChargeItem) MarshalJSON() ([]byte, error) {
 		if err != nil {
 			return nil, err
 		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
+		}
+	}
+	if r.Definition != nil {
+		vData, err := json.Marshal(r.Definition)
+		if err != nil {
 			return nil, err
 		}
-		for k, v := range vm {
-			m[k] = v
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	if len(extra) == 0 {
+		return data, nil
+	}
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ChargeItem.
@@ -166,6 +166,13 @@ func (r *ChargeItem) UnmarshalJSON(data []byte) error {
 	}
 	*r = ChargeItem(alias)
 	// Unmarshal polymorphic fields
+	var productVal ChargeItemProduct
+	if err := productVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if productVal.CodeableConcept != nil || productVal.Reference != nil {
+		r.Product = &productVal
+	}
 	var definitionVal ChargeItemDefinitionChoice
 	if err := definitionVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -179,13 +186,6 @@ func (r *ChargeItem) UnmarshalJSON(data []byte) error {
 	}
 	if occurrenceVal.DateTime != nil || occurrenceVal.Period != nil || occurrenceVal.Timing != nil {
 		r.Occurrence = &occurrenceVal
-	}
-	var productVal ChargeItemProduct
-	if err := productVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if productVal.CodeableConcept != nil || productVal.Reference != nil {
-		r.Product = &productVal
 	}
 	// Capture unknown fields
 	var raw map[string]json.RawMessage
@@ -357,7 +357,7 @@ func (b *ChargeItemBuilder) WithEnterer(v dt.Reference) *ChargeItemBuilder {
 }
 
 // WithFactorOverride sets the factorOverride field.
-func (b *ChargeItemBuilder) WithFactorOverride(v float64) *ChargeItemBuilder {
+func (b *ChargeItemBuilder) WithFactorOverride(v dt.Decimal) *ChargeItemBuilder {
 	b.resource.FactorOverride = &v
 	b.fieldsSet["factorOverride"] = true
 	return b
@@ -530,6 +530,47 @@ type ChargeItemPerformer struct {
 	Function *dt.CodeableConcept `json:"function,omitempty"`
 }
 
+// ChargeItemDefinitionChoice represents a polymorphic choice type in FHIR.
+type ChargeItemDefinitionChoice struct {
+	Canonical []dt.Canonical `json:"definitionCanonical,omitempty"` // References the source of pricing information, rules of application for the code this ChargeItem uses.
+	Uri       []dt.URI       `json:"definitionUri,omitempty"`       // References the (external) source of pricing information, rules of application for the code this ChargeItem uses.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ChargeItemDefinitionChoice.
+func (v ChargeItemDefinitionChoice) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Canonical != nil {
+		m["definitionCanonical"] = v.Canonical
+	}
+	if v.Uri != nil {
+		m["definitionUri"] = v.Uri
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ChargeItemDefinitionChoice.
+func (v *ChargeItemDefinitionChoice) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["definitionCanonical"]; ok {
+		var val []dt.Canonical
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling definitionCanonical: %w", err)
+		}
+		v.Canonical = val
+	}
+	if d, ok := raw["definitionUri"]; ok {
+		var val []dt.URI
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling definitionUri: %w", err)
+		}
+		v.Uri = val
+	}
+	return nil
+}
+
 // ChargeItemOccurrence represents a polymorphic choice type in FHIR.
 type ChargeItemOccurrence struct {
 	DateTime *string    `json:"occurrenceDateTime,omitempty"` // Date/time(s) or duration when the charged service was applied.
@@ -619,47 +660,6 @@ func (v *ChargeItemProduct) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling productReference: %w", err)
 		}
 		v.Reference = &val
-	}
-	return nil
-}
-
-// ChargeItemDefinitionChoice represents a polymorphic choice type in FHIR.
-type ChargeItemDefinitionChoice struct {
-	Canonical []dt.Canonical `json:"definitionCanonical,omitempty"` // References the source of pricing information, rules of application for the code this ChargeItem uses.
-	Uri       []dt.URI       `json:"definitionUri,omitempty"`       // References the (external) source of pricing information, rules of application for the code this ChargeItem uses.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ChargeItemDefinitionChoice.
-func (v ChargeItemDefinitionChoice) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Canonical != nil {
-		m["definitionCanonical"] = v.Canonical
-	}
-	if v.Uri != nil {
-		m["definitionUri"] = v.Uri
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ChargeItemDefinitionChoice.
-func (v *ChargeItemDefinitionChoice) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["definitionCanonical"]; ok {
-		var val []dt.Canonical
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling definitionCanonical: %w", err)
-		}
-		v.Canonical = val
-	}
-	if d, ok := raw["definitionUri"]; ok {
-		var val []dt.URI
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling definitionUri: %w", err)
-		}
-		v.Uri = val
 	}
 	return nil
 }
@@ -816,11 +816,11 @@ func (r *ChargeItem) GetEnterer() dt.Reference {
 }
 
 // GetFactorOverride returns the factorOverride field value, or the zero value if nil.
-func (r *ChargeItem) GetFactorOverride() float64 {
+func (r *ChargeItem) GetFactorOverride() dt.Decimal {
 	if r.FactorOverride != nil {
 		return *r.FactorOverride
 	}
-	var zero float64
+	var zero dt.Decimal
 	return zero
 }
 
@@ -936,4 +936,14 @@ func (r *ChargeItem) GetSupportingInformation() []dt.Reference {
 		return r.SupportingInformation
 	}
 	return nil
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *ChargeItem) GetResourceType() string {
+	return "ChargeItem"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *ChargeItem) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

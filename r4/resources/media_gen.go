@@ -63,7 +63,7 @@ type Media struct {
 	// DeviceNameElement contains element extensions for deviceName.
 	DeviceNameElement *dt.Element `json:"_deviceName,omitempty"`
 	// Duration The duration of the recording in seconds - for audio and video.
-	Duration *float64 `json:"duration,omitempty"`
+	Duration *dt.Decimal `json:"duration,omitempty"`
 	// DurationElement contains element extensions for duration.
 	DurationElement *dt.Element `json:"_duration,omitempty"`
 	// Encounter The encounter that establishes the context for this media.
@@ -115,14 +115,21 @@ func (r Media) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Media.
@@ -283,7 +290,7 @@ func (b *MediaBuilder) WithDeviceName(v string) *MediaBuilder {
 }
 
 // WithDuration sets the duration field.
-func (b *MediaBuilder) WithDuration(v float64) *MediaBuilder {
+func (b *MediaBuilder) WithDuration(v dt.Decimal) *MediaBuilder {
 	b.resource.Duration = &v
 	b.fieldsSet["duration"] = true
 	return b
@@ -539,11 +546,11 @@ func (r *Media) GetDeviceName() string {
 }
 
 // GetDuration returns the duration field value, or the zero value if nil.
-func (r *Media) GetDuration() float64 {
+func (r *Media) GetDuration() dt.Decimal {
 	if r.Duration != nil {
 		return *r.Duration
 	}
-	var zero float64
+	var zero dt.Decimal
 	return zero
 }
 
@@ -659,4 +666,14 @@ func (r *Media) GetWidth() uint32 {
 	}
 	var zero uint32
 	return zero
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *Media) GetResourceType() string {
+	return "Media"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *Media) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

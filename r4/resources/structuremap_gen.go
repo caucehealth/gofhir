@@ -113,14 +113,21 @@ func (r StructureMap) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for StructureMap.
@@ -498,11 +505,11 @@ func (r *StructureMapParameter) UnmarshalJSON(data []byte) error {
 
 // StructureMapParameterValue represents a polymorphic choice type in FHIR.
 type StructureMapParameterValue struct {
-	Boolean *bool    `json:"valueBoolean,omitempty"` // Parameter value - variable or literal.
-	Decimal *float64 `json:"valueDecimal,omitempty"` // Parameter value - variable or literal.
-	Id      *string  `json:"valueId,omitempty"`      // Parameter value - variable or literal.
-	Integer *float64 `json:"valueInteger,omitempty"` // Parameter value - variable or literal.
-	String  *string  `json:"valueString,omitempty"`  // Parameter value - variable or literal.
+	Boolean *bool       `json:"valueBoolean,omitempty"` // Parameter value - variable or literal.
+	Decimal *dt.Decimal `json:"valueDecimal,omitempty"` // Parameter value - variable or literal.
+	Id      *string     `json:"valueId,omitempty"`      // Parameter value - variable or literal.
+	Integer *int32      `json:"valueInteger,omitempty"` // Parameter value - variable or literal.
+	String  *string     `json:"valueString,omitempty"`  // Parameter value - variable or literal.
 }
 
 // MarshalJSON implements the json.Marshaler interface for StructureMapParameterValue.
@@ -540,7 +547,7 @@ func (v *StructureMapParameterValue) UnmarshalJSON(data []byte) error {
 		v.Boolean = &val
 	}
 	if d, ok := raw["valueDecimal"]; ok {
-		var val float64
+		var val dt.Decimal
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueDecimal: %w", err)
 		}
@@ -554,7 +561,7 @@ func (v *StructureMapParameterValue) UnmarshalJSON(data []byte) error {
 		v.Id = &val
 	}
 	if d, ok := raw["valueInteger"]; ok {
-		var val float64
+		var val int32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueInteger: %w", err)
 		}
@@ -716,7 +723,7 @@ type StructureMapSourceDefaultValue struct {
 	DataRequirement     *dt.DataRequirement     `json:"defaultValueDataRequirement,omitempty"`     // A value to use if there is no existing value in the source object.
 	Date                *string                 `json:"defaultValueDate,omitempty"`                // A value to use if there is no existing value in the source object.
 	DateTime            *string                 `json:"defaultValueDateTime,omitempty"`            // A value to use if there is no existing value in the source object.
-	Decimal             *float64                `json:"defaultValueDecimal,omitempty"`             // A value to use if there is no existing value in the source object.
+	Decimal             *dt.Decimal             `json:"defaultValueDecimal,omitempty"`             // A value to use if there is no existing value in the source object.
 	Distance            *dt.Distance            `json:"defaultValueDistance,omitempty"`            // A value to use if there is no existing value in the source object.
 	Dosage              *dt.Dosage              `json:"defaultValueDosage,omitempty"`              // A value to use if there is no existing value in the source object.
 	Duration            *dt.Duration            `json:"defaultValueDuration,omitempty"`            // A value to use if there is no existing value in the source object.
@@ -725,14 +732,14 @@ type StructureMapSourceDefaultValue struct {
 	Id                  *string                 `json:"defaultValueId,omitempty"`                  // A value to use if there is no existing value in the source object.
 	Identifier          *dt.Identifier          `json:"defaultValueIdentifier,omitempty"`          // A value to use if there is no existing value in the source object.
 	Instant             *string                 `json:"defaultValueInstant,omitempty"`             // A value to use if there is no existing value in the source object.
-	Integer             *float64                `json:"defaultValueInteger,omitempty"`             // A value to use if there is no existing value in the source object.
+	Integer             *int32                  `json:"defaultValueInteger,omitempty"`             // A value to use if there is no existing value in the source object.
 	Markdown            *string                 `json:"defaultValueMarkdown,omitempty"`            // A value to use if there is no existing value in the source object.
 	Meta                *dt.Meta                `json:"defaultValueMeta,omitempty"`                // A value to use if there is no existing value in the source object.
 	Money               *dt.Money               `json:"defaultValueMoney,omitempty"`               // A value to use if there is no existing value in the source object.
 	Oid                 *string                 `json:"defaultValueOid,omitempty"`                 // A value to use if there is no existing value in the source object.
 	ParameterDefinition *dt.ParameterDefinition `json:"defaultValueParameterDefinition,omitempty"` // A value to use if there is no existing value in the source object.
 	Period              *dt.Period              `json:"defaultValuePeriod,omitempty"`              // A value to use if there is no existing value in the source object.
-	PositiveInt         *float64                `json:"defaultValuePositiveInt,omitempty"`         // A value to use if there is no existing value in the source object.
+	PositiveInt         *uint32                 `json:"defaultValuePositiveInt,omitempty"`         // A value to use if there is no existing value in the source object.
 	Quantity            *dt.Quantity            `json:"defaultValueQuantity,omitempty"`            // A value to use if there is no existing value in the source object.
 	Range               *dt.Range               `json:"defaultValueRange,omitempty"`               // A value to use if there is no existing value in the source object.
 	Ratio               *dt.Ratio               `json:"defaultValueRatio,omitempty"`               // A value to use if there is no existing value in the source object.
@@ -744,7 +751,7 @@ type StructureMapSourceDefaultValue struct {
 	Time                *string                 `json:"defaultValueTime,omitempty"`                // A value to use if there is no existing value in the source object.
 	Timing              *dt.Timing              `json:"defaultValueTiming,omitempty"`              // A value to use if there is no existing value in the source object.
 	TriggerDefinition   *dt.TriggerDefinition   `json:"defaultValueTriggerDefinition,omitempty"`   // A value to use if there is no existing value in the source object.
-	UnsignedInt         *float64                `json:"defaultValueUnsignedInt,omitempty"`         // A value to use if there is no existing value in the source object.
+	UnsignedInt         *uint32                 `json:"defaultValueUnsignedInt,omitempty"`         // A value to use if there is no existing value in the source object.
 	Uri                 *string                 `json:"defaultValueUri,omitempty"`                 // A value to use if there is no existing value in the source object.
 	Url                 *string                 `json:"defaultValueUrl,omitempty"`                 // A value to use if there is no existing value in the source object.
 	UsageContext        *dt.UsageContext        `json:"defaultValueUsageContext,omitempty"`        // A value to use if there is no existing value in the source object.
@@ -1033,7 +1040,7 @@ func (v *StructureMapSourceDefaultValue) UnmarshalJSON(data []byte) error {
 		v.DateTime = &val
 	}
 	if d, ok := raw["defaultValueDecimal"]; ok {
-		var val float64
+		var val dt.Decimal
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling defaultValueDecimal: %w", err)
 		}
@@ -1096,7 +1103,7 @@ func (v *StructureMapSourceDefaultValue) UnmarshalJSON(data []byte) error {
 		v.Instant = &val
 	}
 	if d, ok := raw["defaultValueInteger"]; ok {
-		var val float64
+		var val int32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling defaultValueInteger: %w", err)
 		}
@@ -1145,7 +1152,7 @@ func (v *StructureMapSourceDefaultValue) UnmarshalJSON(data []byte) error {
 		v.Period = &val
 	}
 	if d, ok := raw["defaultValuePositiveInt"]; ok {
-		var val float64
+		var val uint32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling defaultValuePositiveInt: %w", err)
 		}
@@ -1229,7 +1236,7 @@ func (v *StructureMapSourceDefaultValue) UnmarshalJSON(data []byte) error {
 		v.TriggerDefinition = &val
 	}
 	if d, ok := raw["defaultValueUnsignedInt"]; ok {
-		var val float64
+		var val uint32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling defaultValueUnsignedInt: %w", err)
 		}
@@ -1558,4 +1565,14 @@ func (r *StructureMap) GetVersion() string {
 	}
 	var zero string
 	return zero
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *StructureMap) GetResourceType() string {
+	return "StructureMap"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *StructureMap) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

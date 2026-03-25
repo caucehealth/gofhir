@@ -47,14 +47,21 @@ func (r Parameters) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Parameters.
@@ -223,7 +230,7 @@ type ParametersParameterValue struct {
 	DataRequirement     *dt.DataRequirement     `json:"valueDataRequirement,omitempty"`     // If the parameter is a data type.
 	Date                *string                 `json:"valueDate,omitempty"`                // If the parameter is a data type.
 	DateTime            *string                 `json:"valueDateTime,omitempty"`            // If the parameter is a data type.
-	Decimal             *float64                `json:"valueDecimal,omitempty"`             // If the parameter is a data type.
+	Decimal             *dt.Decimal             `json:"valueDecimal,omitempty"`             // If the parameter is a data type.
 	Distance            *dt.Distance            `json:"valueDistance,omitempty"`            // If the parameter is a data type.
 	Dosage              *dt.Dosage              `json:"valueDosage,omitempty"`              // If the parameter is a data type.
 	Duration            *dt.Duration            `json:"valueDuration,omitempty"`            // If the parameter is a data type.
@@ -232,14 +239,14 @@ type ParametersParameterValue struct {
 	Id                  *string                 `json:"valueId,omitempty"`                  // If the parameter is a data type.
 	Identifier          *dt.Identifier          `json:"valueIdentifier,omitempty"`          // If the parameter is a data type.
 	Instant             *string                 `json:"valueInstant,omitempty"`             // If the parameter is a data type.
-	Integer             *float64                `json:"valueInteger,omitempty"`             // If the parameter is a data type.
+	Integer             *int32                  `json:"valueInteger,omitempty"`             // If the parameter is a data type.
 	Markdown            *string                 `json:"valueMarkdown,omitempty"`            // If the parameter is a data type.
 	Meta                *dt.Meta                `json:"valueMeta,omitempty"`                // If the parameter is a data type.
 	Money               *dt.Money               `json:"valueMoney,omitempty"`               // If the parameter is a data type.
 	Oid                 *string                 `json:"valueOid,omitempty"`                 // If the parameter is a data type.
 	ParameterDefinition *dt.ParameterDefinition `json:"valueParameterDefinition,omitempty"` // If the parameter is a data type.
 	Period              *dt.Period              `json:"valuePeriod,omitempty"`              // If the parameter is a data type.
-	PositiveInt         *float64                `json:"valuePositiveInt,omitempty"`         // If the parameter is a data type.
+	PositiveInt         *uint32                 `json:"valuePositiveInt,omitempty"`         // If the parameter is a data type.
 	Quantity            *dt.Quantity            `json:"valueQuantity,omitempty"`            // If the parameter is a data type.
 	Range               *dt.Range               `json:"valueRange,omitempty"`               // If the parameter is a data type.
 	Ratio               *dt.Ratio               `json:"valueRatio,omitempty"`               // If the parameter is a data type.
@@ -251,7 +258,7 @@ type ParametersParameterValue struct {
 	Time                *string                 `json:"valueTime,omitempty"`                // If the parameter is a data type.
 	Timing              *dt.Timing              `json:"valueTiming,omitempty"`              // If the parameter is a data type.
 	TriggerDefinition   *dt.TriggerDefinition   `json:"valueTriggerDefinition,omitempty"`   // If the parameter is a data type.
-	UnsignedInt         *float64                `json:"valueUnsignedInt,omitempty"`         // If the parameter is a data type.
+	UnsignedInt         *uint32                 `json:"valueUnsignedInt,omitempty"`         // If the parameter is a data type.
 	Uri                 *string                 `json:"valueUri,omitempty"`                 // If the parameter is a data type.
 	Url                 *string                 `json:"valueUrl,omitempty"`                 // If the parameter is a data type.
 	UsageContext        *dt.UsageContext        `json:"valueUsageContext,omitempty"`        // If the parameter is a data type.
@@ -540,7 +547,7 @@ func (v *ParametersParameterValue) UnmarshalJSON(data []byte) error {
 		v.DateTime = &val
 	}
 	if d, ok := raw["valueDecimal"]; ok {
-		var val float64
+		var val dt.Decimal
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueDecimal: %w", err)
 		}
@@ -603,7 +610,7 @@ func (v *ParametersParameterValue) UnmarshalJSON(data []byte) error {
 		v.Instant = &val
 	}
 	if d, ok := raw["valueInteger"]; ok {
-		var val float64
+		var val int32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueInteger: %w", err)
 		}
@@ -652,7 +659,7 @@ func (v *ParametersParameterValue) UnmarshalJSON(data []byte) error {
 		v.Period = &val
 	}
 	if d, ok := raw["valuePositiveInt"]; ok {
-		var val float64
+		var val uint32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valuePositiveInt: %w", err)
 		}
@@ -736,7 +743,7 @@ func (v *ParametersParameterValue) UnmarshalJSON(data []byte) error {
 		v.TriggerDefinition = &val
 	}
 	if d, ok := raw["valueUnsignedInt"]; ok {
-		var val float64
+		var val uint32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueUnsignedInt: %w", err)
 		}
@@ -815,4 +822,14 @@ func (r *Parameters) GetParameter() []ParametersParameter {
 		return r.Parameter
 	}
 	return nil
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *Parameters) GetResourceType() string {
+	return "Parameters"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *Parameters) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

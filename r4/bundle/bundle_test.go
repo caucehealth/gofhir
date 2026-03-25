@@ -5,6 +5,8 @@ package bundle_test
 
 import (
 	"encoding/json"
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/caucehealth/gofhir/r4/bundle"
@@ -303,5 +305,95 @@ func TestBundleWithMeta(t *testing.T) {
 	}
 	if _, ok := m["timestamp"]; !ok {
 		t.Error("timestamp should be in JSON")
+	}
+}
+
+func TestEntryIterator(t *testing.T) {
+	input := `{
+		"resourceType": "Bundle",
+		"type": "searchset",
+		"total": 3,
+		"link": [{"relation": "self", "url": "http://example.com/Patient"}],
+		"entry": [
+			{"resource": {"resourceType": "Patient", "id": "1"}},
+			{"resource": {"resourceType": "Patient", "id": "2"}},
+			{"resource": {"resourceType": "Patient", "id": "3"}}
+		]
+	}`
+
+	it, err := bundle.NewEntryIterator(strings.NewReader(input))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Check header
+	hdr := it.Header()
+	if hdr.Type != bundle.TypeSearchset {
+		t.Errorf("type = %q, want searchset", hdr.Type)
+	}
+	if hdr.Total == nil || *hdr.Total != 3 {
+		t.Error("total should be 3")
+	}
+	if len(hdr.Link) != 1 {
+		t.Error("should have 1 link")
+	}
+
+	// Stream entries
+	var count int
+	for {
+		entry, err := it.Next()
+		if err != nil {
+			break
+		}
+		count++
+		if entry.Resource == nil {
+			t.Error("entry resource should not be nil")
+		}
+	}
+	if count != 3 {
+		t.Errorf("expected 3 entries, got %d", count)
+	}
+}
+
+func TestEntryIteratorEmpty(t *testing.T) {
+	input := `{"resourceType": "Bundle", "type": "searchset", "total": 0}`
+	it, err := bundle.NewEntryIterator(strings.NewReader(input))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if it.Header().Type != bundle.TypeSearchset {
+		t.Error("type should be searchset")
+	}
+
+	_, err = it.Next()
+	if err == nil {
+		t.Error("empty bundle should return EOF")
+	}
+}
+
+func TestEntryIteratorLargeBundle(t *testing.T) {
+	// Simulate a large bundle — 100 entries
+	var entries []string
+	for i := 0; i < 100; i++ {
+		entries = append(entries, fmt.Sprintf(`{"resource":{"resourceType":"Patient","id":"%d"}}`, i))
+	}
+	input := fmt.Sprintf(`{"resourceType":"Bundle","type":"searchset","total":100,"entry":[%s]}`,
+		strings.Join(entries, ","))
+
+	it, err := bundle.NewEntryIterator(strings.NewReader(input))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var count int
+	for {
+		_, err := it.Next()
+		if err != nil {
+			break
+		}
+		count++
+	}
+	if count != 100 {
+		t.Errorf("expected 100 entries, got %d", count)
 	}
 }

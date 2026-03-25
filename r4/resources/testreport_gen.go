@@ -59,7 +59,7 @@ type TestReport struct {
 	// ResultElement contains element extensions for result.
 	ResultElement *dt.Element `json:"_result,omitempty"`
 	// Score The final score (percentage of tests passed) resulting from the execution of the TestScript.
-	Score *float64 `json:"score,omitempty"`
+	Score *dt.Decimal `json:"score,omitempty"`
 	// ScoreElement contains element extensions for score.
 	ScoreElement *dt.Element `json:"_score,omitempty"`
 	// Setup The results of the series of required setup operations before the tests were executed.
@@ -89,14 +89,21 @@ func (r TestReport) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for TestReport.
@@ -236,7 +243,7 @@ func (b *TestReportBuilder) WithResult(v TestReportResult) *TestReportBuilder {
 }
 
 // WithScore sets the score field.
-func (b *TestReportBuilder) WithScore(v float64) *TestReportBuilder {
+func (b *TestReportBuilder) WithScore(v dt.Decimal) *TestReportBuilder {
 	b.resource.Score = &v
 	b.fieldsSet["score"] = true
 	return b
@@ -582,11 +589,11 @@ func (r *TestReport) GetResult() TestReportResult {
 }
 
 // GetScore returns the score field value, or the zero value if nil.
-func (r *TestReport) GetScore() float64 {
+func (r *TestReport) GetScore() dt.Decimal {
 	if r.Score != nil {
 		return *r.Score
 	}
-	var zero float64
+	var zero dt.Decimal
 	return zero
 }
 
@@ -628,4 +635,14 @@ func (r *TestReport) GetTester() string {
 	}
 	var zero string
 	return zero
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *TestReport) GetResourceType() string {
+	return "TestReport"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *TestReport) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

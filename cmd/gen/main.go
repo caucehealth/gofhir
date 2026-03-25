@@ -35,7 +35,7 @@ var primitiveGoType = map[string]string{
 	"string":       "string",
 	"boolean":      "bool",
 	"integer":      "int32",
-	"decimal":      "float64",
+	"decimal":      "Decimal",
 	"uri":          "URI",
 	"url":          "URL",
 	"canonical":    "Canonical",
@@ -52,7 +52,7 @@ var primitiveGoType = map[string]string{
 	"xhtml":        "string",
 	"time":         "Time",
 	"uuid":         "UUID",
-	"number":       "float64",
+	"number":       "Decimal",
 }
 
 // complexTypes that live in the datatypes package.
@@ -416,6 +416,18 @@ func generateResource(res *spec.ResourceDef, fhirSpec *spec.FHIRSpec) error {
 	// Nil-safe getters
 	writeGetters(&buf, res.Name, res.Fields, fhirSpec, valueGroups)
 
+	// GetResourceType implements the Resource interface.
+	fmt.Fprintf(&buf, "// GetResourceType returns the FHIR resource type name.\n")
+	fmt.Fprintf(&buf, "func (r *%s) GetResourceType() string {\n", res.Name)
+	fmt.Fprintf(&buf, "\treturn %q\n", res.Name)
+	fmt.Fprintf(&buf, "}\n\n")
+
+	// GetExtra returns unknown fields captured during unmarshaling.
+	fmt.Fprintf(&buf, "// GetExtra returns unknown fields captured during JSON unmarshaling.\n")
+	fmt.Fprintf(&buf, "func (r *%s) GetExtra() map[string]json.RawMessage {\n", res.Name)
+	fmt.Fprintf(&buf, "\treturn r.Extra\n")
+	fmt.Fprintf(&buf, "}\n\n")
+
 	fileName := strings.ToLower(res.Name) + "_gen.go"
 	return writeGoFile(filepath.Join(resourcesDir, fileName), buf.Bytes())
 }
@@ -490,12 +502,14 @@ func generateRegistry(fhirSpec *spec.FHIRSpec, skip map[string]bool) error {
 	var buf bytes.Buffer
 	buf.WriteString(licenseHeader)
 	buf.WriteString("\npackage resources\n\n")
-	buf.WriteString("import \"encoding/json\"\n\n")
+	buf.WriteString("import (\n")
+	buf.WriteString("\t\"encoding/json\"\n")
+	buf.WriteString("\t\"fmt\"\n")
+	buf.WriteString(")\n\n")
 
 	buf.WriteString("// ParseResource unmarshals a FHIR resource from JSON based on its resourceType.\n")
-	buf.WriteString("// Returns the typed resource as an any value. The caller should type-assert\n")
-	buf.WriteString("// to the expected resource type.\n")
-	buf.WriteString("func ParseResource(data json.RawMessage) (any, error) {\n")
+	buf.WriteString("// Returns the typed resource implementing the Resource interface.\n")
+	buf.WriteString("func ParseResource(data json.RawMessage) (Resource, error) {\n")
 	buf.WriteString("\tvar header struct{ ResourceType string `json:\"resourceType\"` }\n")
 	buf.WriteString("\tif err := json.Unmarshal(data, &header); err != nil {\n")
 	buf.WriteString("\t\treturn nil, err\n")
@@ -510,8 +524,7 @@ func generateRegistry(fhirSpec *spec.FHIRSpec, skip map[string]bool) error {
 		fmt.Fprintf(&buf, "\t\treturn &r, json.Unmarshal(data, &r)\n")
 	}
 	buf.WriteString("\tdefault:\n")
-	buf.WriteString("\t\tvar m map[string]any\n")
-	buf.WriteString("\t\treturn m, json.Unmarshal(data, &m)\n")
+	buf.WriteString("\t\treturn nil, fmt.Errorf(\"unknown resource type: %s\", header.ResourceType)\n")
 	buf.WriteString("\t}\n")
 	buf.WriteString("}\n")
 
@@ -749,6 +762,36 @@ func generateEnums(fhirSpec *spec.FHIRSpec) error {
 			fmt.Fprintf(&buf, "\t%s %s = %q\n", constName, e.typeName, v)
 		}
 		fmt.Fprintf(&buf, ")\n\n")
+
+		// Valid() method
+		fmt.Fprintf(&buf, "// Valid returns true if the value is a known %s.\n", e.typeName)
+		fmt.Fprintf(&buf, "func (e %s) Valid() bool {\n", e.typeName)
+		fmt.Fprintf(&buf, "\tswitch e {\n")
+		fmt.Fprintf(&buf, "\tcase ")
+		for i, v := range e.values {
+			if i > 0 {
+				buf.WriteString(", ")
+			}
+			fmt.Fprintf(&buf, "%q", v)
+		}
+		buf.WriteString(":\n")
+		fmt.Fprintf(&buf, "\t\treturn true\n")
+		fmt.Fprintf(&buf, "\t}\n")
+		fmt.Fprintf(&buf, "\treturn false\n")
+		fmt.Fprintf(&buf, "}\n\n")
+
+		// Values() function
+		fmt.Fprintf(&buf, "// %sValues returns all known values for %s.\n", e.typeName, e.typeName)
+		fmt.Fprintf(&buf, "func %sValues() []%s {\n", e.typeName, e.typeName)
+		fmt.Fprintf(&buf, "\treturn []%s{", e.typeName)
+		for i, v := range e.values {
+			if i > 0 {
+				buf.WriteString(", ")
+			}
+			fmt.Fprintf(&buf, "%q", v)
+		}
+		buf.WriteString("}\n")
+		fmt.Fprintf(&buf, "}\n\n")
 	}
 
 	return writeGoFile(filepath.Join(resourcesDir, "enums_gen.go"), buf.Bytes())
@@ -1001,6 +1044,24 @@ func writeStructField(buf *bytes.Buffer, f *spec.FieldDef, fhirSpec *spec.FHIRSp
 func resolveGoType(f *spec.FieldDef, fhirSpec *spec.FHIRSpec, isDatatypes bool, parentName string) string {
 	var baseType string
 
+	// For value[x] union fields, the JSON schema type is "number" for all numeric
+	// variants. Detect integer-like fields by name suffix and use correct Go types.
+	if f.FHIRType == "number" || f.FHIRType == "decimal" {
+		if strings.HasSuffix(f.JSONName, "Integer") {
+			baseType = "int32"
+		} else if strings.HasSuffix(f.JSONName, "PositiveInt") {
+			baseType = "uint32"
+		} else if strings.HasSuffix(f.JSONName, "UnsignedInt") {
+			baseType = "uint32"
+		}
+		if baseType != "" {
+			if f.IsArray {
+				return "[]" + baseType
+			}
+			return baseType
+		}
+	}
+
 	if len(f.Enum) > 0 {
 		if parentName != "" {
 			// Use the enum type name in the resources package
@@ -1090,7 +1151,7 @@ func backboneGoName(name string, fhirSpec *spec.FHIRSpec) string {
 func isCustomPrimitive(goType string) bool {
 	switch goType {
 	case "URI", "URL", "Canonical", "Code", "Date", "DateTime", "Instant",
-		"ID", "Markdown", "OID", "Time", "UUID":
+		"ID", "Markdown", "OID", "Time", "UUID", "Decimal":
 		return true
 	}
 	return false
@@ -1167,40 +1228,69 @@ func writeResourceMarshalJSON(buf *bytes.Buffer, res *spec.ResourceDef, fhirSpec
 	fmt.Fprintf(buf, "\ttype Alias %s\n", res.Name)
 
 	valueGroups := detectValueGroups(res.Fields)
+	hasValueX := len(valueGroups) > 0
+
 	buf.WriteString("\tdata, err := json.Marshal((Alias)(r))\n")
 	buf.WriteString("\tif err != nil {\n")
 	buf.WriteString("\t\treturn nil, err\n")
 	buf.WriteString("\t}\n")
-	// If no polymorphic fields and no Extra, fast path
-	if len(valueGroups) == 0 {
+
+	if !hasValueX {
+		// Fast path: no value[x] fields. Only need map if Extra is non-empty.
 		buf.WriteString("\tif len(r.Extra) == 0 {\n")
 		buf.WriteString("\t\treturn data, nil\n")
 		buf.WriteString("\t}\n")
+		// Splice Extra fields into the JSON by appending before the closing '}'
+		buf.WriteString("\t// Splice Extra fields into JSON output\n")
+		buf.WriteString("\tvar extra []byte\n")
+		buf.WriteString("\tfor k, v := range r.Extra {\n")
+		buf.WriteString("\t\tkey, _ := json.Marshal(k)\n")
+		buf.WriteString("\t\textra = append(extra, ',')\n")
+		buf.WriteString("\t\textra = append(extra, key...)\n")
+		buf.WriteString("\t\textra = append(extra, ':')\n")
+		buf.WriteString("\t\textra = append(extra, v...)\n")
+		buf.WriteString("\t}\n")
+		buf.WriteString("\t// Insert before final '}'\n")
+		buf.WriteString("\tresult := make([]byte, 0, len(data)+len(extra))\n")
+		buf.WriteString("\tresult = append(result, data[:len(data)-1]...)\n")
+		buf.WriteString("\tresult = append(result, extra...)\n")
+		buf.WriteString("\tresult = append(result, '}')\n")
+		buf.WriteString("\treturn result, nil\n")
+	} else {
+		// Has value[x] — need to merge polymorphic fields.
+		// Splice value[x] JSON and Extra fields directly into output.
+		buf.WriteString("\t// Collect additional fields to splice into JSON\n")
+		buf.WriteString("\tvar extra []byte\n")
+		for prefix := range valueGroups {
+			fieldName := exportName(prefix)
+			fmt.Fprintf(buf, "\tif r.%s != nil {\n", fieldName)
+			fmt.Fprintf(buf, "\t\tvData, err := json.Marshal(r.%s)\n", fieldName)
+			fmt.Fprintf(buf, "\t\tif err != nil {\n")
+			fmt.Fprintf(buf, "\t\t\treturn nil, err\n")
+			fmt.Fprintf(buf, "\t\t}\n")
+			// vData is like {"valueQuantity":{...}} — strip outer braces and prepend comma
+			buf.WriteString("\t\tif len(vData) > 2 { // not empty {}\n")
+			buf.WriteString("\t\t\textra = append(extra, ',')\n")
+			buf.WriteString("\t\t\textra = append(extra, vData[1:len(vData)-1]...)\n")
+			buf.WriteString("\t\t}\n")
+			fmt.Fprintf(buf, "\t}\n")
+		}
+		buf.WriteString("\tfor k, v := range r.Extra {\n")
+		buf.WriteString("\t\tkey, _ := json.Marshal(k)\n")
+		buf.WriteString("\t\textra = append(extra, ',')\n")
+		buf.WriteString("\t\textra = append(extra, key...)\n")
+		buf.WriteString("\t\textra = append(extra, ':')\n")
+		buf.WriteString("\t\textra = append(extra, v...)\n")
+		buf.WriteString("\t}\n")
+		buf.WriteString("\tif len(extra) == 0 {\n")
+		buf.WriteString("\t\treturn data, nil\n")
+		buf.WriteString("\t}\n")
+		buf.WriteString("\tresult := make([]byte, 0, len(data)+len(extra))\n")
+		buf.WriteString("\tresult = append(result, data[:len(data)-1]...)\n")
+		buf.WriteString("\tresult = append(result, extra...)\n")
+		buf.WriteString("\tresult = append(result, '}')\n")
+		buf.WriteString("\treturn result, nil\n")
 	}
-	buf.WriteString("\tvar m map[string]json.RawMessage\n")
-	buf.WriteString("\tif err := json.Unmarshal(data, &m); err != nil {\n")
-	buf.WriteString("\t\treturn nil, err\n")
-	buf.WriteString("\t}\n")
-	for prefix := range valueGroups {
-		fieldName := exportName(prefix)
-		fmt.Fprintf(buf, "\tif r.%s != nil {\n", fieldName)
-		fmt.Fprintf(buf, "\t\tvData, err := json.Marshal(r.%s)\n", fieldName)
-		fmt.Fprintf(buf, "\t\tif err != nil {\n")
-		fmt.Fprintf(buf, "\t\t\treturn nil, err\n")
-		fmt.Fprintf(buf, "\t\t}\n")
-		buf.WriteString("\t\tvar vm map[string]json.RawMessage\n")
-		buf.WriteString("\t\tif err := json.Unmarshal(vData, &vm); err != nil {\n")
-		buf.WriteString("\t\t\treturn nil, err\n")
-		buf.WriteString("\t\t}\n")
-		buf.WriteString("\t\tfor k, v := range vm {\n")
-		buf.WriteString("\t\t\tm[k] = v\n")
-		buf.WriteString("\t\t}\n")
-		fmt.Fprintf(buf, "\t}\n")
-	}
-	buf.WriteString("\tfor k, v := range r.Extra {\n")
-	buf.WriteString("\t\tm[k] = v\n")
-	buf.WriteString("\t}\n")
-	buf.WriteString("\treturn json.Marshal(m)\n")
 	buf.WriteString("}\n\n")
 }
 

@@ -137,14 +137,21 @@ func (r RiskEvidenceSynthesis) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for RiskEvidenceSynthesis.
@@ -522,15 +529,15 @@ type RiskEvidenceSynthesisPrecisionEstimate struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// From Lower bound of confidence interval.
-	From *float64 `json:"from,omitempty"`
+	From *dt.Decimal `json:"from,omitempty"`
 	// FromElement contains element extensions for from.
 	FromElement *dt.Element `json:"_from,omitempty"`
 	// Level Use 95 for a 95% confidence interval.
-	Level *float64 `json:"level,omitempty"`
+	Level *dt.Decimal `json:"level,omitempty"`
 	// LevelElement contains element extensions for level.
 	LevelElement *dt.Element `json:"_level,omitempty"`
 	// To Upper bound of confidence interval.
-	To *float64 `json:"to,omitempty"`
+	To *dt.Decimal `json:"to,omitempty"`
 	// ToElement contains element extensions for to.
 	ToElement *dt.Element `json:"_to,omitempty"`
 	// Type Examples include confidence interval and interquartile range.
@@ -566,7 +573,7 @@ type RiskEvidenceSynthesisRiskEstimate struct {
 	// UnitOfMeasure Specifies the UCUM unit for the outcome.
 	UnitOfMeasure *dt.CodeableConcept `json:"unitOfMeasure,omitempty"`
 	// Value The point estimate of the risk estimate.
-	Value *float64 `json:"value,omitempty"`
+	Value *dt.Decimal `json:"value,omitempty"`
 	// ValueElement contains element extensions for value.
 	ValueElement *dt.Element `json:"_value,omitempty"`
 }
@@ -921,4 +928,14 @@ func (r *RiskEvidenceSynthesis) GetVersion() string {
 	}
 	var zero string
 	return zero
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *RiskEvidenceSynthesis) GetResourceType() string {
+	return "RiskEvidenceSynthesis"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *RiskEvidenceSynthesis) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

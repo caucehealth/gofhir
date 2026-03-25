@@ -21,6 +21,20 @@ const (
 	AccountStatusUnknown AccountStatus = "unknown"
 )
 
+// Valid returns true if the value is a known AccountStatus.
+func (e AccountStatus) Valid() bool {
+	switch e {
+	case "active", "inactive", "entered-in-error", "on-hold", "unknown":
+		return true
+	}
+	return false
+}
+
+// AccountStatusValues returns all known values for AccountStatus.
+func AccountStatusValues() []AccountStatus {
+	return []AccountStatus{"active", "inactive", "entered-in-error", "on-hold", "unknown"}
+}
+
 // ActivityDefinitionStatus represents allowed values for the status field.
 type ActivityDefinitionStatus string
 
@@ -34,6 +48,20 @@ const (
 	// ActivityDefinitionStatusUnknown represents the "unknown" value.
 	ActivityDefinitionStatusUnknown ActivityDefinitionStatus = "unknown"
 )
+
+// Valid returns true if the value is a known ActivityDefinitionStatus.
+func (e ActivityDefinitionStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// ActivityDefinitionStatusValues returns all known values for ActivityDefinitionStatus.
+func ActivityDefinitionStatusValues() []ActivityDefinitionStatus {
+	return []ActivityDefinitionStatus{"draft", "active", "retired", "unknown"}
+}
 
 // AdministrativeGender represents allowed values for the gender field.
 type AdministrativeGender string
@@ -49,6 +77,20 @@ const (
 	AdministrativeGenderUnknown AdministrativeGender = "unknown"
 )
 
+// Valid returns true if the value is a known AdministrativeGender.
+func (e AdministrativeGender) Valid() bool {
+	switch e {
+	case "male", "female", "other", "unknown":
+		return true
+	}
+	return false
+}
+
+// AdministrativeGenderValues returns all known values for AdministrativeGender.
+func AdministrativeGenderValues() []AdministrativeGender {
+	return []AdministrativeGender{"male", "female", "other", "unknown"}
+}
+
 // AdverseEventActuality represents allowed values for the actuality field.
 type AdverseEventActuality string
 
@@ -58,6 +100,20 @@ const (
 	// AdverseEventActualityPotential represents the "potential" value.
 	AdverseEventActualityPotential AdverseEventActuality = "potential"
 )
+
+// Valid returns true if the value is a known AdverseEventActuality.
+func (e AdverseEventActuality) Valid() bool {
+	switch e {
+	case "actual", "potential":
+		return true
+	}
+	return false
+}
+
+// AdverseEventActualityValues returns all known values for AdverseEventActuality.
+func AdverseEventActualityValues() []AdverseEventActuality {
+	return []AdverseEventActuality{"actual", "potential"}
+}
 
 // AllergyIntoleranceCategory represents allowed values for the category field.
 type AllergyIntoleranceCategory string
@@ -73,6 +129,20 @@ const (
 	AllergyIntoleranceCategoryBiologic AllergyIntoleranceCategory = "biologic"
 )
 
+// Valid returns true if the value is a known AllergyIntoleranceCategory.
+func (e AllergyIntoleranceCategory) Valid() bool {
+	switch e {
+	case "food", "medication", "environment", "biologic":
+		return true
+	}
+	return false
+}
+
+// AllergyIntoleranceCategoryValues returns all known values for AllergyIntoleranceCategory.
+func AllergyIntoleranceCategoryValues() []AllergyIntoleranceCategory {
+	return []AllergyIntoleranceCategory{"food", "medication", "environment", "biologic"}
+}
+
 // AllergyIntoleranceCriticality represents allowed values for the criticality field.
 type AllergyIntoleranceCriticality string
 
@@ -84,6 +154,20 @@ const (
 	// AllergyIntoleranceCriticalityUnabletoassess represents the "unable-to-assess" value.
 	AllergyIntoleranceCriticalityUnabletoassess AllergyIntoleranceCriticality = "unable-to-assess"
 )
+
+// Valid returns true if the value is a known AllergyIntoleranceCriticality.
+func (e AllergyIntoleranceCriticality) Valid() bool {
+	switch e {
+	case "low", "high", "unable-to-assess":
+		return true
+	}
+	return false
+}
+
+// AllergyIntoleranceCriticalityValues returns all known values for AllergyIntoleranceCriticality.
+func AllergyIntoleranceCriticalityValues() []AllergyIntoleranceCriticality {
+	return []AllergyIntoleranceCriticality{"low", "high", "unable-to-assess"}
+}
 
 // AllergyIntoleranceReactionSeverity represents allowed values for the severity field.
 type AllergyIntoleranceReactionSeverity string
@@ -97,6 +181,20 @@ const (
 	AllergyIntoleranceReactionSeveritySevere AllergyIntoleranceReactionSeverity = "severe"
 )
 
+// Valid returns true if the value is a known AllergyIntoleranceReactionSeverity.
+func (e AllergyIntoleranceReactionSeverity) Valid() bool {
+	switch e {
+	case "mild", "moderate", "severe":
+		return true
+	}
+	return false
+}
+
+// AllergyIntoleranceReactionSeverityValues returns all known values for AllergyIntoleranceReactionSeverity.
+func AllergyIntoleranceReactionSeverityValues() []AllergyIntoleranceReactionSeverity {
+	return []AllergyIntoleranceReactionSeverity{"mild", "moderate", "severe"}
+}
+
 // AllergyIntoleranceType represents allowed values for the type field.
 type AllergyIntoleranceType string
 
@@ -106,6 +204,20 @@ const (
 	// AllergyIntoleranceTypeIntolerance represents the "intolerance" value.
 	AllergyIntoleranceTypeIntolerance AllergyIntoleranceType = "intolerance"
 )
+
+// Valid returns true if the value is a known AllergyIntoleranceType.
+func (e AllergyIntoleranceType) Valid() bool {
+	switch e {
+	case "allergy", "intolerance":
+		return true
+	}
+	return false
+}
+
+// AllergyIntoleranceTypeValues returns all known values for AllergyIntoleranceType.
+func AllergyIntoleranceTypeValues() []AllergyIntoleranceType {
+	return []AllergyIntoleranceType{"allergy", "intolerance"}
+}
 
 // AppointmentParticipantRequired represents allowed values for the required field.
 type AppointmentParticipantRequired string
@@ -118,6 +230,20 @@ const (
 	// AppointmentParticipantRequiredInformationonly represents the "information-only" value.
 	AppointmentParticipantRequiredInformationonly AppointmentParticipantRequired = "information-only"
 )
+
+// Valid returns true if the value is a known AppointmentParticipantRequired.
+func (e AppointmentParticipantRequired) Valid() bool {
+	switch e {
+	case "required", "optional", "information-only":
+		return true
+	}
+	return false
+}
+
+// AppointmentParticipantRequiredValues returns all known values for AppointmentParticipantRequired.
+func AppointmentParticipantRequiredValues() []AppointmentParticipantRequired {
+	return []AppointmentParticipantRequired{"required", "optional", "information-only"}
+}
 
 // AppointmentParticipantStatus represents allowed values for the status field.
 type AppointmentParticipantStatus string
@@ -132,6 +258,20 @@ const (
 	// AppointmentParticipantStatusNeedsaction represents the "needs-action" value.
 	AppointmentParticipantStatusNeedsaction AppointmentParticipantStatus = "needs-action"
 )
+
+// Valid returns true if the value is a known AppointmentParticipantStatus.
+func (e AppointmentParticipantStatus) Valid() bool {
+	switch e {
+	case "accepted", "declined", "tentative", "needs-action":
+		return true
+	}
+	return false
+}
+
+// AppointmentParticipantStatusValues returns all known values for AppointmentParticipantStatus.
+func AppointmentParticipantStatusValues() []AppointmentParticipantStatus {
+	return []AppointmentParticipantStatus{"accepted", "declined", "tentative", "needs-action"}
+}
 
 // AppointmentStatus represents allowed values for the status field.
 type AppointmentStatus string
@@ -159,6 +299,20 @@ const (
 	AppointmentStatusWaitlist AppointmentStatus = "waitlist"
 )
 
+// Valid returns true if the value is a known AppointmentStatus.
+func (e AppointmentStatus) Valid() bool {
+	switch e {
+	case "proposed", "pending", "booked", "arrived", "fulfilled", "cancelled", "noshow", "entered-in-error", "checked-in", "waitlist":
+		return true
+	}
+	return false
+}
+
+// AppointmentStatusValues returns all known values for AppointmentStatus.
+func AppointmentStatusValues() []AppointmentStatus {
+	return []AppointmentStatus{"proposed", "pending", "booked", "arrived", "fulfilled", "cancelled", "noshow", "entered-in-error", "checked-in", "waitlist"}
+}
+
 // AuditEventAction represents allowed values for the action field.
 type AuditEventAction string
 
@@ -174,6 +328,20 @@ const (
 	// AuditEventActionE represents the "E" value.
 	AuditEventActionE AuditEventAction = "E"
 )
+
+// Valid returns true if the value is a known AuditEventAction.
+func (e AuditEventAction) Valid() bool {
+	switch e {
+	case "C", "R", "U", "D", "E":
+		return true
+	}
+	return false
+}
+
+// AuditEventActionValues returns all known values for AuditEventAction.
+func AuditEventActionValues() []AuditEventAction {
+	return []AuditEventAction{"C", "R", "U", "D", "E"}
+}
 
 // AuditEventNetworkType represents allowed values for the type field.
 type AuditEventNetworkType string
@@ -191,6 +359,20 @@ const (
 	AuditEventNetworkTypeV5 AuditEventNetworkType = "5"
 )
 
+// Valid returns true if the value is a known AuditEventNetworkType.
+func (e AuditEventNetworkType) Valid() bool {
+	switch e {
+	case "1", "2", "3", "4", "5":
+		return true
+	}
+	return false
+}
+
+// AuditEventNetworkTypeValues returns all known values for AuditEventNetworkType.
+func AuditEventNetworkTypeValues() []AuditEventNetworkType {
+	return []AuditEventNetworkType{"1", "2", "3", "4", "5"}
+}
+
 // AuditEventOutcome represents allowed values for the outcome field.
 type AuditEventOutcome string
 
@@ -204,6 +386,20 @@ const (
 	// AuditEventOutcomeV12 represents the "12" value.
 	AuditEventOutcomeV12 AuditEventOutcome = "12"
 )
+
+// Valid returns true if the value is a known AuditEventOutcome.
+func (e AuditEventOutcome) Valid() bool {
+	switch e {
+	case "0", "4", "8", "12":
+		return true
+	}
+	return false
+}
+
+// AuditEventOutcomeValues returns all known values for AuditEventOutcome.
+func AuditEventOutcomeValues() []AuditEventOutcome {
+	return []AuditEventOutcome{"0", "4", "8", "12"}
+}
 
 // BiologicallyDerivedProductProductCategory represents allowed values for the productCategory field.
 type BiologicallyDerivedProductProductCategory string
@@ -221,6 +417,20 @@ const (
 	BiologicallyDerivedProductProductCategoryBiologicalAgent BiologicallyDerivedProductProductCategory = "biologicalAgent"
 )
 
+// Valid returns true if the value is a known BiologicallyDerivedProductProductCategory.
+func (e BiologicallyDerivedProductProductCategory) Valid() bool {
+	switch e {
+	case "organ", "tissue", "fluid", "cells", "biologicalAgent":
+		return true
+	}
+	return false
+}
+
+// BiologicallyDerivedProductProductCategoryValues returns all known values for BiologicallyDerivedProductProductCategory.
+func BiologicallyDerivedProductProductCategoryValues() []BiologicallyDerivedProductProductCategory {
+	return []BiologicallyDerivedProductProductCategory{"organ", "tissue", "fluid", "cells", "biologicalAgent"}
+}
+
 // BiologicallyDerivedProductStatus represents allowed values for the status field.
 type BiologicallyDerivedProductStatus string
 
@@ -230,6 +440,20 @@ const (
 	// BiologicallyDerivedProductStatusUnavailable represents the "unavailable" value.
 	BiologicallyDerivedProductStatusUnavailable BiologicallyDerivedProductStatus = "unavailable"
 )
+
+// Valid returns true if the value is a known BiologicallyDerivedProductStatus.
+func (e BiologicallyDerivedProductStatus) Valid() bool {
+	switch e {
+	case "available", "unavailable":
+		return true
+	}
+	return false
+}
+
+// BiologicallyDerivedProductStatusValues returns all known values for BiologicallyDerivedProductStatus.
+func BiologicallyDerivedProductStatusValues() []BiologicallyDerivedProductStatus {
+	return []BiologicallyDerivedProductStatus{"available", "unavailable"}
+}
 
 // BiologicallyDerivedProductStorageScale represents allowed values for the scale field.
 type BiologicallyDerivedProductStorageScale string
@@ -242,6 +466,20 @@ const (
 	// BiologicallyDerivedProductStorageScaleKelvin represents the "kelvin" value.
 	BiologicallyDerivedProductStorageScaleKelvin BiologicallyDerivedProductStorageScale = "kelvin"
 )
+
+// Valid returns true if the value is a known BiologicallyDerivedProductStorageScale.
+func (e BiologicallyDerivedProductStorageScale) Valid() bool {
+	switch e {
+	case "farenheit", "celsius", "kelvin":
+		return true
+	}
+	return false
+}
+
+// BiologicallyDerivedProductStorageScaleValues returns all known values for BiologicallyDerivedProductStorageScale.
+func BiologicallyDerivedProductStorageScaleValues() []BiologicallyDerivedProductStorageScale {
+	return []BiologicallyDerivedProductStorageScale{"farenheit", "celsius", "kelvin"}
+}
 
 // BundleRequestMethod represents allowed values for the method field.
 type BundleRequestMethod string
@@ -261,6 +499,20 @@ const (
 	BundleRequestMethodPATCH BundleRequestMethod = "PATCH"
 )
 
+// Valid returns true if the value is a known BundleRequestMethod.
+func (e BundleRequestMethod) Valid() bool {
+	switch e {
+	case "GET", "HEAD", "POST", "PUT", "DELETE", "PATCH":
+		return true
+	}
+	return false
+}
+
+// BundleRequestMethodValues returns all known values for BundleRequestMethod.
+func BundleRequestMethodValues() []BundleRequestMethod {
+	return []BundleRequestMethod{"GET", "HEAD", "POST", "PUT", "DELETE", "PATCH"}
+}
+
 // BundleSearchMode represents allowed values for the mode field.
 type BundleSearchMode string
 
@@ -272,6 +524,20 @@ const (
 	// BundleSearchModeOutcome represents the "outcome" value.
 	BundleSearchModeOutcome BundleSearchMode = "outcome"
 )
+
+// Valid returns true if the value is a known BundleSearchMode.
+func (e BundleSearchMode) Valid() bool {
+	switch e {
+	case "match", "include", "outcome":
+		return true
+	}
+	return false
+}
+
+// BundleSearchModeValues returns all known values for BundleSearchMode.
+func BundleSearchModeValues() []BundleSearchMode {
+	return []BundleSearchMode{"match", "include", "outcome"}
+}
 
 // BundleType represents allowed values for the type field.
 type BundleType string
@@ -297,6 +563,20 @@ const (
 	BundleTypeCollection BundleType = "collection"
 )
 
+// Valid returns true if the value is a known BundleType.
+func (e BundleType) Valid() bool {
+	switch e {
+	case "document", "message", "transaction", "transaction-response", "batch", "batch-response", "history", "searchset", "collection":
+		return true
+	}
+	return false
+}
+
+// BundleTypeValues returns all known values for BundleType.
+func BundleTypeValues() []BundleType {
+	return []BundleType{"document", "message", "transaction", "transaction-response", "batch", "batch-response", "history", "searchset", "collection"}
+}
+
 // CapabilityStatementDocumentMode represents allowed values for the mode field.
 type CapabilityStatementDocumentMode string
 
@@ -306,6 +586,20 @@ const (
 	// CapabilityStatementDocumentModeConsumer represents the "consumer" value.
 	CapabilityStatementDocumentModeConsumer CapabilityStatementDocumentMode = "consumer"
 )
+
+// Valid returns true if the value is a known CapabilityStatementDocumentMode.
+func (e CapabilityStatementDocumentMode) Valid() bool {
+	switch e {
+	case "producer", "consumer":
+		return true
+	}
+	return false
+}
+
+// CapabilityStatementDocumentModeValues returns all known values for CapabilityStatementDocumentMode.
+func CapabilityStatementDocumentModeValues() []CapabilityStatementDocumentMode {
+	return []CapabilityStatementDocumentMode{"producer", "consumer"}
+}
 
 // CapabilityStatementFhirVersion represents allowed values for the fhirVersion field.
 type CapabilityStatementFhirVersion string
@@ -357,6 +651,20 @@ const (
 	CapabilityStatementFhirVersionV401 CapabilityStatementFhirVersion = "4.0.1"
 )
 
+// Valid returns true if the value is a known CapabilityStatementFhirVersion.
+func (e CapabilityStatementFhirVersion) Valid() bool {
+	switch e {
+	case "0.01", "0.05", "0.06", "0.11", "0.0.80", "0.0.81", "0.0.82", "0.4.0", "0.5.0", "1.0.0", "1.0.1", "1.0.2", "1.1.0", "1.4.0", "1.6.0", "1.8.0", "3.0.0", "3.0.1", "3.3.0", "3.5.0", "4.0.0", "4.0.1":
+		return true
+	}
+	return false
+}
+
+// CapabilityStatementFhirVersionValues returns all known values for CapabilityStatementFhirVersion.
+func CapabilityStatementFhirVersionValues() []CapabilityStatementFhirVersion {
+	return []CapabilityStatementFhirVersion{"0.01", "0.05", "0.06", "0.11", "0.0.80", "0.0.81", "0.0.82", "0.4.0", "0.5.0", "1.0.0", "1.0.1", "1.0.2", "1.1.0", "1.4.0", "1.6.0", "1.8.0", "3.0.0", "3.0.1", "3.3.0", "3.5.0", "4.0.0", "4.0.1"}
+}
+
 // CapabilityStatementInteraction1Code represents allowed values for the code field.
 type CapabilityStatementInteraction1Code string
 
@@ -370,6 +678,20 @@ const (
 	// CapabilityStatementInteraction1CodeHistorysystem represents the "history-system" value.
 	CapabilityStatementInteraction1CodeHistorysystem CapabilityStatementInteraction1Code = "history-system"
 )
+
+// Valid returns true if the value is a known CapabilityStatementInteraction1Code.
+func (e CapabilityStatementInteraction1Code) Valid() bool {
+	switch e {
+	case "transaction", "batch", "search-system", "history-system":
+		return true
+	}
+	return false
+}
+
+// CapabilityStatementInteraction1CodeValues returns all known values for CapabilityStatementInteraction1Code.
+func CapabilityStatementInteraction1CodeValues() []CapabilityStatementInteraction1Code {
+	return []CapabilityStatementInteraction1Code{"transaction", "batch", "search-system", "history-system"}
+}
 
 // CapabilityStatementInteractionCode represents allowed values for the code field.
 type CapabilityStatementInteractionCode string
@@ -395,6 +717,20 @@ const (
 	CapabilityStatementInteractionCodeSearchtype CapabilityStatementInteractionCode = "search-type"
 )
 
+// Valid returns true if the value is a known CapabilityStatementInteractionCode.
+func (e CapabilityStatementInteractionCode) Valid() bool {
+	switch e {
+	case "read", "vread", "update", "patch", "delete", "history-instance", "history-type", "create", "search-type":
+		return true
+	}
+	return false
+}
+
+// CapabilityStatementInteractionCodeValues returns all known values for CapabilityStatementInteractionCode.
+func CapabilityStatementInteractionCodeValues() []CapabilityStatementInteractionCode {
+	return []CapabilityStatementInteractionCode{"read", "vread", "update", "patch", "delete", "history-instance", "history-type", "create", "search-type"}
+}
+
 // CapabilityStatementKind represents allowed values for the kind field.
 type CapabilityStatementKind string
 
@@ -407,6 +743,20 @@ const (
 	CapabilityStatementKindRequirements CapabilityStatementKind = "requirements"
 )
 
+// Valid returns true if the value is a known CapabilityStatementKind.
+func (e CapabilityStatementKind) Valid() bool {
+	switch e {
+	case "instance", "capability", "requirements":
+		return true
+	}
+	return false
+}
+
+// CapabilityStatementKindValues returns all known values for CapabilityStatementKind.
+func CapabilityStatementKindValues() []CapabilityStatementKind {
+	return []CapabilityStatementKind{"instance", "capability", "requirements"}
+}
+
 // CapabilityStatementResourceConditionalDelete represents allowed values for the conditionalDelete field.
 type CapabilityStatementResourceConditionalDelete string
 
@@ -418,6 +768,20 @@ const (
 	// CapabilityStatementResourceConditionalDeleteMultiple represents the "multiple" value.
 	CapabilityStatementResourceConditionalDeleteMultiple CapabilityStatementResourceConditionalDelete = "multiple"
 )
+
+// Valid returns true if the value is a known CapabilityStatementResourceConditionalDelete.
+func (e CapabilityStatementResourceConditionalDelete) Valid() bool {
+	switch e {
+	case "not-supported", "single", "multiple":
+		return true
+	}
+	return false
+}
+
+// CapabilityStatementResourceConditionalDeleteValues returns all known values for CapabilityStatementResourceConditionalDelete.
+func CapabilityStatementResourceConditionalDeleteValues() []CapabilityStatementResourceConditionalDelete {
+	return []CapabilityStatementResourceConditionalDelete{"not-supported", "single", "multiple"}
+}
 
 // CapabilityStatementResourceConditionalRead represents allowed values for the conditionalRead field.
 type CapabilityStatementResourceConditionalRead string
@@ -432,6 +796,20 @@ const (
 	// CapabilityStatementResourceConditionalReadFullsupport represents the "full-support" value.
 	CapabilityStatementResourceConditionalReadFullsupport CapabilityStatementResourceConditionalRead = "full-support"
 )
+
+// Valid returns true if the value is a known CapabilityStatementResourceConditionalRead.
+func (e CapabilityStatementResourceConditionalRead) Valid() bool {
+	switch e {
+	case "not-supported", "modified-since", "not-match", "full-support":
+		return true
+	}
+	return false
+}
+
+// CapabilityStatementResourceConditionalReadValues returns all known values for CapabilityStatementResourceConditionalRead.
+func CapabilityStatementResourceConditionalReadValues() []CapabilityStatementResourceConditionalRead {
+	return []CapabilityStatementResourceConditionalRead{"not-supported", "modified-since", "not-match", "full-support"}
+}
 
 // CapabilityStatementResourceReferencePolicy represents allowed values for the referencePolicy field.
 type CapabilityStatementResourceReferencePolicy string
@@ -449,6 +827,20 @@ const (
 	CapabilityStatementResourceReferencePolicyLocal CapabilityStatementResourceReferencePolicy = "local"
 )
 
+// Valid returns true if the value is a known CapabilityStatementResourceReferencePolicy.
+func (e CapabilityStatementResourceReferencePolicy) Valid() bool {
+	switch e {
+	case "literal", "logical", "resolves", "enforced", "local":
+		return true
+	}
+	return false
+}
+
+// CapabilityStatementResourceReferencePolicyValues returns all known values for CapabilityStatementResourceReferencePolicy.
+func CapabilityStatementResourceReferencePolicyValues() []CapabilityStatementResourceReferencePolicy {
+	return []CapabilityStatementResourceReferencePolicy{"literal", "logical", "resolves", "enforced", "local"}
+}
+
 // CapabilityStatementResourceVersioning represents allowed values for the versioning field.
 type CapabilityStatementResourceVersioning string
 
@@ -461,6 +853,20 @@ const (
 	CapabilityStatementResourceVersioningVersionedupdate CapabilityStatementResourceVersioning = "versioned-update"
 )
 
+// Valid returns true if the value is a known CapabilityStatementResourceVersioning.
+func (e CapabilityStatementResourceVersioning) Valid() bool {
+	switch e {
+	case "no-version", "versioned", "versioned-update":
+		return true
+	}
+	return false
+}
+
+// CapabilityStatementResourceVersioningValues returns all known values for CapabilityStatementResourceVersioning.
+func CapabilityStatementResourceVersioningValues() []CapabilityStatementResourceVersioning {
+	return []CapabilityStatementResourceVersioning{"no-version", "versioned", "versioned-update"}
+}
+
 // CapabilityStatementRestMode represents allowed values for the mode field.
 type CapabilityStatementRestMode string
 
@@ -470,6 +876,20 @@ const (
 	// CapabilityStatementRestModeServer represents the "server" value.
 	CapabilityStatementRestModeServer CapabilityStatementRestMode = "server"
 )
+
+// Valid returns true if the value is a known CapabilityStatementRestMode.
+func (e CapabilityStatementRestMode) Valid() bool {
+	switch e {
+	case "client", "server":
+		return true
+	}
+	return false
+}
+
+// CapabilityStatementRestModeValues returns all known values for CapabilityStatementRestMode.
+func CapabilityStatementRestModeValues() []CapabilityStatementRestMode {
+	return []CapabilityStatementRestMode{"client", "server"}
+}
 
 // CapabilityStatementSearchParamType represents allowed values for the type field.
 type CapabilityStatementSearchParamType string
@@ -495,6 +915,20 @@ const (
 	CapabilityStatementSearchParamTypeSpecial CapabilityStatementSearchParamType = "special"
 )
 
+// Valid returns true if the value is a known CapabilityStatementSearchParamType.
+func (e CapabilityStatementSearchParamType) Valid() bool {
+	switch e {
+	case "number", "date", "string", "token", "reference", "composite", "quantity", "uri", "special":
+		return true
+	}
+	return false
+}
+
+// CapabilityStatementSearchParamTypeValues returns all known values for CapabilityStatementSearchParamType.
+func CapabilityStatementSearchParamTypeValues() []CapabilityStatementSearchParamType {
+	return []CapabilityStatementSearchParamType{"number", "date", "string", "token", "reference", "composite", "quantity", "uri", "special"}
+}
+
 // CapabilityStatementStatus represents allowed values for the status field.
 type CapabilityStatementStatus string
 
@@ -509,6 +943,20 @@ const (
 	CapabilityStatementStatusUnknown CapabilityStatementStatus = "unknown"
 )
 
+// Valid returns true if the value is a known CapabilityStatementStatus.
+func (e CapabilityStatementStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// CapabilityStatementStatusValues returns all known values for CapabilityStatementStatus.
+func CapabilityStatementStatusValues() []CapabilityStatementStatus {
+	return []CapabilityStatementStatus{"draft", "active", "retired", "unknown"}
+}
+
 // CapabilityStatementSupportedMessageMode represents allowed values for the mode field.
 type CapabilityStatementSupportedMessageMode string
 
@@ -518,6 +966,20 @@ const (
 	// CapabilityStatementSupportedMessageModeReceiver represents the "receiver" value.
 	CapabilityStatementSupportedMessageModeReceiver CapabilityStatementSupportedMessageMode = "receiver"
 )
+
+// Valid returns true if the value is a known CapabilityStatementSupportedMessageMode.
+func (e CapabilityStatementSupportedMessageMode) Valid() bool {
+	switch e {
+	case "sender", "receiver":
+		return true
+	}
+	return false
+}
+
+// CapabilityStatementSupportedMessageModeValues returns all known values for CapabilityStatementSupportedMessageMode.
+func CapabilityStatementSupportedMessageModeValues() []CapabilityStatementSupportedMessageMode {
+	return []CapabilityStatementSupportedMessageMode{"sender", "receiver"}
+}
 
 // CarePlanDetailStatus represents allowed values for the status field.
 type CarePlanDetailStatus string
@@ -543,6 +1005,20 @@ const (
 	CarePlanDetailStatusEnteredinerror CarePlanDetailStatus = "entered-in-error"
 )
 
+// Valid returns true if the value is a known CarePlanDetailStatus.
+func (e CarePlanDetailStatus) Valid() bool {
+	switch e {
+	case "not-started", "scheduled", "in-progress", "on-hold", "completed", "cancelled", "stopped", "unknown", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// CarePlanDetailStatusValues returns all known values for CarePlanDetailStatus.
+func CarePlanDetailStatusValues() []CarePlanDetailStatus {
+	return []CarePlanDetailStatus{"not-started", "scheduled", "in-progress", "on-hold", "completed", "cancelled", "stopped", "unknown", "entered-in-error"}
+}
+
 // CareTeamStatus represents allowed values for the status field.
 type CareTeamStatus string
 
@@ -559,6 +1035,20 @@ const (
 	CareTeamStatusEnteredinerror CareTeamStatus = "entered-in-error"
 )
 
+// Valid returns true if the value is a known CareTeamStatus.
+func (e CareTeamStatus) Valid() bool {
+	switch e {
+	case "proposed", "active", "suspended", "inactive", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// CareTeamStatusValues returns all known values for CareTeamStatus.
+func CareTeamStatusValues() []CareTeamStatus {
+	return []CareTeamStatus{"proposed", "active", "suspended", "inactive", "entered-in-error"}
+}
+
 // CatalogEntryRelatedEntryRelationtype represents allowed values for the relationtype field.
 type CatalogEntryRelatedEntryRelationtype string
 
@@ -568,6 +1058,20 @@ const (
 	// CatalogEntryRelatedEntryRelationtypeIsreplacedby represents the "is-replaced-by" value.
 	CatalogEntryRelatedEntryRelationtypeIsreplacedby CatalogEntryRelatedEntryRelationtype = "is-replaced-by"
 )
+
+// Valid returns true if the value is a known CatalogEntryRelatedEntryRelationtype.
+func (e CatalogEntryRelatedEntryRelationtype) Valid() bool {
+	switch e {
+	case "triggers", "is-replaced-by":
+		return true
+	}
+	return false
+}
+
+// CatalogEntryRelatedEntryRelationtypeValues returns all known values for CatalogEntryRelatedEntryRelationtype.
+func CatalogEntryRelatedEntryRelationtypeValues() []CatalogEntryRelatedEntryRelationtype {
+	return []CatalogEntryRelatedEntryRelationtype{"triggers", "is-replaced-by"}
+}
 
 // CatalogEntryStatus represents allowed values for the status field.
 type CatalogEntryStatus string
@@ -583,6 +1087,20 @@ const (
 	CatalogEntryStatusUnknown CatalogEntryStatus = "unknown"
 )
 
+// Valid returns true if the value is a known CatalogEntryStatus.
+func (e CatalogEntryStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// CatalogEntryStatusValues returns all known values for CatalogEntryStatus.
+func CatalogEntryStatusValues() []CatalogEntryStatus {
+	return []CatalogEntryStatus{"draft", "active", "retired", "unknown"}
+}
+
 // ChargeItemDefinitionStatus represents allowed values for the status field.
 type ChargeItemDefinitionStatus string
 
@@ -596,6 +1114,20 @@ const (
 	// ChargeItemDefinitionStatusUnknown represents the "unknown" value.
 	ChargeItemDefinitionStatusUnknown ChargeItemDefinitionStatus = "unknown"
 )
+
+// Valid returns true if the value is a known ChargeItemDefinitionStatus.
+func (e ChargeItemDefinitionStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// ChargeItemDefinitionStatusValues returns all known values for ChargeItemDefinitionStatus.
+func ChargeItemDefinitionStatusValues() []ChargeItemDefinitionStatus {
+	return []ChargeItemDefinitionStatus{"draft", "active", "retired", "unknown"}
+}
 
 // ChargeItemStatus represents allowed values for the status field.
 type ChargeItemStatus string
@@ -617,6 +1149,20 @@ const (
 	ChargeItemStatusUnknown ChargeItemStatus = "unknown"
 )
 
+// Valid returns true if the value is a known ChargeItemStatus.
+func (e ChargeItemStatus) Valid() bool {
+	switch e {
+	case "planned", "billable", "not-billable", "aborted", "billed", "entered-in-error", "unknown":
+		return true
+	}
+	return false
+}
+
+// ChargeItemStatusValues returns all known values for ChargeItemStatus.
+func ChargeItemStatusValues() []ChargeItemStatus {
+	return []ChargeItemStatus{"planned", "billable", "not-billable", "aborted", "billed", "entered-in-error", "unknown"}
+}
+
 // ClaimResponseProcessNoteType represents allowed values for the type field.
 type ClaimResponseProcessNoteType string
 
@@ -629,6 +1175,20 @@ const (
 	ClaimResponseProcessNoteTypePrintoper ClaimResponseProcessNoteType = "printoper"
 )
 
+// Valid returns true if the value is a known ClaimResponseProcessNoteType.
+func (e ClaimResponseProcessNoteType) Valid() bool {
+	switch e {
+	case "display", "print", "printoper":
+		return true
+	}
+	return false
+}
+
+// ClaimResponseProcessNoteTypeValues returns all known values for ClaimResponseProcessNoteType.
+func ClaimResponseProcessNoteTypeValues() []ClaimResponseProcessNoteType {
+	return []ClaimResponseProcessNoteType{"display", "print", "printoper"}
+}
+
 // ClaimUse represents allowed values for the use field.
 type ClaimUse string
 
@@ -640,6 +1200,20 @@ const (
 	// ClaimUsePredetermination represents the "predetermination" value.
 	ClaimUsePredetermination ClaimUse = "predetermination"
 )
+
+// Valid returns true if the value is a known ClaimUse.
+func (e ClaimUse) Valid() bool {
+	switch e {
+	case "claim", "preauthorization", "predetermination":
+		return true
+	}
+	return false
+}
+
+// ClaimUseValues returns all known values for ClaimUse.
+func ClaimUseValues() []ClaimUse {
+	return []ClaimUse{"claim", "preauthorization", "predetermination"}
+}
 
 // CodeSystemContent represents allowed values for the content field.
 type CodeSystemContent string
@@ -657,6 +1231,20 @@ const (
 	CodeSystemContentSupplement CodeSystemContent = "supplement"
 )
 
+// Valid returns true if the value is a known CodeSystemContent.
+func (e CodeSystemContent) Valid() bool {
+	switch e {
+	case "not-present", "example", "fragment", "complete", "supplement":
+		return true
+	}
+	return false
+}
+
+// CodeSystemContentValues returns all known values for CodeSystemContent.
+func CodeSystemContentValues() []CodeSystemContent {
+	return []CodeSystemContent{"not-present", "example", "fragment", "complete", "supplement"}
+}
+
 // CodeSystemHierarchyMeaning represents allowed values for the hierarchyMeaning field.
 type CodeSystemHierarchyMeaning string
 
@@ -670,6 +1258,20 @@ const (
 	// CodeSystemHierarchyMeaningClassifiedwith represents the "classified-with" value.
 	CodeSystemHierarchyMeaningClassifiedwith CodeSystemHierarchyMeaning = "classified-with"
 )
+
+// Valid returns true if the value is a known CodeSystemHierarchyMeaning.
+func (e CodeSystemHierarchyMeaning) Valid() bool {
+	switch e {
+	case "grouped-by", "is-a", "part-of", "classified-with":
+		return true
+	}
+	return false
+}
+
+// CodeSystemHierarchyMeaningValues returns all known values for CodeSystemHierarchyMeaning.
+func CodeSystemHierarchyMeaningValues() []CodeSystemHierarchyMeaning {
+	return []CodeSystemHierarchyMeaning{"grouped-by", "is-a", "part-of", "classified-with"}
+}
 
 // CodeSystemPropertyType represents allowed values for the type field.
 type CodeSystemPropertyType string
@@ -691,6 +1293,20 @@ const (
 	CodeSystemPropertyTypeDecimal CodeSystemPropertyType = "decimal"
 )
 
+// Valid returns true if the value is a known CodeSystemPropertyType.
+func (e CodeSystemPropertyType) Valid() bool {
+	switch e {
+	case "code", "Coding", "string", "integer", "boolean", "dateTime", "decimal":
+		return true
+	}
+	return false
+}
+
+// CodeSystemPropertyTypeValues returns all known values for CodeSystemPropertyType.
+func CodeSystemPropertyTypeValues() []CodeSystemPropertyType {
+	return []CodeSystemPropertyType{"code", "Coding", "string", "integer", "boolean", "dateTime", "decimal"}
+}
+
 // CodeSystemStatus represents allowed values for the status field.
 type CodeSystemStatus string
 
@@ -704,6 +1320,20 @@ const (
 	// CodeSystemStatusUnknown represents the "unknown" value.
 	CodeSystemStatusUnknown CodeSystemStatus = "unknown"
 )
+
+// Valid returns true if the value is a known CodeSystemStatus.
+func (e CodeSystemStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// CodeSystemStatusValues returns all known values for CodeSystemStatus.
+func CodeSystemStatusValues() []CodeSystemStatus {
+	return []CodeSystemStatus{"draft", "active", "retired", "unknown"}
+}
 
 // CompartmentDefinitionCode represents allowed values for the code field.
 type CompartmentDefinitionCode string
@@ -721,6 +1351,20 @@ const (
 	CompartmentDefinitionCodeDevice CompartmentDefinitionCode = "Device"
 )
 
+// Valid returns true if the value is a known CompartmentDefinitionCode.
+func (e CompartmentDefinitionCode) Valid() bool {
+	switch e {
+	case "Patient", "Encounter", "RelatedPerson", "Practitioner", "Device":
+		return true
+	}
+	return false
+}
+
+// CompartmentDefinitionCodeValues returns all known values for CompartmentDefinitionCode.
+func CompartmentDefinitionCodeValues() []CompartmentDefinitionCode {
+	return []CompartmentDefinitionCode{"Patient", "Encounter", "RelatedPerson", "Practitioner", "Device"}
+}
+
 // CompartmentDefinitionStatus represents allowed values for the status field.
 type CompartmentDefinitionStatus string
 
@@ -734,6 +1378,20 @@ const (
 	// CompartmentDefinitionStatusUnknown represents the "unknown" value.
 	CompartmentDefinitionStatusUnknown CompartmentDefinitionStatus = "unknown"
 )
+
+// Valid returns true if the value is a known CompartmentDefinitionStatus.
+func (e CompartmentDefinitionStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// CompartmentDefinitionStatusValues returns all known values for CompartmentDefinitionStatus.
+func CompartmentDefinitionStatusValues() []CompartmentDefinitionStatus {
+	return []CompartmentDefinitionStatus{"draft", "active", "retired", "unknown"}
+}
 
 // CompositionAttesterMode represents allowed values for the mode field.
 type CompositionAttesterMode string
@@ -749,6 +1407,20 @@ const (
 	CompositionAttesterModeOfficial CompositionAttesterMode = "official"
 )
 
+// Valid returns true if the value is a known CompositionAttesterMode.
+func (e CompositionAttesterMode) Valid() bool {
+	switch e {
+	case "personal", "professional", "legal", "official":
+		return true
+	}
+	return false
+}
+
+// CompositionAttesterModeValues returns all known values for CompositionAttesterMode.
+func CompositionAttesterModeValues() []CompositionAttesterMode {
+	return []CompositionAttesterMode{"personal", "professional", "legal", "official"}
+}
+
 // CompositionStatus represents allowed values for the status field.
 type CompositionStatus string
 
@@ -763,6 +1435,20 @@ const (
 	CompositionStatusEnteredinerror CompositionStatus = "entered-in-error"
 )
 
+// Valid returns true if the value is a known CompositionStatus.
+func (e CompositionStatus) Valid() bool {
+	switch e {
+	case "preliminary", "final", "amended", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// CompositionStatusValues returns all known values for CompositionStatus.
+func CompositionStatusValues() []CompositionStatus {
+	return []CompositionStatus{"preliminary", "final", "amended", "entered-in-error"}
+}
+
 // ConceptMapStatus represents allowed values for the status field.
 type ConceptMapStatus string
 
@@ -776,6 +1462,20 @@ const (
 	// ConceptMapStatusUnknown represents the "unknown" value.
 	ConceptMapStatusUnknown ConceptMapStatus = "unknown"
 )
+
+// Valid returns true if the value is a known ConceptMapStatus.
+func (e ConceptMapStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// ConceptMapStatusValues returns all known values for ConceptMapStatus.
+func ConceptMapStatusValues() []ConceptMapStatus {
+	return []ConceptMapStatus{"draft", "active", "retired", "unknown"}
+}
 
 // ConceptMapTargetEquivalence represents allowed values for the equivalence field.
 type ConceptMapTargetEquivalence string
@@ -803,6 +1503,20 @@ const (
 	ConceptMapTargetEquivalenceDisjoint ConceptMapTargetEquivalence = "disjoint"
 )
 
+// Valid returns true if the value is a known ConceptMapTargetEquivalence.
+func (e ConceptMapTargetEquivalence) Valid() bool {
+	switch e {
+	case "relatedto", "equivalent", "equal", "wider", "subsumes", "narrower", "specializes", "inexact", "unmatched", "disjoint":
+		return true
+	}
+	return false
+}
+
+// ConceptMapTargetEquivalenceValues returns all known values for ConceptMapTargetEquivalence.
+func ConceptMapTargetEquivalenceValues() []ConceptMapTargetEquivalence {
+	return []ConceptMapTargetEquivalence{"relatedto", "equivalent", "equal", "wider", "subsumes", "narrower", "specializes", "inexact", "unmatched", "disjoint"}
+}
+
 // ConceptMapUnmappedMode represents allowed values for the mode field.
 type ConceptMapUnmappedMode string
 
@@ -814,6 +1528,20 @@ const (
 	// ConceptMapUnmappedModeOthermap represents the "other-map" value.
 	ConceptMapUnmappedModeOthermap ConceptMapUnmappedMode = "other-map"
 )
+
+// Valid returns true if the value is a known ConceptMapUnmappedMode.
+func (e ConceptMapUnmappedMode) Valid() bool {
+	switch e {
+	case "provided", "fixed", "other-map":
+		return true
+	}
+	return false
+}
+
+// ConceptMapUnmappedModeValues returns all known values for ConceptMapUnmappedMode.
+func ConceptMapUnmappedModeValues() []ConceptMapUnmappedMode {
+	return []ConceptMapUnmappedMode{"provided", "fixed", "other-map"}
+}
 
 // ConsentDataMeaning represents allowed values for the meaning field.
 type ConsentDataMeaning string
@@ -829,6 +1557,20 @@ const (
 	ConsentDataMeaningAuthoredby ConsentDataMeaning = "authoredby"
 )
 
+// Valid returns true if the value is a known ConsentDataMeaning.
+func (e ConsentDataMeaning) Valid() bool {
+	switch e {
+	case "instance", "related", "dependents", "authoredby":
+		return true
+	}
+	return false
+}
+
+// ConsentDataMeaningValues returns all known values for ConsentDataMeaning.
+func ConsentDataMeaningValues() []ConsentDataMeaning {
+	return []ConsentDataMeaning{"instance", "related", "dependents", "authoredby"}
+}
+
 // ConsentProvisionType represents allowed values for the type field.
 type ConsentProvisionType string
 
@@ -838,6 +1580,20 @@ const (
 	// ConsentProvisionTypePermit represents the "permit" value.
 	ConsentProvisionTypePermit ConsentProvisionType = "permit"
 )
+
+// Valid returns true if the value is a known ConsentProvisionType.
+func (e ConsentProvisionType) Valid() bool {
+	switch e {
+	case "deny", "permit":
+		return true
+	}
+	return false
+}
+
+// ConsentProvisionTypeValues returns all known values for ConsentProvisionType.
+func ConsentProvisionTypeValues() []ConsentProvisionType {
+	return []ConsentProvisionType{"deny", "permit"}
+}
 
 // ConsentStatus represents allowed values for the status field.
 type ConsentStatus string
@@ -857,6 +1613,20 @@ const (
 	ConsentStatusEnteredinerror ConsentStatus = "entered-in-error"
 )
 
+// Valid returns true if the value is a known ConsentStatus.
+func (e ConsentStatus) Valid() bool {
+	switch e {
+	case "draft", "proposed", "active", "rejected", "inactive", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// ConsentStatusValues returns all known values for ConsentStatus.
+func ConsentStatusValues() []ConsentStatus {
+	return []ConsentStatus{"draft", "proposed", "active", "rejected", "inactive", "entered-in-error"}
+}
+
 // CoverageEligibilityRequestPurpose represents allowed values for the purpose field.
 type CoverageEligibilityRequestPurpose string
 
@@ -870,6 +1640,20 @@ const (
 	// CoverageEligibilityRequestPurposeValidation represents the "validation" value.
 	CoverageEligibilityRequestPurposeValidation CoverageEligibilityRequestPurpose = "validation"
 )
+
+// Valid returns true if the value is a known CoverageEligibilityRequestPurpose.
+func (e CoverageEligibilityRequestPurpose) Valid() bool {
+	switch e {
+	case "auth-requirements", "benefits", "discovery", "validation":
+		return true
+	}
+	return false
+}
+
+// CoverageEligibilityRequestPurposeValues returns all known values for CoverageEligibilityRequestPurpose.
+func CoverageEligibilityRequestPurposeValues() []CoverageEligibilityRequestPurpose {
+	return []CoverageEligibilityRequestPurpose{"auth-requirements", "benefits", "discovery", "validation"}
+}
 
 // CoverageEligibilityResponseOutcome represents allowed values for the outcome field.
 type CoverageEligibilityResponseOutcome string
@@ -885,6 +1669,20 @@ const (
 	CoverageEligibilityResponseOutcomePartial CoverageEligibilityResponseOutcome = "partial"
 )
 
+// Valid returns true if the value is a known CoverageEligibilityResponseOutcome.
+func (e CoverageEligibilityResponseOutcome) Valid() bool {
+	switch e {
+	case "queued", "complete", "error", "partial":
+		return true
+	}
+	return false
+}
+
+// CoverageEligibilityResponseOutcomeValues returns all known values for CoverageEligibilityResponseOutcome.
+func CoverageEligibilityResponseOutcomeValues() []CoverageEligibilityResponseOutcome {
+	return []CoverageEligibilityResponseOutcome{"queued", "complete", "error", "partial"}
+}
+
 // CoverageEligibilityResponsePurpose represents allowed values for the purpose field.
 type CoverageEligibilityResponsePurpose string
 
@@ -899,6 +1697,20 @@ const (
 	CoverageEligibilityResponsePurposeValidation CoverageEligibilityResponsePurpose = "validation"
 )
 
+// Valid returns true if the value is a known CoverageEligibilityResponsePurpose.
+func (e CoverageEligibilityResponsePurpose) Valid() bool {
+	switch e {
+	case "auth-requirements", "benefits", "discovery", "validation":
+		return true
+	}
+	return false
+}
+
+// CoverageEligibilityResponsePurposeValues returns all known values for CoverageEligibilityResponsePurpose.
+func CoverageEligibilityResponsePurposeValues() []CoverageEligibilityResponsePurpose {
+	return []CoverageEligibilityResponsePurpose{"auth-requirements", "benefits", "discovery", "validation"}
+}
+
 // DataRequirementSortDirection represents allowed values for the direction field.
 type DataRequirementSortDirection string
 
@@ -908,6 +1720,20 @@ const (
 	// DataRequirementSortDirectionDescending represents the "descending" value.
 	DataRequirementSortDirectionDescending DataRequirementSortDirection = "descending"
 )
+
+// Valid returns true if the value is a known DataRequirementSortDirection.
+func (e DataRequirementSortDirection) Valid() bool {
+	switch e {
+	case "ascending", "descending":
+		return true
+	}
+	return false
+}
+
+// DataRequirementSortDirectionValues returns all known values for DataRequirementSortDirection.
+func DataRequirementSortDirectionValues() []DataRequirementSortDirection {
+	return []DataRequirementSortDirection{"ascending", "descending"}
+}
 
 // DetectedIssueSeverity represents allowed values for the severity field.
 type DetectedIssueSeverity string
@@ -920,6 +1746,20 @@ const (
 	// DetectedIssueSeverityLow represents the "low" value.
 	DetectedIssueSeverityLow DetectedIssueSeverity = "low"
 )
+
+// Valid returns true if the value is a known DetectedIssueSeverity.
+func (e DetectedIssueSeverity) Valid() bool {
+	switch e {
+	case "high", "moderate", "low":
+		return true
+	}
+	return false
+}
+
+// DetectedIssueSeverityValues returns all known values for DetectedIssueSeverity.
+func DetectedIssueSeverityValues() []DetectedIssueSeverity {
+	return []DetectedIssueSeverity{"high", "moderate", "low"}
+}
 
 // DeviceDefinitionDeviceNameType represents allowed values for the type field.
 type DeviceDefinitionDeviceNameType string
@@ -939,6 +1779,20 @@ const (
 	DeviceDefinitionDeviceNameTypeOther DeviceDefinitionDeviceNameType = "other"
 )
 
+// Valid returns true if the value is a known DeviceDefinitionDeviceNameType.
+func (e DeviceDefinitionDeviceNameType) Valid() bool {
+	switch e {
+	case "udi-label-name", "user-friendly-name", "patient-reported-name", "manufacturer-name", "model-name", "other":
+		return true
+	}
+	return false
+}
+
+// DeviceDefinitionDeviceNameTypeValues returns all known values for DeviceDefinitionDeviceNameType.
+func DeviceDefinitionDeviceNameTypeValues() []DeviceDefinitionDeviceNameType {
+	return []DeviceDefinitionDeviceNameType{"udi-label-name", "user-friendly-name", "patient-reported-name", "manufacturer-name", "model-name", "other"}
+}
+
 // DeviceDeviceNameType represents allowed values for the type field.
 type DeviceDeviceNameType string
 
@@ -957,6 +1811,20 @@ const (
 	DeviceDeviceNameTypeOther DeviceDeviceNameType = "other"
 )
 
+// Valid returns true if the value is a known DeviceDeviceNameType.
+func (e DeviceDeviceNameType) Valid() bool {
+	switch e {
+	case "udi-label-name", "user-friendly-name", "patient-reported-name", "manufacturer-name", "model-name", "other":
+		return true
+	}
+	return false
+}
+
+// DeviceDeviceNameTypeValues returns all known values for DeviceDeviceNameType.
+func DeviceDeviceNameTypeValues() []DeviceDeviceNameType {
+	return []DeviceDeviceNameType{"udi-label-name", "user-friendly-name", "patient-reported-name", "manufacturer-name", "model-name", "other"}
+}
+
 // DeviceMetricCalibrationState represents allowed values for the state field.
 type DeviceMetricCalibrationState string
 
@@ -970,6 +1838,20 @@ const (
 	// DeviceMetricCalibrationStateUnspecified represents the "unspecified" value.
 	DeviceMetricCalibrationStateUnspecified DeviceMetricCalibrationState = "unspecified"
 )
+
+// Valid returns true if the value is a known DeviceMetricCalibrationState.
+func (e DeviceMetricCalibrationState) Valid() bool {
+	switch e {
+	case "not-calibrated", "calibration-required", "calibrated", "unspecified":
+		return true
+	}
+	return false
+}
+
+// DeviceMetricCalibrationStateValues returns all known values for DeviceMetricCalibrationState.
+func DeviceMetricCalibrationStateValues() []DeviceMetricCalibrationState {
+	return []DeviceMetricCalibrationState{"not-calibrated", "calibration-required", "calibrated", "unspecified"}
+}
 
 // DeviceMetricCalibrationType represents allowed values for the type field.
 type DeviceMetricCalibrationType string
@@ -985,6 +1867,20 @@ const (
 	DeviceMetricCalibrationTypeTwopoint DeviceMetricCalibrationType = "two-point"
 )
 
+// Valid returns true if the value is a known DeviceMetricCalibrationType.
+func (e DeviceMetricCalibrationType) Valid() bool {
+	switch e {
+	case "unspecified", "offset", "gain", "two-point":
+		return true
+	}
+	return false
+}
+
+// DeviceMetricCalibrationTypeValues returns all known values for DeviceMetricCalibrationType.
+func DeviceMetricCalibrationTypeValues() []DeviceMetricCalibrationType {
+	return []DeviceMetricCalibrationType{"unspecified", "offset", "gain", "two-point"}
+}
+
 // DeviceMetricCategory represents allowed values for the category field.
 type DeviceMetricCategory string
 
@@ -998,6 +1894,20 @@ const (
 	// DeviceMetricCategoryUnspecified represents the "unspecified" value.
 	DeviceMetricCategoryUnspecified DeviceMetricCategory = "unspecified"
 )
+
+// Valid returns true if the value is a known DeviceMetricCategory.
+func (e DeviceMetricCategory) Valid() bool {
+	switch e {
+	case "measurement", "setting", "calculation", "unspecified":
+		return true
+	}
+	return false
+}
+
+// DeviceMetricCategoryValues returns all known values for DeviceMetricCategory.
+func DeviceMetricCategoryValues() []DeviceMetricCategory {
+	return []DeviceMetricCategory{"measurement", "setting", "calculation", "unspecified"}
+}
 
 // DeviceMetricColor represents allowed values for the color field.
 type DeviceMetricColor string
@@ -1021,6 +1931,20 @@ const (
 	DeviceMetricColorWhite DeviceMetricColor = "white"
 )
 
+// Valid returns true if the value is a known DeviceMetricColor.
+func (e DeviceMetricColor) Valid() bool {
+	switch e {
+	case "black", "red", "green", "yellow", "blue", "magenta", "cyan", "white":
+		return true
+	}
+	return false
+}
+
+// DeviceMetricColorValues returns all known values for DeviceMetricColor.
+func DeviceMetricColorValues() []DeviceMetricColor {
+	return []DeviceMetricColor{"black", "red", "green", "yellow", "blue", "magenta", "cyan", "white"}
+}
+
 // DeviceMetricOperationalStatus represents allowed values for the operationalStatus field.
 type DeviceMetricOperationalStatus string
 
@@ -1035,6 +1959,20 @@ const (
 	DeviceMetricOperationalStatusEnteredinerror DeviceMetricOperationalStatus = "entered-in-error"
 )
 
+// Valid returns true if the value is a known DeviceMetricOperationalStatus.
+func (e DeviceMetricOperationalStatus) Valid() bool {
+	switch e {
+	case "on", "off", "standby", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// DeviceMetricOperationalStatusValues returns all known values for DeviceMetricOperationalStatus.
+func DeviceMetricOperationalStatusValues() []DeviceMetricOperationalStatus {
+	return []DeviceMetricOperationalStatus{"on", "off", "standby", "entered-in-error"}
+}
+
 // DeviceStatus represents allowed values for the status field.
 type DeviceStatus string
 
@@ -1048,6 +1986,20 @@ const (
 	// DeviceStatusUnknown represents the "unknown" value.
 	DeviceStatusUnknown DeviceStatus = "unknown"
 )
+
+// Valid returns true if the value is a known DeviceStatus.
+func (e DeviceStatus) Valid() bool {
+	switch e {
+	case "active", "inactive", "entered-in-error", "unknown":
+		return true
+	}
+	return false
+}
+
+// DeviceStatusValues returns all known values for DeviceStatus.
+func DeviceStatusValues() []DeviceStatus {
+	return []DeviceStatus{"active", "inactive", "entered-in-error", "unknown"}
+}
 
 // DeviceUdiCarrierEntryType represents allowed values for the entryType field.
 type DeviceUdiCarrierEntryType string
@@ -1067,6 +2019,20 @@ const (
 	DeviceUdiCarrierEntryTypeUnknown DeviceUdiCarrierEntryType = "unknown"
 )
 
+// Valid returns true if the value is a known DeviceUdiCarrierEntryType.
+func (e DeviceUdiCarrierEntryType) Valid() bool {
+	switch e {
+	case "barcode", "rfid", "manual", "card", "self-reported", "unknown":
+		return true
+	}
+	return false
+}
+
+// DeviceUdiCarrierEntryTypeValues returns all known values for DeviceUdiCarrierEntryType.
+func DeviceUdiCarrierEntryTypeValues() []DeviceUdiCarrierEntryType {
+	return []DeviceUdiCarrierEntryType{"barcode", "rfid", "manual", "card", "self-reported", "unknown"}
+}
+
 // DeviceUseStatementStatus represents allowed values for the status field.
 type DeviceUseStatementStatus string
 
@@ -1084,6 +2050,20 @@ const (
 	// DeviceUseStatementStatusOnhold represents the "on-hold" value.
 	DeviceUseStatementStatusOnhold DeviceUseStatementStatus = "on-hold"
 )
+
+// Valid returns true if the value is a known DeviceUseStatementStatus.
+func (e DeviceUseStatementStatus) Valid() bool {
+	switch e {
+	case "active", "completed", "entered-in-error", "intended", "stopped", "on-hold":
+		return true
+	}
+	return false
+}
+
+// DeviceUseStatementStatusValues returns all known values for DeviceUseStatementStatus.
+func DeviceUseStatementStatusValues() []DeviceUseStatementStatus {
+	return []DeviceUseStatementStatus{"active", "completed", "entered-in-error", "intended", "stopped", "on-hold"}
+}
 
 // DiagnosticReportStatus represents allowed values for the status field.
 type DiagnosticReportStatus string
@@ -1111,6 +2091,20 @@ const (
 	DiagnosticReportStatusUnknown DiagnosticReportStatus = "unknown"
 )
 
+// Valid returns true if the value is a known DiagnosticReportStatus.
+func (e DiagnosticReportStatus) Valid() bool {
+	switch e {
+	case "registered", "partial", "preliminary", "final", "amended", "corrected", "appended", "cancelled", "entered-in-error", "unknown":
+		return true
+	}
+	return false
+}
+
+// DiagnosticReportStatusValues returns all known values for DiagnosticReportStatus.
+func DiagnosticReportStatusValues() []DiagnosticReportStatus {
+	return []DiagnosticReportStatus{"registered", "partial", "preliminary", "final", "amended", "corrected", "appended", "cancelled", "entered-in-error", "unknown"}
+}
+
 // DocumentManifestStatus represents allowed values for the status field.
 type DocumentManifestStatus string
 
@@ -1122,6 +2116,20 @@ const (
 	// DocumentManifestStatusEnteredinerror represents the "entered-in-error" value.
 	DocumentManifestStatusEnteredinerror DocumentManifestStatus = "entered-in-error"
 )
+
+// Valid returns true if the value is a known DocumentManifestStatus.
+func (e DocumentManifestStatus) Valid() bool {
+	switch e {
+	case "current", "superseded", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// DocumentManifestStatusValues returns all known values for DocumentManifestStatus.
+func DocumentManifestStatusValues() []DocumentManifestStatus {
+	return []DocumentManifestStatus{"current", "superseded", "entered-in-error"}
+}
 
 // DocumentReferenceRelatesToCode represents allowed values for the code field.
 type DocumentReferenceRelatesToCode string
@@ -1137,6 +2145,20 @@ const (
 	DocumentReferenceRelatesToCodeAppends DocumentReferenceRelatesToCode = "appends"
 )
 
+// Valid returns true if the value is a known DocumentReferenceRelatesToCode.
+func (e DocumentReferenceRelatesToCode) Valid() bool {
+	switch e {
+	case "replaces", "transforms", "signs", "appends":
+		return true
+	}
+	return false
+}
+
+// DocumentReferenceRelatesToCodeValues returns all known values for DocumentReferenceRelatesToCode.
+func DocumentReferenceRelatesToCodeValues() []DocumentReferenceRelatesToCode {
+	return []DocumentReferenceRelatesToCode{"replaces", "transforms", "signs", "appends"}
+}
+
 // DocumentReferenceStatus represents allowed values for the status field.
 type DocumentReferenceStatus string
 
@@ -1149,6 +2171,20 @@ const (
 	DocumentReferenceStatusEnteredinerror DocumentReferenceStatus = "entered-in-error"
 )
 
+// Valid returns true if the value is a known DocumentReferenceStatus.
+func (e DocumentReferenceStatus) Valid() bool {
+	switch e {
+	case "current", "superseded", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// DocumentReferenceStatusValues returns all known values for DocumentReferenceStatus.
+func DocumentReferenceStatusValues() []DocumentReferenceStatus {
+	return []DocumentReferenceStatus{"current", "superseded", "entered-in-error"}
+}
+
 // EffectEvidenceSynthesisResultsByExposureExposureState represents allowed values for the exposureState field.
 type EffectEvidenceSynthesisResultsByExposureExposureState string
 
@@ -1158,6 +2194,20 @@ const (
 	// EffectEvidenceSynthesisResultsByExposureExposureStateExposurealternative represents the "exposure-alternative" value.
 	EffectEvidenceSynthesisResultsByExposureExposureStateExposurealternative EffectEvidenceSynthesisResultsByExposureExposureState = "exposure-alternative"
 )
+
+// Valid returns true if the value is a known EffectEvidenceSynthesisResultsByExposureExposureState.
+func (e EffectEvidenceSynthesisResultsByExposureExposureState) Valid() bool {
+	switch e {
+	case "exposure", "exposure-alternative":
+		return true
+	}
+	return false
+}
+
+// EffectEvidenceSynthesisResultsByExposureExposureStateValues returns all known values for EffectEvidenceSynthesisResultsByExposureExposureState.
+func EffectEvidenceSynthesisResultsByExposureExposureStateValues() []EffectEvidenceSynthesisResultsByExposureExposureState {
+	return []EffectEvidenceSynthesisResultsByExposureExposureState{"exposure", "exposure-alternative"}
+}
 
 // EffectEvidenceSynthesisStatus represents allowed values for the status field.
 type EffectEvidenceSynthesisStatus string
@@ -1173,6 +2223,20 @@ const (
 	EffectEvidenceSynthesisStatusUnknown EffectEvidenceSynthesisStatus = "unknown"
 )
 
+// Valid returns true if the value is a known EffectEvidenceSynthesisStatus.
+func (e EffectEvidenceSynthesisStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// EffectEvidenceSynthesisStatusValues returns all known values for EffectEvidenceSynthesisStatus.
+func EffectEvidenceSynthesisStatusValues() []EffectEvidenceSynthesisStatus {
+	return []EffectEvidenceSynthesisStatus{"draft", "active", "retired", "unknown"}
+}
+
 // ElementDefinitionBindingStrength represents allowed values for the strength field.
 type ElementDefinitionBindingStrength string
 
@@ -1187,6 +2251,20 @@ const (
 	ElementDefinitionBindingStrengthExample ElementDefinitionBindingStrength = "example"
 )
 
+// Valid returns true if the value is a known ElementDefinitionBindingStrength.
+func (e ElementDefinitionBindingStrength) Valid() bool {
+	switch e {
+	case "required", "extensible", "preferred", "example":
+		return true
+	}
+	return false
+}
+
+// ElementDefinitionBindingStrengthValues returns all known values for ElementDefinitionBindingStrength.
+func ElementDefinitionBindingStrengthValues() []ElementDefinitionBindingStrength {
+	return []ElementDefinitionBindingStrength{"required", "extensible", "preferred", "example"}
+}
+
 // ElementDefinitionConstraintSeverity represents allowed values for the severity field.
 type ElementDefinitionConstraintSeverity string
 
@@ -1196,6 +2274,20 @@ const (
 	// ElementDefinitionConstraintSeverityWarning represents the "warning" value.
 	ElementDefinitionConstraintSeverityWarning ElementDefinitionConstraintSeverity = "warning"
 )
+
+// Valid returns true if the value is a known ElementDefinitionConstraintSeverity.
+func (e ElementDefinitionConstraintSeverity) Valid() bool {
+	switch e {
+	case "error", "warning":
+		return true
+	}
+	return false
+}
+
+// ElementDefinitionConstraintSeverityValues returns all known values for ElementDefinitionConstraintSeverity.
+func ElementDefinitionConstraintSeverityValues() []ElementDefinitionConstraintSeverity {
+	return []ElementDefinitionConstraintSeverity{"error", "warning"}
+}
 
 // ElementDefinitionDiscriminatorType represents allowed values for the type field.
 type ElementDefinitionDiscriminatorType string
@@ -1213,6 +2305,20 @@ const (
 	ElementDefinitionDiscriminatorTypeProfile ElementDefinitionDiscriminatorType = "profile"
 )
 
+// Valid returns true if the value is a known ElementDefinitionDiscriminatorType.
+func (e ElementDefinitionDiscriminatorType) Valid() bool {
+	switch e {
+	case "value", "exists", "pattern", "type", "profile":
+		return true
+	}
+	return false
+}
+
+// ElementDefinitionDiscriminatorTypeValues returns all known values for ElementDefinitionDiscriminatorType.
+func ElementDefinitionDiscriminatorTypeValues() []ElementDefinitionDiscriminatorType {
+	return []ElementDefinitionDiscriminatorType{"value", "exists", "pattern", "type", "profile"}
+}
+
 // ElementDefinitionSlicingRules represents allowed values for the rules field.
 type ElementDefinitionSlicingRules string
 
@@ -1224,6 +2330,20 @@ const (
 	// ElementDefinitionSlicingRulesOpenAtEnd represents the "openAtEnd" value.
 	ElementDefinitionSlicingRulesOpenAtEnd ElementDefinitionSlicingRules = "openAtEnd"
 )
+
+// Valid returns true if the value is a known ElementDefinitionSlicingRules.
+func (e ElementDefinitionSlicingRules) Valid() bool {
+	switch e {
+	case "closed", "open", "openAtEnd":
+		return true
+	}
+	return false
+}
+
+// ElementDefinitionSlicingRulesValues returns all known values for ElementDefinitionSlicingRules.
+func ElementDefinitionSlicingRulesValues() []ElementDefinitionSlicingRules {
+	return []ElementDefinitionSlicingRules{"closed", "open", "openAtEnd"}
+}
 
 // ElementDefinitionTypeAggregation represents allowed values for the aggregation field.
 type ElementDefinitionTypeAggregation string
@@ -1237,6 +2357,20 @@ const (
 	ElementDefinitionTypeAggregationBundled ElementDefinitionTypeAggregation = "bundled"
 )
 
+// Valid returns true if the value is a known ElementDefinitionTypeAggregation.
+func (e ElementDefinitionTypeAggregation) Valid() bool {
+	switch e {
+	case "contained", "referenced", "bundled":
+		return true
+	}
+	return false
+}
+
+// ElementDefinitionTypeAggregationValues returns all known values for ElementDefinitionTypeAggregation.
+func ElementDefinitionTypeAggregationValues() []ElementDefinitionTypeAggregation {
+	return []ElementDefinitionTypeAggregation{"contained", "referenced", "bundled"}
+}
+
 // ElementDefinitionTypeVersioning represents allowed values for the versioning field.
 type ElementDefinitionTypeVersioning string
 
@@ -1248,6 +2382,20 @@ const (
 	// ElementDefinitionTypeVersioningSpecific represents the "specific" value.
 	ElementDefinitionTypeVersioningSpecific ElementDefinitionTypeVersioning = "specific"
 )
+
+// Valid returns true if the value is a known ElementDefinitionTypeVersioning.
+func (e ElementDefinitionTypeVersioning) Valid() bool {
+	switch e {
+	case "either", "independent", "specific":
+		return true
+	}
+	return false
+}
+
+// ElementDefinitionTypeVersioningValues returns all known values for ElementDefinitionTypeVersioning.
+func ElementDefinitionTypeVersioningValues() []ElementDefinitionTypeVersioning {
+	return []ElementDefinitionTypeVersioning{"either", "independent", "specific"}
+}
 
 // EncounterLocationStatus represents allowed values for the status field.
 type EncounterLocationStatus string
@@ -1262,6 +2410,20 @@ const (
 	// EncounterLocationStatusCompleted represents the "completed" value.
 	EncounterLocationStatusCompleted EncounterLocationStatus = "completed"
 )
+
+// Valid returns true if the value is a known EncounterLocationStatus.
+func (e EncounterLocationStatus) Valid() bool {
+	switch e {
+	case "planned", "active", "reserved", "completed":
+		return true
+	}
+	return false
+}
+
+// EncounterLocationStatusValues returns all known values for EncounterLocationStatus.
+func EncounterLocationStatusValues() []EncounterLocationStatus {
+	return []EncounterLocationStatus{"planned", "active", "reserved", "completed"}
+}
 
 // EncounterStatus represents allowed values for the status field.
 type EncounterStatus string
@@ -1287,6 +2449,20 @@ const (
 	EncounterStatusUnknown EncounterStatus = "unknown"
 )
 
+// Valid returns true if the value is a known EncounterStatus.
+func (e EncounterStatus) Valid() bool {
+	switch e {
+	case "planned", "arrived", "triaged", "in-progress", "onleave", "finished", "cancelled", "entered-in-error", "unknown":
+		return true
+	}
+	return false
+}
+
+// EncounterStatusValues returns all known values for EncounterStatus.
+func EncounterStatusValues() []EncounterStatus {
+	return []EncounterStatus{"planned", "arrived", "triaged", "in-progress", "onleave", "finished", "cancelled", "entered-in-error", "unknown"}
+}
+
 // EncounterStatusHistoryStatus represents allowed values for the status field.
 type EncounterStatusHistoryStatus string
 
@@ -1311,6 +2487,20 @@ const (
 	EncounterStatusHistoryStatusUnknown EncounterStatusHistoryStatus = "unknown"
 )
 
+// Valid returns true if the value is a known EncounterStatusHistoryStatus.
+func (e EncounterStatusHistoryStatus) Valid() bool {
+	switch e {
+	case "planned", "arrived", "triaged", "in-progress", "onleave", "finished", "cancelled", "entered-in-error", "unknown":
+		return true
+	}
+	return false
+}
+
+// EncounterStatusHistoryStatusValues returns all known values for EncounterStatusHistoryStatus.
+func EncounterStatusHistoryStatusValues() []EncounterStatusHistoryStatus {
+	return []EncounterStatusHistoryStatus{"planned", "arrived", "triaged", "in-progress", "onleave", "finished", "cancelled", "entered-in-error", "unknown"}
+}
+
 // EndpointStatus represents allowed values for the status field.
 type EndpointStatus string
 
@@ -1329,6 +2519,20 @@ const (
 	EndpointStatusTest EndpointStatus = "test"
 )
 
+// Valid returns true if the value is a known EndpointStatus.
+func (e EndpointStatus) Valid() bool {
+	switch e {
+	case "active", "suspended", "error", "off", "entered-in-error", "test":
+		return true
+	}
+	return false
+}
+
+// EndpointStatusValues returns all known values for EndpointStatus.
+func EndpointStatusValues() []EndpointStatus {
+	return []EndpointStatus{"active", "suspended", "error", "off", "entered-in-error", "test"}
+}
+
 // EnrollmentResponseOutcome represents allowed values for the outcome field.
 type EnrollmentResponseOutcome string
 
@@ -1342,6 +2546,20 @@ const (
 	// EnrollmentResponseOutcomePartial represents the "partial" value.
 	EnrollmentResponseOutcomePartial EnrollmentResponseOutcome = "partial"
 )
+
+// Valid returns true if the value is a known EnrollmentResponseOutcome.
+func (e EnrollmentResponseOutcome) Valid() bool {
+	switch e {
+	case "queued", "complete", "error", "partial":
+		return true
+	}
+	return false
+}
+
+// EnrollmentResponseOutcomeValues returns all known values for EnrollmentResponseOutcome.
+func EnrollmentResponseOutcomeValues() []EnrollmentResponseOutcome {
+	return []EnrollmentResponseOutcome{"queued", "complete", "error", "partial"}
+}
 
 // EpisodeOfCareStatus represents allowed values for the status field.
 type EpisodeOfCareStatus string
@@ -1363,6 +2581,20 @@ const (
 	EpisodeOfCareStatusEnteredinerror EpisodeOfCareStatus = "entered-in-error"
 )
 
+// Valid returns true if the value is a known EpisodeOfCareStatus.
+func (e EpisodeOfCareStatus) Valid() bool {
+	switch e {
+	case "planned", "waitlist", "active", "onhold", "finished", "cancelled", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// EpisodeOfCareStatusValues returns all known values for EpisodeOfCareStatus.
+func EpisodeOfCareStatusValues() []EpisodeOfCareStatus {
+	return []EpisodeOfCareStatus{"planned", "waitlist", "active", "onhold", "finished", "cancelled", "entered-in-error"}
+}
+
 // EpisodeOfCareStatusHistoryStatus represents allowed values for the status field.
 type EpisodeOfCareStatusHistoryStatus string
 
@@ -1383,6 +2615,20 @@ const (
 	EpisodeOfCareStatusHistoryStatusEnteredinerror EpisodeOfCareStatusHistoryStatus = "entered-in-error"
 )
 
+// Valid returns true if the value is a known EpisodeOfCareStatusHistoryStatus.
+func (e EpisodeOfCareStatusHistoryStatus) Valid() bool {
+	switch e {
+	case "planned", "waitlist", "active", "onhold", "finished", "cancelled", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// EpisodeOfCareStatusHistoryStatusValues returns all known values for EpisodeOfCareStatusHistoryStatus.
+func EpisodeOfCareStatusHistoryStatusValues() []EpisodeOfCareStatusHistoryStatus {
+	return []EpisodeOfCareStatusHistoryStatus{"planned", "waitlist", "active", "onhold", "finished", "cancelled", "entered-in-error"}
+}
+
 // EventDefinitionStatus represents allowed values for the status field.
 type EventDefinitionStatus string
 
@@ -1397,6 +2643,20 @@ const (
 	EventDefinitionStatusUnknown EventDefinitionStatus = "unknown"
 )
 
+// Valid returns true if the value is a known EventDefinitionStatus.
+func (e EventDefinitionStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// EventDefinitionStatusValues returns all known values for EventDefinitionStatus.
+func EventDefinitionStatusValues() []EventDefinitionStatus {
+	return []EventDefinitionStatus{"draft", "active", "retired", "unknown"}
+}
+
 // EvidenceStatus represents allowed values for the status field.
 type EvidenceStatus string
 
@@ -1410,6 +2670,20 @@ const (
 	// EvidenceStatusUnknown represents the "unknown" value.
 	EvidenceStatusUnknown EvidenceStatus = "unknown"
 )
+
+// Valid returns true if the value is a known EvidenceStatus.
+func (e EvidenceStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// EvidenceStatusValues returns all known values for EvidenceStatus.
+func EvidenceStatusValues() []EvidenceStatus {
+	return []EvidenceStatus{"draft", "active", "retired", "unknown"}
+}
 
 // EvidenceVariableCharacteristicGroupMeasure represents allowed values for the groupMeasure field.
 type EvidenceVariableCharacteristicGroupMeasure string
@@ -1429,6 +2703,20 @@ const (
 	EvidenceVariableCharacteristicGroupMeasureMedianofmedian EvidenceVariableCharacteristicGroupMeasure = "median-of-median"
 )
 
+// Valid returns true if the value is a known EvidenceVariableCharacteristicGroupMeasure.
+func (e EvidenceVariableCharacteristicGroupMeasure) Valid() bool {
+	switch e {
+	case "mean", "median", "mean-of-mean", "mean-of-median", "median-of-mean", "median-of-median":
+		return true
+	}
+	return false
+}
+
+// EvidenceVariableCharacteristicGroupMeasureValues returns all known values for EvidenceVariableCharacteristicGroupMeasure.
+func EvidenceVariableCharacteristicGroupMeasureValues() []EvidenceVariableCharacteristicGroupMeasure {
+	return []EvidenceVariableCharacteristicGroupMeasure{"mean", "median", "mean-of-mean", "mean-of-median", "median-of-mean", "median-of-median"}
+}
+
 // EvidenceVariableStatus represents allowed values for the status field.
 type EvidenceVariableStatus string
 
@@ -1443,6 +2731,20 @@ const (
 	EvidenceVariableStatusUnknown EvidenceVariableStatus = "unknown"
 )
 
+// Valid returns true if the value is a known EvidenceVariableStatus.
+func (e EvidenceVariableStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// EvidenceVariableStatusValues returns all known values for EvidenceVariableStatus.
+func EvidenceVariableStatusValues() []EvidenceVariableStatus {
+	return []EvidenceVariableStatus{"draft", "active", "retired", "unknown"}
+}
+
 // EvidenceVariableType represents allowed values for the type field.
 type EvidenceVariableType string
 
@@ -1455,6 +2757,20 @@ const (
 	EvidenceVariableTypeDescriptive EvidenceVariableType = "descriptive"
 )
 
+// Valid returns true if the value is a known EvidenceVariableType.
+func (e EvidenceVariableType) Valid() bool {
+	switch e {
+	case "dichotomous", "continuous", "descriptive":
+		return true
+	}
+	return false
+}
+
+// EvidenceVariableTypeValues returns all known values for EvidenceVariableType.
+func EvidenceVariableTypeValues() []EvidenceVariableType {
+	return []EvidenceVariableType{"dichotomous", "continuous", "descriptive"}
+}
+
 // ExampleScenarioActorType represents allowed values for the type field.
 type ExampleScenarioActorType string
 
@@ -1464,6 +2780,20 @@ const (
 	// ExampleScenarioActorTypeEntity represents the "entity" value.
 	ExampleScenarioActorTypeEntity ExampleScenarioActorType = "entity"
 )
+
+// Valid returns true if the value is a known ExampleScenarioActorType.
+func (e ExampleScenarioActorType) Valid() bool {
+	switch e {
+	case "person", "entity":
+		return true
+	}
+	return false
+}
+
+// ExampleScenarioActorTypeValues returns all known values for ExampleScenarioActorType.
+func ExampleScenarioActorTypeValues() []ExampleScenarioActorType {
+	return []ExampleScenarioActorType{"person", "entity"}
+}
 
 // ExampleScenarioStatus represents allowed values for the status field.
 type ExampleScenarioStatus string
@@ -1479,6 +2809,20 @@ const (
 	ExampleScenarioStatusUnknown ExampleScenarioStatus = "unknown"
 )
 
+// Valid returns true if the value is a known ExampleScenarioStatus.
+func (e ExampleScenarioStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// ExampleScenarioStatusValues returns all known values for ExampleScenarioStatus.
+func ExampleScenarioStatusValues() []ExampleScenarioStatus {
+	return []ExampleScenarioStatus{"draft", "active", "retired", "unknown"}
+}
+
 // ExplanationOfBenefitProcessNoteType represents allowed values for the type field.
 type ExplanationOfBenefitProcessNoteType string
 
@@ -1490,6 +2834,20 @@ const (
 	// ExplanationOfBenefitProcessNoteTypePrintoper represents the "printoper" value.
 	ExplanationOfBenefitProcessNoteTypePrintoper ExplanationOfBenefitProcessNoteType = "printoper"
 )
+
+// Valid returns true if the value is a known ExplanationOfBenefitProcessNoteType.
+func (e ExplanationOfBenefitProcessNoteType) Valid() bool {
+	switch e {
+	case "display", "print", "printoper":
+		return true
+	}
+	return false
+}
+
+// ExplanationOfBenefitProcessNoteTypeValues returns all known values for ExplanationOfBenefitProcessNoteType.
+func ExplanationOfBenefitProcessNoteTypeValues() []ExplanationOfBenefitProcessNoteType {
+	return []ExplanationOfBenefitProcessNoteType{"display", "print", "printoper"}
+}
 
 // ExplanationOfBenefitStatus represents allowed values for the status field.
 type ExplanationOfBenefitStatus string
@@ -1505,6 +2863,20 @@ const (
 	ExplanationOfBenefitStatusEnteredinerror ExplanationOfBenefitStatus = "entered-in-error"
 )
 
+// Valid returns true if the value is a known ExplanationOfBenefitStatus.
+func (e ExplanationOfBenefitStatus) Valid() bool {
+	switch e {
+	case "active", "cancelled", "draft", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// ExplanationOfBenefitStatusValues returns all known values for ExplanationOfBenefitStatus.
+func ExplanationOfBenefitStatusValues() []ExplanationOfBenefitStatus {
+	return []ExplanationOfBenefitStatus{"active", "cancelled", "draft", "entered-in-error"}
+}
+
 // FamilyMemberHistoryStatus represents allowed values for the status field.
 type FamilyMemberHistoryStatus string
 
@@ -1519,6 +2891,20 @@ const (
 	FamilyMemberHistoryStatusHealthunknown FamilyMemberHistoryStatus = "health-unknown"
 )
 
+// Valid returns true if the value is a known FamilyMemberHistoryStatus.
+func (e FamilyMemberHistoryStatus) Valid() bool {
+	switch e {
+	case "partial", "completed", "entered-in-error", "health-unknown":
+		return true
+	}
+	return false
+}
+
+// FamilyMemberHistoryStatusValues returns all known values for FamilyMemberHistoryStatus.
+func FamilyMemberHistoryStatusValues() []FamilyMemberHistoryStatus {
+	return []FamilyMemberHistoryStatus{"partial", "completed", "entered-in-error", "health-unknown"}
+}
+
 // FlagStatus represents allowed values for the status field.
 type FlagStatus string
 
@@ -1530,6 +2916,20 @@ const (
 	// FlagStatusEnteredinerror represents the "entered-in-error" value.
 	FlagStatusEnteredinerror FlagStatus = "entered-in-error"
 )
+
+// Valid returns true if the value is a known FlagStatus.
+func (e FlagStatus) Valid() bool {
+	switch e {
+	case "active", "inactive", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// FlagStatusValues returns all known values for FlagStatus.
+func FlagStatusValues() []FlagStatus {
+	return []FlagStatus{"active", "inactive", "entered-in-error"}
+}
 
 // GoalLifecycleStatus represents allowed values for the lifecycleStatus field.
 type GoalLifecycleStatus string
@@ -1555,6 +2955,20 @@ const (
 	GoalLifecycleStatusRejected GoalLifecycleStatus = "rejected"
 )
 
+// Valid returns true if the value is a known GoalLifecycleStatus.
+func (e GoalLifecycleStatus) Valid() bool {
+	switch e {
+	case "proposed", "planned", "accepted", "active", "on-hold", "completed", "cancelled", "entered-in-error", "rejected":
+		return true
+	}
+	return false
+}
+
+// GoalLifecycleStatusValues returns all known values for GoalLifecycleStatus.
+func GoalLifecycleStatusValues() []GoalLifecycleStatus {
+	return []GoalLifecycleStatus{"proposed", "planned", "accepted", "active", "on-hold", "completed", "cancelled", "entered-in-error", "rejected"}
+}
+
 // GraphDefinitionCompartmentRule represents allowed values for the rule field.
 type GraphDefinitionCompartmentRule string
 
@@ -1569,6 +2983,20 @@ const (
 	GraphDefinitionCompartmentRuleCustom GraphDefinitionCompartmentRule = "custom"
 )
 
+// Valid returns true if the value is a known GraphDefinitionCompartmentRule.
+func (e GraphDefinitionCompartmentRule) Valid() bool {
+	switch e {
+	case "identical", "matching", "different", "custom":
+		return true
+	}
+	return false
+}
+
+// GraphDefinitionCompartmentRuleValues returns all known values for GraphDefinitionCompartmentRule.
+func GraphDefinitionCompartmentRuleValues() []GraphDefinitionCompartmentRule {
+	return []GraphDefinitionCompartmentRule{"identical", "matching", "different", "custom"}
+}
+
 // GraphDefinitionCompartmentUse represents allowed values for the use field.
 type GraphDefinitionCompartmentUse string
 
@@ -1578,6 +3006,20 @@ const (
 	// GraphDefinitionCompartmentUseRequirement represents the "requirement" value.
 	GraphDefinitionCompartmentUseRequirement GraphDefinitionCompartmentUse = "requirement"
 )
+
+// Valid returns true if the value is a known GraphDefinitionCompartmentUse.
+func (e GraphDefinitionCompartmentUse) Valid() bool {
+	switch e {
+	case "condition", "requirement":
+		return true
+	}
+	return false
+}
+
+// GraphDefinitionCompartmentUseValues returns all known values for GraphDefinitionCompartmentUse.
+func GraphDefinitionCompartmentUseValues() []GraphDefinitionCompartmentUse {
+	return []GraphDefinitionCompartmentUse{"condition", "requirement"}
+}
 
 // GraphDefinitionStatus represents allowed values for the status field.
 type GraphDefinitionStatus string
@@ -1592,6 +3034,20 @@ const (
 	// GraphDefinitionStatusUnknown represents the "unknown" value.
 	GraphDefinitionStatusUnknown GraphDefinitionStatus = "unknown"
 )
+
+// Valid returns true if the value is a known GraphDefinitionStatus.
+func (e GraphDefinitionStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// GraphDefinitionStatusValues returns all known values for GraphDefinitionStatus.
+func GraphDefinitionStatusValues() []GraphDefinitionStatus {
+	return []GraphDefinitionStatus{"draft", "active", "retired", "unknown"}
+}
 
 // GroupType represents allowed values for the type field.
 type GroupType string
@@ -1611,6 +3067,20 @@ const (
 	GroupTypeSubstance GroupType = "substance"
 )
 
+// Valid returns true if the value is a known GroupType.
+func (e GroupType) Valid() bool {
+	switch e {
+	case "person", "animal", "practitioner", "device", "medication", "substance":
+		return true
+	}
+	return false
+}
+
+// GroupTypeValues returns all known values for GroupType.
+func GroupTypeValues() []GroupType {
+	return []GroupType{"person", "animal", "practitioner", "device", "medication", "substance"}
+}
+
 // GuidanceResponseStatus represents allowed values for the status field.
 type GuidanceResponseStatus string
 
@@ -1628,6 +3098,20 @@ const (
 	// GuidanceResponseStatusEnteredinerror represents the "entered-in-error" value.
 	GuidanceResponseStatusEnteredinerror GuidanceResponseStatus = "entered-in-error"
 )
+
+// Valid returns true if the value is a known GuidanceResponseStatus.
+func (e GuidanceResponseStatus) Valid() bool {
+	switch e {
+	case "success", "data-requested", "data-required", "in-progress", "failure", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// GuidanceResponseStatusValues returns all known values for GuidanceResponseStatus.
+func GuidanceResponseStatusValues() []GuidanceResponseStatus {
+	return []GuidanceResponseStatus{"success", "data-requested", "data-required", "in-progress", "failure", "entered-in-error"}
+}
 
 // HealthcareServiceAvailableTimeDaysOfWeek represents allowed values for the daysOfWeek field.
 type HealthcareServiceAvailableTimeDaysOfWeek string
@@ -1649,6 +3133,20 @@ const (
 	HealthcareServiceAvailableTimeDaysOfWeekSun HealthcareServiceAvailableTimeDaysOfWeek = "sun"
 )
 
+// Valid returns true if the value is a known HealthcareServiceAvailableTimeDaysOfWeek.
+func (e HealthcareServiceAvailableTimeDaysOfWeek) Valid() bool {
+	switch e {
+	case "mon", "tue", "wed", "thu", "fri", "sat", "sun":
+		return true
+	}
+	return false
+}
+
+// HealthcareServiceAvailableTimeDaysOfWeekValues returns all known values for HealthcareServiceAvailableTimeDaysOfWeek.
+func HealthcareServiceAvailableTimeDaysOfWeekValues() []HealthcareServiceAvailableTimeDaysOfWeek {
+	return []HealthcareServiceAvailableTimeDaysOfWeek{"mon", "tue", "wed", "thu", "fri", "sat", "sun"}
+}
+
 // ImagingStudyStatus represents allowed values for the status field.
 type ImagingStudyStatus string
 
@@ -1664,6 +3162,20 @@ const (
 	// ImagingStudyStatusUnknown represents the "unknown" value.
 	ImagingStudyStatusUnknown ImagingStudyStatus = "unknown"
 )
+
+// Valid returns true if the value is a known ImagingStudyStatus.
+func (e ImagingStudyStatus) Valid() bool {
+	switch e {
+	case "registered", "available", "cancelled", "entered-in-error", "unknown":
+		return true
+	}
+	return false
+}
+
+// ImagingStudyStatusValues returns all known values for ImagingStudyStatus.
+func ImagingStudyStatusValues() []ImagingStudyStatus {
+	return []ImagingStudyStatus{"registered", "available", "cancelled", "entered-in-error", "unknown"}
+}
 
 // ImplementationGuideFhirVersion represents allowed values for the fhirVersion field.
 type ImplementationGuideFhirVersion string
@@ -1714,6 +3226,20 @@ const (
 	// ImplementationGuideFhirVersionV401 represents the "4.0.1" value.
 	ImplementationGuideFhirVersionV401 ImplementationGuideFhirVersion = "4.0.1"
 )
+
+// Valid returns true if the value is a known ImplementationGuideFhirVersion.
+func (e ImplementationGuideFhirVersion) Valid() bool {
+	switch e {
+	case "0.01", "0.05", "0.06", "0.11", "0.0.80", "0.0.81", "0.0.82", "0.4.0", "0.5.0", "1.0.0", "1.0.1", "1.0.2", "1.1.0", "1.4.0", "1.6.0", "1.8.0", "3.0.0", "3.0.1", "3.3.0", "3.5.0", "4.0.0", "4.0.1":
+		return true
+	}
+	return false
+}
+
+// ImplementationGuideFhirVersionValues returns all known values for ImplementationGuideFhirVersion.
+func ImplementationGuideFhirVersionValues() []ImplementationGuideFhirVersion {
+	return []ImplementationGuideFhirVersion{"0.01", "0.05", "0.06", "0.11", "0.0.80", "0.0.81", "0.0.82", "0.4.0", "0.5.0", "1.0.0", "1.0.1", "1.0.2", "1.1.0", "1.4.0", "1.6.0", "1.8.0", "3.0.0", "3.0.1", "3.3.0", "3.5.0", "4.0.0", "4.0.1"}
+}
 
 // ImplementationGuideLicense represents allowed values for the license field.
 type ImplementationGuideLicense string
@@ -2413,6 +3939,20 @@ const (
 	ImplementationGuideLicenseZPL21 ImplementationGuideLicense = "ZPL-2.1"
 )
 
+// Valid returns true if the value is a known ImplementationGuideLicense.
+func (e ImplementationGuideLicense) Valid() bool {
+	switch e {
+	case "not-open-source", "0BSD", "AAL", "Abstyles", "Adobe-2006", "Adobe-Glyph", "ADSL", "AFL-1.1", "AFL-1.2", "AFL-2.0", "AFL-2.1", "AFL-3.0", "Afmparse", "AGPL-1.0-only", "AGPL-1.0-or-later", "AGPL-3.0-only", "AGPL-3.0-or-later", "Aladdin", "AMDPLPA", "AML", "AMPAS", "ANTLR-PD", "Apache-1.0", "Apache-1.1", "Apache-2.0", "APAFML", "APL-1.0", "APSL-1.0", "APSL-1.1", "APSL-1.2", "APSL-2.0", "Artistic-1.0-cl8", "Artistic-1.0-Perl", "Artistic-1.0", "Artistic-2.0", "Bahyph", "Barr", "Beerware", "BitTorrent-1.0", "BitTorrent-1.1", "Borceux", "BSD-1-Clause", "BSD-2-Clause-FreeBSD", "BSD-2-Clause-NetBSD", "BSD-2-Clause-Patent", "BSD-2-Clause", "BSD-3-Clause-Attribution", "BSD-3-Clause-Clear", "BSD-3-Clause-LBNL", "BSD-3-Clause-No-Nuclear-License-2014", "BSD-3-Clause-No-Nuclear-License", "BSD-3-Clause-No-Nuclear-Warranty", "BSD-3-Clause", "BSD-4-Clause-UC", "BSD-4-Clause", "BSD-Protection", "BSD-Source-Code", "BSL-1.0", "bzip2-1.0.5", "bzip2-1.0.6", "Caldera", "CATOSL-1.1", "CC-BY-1.0", "CC-BY-2.0", "CC-BY-2.5", "CC-BY-3.0", "CC-BY-4.0", "CC-BY-NC-1.0", "CC-BY-NC-2.0", "CC-BY-NC-2.5", "CC-BY-NC-3.0", "CC-BY-NC-4.0", "CC-BY-NC-ND-1.0", "CC-BY-NC-ND-2.0", "CC-BY-NC-ND-2.5", "CC-BY-NC-ND-3.0", "CC-BY-NC-ND-4.0", "CC-BY-NC-SA-1.0", "CC-BY-NC-SA-2.0", "CC-BY-NC-SA-2.5", "CC-BY-NC-SA-3.0", "CC-BY-NC-SA-4.0", "CC-BY-ND-1.0", "CC-BY-ND-2.0", "CC-BY-ND-2.5", "CC-BY-ND-3.0", "CC-BY-ND-4.0", "CC-BY-SA-1.0", "CC-BY-SA-2.0", "CC-BY-SA-2.5", "CC-BY-SA-3.0", "CC-BY-SA-4.0", "CC0-1.0", "CDDL-1.0", "CDDL-1.1", "CDLA-Permissive-1.0", "CDLA-Sharing-1.0", "CECILL-1.0", "CECILL-1.1", "CECILL-2.0", "CECILL-2.1", "CECILL-B", "CECILL-C", "ClArtistic", "CNRI-Jython", "CNRI-Python-GPL-Compatible", "CNRI-Python", "Condor-1.1", "CPAL-1.0", "CPL-1.0", "CPOL-1.02", "Crossword", "CrystalStacker", "CUA-OPL-1.0", "Cube", "curl", "D-FSL-1.0", "diffmark", "DOC", "Dotseqn", "DSDP", "dvipdfm", "ECL-1.0", "ECL-2.0", "EFL-1.0", "EFL-2.0", "eGenix", "Entessa", "EPL-1.0", "EPL-2.0", "ErlPL-1.1", "EUDatagrid", "EUPL-1.0", "EUPL-1.1", "EUPL-1.2", "Eurosym", "Fair", "Frameworx-1.0", "FreeImage", "FSFAP", "FSFUL", "FSFULLR", "FTL", "GFDL-1.1-only", "GFDL-1.1-or-later", "GFDL-1.2-only", "GFDL-1.2-or-later", "GFDL-1.3-only", "GFDL-1.3-or-later", "Giftware", "GL2PS", "Glide", "Glulxe", "gnuplot", "GPL-1.0-only", "GPL-1.0-or-later", "GPL-2.0-only", "GPL-2.0-or-later", "GPL-3.0-only", "GPL-3.0-or-later", "gSOAP-1.3b", "HaskellReport", "HPND", "IBM-pibs", "ICU", "IJG", "ImageMagick", "iMatix", "Imlib2", "Info-ZIP", "Intel-ACPI", "Intel", "Interbase-1.0", "IPA", "IPL-1.0", "ISC", "JasPer-2.0", "JSON", "LAL-1.2", "LAL-1.3", "Latex2e", "Leptonica", "LGPL-2.0-only", "LGPL-2.0-or-later", "LGPL-2.1-only", "LGPL-2.1-or-later", "LGPL-3.0-only", "LGPL-3.0-or-later", "LGPLLR", "Libpng", "libtiff", "LiLiQ-P-1.1", "LiLiQ-R-1.1", "LiLiQ-Rplus-1.1", "Linux-OpenIB", "LPL-1.0", "LPL-1.02", "LPPL-1.0", "LPPL-1.1", "LPPL-1.2", "LPPL-1.3a", "LPPL-1.3c", "MakeIndex", "MirOS", "MIT-0", "MIT-advertising", "MIT-CMU", "MIT-enna", "MIT-feh", "MIT", "MITNFA", "Motosoto", "mpich2", "MPL-1.0", "MPL-1.1", "MPL-2.0-no-copyleft-exception", "MPL-2.0", "MS-PL", "MS-RL", "MTLL", "Multics", "Mup", "NASA-1.3", "Naumen", "NBPL-1.0", "NCSA", "Net-SNMP", "NetCDF", "Newsletr", "NGPL", "NLOD-1.0", "NLPL", "Nokia", "NOSL", "Noweb", "NPL-1.0", "NPL-1.1", "NPOSL-3.0", "NRL", "NTP", "OCCT-PL", "OCLC-2.0", "ODbL-1.0", "OFL-1.0", "OFL-1.1", "OGTSL", "OLDAP-1.1", "OLDAP-1.2", "OLDAP-1.3", "OLDAP-1.4", "OLDAP-2.0.1", "OLDAP-2.0", "OLDAP-2.1", "OLDAP-2.2.1", "OLDAP-2.2.2", "OLDAP-2.2", "OLDAP-2.3", "OLDAP-2.4", "OLDAP-2.5", "OLDAP-2.6", "OLDAP-2.7", "OLDAP-2.8", "OML", "OpenSSL", "OPL-1.0", "OSET-PL-2.1", "OSL-1.0", "OSL-1.1", "OSL-2.0", "OSL-2.1", "OSL-3.0", "PDDL-1.0", "PHP-3.0", "PHP-3.01", "Plexus", "PostgreSQL", "psfrag", "psutils", "Python-2.0", "Qhull", "QPL-1.0", "Rdisc", "RHeCos-1.1", "RPL-1.1", "RPL-1.5", "RPSL-1.0", "RSA-MD", "RSCPL", "Ruby", "SAX-PD", "Saxpath", "SCEA", "Sendmail", "SGI-B-1.0", "SGI-B-1.1", "SGI-B-2.0", "SimPL-2.0", "SISSL-1.2", "SISSL", "Sleepycat", "SMLNJ", "SMPPL", "SNIA", "Spencer-86", "Spencer-94", "Spencer-99", "SPL-1.0", "SugarCRM-1.1.3", "SWL", "TCL", "TCP-wrappers", "TMate", "TORQUE-1.1", "TOSL", "Unicode-DFS-2015", "Unicode-DFS-2016", "Unicode-TOU", "Unlicense", "UPL-1.0", "Vim", "VOSTROM", "VSL-1.0", "W3C-19980720", "W3C-20150513", "W3C", "Watcom-1.0", "Wsuipa", "WTFPL", "X11", "Xerox", "XFree86-1.1", "xinetd", "Xnet", "xpp", "XSkat", "YPL-1.0", "YPL-1.1", "Zed", "Zend-2.0", "Zimbra-1.3", "Zimbra-1.4", "zlib-acknowledgement", "Zlib", "ZPL-1.1", "ZPL-2.0", "ZPL-2.1":
+		return true
+	}
+	return false
+}
+
+// ImplementationGuideLicenseValues returns all known values for ImplementationGuideLicense.
+func ImplementationGuideLicenseValues() []ImplementationGuideLicense {
+	return []ImplementationGuideLicense{"not-open-source", "0BSD", "AAL", "Abstyles", "Adobe-2006", "Adobe-Glyph", "ADSL", "AFL-1.1", "AFL-1.2", "AFL-2.0", "AFL-2.1", "AFL-3.0", "Afmparse", "AGPL-1.0-only", "AGPL-1.0-or-later", "AGPL-3.0-only", "AGPL-3.0-or-later", "Aladdin", "AMDPLPA", "AML", "AMPAS", "ANTLR-PD", "Apache-1.0", "Apache-1.1", "Apache-2.0", "APAFML", "APL-1.0", "APSL-1.0", "APSL-1.1", "APSL-1.2", "APSL-2.0", "Artistic-1.0-cl8", "Artistic-1.0-Perl", "Artistic-1.0", "Artistic-2.0", "Bahyph", "Barr", "Beerware", "BitTorrent-1.0", "BitTorrent-1.1", "Borceux", "BSD-1-Clause", "BSD-2-Clause-FreeBSD", "BSD-2-Clause-NetBSD", "BSD-2-Clause-Patent", "BSD-2-Clause", "BSD-3-Clause-Attribution", "BSD-3-Clause-Clear", "BSD-3-Clause-LBNL", "BSD-3-Clause-No-Nuclear-License-2014", "BSD-3-Clause-No-Nuclear-License", "BSD-3-Clause-No-Nuclear-Warranty", "BSD-3-Clause", "BSD-4-Clause-UC", "BSD-4-Clause", "BSD-Protection", "BSD-Source-Code", "BSL-1.0", "bzip2-1.0.5", "bzip2-1.0.6", "Caldera", "CATOSL-1.1", "CC-BY-1.0", "CC-BY-2.0", "CC-BY-2.5", "CC-BY-3.0", "CC-BY-4.0", "CC-BY-NC-1.0", "CC-BY-NC-2.0", "CC-BY-NC-2.5", "CC-BY-NC-3.0", "CC-BY-NC-4.0", "CC-BY-NC-ND-1.0", "CC-BY-NC-ND-2.0", "CC-BY-NC-ND-2.5", "CC-BY-NC-ND-3.0", "CC-BY-NC-ND-4.0", "CC-BY-NC-SA-1.0", "CC-BY-NC-SA-2.0", "CC-BY-NC-SA-2.5", "CC-BY-NC-SA-3.0", "CC-BY-NC-SA-4.0", "CC-BY-ND-1.0", "CC-BY-ND-2.0", "CC-BY-ND-2.5", "CC-BY-ND-3.0", "CC-BY-ND-4.0", "CC-BY-SA-1.0", "CC-BY-SA-2.0", "CC-BY-SA-2.5", "CC-BY-SA-3.0", "CC-BY-SA-4.0", "CC0-1.0", "CDDL-1.0", "CDDL-1.1", "CDLA-Permissive-1.0", "CDLA-Sharing-1.0", "CECILL-1.0", "CECILL-1.1", "CECILL-2.0", "CECILL-2.1", "CECILL-B", "CECILL-C", "ClArtistic", "CNRI-Jython", "CNRI-Python-GPL-Compatible", "CNRI-Python", "Condor-1.1", "CPAL-1.0", "CPL-1.0", "CPOL-1.02", "Crossword", "CrystalStacker", "CUA-OPL-1.0", "Cube", "curl", "D-FSL-1.0", "diffmark", "DOC", "Dotseqn", "DSDP", "dvipdfm", "ECL-1.0", "ECL-2.0", "EFL-1.0", "EFL-2.0", "eGenix", "Entessa", "EPL-1.0", "EPL-2.0", "ErlPL-1.1", "EUDatagrid", "EUPL-1.0", "EUPL-1.1", "EUPL-1.2", "Eurosym", "Fair", "Frameworx-1.0", "FreeImage", "FSFAP", "FSFUL", "FSFULLR", "FTL", "GFDL-1.1-only", "GFDL-1.1-or-later", "GFDL-1.2-only", "GFDL-1.2-or-later", "GFDL-1.3-only", "GFDL-1.3-or-later", "Giftware", "GL2PS", "Glide", "Glulxe", "gnuplot", "GPL-1.0-only", "GPL-1.0-or-later", "GPL-2.0-only", "GPL-2.0-or-later", "GPL-3.0-only", "GPL-3.0-or-later", "gSOAP-1.3b", "HaskellReport", "HPND", "IBM-pibs", "ICU", "IJG", "ImageMagick", "iMatix", "Imlib2", "Info-ZIP", "Intel-ACPI", "Intel", "Interbase-1.0", "IPA", "IPL-1.0", "ISC", "JasPer-2.0", "JSON", "LAL-1.2", "LAL-1.3", "Latex2e", "Leptonica", "LGPL-2.0-only", "LGPL-2.0-or-later", "LGPL-2.1-only", "LGPL-2.1-or-later", "LGPL-3.0-only", "LGPL-3.0-or-later", "LGPLLR", "Libpng", "libtiff", "LiLiQ-P-1.1", "LiLiQ-R-1.1", "LiLiQ-Rplus-1.1", "Linux-OpenIB", "LPL-1.0", "LPL-1.02", "LPPL-1.0", "LPPL-1.1", "LPPL-1.2", "LPPL-1.3a", "LPPL-1.3c", "MakeIndex", "MirOS", "MIT-0", "MIT-advertising", "MIT-CMU", "MIT-enna", "MIT-feh", "MIT", "MITNFA", "Motosoto", "mpich2", "MPL-1.0", "MPL-1.1", "MPL-2.0-no-copyleft-exception", "MPL-2.0", "MS-PL", "MS-RL", "MTLL", "Multics", "Mup", "NASA-1.3", "Naumen", "NBPL-1.0", "NCSA", "Net-SNMP", "NetCDF", "Newsletr", "NGPL", "NLOD-1.0", "NLPL", "Nokia", "NOSL", "Noweb", "NPL-1.0", "NPL-1.1", "NPOSL-3.0", "NRL", "NTP", "OCCT-PL", "OCLC-2.0", "ODbL-1.0", "OFL-1.0", "OFL-1.1", "OGTSL", "OLDAP-1.1", "OLDAP-1.2", "OLDAP-1.3", "OLDAP-1.4", "OLDAP-2.0.1", "OLDAP-2.0", "OLDAP-2.1", "OLDAP-2.2.1", "OLDAP-2.2.2", "OLDAP-2.2", "OLDAP-2.3", "OLDAP-2.4", "OLDAP-2.5", "OLDAP-2.6", "OLDAP-2.7", "OLDAP-2.8", "OML", "OpenSSL", "OPL-1.0", "OSET-PL-2.1", "OSL-1.0", "OSL-1.1", "OSL-2.0", "OSL-2.1", "OSL-3.0", "PDDL-1.0", "PHP-3.0", "PHP-3.01", "Plexus", "PostgreSQL", "psfrag", "psutils", "Python-2.0", "Qhull", "QPL-1.0", "Rdisc", "RHeCos-1.1", "RPL-1.1", "RPL-1.5", "RPSL-1.0", "RSA-MD", "RSCPL", "Ruby", "SAX-PD", "Saxpath", "SCEA", "Sendmail", "SGI-B-1.0", "SGI-B-1.1", "SGI-B-2.0", "SimPL-2.0", "SISSL-1.2", "SISSL", "Sleepycat", "SMLNJ", "SMPPL", "SNIA", "Spencer-86", "Spencer-94", "Spencer-99", "SPL-1.0", "SugarCRM-1.1.3", "SWL", "TCL", "TCP-wrappers", "TMate", "TORQUE-1.1", "TOSL", "Unicode-DFS-2015", "Unicode-DFS-2016", "Unicode-TOU", "Unlicense", "UPL-1.0", "Vim", "VOSTROM", "VSL-1.0", "W3C-19980720", "W3C-20150513", "W3C", "Watcom-1.0", "Wsuipa", "WTFPL", "X11", "Xerox", "XFree86-1.1", "xinetd", "Xnet", "xpp", "XSkat", "YPL-1.0", "YPL-1.1", "Zed", "Zend-2.0", "Zimbra-1.3", "Zimbra-1.4", "zlib-acknowledgement", "Zlib", "ZPL-1.1", "ZPL-2.0", "ZPL-2.1"}
+}
+
 // ImplementationGuidePageGeneration represents allowed values for the generation field.
 type ImplementationGuidePageGeneration string
 
@@ -2426,6 +3966,20 @@ const (
 	// ImplementationGuidePageGenerationGenerated represents the "generated" value.
 	ImplementationGuidePageGenerationGenerated ImplementationGuidePageGeneration = "generated"
 )
+
+// Valid returns true if the value is a known ImplementationGuidePageGeneration.
+func (e ImplementationGuidePageGeneration) Valid() bool {
+	switch e {
+	case "html", "markdown", "xml", "generated":
+		return true
+	}
+	return false
+}
+
+// ImplementationGuidePageGenerationValues returns all known values for ImplementationGuidePageGeneration.
+func ImplementationGuidePageGenerationValues() []ImplementationGuidePageGeneration {
+	return []ImplementationGuidePageGeneration{"html", "markdown", "xml", "generated"}
+}
 
 // ImplementationGuideParameterCode represents allowed values for the code field.
 type ImplementationGuideParameterCode string
@@ -2452,6 +4006,20 @@ const (
 	// ImplementationGuideParameterCodeHtmltemplate represents the "html-template" value.
 	ImplementationGuideParameterCodeHtmltemplate ImplementationGuideParameterCode = "html-template"
 )
+
+// Valid returns true if the value is a known ImplementationGuideParameterCode.
+func (e ImplementationGuideParameterCode) Valid() bool {
+	switch e {
+	case "apply", "path-resource", "path-pages", "path-tx-cache", "expansion-parameter", "rule-broken-links", "generate-xml", "generate-json", "generate-turtle", "html-template":
+		return true
+	}
+	return false
+}
+
+// ImplementationGuideParameterCodeValues returns all known values for ImplementationGuideParameterCode.
+func ImplementationGuideParameterCodeValues() []ImplementationGuideParameterCode {
+	return []ImplementationGuideParameterCode{"apply", "path-resource", "path-pages", "path-tx-cache", "expansion-parameter", "rule-broken-links", "generate-xml", "generate-json", "generate-turtle", "html-template"}
+}
 
 // ImplementationGuideResourceFhirVersion represents allowed values for the fhirVersion field.
 type ImplementationGuideResourceFhirVersion string
@@ -2503,6 +4071,20 @@ const (
 	ImplementationGuideResourceFhirVersionV401 ImplementationGuideResourceFhirVersion = "4.0.1"
 )
 
+// Valid returns true if the value is a known ImplementationGuideResourceFhirVersion.
+func (e ImplementationGuideResourceFhirVersion) Valid() bool {
+	switch e {
+	case "0.01", "0.05", "0.06", "0.11", "0.0.80", "0.0.81", "0.0.82", "0.4.0", "0.5.0", "1.0.0", "1.0.1", "1.0.2", "1.1.0", "1.4.0", "1.6.0", "1.8.0", "3.0.0", "3.0.1", "3.3.0", "3.5.0", "4.0.0", "4.0.1":
+		return true
+	}
+	return false
+}
+
+// ImplementationGuideResourceFhirVersionValues returns all known values for ImplementationGuideResourceFhirVersion.
+func ImplementationGuideResourceFhirVersionValues() []ImplementationGuideResourceFhirVersion {
+	return []ImplementationGuideResourceFhirVersion{"0.01", "0.05", "0.06", "0.11", "0.0.80", "0.0.81", "0.0.82", "0.4.0", "0.5.0", "1.0.0", "1.0.1", "1.0.2", "1.1.0", "1.4.0", "1.6.0", "1.8.0", "3.0.0", "3.0.1", "3.3.0", "3.5.0", "4.0.0", "4.0.1"}
+}
+
 // ImplementationGuideStatus represents allowed values for the status field.
 type ImplementationGuideStatus string
 
@@ -2517,6 +4099,20 @@ const (
 	ImplementationGuideStatusUnknown ImplementationGuideStatus = "unknown"
 )
 
+// Valid returns true if the value is a known ImplementationGuideStatus.
+func (e ImplementationGuideStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// ImplementationGuideStatusValues returns all known values for ImplementationGuideStatus.
+func ImplementationGuideStatusValues() []ImplementationGuideStatus {
+	return []ImplementationGuideStatus{"draft", "active", "retired", "unknown"}
+}
+
 // InsurancePlanStatus represents allowed values for the status field.
 type InsurancePlanStatus string
 
@@ -2530,6 +4126,20 @@ const (
 	// InsurancePlanStatusUnknown represents the "unknown" value.
 	InsurancePlanStatusUnknown InsurancePlanStatus = "unknown"
 )
+
+// Valid returns true if the value is a known InsurancePlanStatus.
+func (e InsurancePlanStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// InsurancePlanStatusValues returns all known values for InsurancePlanStatus.
+func InsurancePlanStatusValues() []InsurancePlanStatus {
+	return []InsurancePlanStatus{"draft", "active", "retired", "unknown"}
+}
 
 // InvoicePriceComponentType represents allowed values for the type field.
 type InvoicePriceComponentType string
@@ -2549,6 +4159,20 @@ const (
 	InvoicePriceComponentTypeInformational InvoicePriceComponentType = "informational"
 )
 
+// Valid returns true if the value is a known InvoicePriceComponentType.
+func (e InvoicePriceComponentType) Valid() bool {
+	switch e {
+	case "base", "surcharge", "deduction", "discount", "tax", "informational":
+		return true
+	}
+	return false
+}
+
+// InvoicePriceComponentTypeValues returns all known values for InvoicePriceComponentType.
+func InvoicePriceComponentTypeValues() []InvoicePriceComponentType {
+	return []InvoicePriceComponentType{"base", "surcharge", "deduction", "discount", "tax", "informational"}
+}
+
 // InvoiceStatus represents allowed values for the status field.
 type InvoiceStatus string
 
@@ -2565,6 +4189,20 @@ const (
 	InvoiceStatusEnteredinerror InvoiceStatus = "entered-in-error"
 )
 
+// Valid returns true if the value is a known InvoiceStatus.
+func (e InvoiceStatus) Valid() bool {
+	switch e {
+	case "draft", "issued", "balanced", "cancelled", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// InvoiceStatusValues returns all known values for InvoiceStatus.
+func InvoiceStatusValues() []InvoiceStatus {
+	return []InvoiceStatus{"draft", "issued", "balanced", "cancelled", "entered-in-error"}
+}
+
 // LibraryStatus represents allowed values for the status field.
 type LibraryStatus string
 
@@ -2579,6 +4217,20 @@ const (
 	LibraryStatusUnknown LibraryStatus = "unknown"
 )
 
+// Valid returns true if the value is a known LibraryStatus.
+func (e LibraryStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// LibraryStatusValues returns all known values for LibraryStatus.
+func LibraryStatusValues() []LibraryStatus {
+	return []LibraryStatus{"draft", "active", "retired", "unknown"}
+}
+
 // LinkageItemType represents allowed values for the type field.
 type LinkageItemType string
 
@@ -2590,6 +4242,20 @@ const (
 	// LinkageItemTypeHistorical represents the "historical" value.
 	LinkageItemTypeHistorical LinkageItemType = "historical"
 )
+
+// Valid returns true if the value is a known LinkageItemType.
+func (e LinkageItemType) Valid() bool {
+	switch e {
+	case "source", "alternate", "historical":
+		return true
+	}
+	return false
+}
+
+// LinkageItemTypeValues returns all known values for LinkageItemType.
+func LinkageItemTypeValues() []LinkageItemType {
+	return []LinkageItemType{"source", "alternate", "historical"}
+}
 
 // ListMode represents allowed values for the mode field.
 type ListMode string
@@ -2603,6 +4269,20 @@ const (
 	ListModeChanges ListMode = "changes"
 )
 
+// Valid returns true if the value is a known ListMode.
+func (e ListMode) Valid() bool {
+	switch e {
+	case "working", "snapshot", "changes":
+		return true
+	}
+	return false
+}
+
+// ListModeValues returns all known values for ListMode.
+func ListModeValues() []ListMode {
+	return []ListMode{"working", "snapshot", "changes"}
+}
+
 // ListStatus represents allowed values for the status field.
 type ListStatus string
 
@@ -2615,6 +4295,20 @@ const (
 	ListStatusEnteredinerror ListStatus = "entered-in-error"
 )
 
+// Valid returns true if the value is a known ListStatus.
+func (e ListStatus) Valid() bool {
+	switch e {
+	case "current", "retired", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// ListStatusValues returns all known values for ListStatus.
+func ListStatusValues() []ListStatus {
+	return []ListStatus{"current", "retired", "entered-in-error"}
+}
+
 // LocationMode represents allowed values for the mode field.
 type LocationMode string
 
@@ -2624,6 +4318,20 @@ const (
 	// LocationModeKind represents the "kind" value.
 	LocationModeKind LocationMode = "kind"
 )
+
+// Valid returns true if the value is a known LocationMode.
+func (e LocationMode) Valid() bool {
+	switch e {
+	case "instance", "kind":
+		return true
+	}
+	return false
+}
+
+// LocationModeValues returns all known values for LocationMode.
+func LocationModeValues() []LocationMode {
+	return []LocationMode{"instance", "kind"}
+}
 
 // LocationStatus represents allowed values for the status field.
 type LocationStatus string
@@ -2637,6 +4345,20 @@ const (
 	LocationStatusInactive LocationStatus = "inactive"
 )
 
+// Valid returns true if the value is a known LocationStatus.
+func (e LocationStatus) Valid() bool {
+	switch e {
+	case "active", "suspended", "inactive":
+		return true
+	}
+	return false
+}
+
+// LocationStatusValues returns all known values for LocationStatus.
+func LocationStatusValues() []LocationStatus {
+	return []LocationStatus{"active", "suspended", "inactive"}
+}
+
 // MeasureReportStatus represents allowed values for the status field.
 type MeasureReportStatus string
 
@@ -2648,6 +4370,20 @@ const (
 	// MeasureReportStatusError represents the "error" value.
 	MeasureReportStatusError MeasureReportStatus = "error"
 )
+
+// Valid returns true if the value is a known MeasureReportStatus.
+func (e MeasureReportStatus) Valid() bool {
+	switch e {
+	case "complete", "pending", "error":
+		return true
+	}
+	return false
+}
+
+// MeasureReportStatusValues returns all known values for MeasureReportStatus.
+func MeasureReportStatusValues() []MeasureReportStatus {
+	return []MeasureReportStatus{"complete", "pending", "error"}
+}
 
 // MeasureReportType represents allowed values for the type field.
 type MeasureReportType string
@@ -2663,6 +4399,20 @@ const (
 	MeasureReportTypeDatacollection MeasureReportType = "data-collection"
 )
 
+// Valid returns true if the value is a known MeasureReportType.
+func (e MeasureReportType) Valid() bool {
+	switch e {
+	case "individual", "subject-list", "summary", "data-collection":
+		return true
+	}
+	return false
+}
+
+// MeasureReportTypeValues returns all known values for MeasureReportType.
+func MeasureReportTypeValues() []MeasureReportType {
+	return []MeasureReportType{"individual", "subject-list", "summary", "data-collection"}
+}
+
 // MeasureStatus represents allowed values for the status field.
 type MeasureStatus string
 
@@ -2677,6 +4427,20 @@ const (
 	MeasureStatusUnknown MeasureStatus = "unknown"
 )
 
+// Valid returns true if the value is a known MeasureStatus.
+func (e MeasureStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// MeasureStatusValues returns all known values for MeasureStatus.
+func MeasureStatusValues() []MeasureStatus {
+	return []MeasureStatus{"draft", "active", "retired", "unknown"}
+}
+
 // MessageDefinitionCategory represents allowed values for the category field.
 type MessageDefinitionCategory string
 
@@ -2688,6 +4452,20 @@ const (
 	// MessageDefinitionCategoryNotification represents the "notification" value.
 	MessageDefinitionCategoryNotification MessageDefinitionCategory = "notification"
 )
+
+// Valid returns true if the value is a known MessageDefinitionCategory.
+func (e MessageDefinitionCategory) Valid() bool {
+	switch e {
+	case "consequence", "currency", "notification":
+		return true
+	}
+	return false
+}
+
+// MessageDefinitionCategoryValues returns all known values for MessageDefinitionCategory.
+func MessageDefinitionCategoryValues() []MessageDefinitionCategory {
+	return []MessageDefinitionCategory{"consequence", "currency", "notification"}
+}
 
 // MessageDefinitionResponseRequired represents allowed values for the responseRequired field.
 type MessageDefinitionResponseRequired string
@@ -2703,6 +4481,20 @@ const (
 	MessageDefinitionResponseRequiredOnsuccess MessageDefinitionResponseRequired = "on-success"
 )
 
+// Valid returns true if the value is a known MessageDefinitionResponseRequired.
+func (e MessageDefinitionResponseRequired) Valid() bool {
+	switch e {
+	case "always", "on-error", "never", "on-success":
+		return true
+	}
+	return false
+}
+
+// MessageDefinitionResponseRequiredValues returns all known values for MessageDefinitionResponseRequired.
+func MessageDefinitionResponseRequiredValues() []MessageDefinitionResponseRequired {
+	return []MessageDefinitionResponseRequired{"always", "on-error", "never", "on-success"}
+}
+
 // MessageDefinitionStatus represents allowed values for the status field.
 type MessageDefinitionStatus string
 
@@ -2717,6 +4509,20 @@ const (
 	MessageDefinitionStatusUnknown MessageDefinitionStatus = "unknown"
 )
 
+// Valid returns true if the value is a known MessageDefinitionStatus.
+func (e MessageDefinitionStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// MessageDefinitionStatusValues returns all known values for MessageDefinitionStatus.
+func MessageDefinitionStatusValues() []MessageDefinitionStatus {
+	return []MessageDefinitionStatus{"draft", "active", "retired", "unknown"}
+}
+
 // MessageHeaderResponseCode represents allowed values for the code field.
 type MessageHeaderResponseCode string
 
@@ -2728,6 +4534,20 @@ const (
 	// MessageHeaderResponseCodeFatalerror represents the "fatal-error" value.
 	MessageHeaderResponseCodeFatalerror MessageHeaderResponseCode = "fatal-error"
 )
+
+// Valid returns true if the value is a known MessageHeaderResponseCode.
+func (e MessageHeaderResponseCode) Valid() bool {
+	switch e {
+	case "ok", "transient-error", "fatal-error":
+		return true
+	}
+	return false
+}
+
+// MessageHeaderResponseCodeValues returns all known values for MessageHeaderResponseCode.
+func MessageHeaderResponseCodeValues() []MessageHeaderResponseCode {
+	return []MessageHeaderResponseCode{"ok", "transient-error", "fatal-error"}
+}
 
 // MolecularSequenceQualityType represents allowed values for the type field.
 type MolecularSequenceQualityType string
@@ -2741,6 +4561,20 @@ const (
 	MolecularSequenceQualityTypeUnknown MolecularSequenceQualityType = "unknown"
 )
 
+// Valid returns true if the value is a known MolecularSequenceQualityType.
+func (e MolecularSequenceQualityType) Valid() bool {
+	switch e {
+	case "indel", "snp", "unknown":
+		return true
+	}
+	return false
+}
+
+// MolecularSequenceQualityTypeValues returns all known values for MolecularSequenceQualityType.
+func MolecularSequenceQualityTypeValues() []MolecularSequenceQualityType {
+	return []MolecularSequenceQualityType{"indel", "snp", "unknown"}
+}
+
 // MolecularSequenceReferenceSeqOrientation represents allowed values for the orientation field.
 type MolecularSequenceReferenceSeqOrientation string
 
@@ -2751,6 +4585,20 @@ const (
 	MolecularSequenceReferenceSeqOrientationAntisense MolecularSequenceReferenceSeqOrientation = "antisense"
 )
 
+// Valid returns true if the value is a known MolecularSequenceReferenceSeqOrientation.
+func (e MolecularSequenceReferenceSeqOrientation) Valid() bool {
+	switch e {
+	case "sense", "antisense":
+		return true
+	}
+	return false
+}
+
+// MolecularSequenceReferenceSeqOrientationValues returns all known values for MolecularSequenceReferenceSeqOrientation.
+func MolecularSequenceReferenceSeqOrientationValues() []MolecularSequenceReferenceSeqOrientation {
+	return []MolecularSequenceReferenceSeqOrientation{"sense", "antisense"}
+}
+
 // MolecularSequenceReferenceSeqStrand represents allowed values for the strand field.
 type MolecularSequenceReferenceSeqStrand string
 
@@ -2760,6 +4608,20 @@ const (
 	// MolecularSequenceReferenceSeqStrandCrick represents the "crick" value.
 	MolecularSequenceReferenceSeqStrandCrick MolecularSequenceReferenceSeqStrand = "crick"
 )
+
+// Valid returns true if the value is a known MolecularSequenceReferenceSeqStrand.
+func (e MolecularSequenceReferenceSeqStrand) Valid() bool {
+	switch e {
+	case "watson", "crick":
+		return true
+	}
+	return false
+}
+
+// MolecularSequenceReferenceSeqStrandValues returns all known values for MolecularSequenceReferenceSeqStrand.
+func MolecularSequenceReferenceSeqStrandValues() []MolecularSequenceReferenceSeqStrand {
+	return []MolecularSequenceReferenceSeqStrand{"watson", "crick"}
+}
 
 // MolecularSequenceRepositoryType represents allowed values for the type field.
 type MolecularSequenceRepositoryType string
@@ -2777,6 +4639,20 @@ const (
 	MolecularSequenceRepositoryTypeOther MolecularSequenceRepositoryType = "other"
 )
 
+// Valid returns true if the value is a known MolecularSequenceRepositoryType.
+func (e MolecularSequenceRepositoryType) Valid() bool {
+	switch e {
+	case "directlink", "openapi", "login", "oauth", "other":
+		return true
+	}
+	return false
+}
+
+// MolecularSequenceRepositoryTypeValues returns all known values for MolecularSequenceRepositoryType.
+func MolecularSequenceRepositoryTypeValues() []MolecularSequenceRepositoryType {
+	return []MolecularSequenceRepositoryType{"directlink", "openapi", "login", "oauth", "other"}
+}
+
 // MolecularSequenceType represents allowed values for the type field.
 type MolecularSequenceType string
 
@@ -2789,6 +4665,20 @@ const (
 	MolecularSequenceTypeRna MolecularSequenceType = "rna"
 )
 
+// Valid returns true if the value is a known MolecularSequenceType.
+func (e MolecularSequenceType) Valid() bool {
+	switch e {
+	case "aa", "dna", "rna":
+		return true
+	}
+	return false
+}
+
+// MolecularSequenceTypeValues returns all known values for MolecularSequenceType.
+func MolecularSequenceTypeValues() []MolecularSequenceType {
+	return []MolecularSequenceType{"aa", "dna", "rna"}
+}
+
 // NamingSystemKind represents allowed values for the kind field.
 type NamingSystemKind string
 
@@ -2800,6 +4690,20 @@ const (
 	// NamingSystemKindRoot represents the "root" value.
 	NamingSystemKindRoot NamingSystemKind = "root"
 )
+
+// Valid returns true if the value is a known NamingSystemKind.
+func (e NamingSystemKind) Valid() bool {
+	switch e {
+	case "codesystem", "identifier", "root":
+		return true
+	}
+	return false
+}
+
+// NamingSystemKindValues returns all known values for NamingSystemKind.
+func NamingSystemKindValues() []NamingSystemKind {
+	return []NamingSystemKind{"codesystem", "identifier", "root"}
+}
 
 // NamingSystemStatus represents allowed values for the status field.
 type NamingSystemStatus string
@@ -2815,6 +4719,20 @@ const (
 	NamingSystemStatusUnknown NamingSystemStatus = "unknown"
 )
 
+// Valid returns true if the value is a known NamingSystemStatus.
+func (e NamingSystemStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// NamingSystemStatusValues returns all known values for NamingSystemStatus.
+func NamingSystemStatusValues() []NamingSystemStatus {
+	return []NamingSystemStatus{"draft", "active", "retired", "unknown"}
+}
+
 // NamingSystemUniqueIdType represents allowed values for the type field.
 type NamingSystemUniqueIdType string
 
@@ -2828,6 +4746,20 @@ const (
 	// NamingSystemUniqueIdTypeOther represents the "other" value.
 	NamingSystemUniqueIdTypeOther NamingSystemUniqueIdType = "other"
 )
+
+// Valid returns true if the value is a known NamingSystemUniqueIdType.
+func (e NamingSystemUniqueIdType) Valid() bool {
+	switch e {
+	case "oid", "uuid", "uri", "other":
+		return true
+	}
+	return false
+}
+
+// NamingSystemUniqueIdTypeValues returns all known values for NamingSystemUniqueIdType.
+func NamingSystemUniqueIdTypeValues() []NamingSystemUniqueIdType {
+	return []NamingSystemUniqueIdType{"oid", "uuid", "uri", "other"}
+}
 
 // ObservationDefinitionPermittedDataType represents allowed values for the permittedDataType field.
 type ObservationDefinitionPermittedDataType string
@@ -2857,6 +4789,20 @@ const (
 	ObservationDefinitionPermittedDataTypePeriod ObservationDefinitionPermittedDataType = "Period"
 )
 
+// Valid returns true if the value is a known ObservationDefinitionPermittedDataType.
+func (e ObservationDefinitionPermittedDataType) Valid() bool {
+	switch e {
+	case "Quantity", "CodeableConcept", "string", "boolean", "integer", "Range", "Ratio", "SampledData", "time", "dateTime", "Period":
+		return true
+	}
+	return false
+}
+
+// ObservationDefinitionPermittedDataTypeValues returns all known values for ObservationDefinitionPermittedDataType.
+func ObservationDefinitionPermittedDataTypeValues() []ObservationDefinitionPermittedDataType {
+	return []ObservationDefinitionPermittedDataType{"Quantity", "CodeableConcept", "string", "boolean", "integer", "Range", "Ratio", "SampledData", "time", "dateTime", "Period"}
+}
+
 // ObservationDefinitionQualifiedIntervalCategory represents allowed values for the category field.
 type ObservationDefinitionQualifiedIntervalCategory string
 
@@ -2868,6 +4814,20 @@ const (
 	// ObservationDefinitionQualifiedIntervalCategoryAbsolute represents the "absolute" value.
 	ObservationDefinitionQualifiedIntervalCategoryAbsolute ObservationDefinitionQualifiedIntervalCategory = "absolute"
 )
+
+// Valid returns true if the value is a known ObservationDefinitionQualifiedIntervalCategory.
+func (e ObservationDefinitionQualifiedIntervalCategory) Valid() bool {
+	switch e {
+	case "reference", "critical", "absolute":
+		return true
+	}
+	return false
+}
+
+// ObservationDefinitionQualifiedIntervalCategoryValues returns all known values for ObservationDefinitionQualifiedIntervalCategory.
+func ObservationDefinitionQualifiedIntervalCategoryValues() []ObservationDefinitionQualifiedIntervalCategory {
+	return []ObservationDefinitionQualifiedIntervalCategory{"reference", "critical", "absolute"}
+}
 
 // ObservationStatus represents allowed values for the status field.
 type ObservationStatus string
@@ -2891,6 +4851,20 @@ const (
 	ObservationStatusUnknown ObservationStatus = "unknown"
 )
 
+// Valid returns true if the value is a known ObservationStatus.
+func (e ObservationStatus) Valid() bool {
+	switch e {
+	case "registered", "preliminary", "final", "amended", "corrected", "cancelled", "entered-in-error", "unknown":
+		return true
+	}
+	return false
+}
+
+// ObservationStatusValues returns all known values for ObservationStatus.
+func ObservationStatusValues() []ObservationStatus {
+	return []ObservationStatus{"registered", "preliminary", "final", "amended", "corrected", "cancelled", "entered-in-error", "unknown"}
+}
+
 // OperationDefinitionBindingStrength represents allowed values for the strength field.
 type OperationDefinitionBindingStrength string
 
@@ -2905,6 +4879,20 @@ const (
 	OperationDefinitionBindingStrengthExample OperationDefinitionBindingStrength = "example"
 )
 
+// Valid returns true if the value is a known OperationDefinitionBindingStrength.
+func (e OperationDefinitionBindingStrength) Valid() bool {
+	switch e {
+	case "required", "extensible", "preferred", "example":
+		return true
+	}
+	return false
+}
+
+// OperationDefinitionBindingStrengthValues returns all known values for OperationDefinitionBindingStrength.
+func OperationDefinitionBindingStrengthValues() []OperationDefinitionBindingStrength {
+	return []OperationDefinitionBindingStrength{"required", "extensible", "preferred", "example"}
+}
+
 // OperationDefinitionKind represents allowed values for the kind field.
 type OperationDefinitionKind string
 
@@ -2914,6 +4902,20 @@ const (
 	// OperationDefinitionKindQuery represents the "query" value.
 	OperationDefinitionKindQuery OperationDefinitionKind = "query"
 )
+
+// Valid returns true if the value is a known OperationDefinitionKind.
+func (e OperationDefinitionKind) Valid() bool {
+	switch e {
+	case "operation", "query":
+		return true
+	}
+	return false
+}
+
+// OperationDefinitionKindValues returns all known values for OperationDefinitionKind.
+func OperationDefinitionKindValues() []OperationDefinitionKind {
+	return []OperationDefinitionKind{"operation", "query"}
+}
 
 // OperationDefinitionParameterSearchType represents allowed values for the searchType field.
 type OperationDefinitionParameterSearchType string
@@ -2939,6 +4941,20 @@ const (
 	OperationDefinitionParameterSearchTypeSpecial OperationDefinitionParameterSearchType = "special"
 )
 
+// Valid returns true if the value is a known OperationDefinitionParameterSearchType.
+func (e OperationDefinitionParameterSearchType) Valid() bool {
+	switch e {
+	case "number", "date", "string", "token", "reference", "composite", "quantity", "uri", "special":
+		return true
+	}
+	return false
+}
+
+// OperationDefinitionParameterSearchTypeValues returns all known values for OperationDefinitionParameterSearchType.
+func OperationDefinitionParameterSearchTypeValues() []OperationDefinitionParameterSearchType {
+	return []OperationDefinitionParameterSearchType{"number", "date", "string", "token", "reference", "composite", "quantity", "uri", "special"}
+}
+
 // OperationDefinitionParameterUse represents allowed values for the use field.
 type OperationDefinitionParameterUse string
 
@@ -2948,6 +4964,20 @@ const (
 	// OperationDefinitionParameterUseOut represents the "out" value.
 	OperationDefinitionParameterUseOut OperationDefinitionParameterUse = "out"
 )
+
+// Valid returns true if the value is a known OperationDefinitionParameterUse.
+func (e OperationDefinitionParameterUse) Valid() bool {
+	switch e {
+	case "in", "out":
+		return true
+	}
+	return false
+}
+
+// OperationDefinitionParameterUseValues returns all known values for OperationDefinitionParameterUse.
+func OperationDefinitionParameterUseValues() []OperationDefinitionParameterUse {
+	return []OperationDefinitionParameterUse{"in", "out"}
+}
 
 // OperationDefinitionStatus represents allowed values for the status field.
 type OperationDefinitionStatus string
@@ -2962,6 +4992,20 @@ const (
 	// OperationDefinitionStatusUnknown represents the "unknown" value.
 	OperationDefinitionStatusUnknown OperationDefinitionStatus = "unknown"
 )
+
+// Valid returns true if the value is a known OperationDefinitionStatus.
+func (e OperationDefinitionStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// OperationDefinitionStatusValues returns all known values for OperationDefinitionStatus.
+func OperationDefinitionStatusValues() []OperationDefinitionStatus {
+	return []OperationDefinitionStatus{"draft", "active", "retired", "unknown"}
+}
 
 // OperationOutcomeIssueCode represents allowed values for the code field.
 type OperationOutcomeIssueCode string
@@ -3031,6 +5075,20 @@ const (
 	OperationOutcomeIssueCodeInformational OperationOutcomeIssueCode = "informational"
 )
 
+// Valid returns true if the value is a known OperationOutcomeIssueCode.
+func (e OperationOutcomeIssueCode) Valid() bool {
+	switch e {
+	case "invalid", "structure", "required", "value", "invariant", "security", "login", "unknown", "expired", "forbidden", "suppressed", "processing", "not-supported", "duplicate", "multiple-matches", "not-found", "deleted", "too-long", "code-invalid", "extension", "too-costly", "business-rule", "conflict", "transient", "lock-error", "no-store", "exception", "timeout", "incomplete", "throttled", "informational":
+		return true
+	}
+	return false
+}
+
+// OperationOutcomeIssueCodeValues returns all known values for OperationOutcomeIssueCode.
+func OperationOutcomeIssueCodeValues() []OperationOutcomeIssueCode {
+	return []OperationOutcomeIssueCode{"invalid", "structure", "required", "value", "invariant", "security", "login", "unknown", "expired", "forbidden", "suppressed", "processing", "not-supported", "duplicate", "multiple-matches", "not-found", "deleted", "too-long", "code-invalid", "extension", "too-costly", "business-rule", "conflict", "transient", "lock-error", "no-store", "exception", "timeout", "incomplete", "throttled", "informational"}
+}
+
 // OperationOutcomeIssueSeverity represents allowed values for the severity field.
 type OperationOutcomeIssueSeverity string
 
@@ -3044,6 +5102,20 @@ const (
 	// OperationOutcomeIssueSeverityInformation represents the "information" value.
 	OperationOutcomeIssueSeverityInformation OperationOutcomeIssueSeverity = "information"
 )
+
+// Valid returns true if the value is a known OperationOutcomeIssueSeverity.
+func (e OperationOutcomeIssueSeverity) Valid() bool {
+	switch e {
+	case "fatal", "error", "warning", "information":
+		return true
+	}
+	return false
+}
+
+// OperationOutcomeIssueSeverityValues returns all known values for OperationOutcomeIssueSeverity.
+func OperationOutcomeIssueSeverityValues() []OperationOutcomeIssueSeverity {
+	return []OperationOutcomeIssueSeverity{"fatal", "error", "warning", "information"}
+}
 
 // PatientLinkType represents allowed values for the type field.
 type PatientLinkType string
@@ -3059,6 +5131,20 @@ const (
 	PatientLinkTypeSeealso PatientLinkType = "seealso"
 )
 
+// Valid returns true if the value is a known PatientLinkType.
+func (e PatientLinkType) Valid() bool {
+	switch e {
+	case "replaced-by", "replaces", "refer", "seealso":
+		return true
+	}
+	return false
+}
+
+// PatientLinkTypeValues returns all known values for PatientLinkType.
+func PatientLinkTypeValues() []PatientLinkType {
+	return []PatientLinkType{"replaced-by", "replaces", "refer", "seealso"}
+}
+
 // PaymentReconciliationOutcome represents allowed values for the outcome field.
 type PaymentReconciliationOutcome string
 
@@ -3073,6 +5159,20 @@ const (
 	PaymentReconciliationOutcomePartial PaymentReconciliationOutcome = "partial"
 )
 
+// Valid returns true if the value is a known PaymentReconciliationOutcome.
+func (e PaymentReconciliationOutcome) Valid() bool {
+	switch e {
+	case "queued", "complete", "error", "partial":
+		return true
+	}
+	return false
+}
+
+// PaymentReconciliationOutcomeValues returns all known values for PaymentReconciliationOutcome.
+func PaymentReconciliationOutcomeValues() []PaymentReconciliationOutcome {
+	return []PaymentReconciliationOutcome{"queued", "complete", "error", "partial"}
+}
+
 // PaymentReconciliationProcessNoteType represents allowed values for the type field.
 type PaymentReconciliationProcessNoteType string
 
@@ -3084,6 +5184,20 @@ const (
 	// PaymentReconciliationProcessNoteTypePrintoper represents the "printoper" value.
 	PaymentReconciliationProcessNoteTypePrintoper PaymentReconciliationProcessNoteType = "printoper"
 )
+
+// Valid returns true if the value is a known PaymentReconciliationProcessNoteType.
+func (e PaymentReconciliationProcessNoteType) Valid() bool {
+	switch e {
+	case "display", "print", "printoper":
+		return true
+	}
+	return false
+}
+
+// PaymentReconciliationProcessNoteTypeValues returns all known values for PaymentReconciliationProcessNoteType.
+func PaymentReconciliationProcessNoteTypeValues() []PaymentReconciliationProcessNoteType {
+	return []PaymentReconciliationProcessNoteType{"display", "print", "printoper"}
+}
 
 // PersonLinkAssurance represents allowed values for the assurance field.
 type PersonLinkAssurance string
@@ -3099,6 +5213,20 @@ const (
 	PersonLinkAssuranceLevel4 PersonLinkAssurance = "level4"
 )
 
+// Valid returns true if the value is a known PersonLinkAssurance.
+func (e PersonLinkAssurance) Valid() bool {
+	switch e {
+	case "level1", "level2", "level3", "level4":
+		return true
+	}
+	return false
+}
+
+// PersonLinkAssuranceValues returns all known values for PersonLinkAssurance.
+func PersonLinkAssuranceValues() []PersonLinkAssurance {
+	return []PersonLinkAssurance{"level1", "level2", "level3", "level4"}
+}
+
 // PlanDefinitionActionCardinalityBehavior represents allowed values for the cardinalityBehavior field.
 type PlanDefinitionActionCardinalityBehavior string
 
@@ -3108,6 +5236,20 @@ const (
 	// PlanDefinitionActionCardinalityBehaviorMultiple represents the "multiple" value.
 	PlanDefinitionActionCardinalityBehaviorMultiple PlanDefinitionActionCardinalityBehavior = "multiple"
 )
+
+// Valid returns true if the value is a known PlanDefinitionActionCardinalityBehavior.
+func (e PlanDefinitionActionCardinalityBehavior) Valid() bool {
+	switch e {
+	case "single", "multiple":
+		return true
+	}
+	return false
+}
+
+// PlanDefinitionActionCardinalityBehaviorValues returns all known values for PlanDefinitionActionCardinalityBehavior.
+func PlanDefinitionActionCardinalityBehaviorValues() []PlanDefinitionActionCardinalityBehavior {
+	return []PlanDefinitionActionCardinalityBehavior{"single", "multiple"}
+}
 
 // PlanDefinitionActionGroupingBehavior represents allowed values for the groupingBehavior field.
 type PlanDefinitionActionGroupingBehavior string
@@ -3121,6 +5263,20 @@ const (
 	PlanDefinitionActionGroupingBehaviorSentencegroup PlanDefinitionActionGroupingBehavior = "sentence-group"
 )
 
+// Valid returns true if the value is a known PlanDefinitionActionGroupingBehavior.
+func (e PlanDefinitionActionGroupingBehavior) Valid() bool {
+	switch e {
+	case "visual-group", "logical-group", "sentence-group":
+		return true
+	}
+	return false
+}
+
+// PlanDefinitionActionGroupingBehaviorValues returns all known values for PlanDefinitionActionGroupingBehavior.
+func PlanDefinitionActionGroupingBehaviorValues() []PlanDefinitionActionGroupingBehavior {
+	return []PlanDefinitionActionGroupingBehavior{"visual-group", "logical-group", "sentence-group"}
+}
+
 // PlanDefinitionActionPrecheckBehavior represents allowed values for the precheckBehavior field.
 type PlanDefinitionActionPrecheckBehavior string
 
@@ -3130,6 +5286,20 @@ const (
 	// PlanDefinitionActionPrecheckBehaviorNo represents the "no" value.
 	PlanDefinitionActionPrecheckBehaviorNo PlanDefinitionActionPrecheckBehavior = "no"
 )
+
+// Valid returns true if the value is a known PlanDefinitionActionPrecheckBehavior.
+func (e PlanDefinitionActionPrecheckBehavior) Valid() bool {
+	switch e {
+	case "yes", "no":
+		return true
+	}
+	return false
+}
+
+// PlanDefinitionActionPrecheckBehaviorValues returns all known values for PlanDefinitionActionPrecheckBehavior.
+func PlanDefinitionActionPrecheckBehaviorValues() []PlanDefinitionActionPrecheckBehavior {
+	return []PlanDefinitionActionPrecheckBehavior{"yes", "no"}
+}
 
 // PlanDefinitionActionRequiredBehavior represents allowed values for the requiredBehavior field.
 type PlanDefinitionActionRequiredBehavior string
@@ -3142,6 +5312,20 @@ const (
 	// PlanDefinitionActionRequiredBehaviorMustunlessdocumented represents the "must-unless-documented" value.
 	PlanDefinitionActionRequiredBehaviorMustunlessdocumented PlanDefinitionActionRequiredBehavior = "must-unless-documented"
 )
+
+// Valid returns true if the value is a known PlanDefinitionActionRequiredBehavior.
+func (e PlanDefinitionActionRequiredBehavior) Valid() bool {
+	switch e {
+	case "must", "could", "must-unless-documented":
+		return true
+	}
+	return false
+}
+
+// PlanDefinitionActionRequiredBehaviorValues returns all known values for PlanDefinitionActionRequiredBehavior.
+func PlanDefinitionActionRequiredBehaviorValues() []PlanDefinitionActionRequiredBehavior {
+	return []PlanDefinitionActionRequiredBehavior{"must", "could", "must-unless-documented"}
+}
 
 // PlanDefinitionActionSelectionBehavior represents allowed values for the selectionBehavior field.
 type PlanDefinitionActionSelectionBehavior string
@@ -3161,6 +5345,20 @@ const (
 	PlanDefinitionActionSelectionBehaviorOneormore PlanDefinitionActionSelectionBehavior = "one-or-more"
 )
 
+// Valid returns true if the value is a known PlanDefinitionActionSelectionBehavior.
+func (e PlanDefinitionActionSelectionBehavior) Valid() bool {
+	switch e {
+	case "any", "all", "all-or-none", "exactly-one", "at-most-one", "one-or-more":
+		return true
+	}
+	return false
+}
+
+// PlanDefinitionActionSelectionBehaviorValues returns all known values for PlanDefinitionActionSelectionBehavior.
+func PlanDefinitionActionSelectionBehaviorValues() []PlanDefinitionActionSelectionBehavior {
+	return []PlanDefinitionActionSelectionBehavior{"any", "all", "all-or-none", "exactly-one", "at-most-one", "one-or-more"}
+}
+
 // PlanDefinitionConditionKind represents allowed values for the kind field.
 type PlanDefinitionConditionKind string
 
@@ -3172,6 +5370,20 @@ const (
 	// PlanDefinitionConditionKindStop represents the "stop" value.
 	PlanDefinitionConditionKindStop PlanDefinitionConditionKind = "stop"
 )
+
+// Valid returns true if the value is a known PlanDefinitionConditionKind.
+func (e PlanDefinitionConditionKind) Valid() bool {
+	switch e {
+	case "applicability", "start", "stop":
+		return true
+	}
+	return false
+}
+
+// PlanDefinitionConditionKindValues returns all known values for PlanDefinitionConditionKind.
+func PlanDefinitionConditionKindValues() []PlanDefinitionConditionKind {
+	return []PlanDefinitionConditionKind{"applicability", "start", "stop"}
+}
 
 // PlanDefinitionParticipantType represents allowed values for the type field.
 type PlanDefinitionParticipantType string
@@ -3186,6 +5398,20 @@ const (
 	// PlanDefinitionParticipantTypeDevice represents the "device" value.
 	PlanDefinitionParticipantTypeDevice PlanDefinitionParticipantType = "device"
 )
+
+// Valid returns true if the value is a known PlanDefinitionParticipantType.
+func (e PlanDefinitionParticipantType) Valid() bool {
+	switch e {
+	case "patient", "practitioner", "related-person", "device":
+		return true
+	}
+	return false
+}
+
+// PlanDefinitionParticipantTypeValues returns all known values for PlanDefinitionParticipantType.
+func PlanDefinitionParticipantTypeValues() []PlanDefinitionParticipantType {
+	return []PlanDefinitionParticipantType{"patient", "practitioner", "related-person", "device"}
+}
 
 // PlanDefinitionRelatedActionRelationship represents allowed values for the relationship field.
 type PlanDefinitionRelatedActionRelationship string
@@ -3211,6 +5437,20 @@ const (
 	PlanDefinitionRelatedActionRelationshipAfterend PlanDefinitionRelatedActionRelationship = "after-end"
 )
 
+// Valid returns true if the value is a known PlanDefinitionRelatedActionRelationship.
+func (e PlanDefinitionRelatedActionRelationship) Valid() bool {
+	switch e {
+	case "before-start", "before", "before-end", "concurrent-with-start", "concurrent", "concurrent-with-end", "after-start", "after", "after-end":
+		return true
+	}
+	return false
+}
+
+// PlanDefinitionRelatedActionRelationshipValues returns all known values for PlanDefinitionRelatedActionRelationship.
+func PlanDefinitionRelatedActionRelationshipValues() []PlanDefinitionRelatedActionRelationship {
+	return []PlanDefinitionRelatedActionRelationship{"before-start", "before", "before-end", "concurrent-with-start", "concurrent", "concurrent-with-end", "after-start", "after", "after-end"}
+}
+
 // PlanDefinitionStatus represents allowed values for the status field.
 type PlanDefinitionStatus string
 
@@ -3224,6 +5464,20 @@ const (
 	// PlanDefinitionStatusUnknown represents the "unknown" value.
 	PlanDefinitionStatusUnknown PlanDefinitionStatus = "unknown"
 )
+
+// Valid returns true if the value is a known PlanDefinitionStatus.
+func (e PlanDefinitionStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// PlanDefinitionStatusValues returns all known values for PlanDefinitionStatus.
+func PlanDefinitionStatusValues() []PlanDefinitionStatus {
+	return []PlanDefinitionStatus{"draft", "active", "retired", "unknown"}
+}
 
 // ProvenanceEntityRole represents allowed values for the role field.
 type ProvenanceEntityRole string
@@ -3240,6 +5494,20 @@ const (
 	// ProvenanceEntityRoleRemoval represents the "removal" value.
 	ProvenanceEntityRoleRemoval ProvenanceEntityRole = "removal"
 )
+
+// Valid returns true if the value is a known ProvenanceEntityRole.
+func (e ProvenanceEntityRole) Valid() bool {
+	switch e {
+	case "derivation", "revision", "quotation", "source", "removal":
+		return true
+	}
+	return false
+}
+
+// ProvenanceEntityRoleValues returns all known values for ProvenanceEntityRole.
+func ProvenanceEntityRoleValues() []ProvenanceEntityRole {
+	return []ProvenanceEntityRole{"derivation", "revision", "quotation", "source", "removal"}
+}
 
 // QuestionnaireEnableWhenOperator represents allowed values for the operator field.
 type QuestionnaireEnableWhenOperator string
@@ -3261,6 +5529,20 @@ const (
 	QuestionnaireEnableWhenOperatorLessOrEqual QuestionnaireEnableWhenOperator = "<="
 )
 
+// Valid returns true if the value is a known QuestionnaireEnableWhenOperator.
+func (e QuestionnaireEnableWhenOperator) Valid() bool {
+	switch e {
+	case "exists", "=", "!=", ">", "<", ">=", "<=":
+		return true
+	}
+	return false
+}
+
+// QuestionnaireEnableWhenOperatorValues returns all known values for QuestionnaireEnableWhenOperator.
+func QuestionnaireEnableWhenOperatorValues() []QuestionnaireEnableWhenOperator {
+	return []QuestionnaireEnableWhenOperator{"exists", "=", "!=", ">", "<", ">=", "<="}
+}
+
 // QuestionnaireItemEnableBehavior represents allowed values for the enableBehavior field.
 type QuestionnaireItemEnableBehavior string
 
@@ -3270,6 +5552,20 @@ const (
 	// QuestionnaireItemEnableBehaviorAny represents the "any" value.
 	QuestionnaireItemEnableBehaviorAny QuestionnaireItemEnableBehavior = "any"
 )
+
+// Valid returns true if the value is a known QuestionnaireItemEnableBehavior.
+func (e QuestionnaireItemEnableBehavior) Valid() bool {
+	switch e {
+	case "all", "any":
+		return true
+	}
+	return false
+}
+
+// QuestionnaireItemEnableBehaviorValues returns all known values for QuestionnaireItemEnableBehavior.
+func QuestionnaireItemEnableBehaviorValues() []QuestionnaireItemEnableBehavior {
+	return []QuestionnaireItemEnableBehavior{"all", "any"}
+}
 
 // QuestionnaireItemType represents allowed values for the type field.
 type QuestionnaireItemType string
@@ -3309,6 +5605,20 @@ const (
 	QuestionnaireItemTypeQuantity QuestionnaireItemType = "quantity"
 )
 
+// Valid returns true if the value is a known QuestionnaireItemType.
+func (e QuestionnaireItemType) Valid() bool {
+	switch e {
+	case "group", "display", "boolean", "decimal", "integer", "date", "dateTime", "time", "string", "text", "url", "choice", "open-choice", "attachment", "reference", "quantity":
+		return true
+	}
+	return false
+}
+
+// QuestionnaireItemTypeValues returns all known values for QuestionnaireItemType.
+func QuestionnaireItemTypeValues() []QuestionnaireItemType {
+	return []QuestionnaireItemType{"group", "display", "boolean", "decimal", "integer", "date", "dateTime", "time", "string", "text", "url", "choice", "open-choice", "attachment", "reference", "quantity"}
+}
+
 // QuestionnaireResponseStatus represents allowed values for the status field.
 type QuestionnaireResponseStatus string
 
@@ -3325,6 +5635,20 @@ const (
 	QuestionnaireResponseStatusStopped QuestionnaireResponseStatus = "stopped"
 )
 
+// Valid returns true if the value is a known QuestionnaireResponseStatus.
+func (e QuestionnaireResponseStatus) Valid() bool {
+	switch e {
+	case "in-progress", "completed", "amended", "entered-in-error", "stopped":
+		return true
+	}
+	return false
+}
+
+// QuestionnaireResponseStatusValues returns all known values for QuestionnaireResponseStatus.
+func QuestionnaireResponseStatusValues() []QuestionnaireResponseStatus {
+	return []QuestionnaireResponseStatus{"in-progress", "completed", "amended", "entered-in-error", "stopped"}
+}
+
 // QuestionnaireStatus represents allowed values for the status field.
 type QuestionnaireStatus string
 
@@ -3339,6 +5663,20 @@ const (
 	QuestionnaireStatusUnknown QuestionnaireStatus = "unknown"
 )
 
+// Valid returns true if the value is a known QuestionnaireStatus.
+func (e QuestionnaireStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// QuestionnaireStatusValues returns all known values for QuestionnaireStatus.
+func QuestionnaireStatusValues() []QuestionnaireStatus {
+	return []QuestionnaireStatus{"draft", "active", "retired", "unknown"}
+}
+
 // ResearchDefinitionStatus represents allowed values for the status field.
 type ResearchDefinitionStatus string
 
@@ -3352,6 +5690,20 @@ const (
 	// ResearchDefinitionStatusUnknown represents the "unknown" value.
 	ResearchDefinitionStatusUnknown ResearchDefinitionStatus = "unknown"
 )
+
+// Valid returns true if the value is a known ResearchDefinitionStatus.
+func (e ResearchDefinitionStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// ResearchDefinitionStatusValues returns all known values for ResearchDefinitionStatus.
+func ResearchDefinitionStatusValues() []ResearchDefinitionStatus {
+	return []ResearchDefinitionStatus{"draft", "active", "retired", "unknown"}
+}
 
 // ResearchElementDefinitionCharacteristicParticipantEffectiveGroupMeasure represents allowed values for the participantEffectiveGroupMeasure field.
 type ResearchElementDefinitionCharacteristicParticipantEffectiveGroupMeasure string
@@ -3371,6 +5723,20 @@ const (
 	ResearchElementDefinitionCharacteristicParticipantEffectiveGroupMeasureMedianofmedian ResearchElementDefinitionCharacteristicParticipantEffectiveGroupMeasure = "median-of-median"
 )
 
+// Valid returns true if the value is a known ResearchElementDefinitionCharacteristicParticipantEffectiveGroupMeasure.
+func (e ResearchElementDefinitionCharacteristicParticipantEffectiveGroupMeasure) Valid() bool {
+	switch e {
+	case "mean", "median", "mean-of-mean", "mean-of-median", "median-of-mean", "median-of-median":
+		return true
+	}
+	return false
+}
+
+// ResearchElementDefinitionCharacteristicParticipantEffectiveGroupMeasureValues returns all known values for ResearchElementDefinitionCharacteristicParticipantEffectiveGroupMeasure.
+func ResearchElementDefinitionCharacteristicParticipantEffectiveGroupMeasureValues() []ResearchElementDefinitionCharacteristicParticipantEffectiveGroupMeasure {
+	return []ResearchElementDefinitionCharacteristicParticipantEffectiveGroupMeasure{"mean", "median", "mean-of-mean", "mean-of-median", "median-of-mean", "median-of-median"}
+}
+
 // ResearchElementDefinitionCharacteristicStudyEffectiveGroupMeasure represents allowed values for the studyEffectiveGroupMeasure field.
 type ResearchElementDefinitionCharacteristicStudyEffectiveGroupMeasure string
 
@@ -3389,6 +5755,20 @@ const (
 	ResearchElementDefinitionCharacteristicStudyEffectiveGroupMeasureMedianofmedian ResearchElementDefinitionCharacteristicStudyEffectiveGroupMeasure = "median-of-median"
 )
 
+// Valid returns true if the value is a known ResearchElementDefinitionCharacteristicStudyEffectiveGroupMeasure.
+func (e ResearchElementDefinitionCharacteristicStudyEffectiveGroupMeasure) Valid() bool {
+	switch e {
+	case "mean", "median", "mean-of-mean", "mean-of-median", "median-of-mean", "median-of-median":
+		return true
+	}
+	return false
+}
+
+// ResearchElementDefinitionCharacteristicStudyEffectiveGroupMeasureValues returns all known values for ResearchElementDefinitionCharacteristicStudyEffectiveGroupMeasure.
+func ResearchElementDefinitionCharacteristicStudyEffectiveGroupMeasureValues() []ResearchElementDefinitionCharacteristicStudyEffectiveGroupMeasure {
+	return []ResearchElementDefinitionCharacteristicStudyEffectiveGroupMeasure{"mean", "median", "mean-of-mean", "mean-of-median", "median-of-mean", "median-of-median"}
+}
+
 // ResearchElementDefinitionStatus represents allowed values for the status field.
 type ResearchElementDefinitionStatus string
 
@@ -3403,6 +5783,20 @@ const (
 	ResearchElementDefinitionStatusUnknown ResearchElementDefinitionStatus = "unknown"
 )
 
+// Valid returns true if the value is a known ResearchElementDefinitionStatus.
+func (e ResearchElementDefinitionStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// ResearchElementDefinitionStatusValues returns all known values for ResearchElementDefinitionStatus.
+func ResearchElementDefinitionStatusValues() []ResearchElementDefinitionStatus {
+	return []ResearchElementDefinitionStatus{"draft", "active", "retired", "unknown"}
+}
+
 // ResearchElementDefinitionType represents allowed values for the type field.
 type ResearchElementDefinitionType string
 
@@ -3415,6 +5809,20 @@ const (
 	ResearchElementDefinitionTypeOutcome ResearchElementDefinitionType = "outcome"
 )
 
+// Valid returns true if the value is a known ResearchElementDefinitionType.
+func (e ResearchElementDefinitionType) Valid() bool {
+	switch e {
+	case "population", "exposure", "outcome":
+		return true
+	}
+	return false
+}
+
+// ResearchElementDefinitionTypeValues returns all known values for ResearchElementDefinitionType.
+func ResearchElementDefinitionTypeValues() []ResearchElementDefinitionType {
+	return []ResearchElementDefinitionType{"population", "exposure", "outcome"}
+}
+
 // ResearchElementDefinitionVariableType represents allowed values for the variableType field.
 type ResearchElementDefinitionVariableType string
 
@@ -3426,6 +5834,20 @@ const (
 	// ResearchElementDefinitionVariableTypeDescriptive represents the "descriptive" value.
 	ResearchElementDefinitionVariableTypeDescriptive ResearchElementDefinitionVariableType = "descriptive"
 )
+
+// Valid returns true if the value is a known ResearchElementDefinitionVariableType.
+func (e ResearchElementDefinitionVariableType) Valid() bool {
+	switch e {
+	case "dichotomous", "continuous", "descriptive":
+		return true
+	}
+	return false
+}
+
+// ResearchElementDefinitionVariableTypeValues returns all known values for ResearchElementDefinitionVariableType.
+func ResearchElementDefinitionVariableTypeValues() []ResearchElementDefinitionVariableType {
+	return []ResearchElementDefinitionVariableType{"dichotomous", "continuous", "descriptive"}
+}
 
 // ResearchStudyStatus represents allowed values for the status field.
 type ResearchStudyStatus string
@@ -3454,6 +5876,20 @@ const (
 	// ResearchStudyStatusWithdrawn represents the "withdrawn" value.
 	ResearchStudyStatusWithdrawn ResearchStudyStatus = "withdrawn"
 )
+
+// Valid returns true if the value is a known ResearchStudyStatus.
+func (e ResearchStudyStatus) Valid() bool {
+	switch e {
+	case "active", "administratively-completed", "approved", "closed-to-accrual", "closed-to-accrual-and-intervention", "completed", "disapproved", "in-review", "temporarily-closed-to-accrual", "temporarily-closed-to-accrual-and-intervention", "withdrawn":
+		return true
+	}
+	return false
+}
+
+// ResearchStudyStatusValues returns all known values for ResearchStudyStatus.
+func ResearchStudyStatusValues() []ResearchStudyStatus {
+	return []ResearchStudyStatus{"active", "administratively-completed", "approved", "closed-to-accrual", "closed-to-accrual-and-intervention", "completed", "disapproved", "in-review", "temporarily-closed-to-accrual", "temporarily-closed-to-accrual-and-intervention", "withdrawn"}
+}
 
 // ResearchSubjectStatus represents allowed values for the status field.
 type ResearchSubjectStatus string
@@ -3487,6 +5923,20 @@ const (
 	ResearchSubjectStatusWithdrawn ResearchSubjectStatus = "withdrawn"
 )
 
+// Valid returns true if the value is a known ResearchSubjectStatus.
+func (e ResearchSubjectStatus) Valid() bool {
+	switch e {
+	case "candidate", "eligible", "follow-up", "ineligible", "not-registered", "off-study", "on-study", "on-study-intervention", "on-study-observation", "pending-on-study", "potential-candidate", "screening", "withdrawn":
+		return true
+	}
+	return false
+}
+
+// ResearchSubjectStatusValues returns all known values for ResearchSubjectStatus.
+func ResearchSubjectStatusValues() []ResearchSubjectStatus {
+	return []ResearchSubjectStatus{"candidate", "eligible", "follow-up", "ineligible", "not-registered", "off-study", "on-study", "on-study-intervention", "on-study-observation", "pending-on-study", "potential-candidate", "screening", "withdrawn"}
+}
+
 // RiskEvidenceSynthesisStatus represents allowed values for the status field.
 type RiskEvidenceSynthesisStatus string
 
@@ -3500,6 +5950,20 @@ const (
 	// RiskEvidenceSynthesisStatusUnknown represents the "unknown" value.
 	RiskEvidenceSynthesisStatusUnknown RiskEvidenceSynthesisStatus = "unknown"
 )
+
+// Valid returns true if the value is a known RiskEvidenceSynthesisStatus.
+func (e RiskEvidenceSynthesisStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// RiskEvidenceSynthesisStatusValues returns all known values for RiskEvidenceSynthesisStatus.
+func RiskEvidenceSynthesisStatusValues() []RiskEvidenceSynthesisStatus {
+	return []RiskEvidenceSynthesisStatus{"draft", "active", "retired", "unknown"}
+}
 
 // SearchParameterComparator represents allowed values for the comparator field.
 type SearchParameterComparator string
@@ -3524,6 +5988,20 @@ const (
 	// SearchParameterComparatorAp represents the "ap" value.
 	SearchParameterComparatorAp SearchParameterComparator = "ap"
 )
+
+// Valid returns true if the value is a known SearchParameterComparator.
+func (e SearchParameterComparator) Valid() bool {
+	switch e {
+	case "eq", "ne", "gt", "lt", "ge", "le", "sa", "eb", "ap":
+		return true
+	}
+	return false
+}
+
+// SearchParameterComparatorValues returns all known values for SearchParameterComparator.
+func SearchParameterComparatorValues() []SearchParameterComparator {
+	return []SearchParameterComparator{"eq", "ne", "gt", "lt", "ge", "le", "sa", "eb", "ap"}
+}
 
 // SearchParameterModifier represents allowed values for the modifier field.
 type SearchParameterModifier string
@@ -3555,6 +6033,20 @@ const (
 	SearchParameterModifierOfType SearchParameterModifier = "ofType"
 )
 
+// Valid returns true if the value is a known SearchParameterModifier.
+func (e SearchParameterModifier) Valid() bool {
+	switch e {
+	case "missing", "exact", "contains", "not", "text", "in", "not-in", "below", "above", "type", "identifier", "ofType":
+		return true
+	}
+	return false
+}
+
+// SearchParameterModifierValues returns all known values for SearchParameterModifier.
+func SearchParameterModifierValues() []SearchParameterModifier {
+	return []SearchParameterModifier{"missing", "exact", "contains", "not", "text", "in", "not-in", "below", "above", "type", "identifier", "ofType"}
+}
+
 // SearchParameterStatus represents allowed values for the status field.
 type SearchParameterStatus string
 
@@ -3568,6 +6060,20 @@ const (
 	// SearchParameterStatusUnknown represents the "unknown" value.
 	SearchParameterStatusUnknown SearchParameterStatus = "unknown"
 )
+
+// Valid returns true if the value is a known SearchParameterStatus.
+func (e SearchParameterStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// SearchParameterStatusValues returns all known values for SearchParameterStatus.
+func SearchParameterStatusValues() []SearchParameterStatus {
+	return []SearchParameterStatus{"draft", "active", "retired", "unknown"}
+}
 
 // SearchParameterType represents allowed values for the type field.
 type SearchParameterType string
@@ -3593,6 +6099,20 @@ const (
 	SearchParameterTypeSpecial SearchParameterType = "special"
 )
 
+// Valid returns true if the value is a known SearchParameterType.
+func (e SearchParameterType) Valid() bool {
+	switch e {
+	case "number", "date", "string", "token", "reference", "composite", "quantity", "uri", "special":
+		return true
+	}
+	return false
+}
+
+// SearchParameterTypeValues returns all known values for SearchParameterType.
+func SearchParameterTypeValues() []SearchParameterType {
+	return []SearchParameterType{"number", "date", "string", "token", "reference", "composite", "quantity", "uri", "special"}
+}
+
 // SearchParameterXpathUsage represents allowed values for the xpathUsage field.
 type SearchParameterXpathUsage string
 
@@ -3608,6 +6128,20 @@ const (
 	// SearchParameterXpathUsageOther represents the "other" value.
 	SearchParameterXpathUsageOther SearchParameterXpathUsage = "other"
 )
+
+// Valid returns true if the value is a known SearchParameterXpathUsage.
+func (e SearchParameterXpathUsage) Valid() bool {
+	switch e {
+	case "normal", "phonetic", "nearby", "distance", "other":
+		return true
+	}
+	return false
+}
+
+// SearchParameterXpathUsageValues returns all known values for SearchParameterXpathUsage.
+func SearchParameterXpathUsageValues() []SearchParameterXpathUsage {
+	return []SearchParameterXpathUsage{"normal", "phonetic", "nearby", "distance", "other"}
+}
 
 // SlotStatus represents allowed values for the status field.
 type SlotStatus string
@@ -3625,6 +6159,20 @@ const (
 	SlotStatusEnteredinerror SlotStatus = "entered-in-error"
 )
 
+// Valid returns true if the value is a known SlotStatus.
+func (e SlotStatus) Valid() bool {
+	switch e {
+	case "busy", "free", "busy-unavailable", "busy-tentative", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// SlotStatusValues returns all known values for SlotStatus.
+func SlotStatusValues() []SlotStatus {
+	return []SlotStatus{"busy", "free", "busy-unavailable", "busy-tentative", "entered-in-error"}
+}
+
 // SpecimenDefinitionTypeTestedPreference represents allowed values for the preference field.
 type SpecimenDefinitionTypeTestedPreference string
 
@@ -3634,6 +6182,20 @@ const (
 	// SpecimenDefinitionTypeTestedPreferenceAlternate represents the "alternate" value.
 	SpecimenDefinitionTypeTestedPreferenceAlternate SpecimenDefinitionTypeTestedPreference = "alternate"
 )
+
+// Valid returns true if the value is a known SpecimenDefinitionTypeTestedPreference.
+func (e SpecimenDefinitionTypeTestedPreference) Valid() bool {
+	switch e {
+	case "preferred", "alternate":
+		return true
+	}
+	return false
+}
+
+// SpecimenDefinitionTypeTestedPreferenceValues returns all known values for SpecimenDefinitionTypeTestedPreference.
+func SpecimenDefinitionTypeTestedPreferenceValues() []SpecimenDefinitionTypeTestedPreference {
+	return []SpecimenDefinitionTypeTestedPreference{"preferred", "alternate"}
+}
 
 // SpecimenStatus represents allowed values for the status field.
 type SpecimenStatus string
@@ -3649,6 +6211,20 @@ const (
 	SpecimenStatusEnteredinerror SpecimenStatus = "entered-in-error"
 )
 
+// Valid returns true if the value is a known SpecimenStatus.
+func (e SpecimenStatus) Valid() bool {
+	switch e {
+	case "available", "unavailable", "unsatisfactory", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// SpecimenStatusValues returns all known values for SpecimenStatus.
+func SpecimenStatusValues() []SpecimenStatus {
+	return []SpecimenStatus{"available", "unavailable", "unsatisfactory", "entered-in-error"}
+}
+
 // StructureDefinitionContextType represents allowed values for the type field.
 type StructureDefinitionContextType string
 
@@ -3661,6 +6237,20 @@ const (
 	StructureDefinitionContextTypeExtension StructureDefinitionContextType = "extension"
 )
 
+// Valid returns true if the value is a known StructureDefinitionContextType.
+func (e StructureDefinitionContextType) Valid() bool {
+	switch e {
+	case "fhirpath", "element", "extension":
+		return true
+	}
+	return false
+}
+
+// StructureDefinitionContextTypeValues returns all known values for StructureDefinitionContextType.
+func StructureDefinitionContextTypeValues() []StructureDefinitionContextType {
+	return []StructureDefinitionContextType{"fhirpath", "element", "extension"}
+}
+
 // StructureDefinitionDerivation represents allowed values for the derivation field.
 type StructureDefinitionDerivation string
 
@@ -3670,6 +6260,20 @@ const (
 	// StructureDefinitionDerivationConstraint represents the "constraint" value.
 	StructureDefinitionDerivationConstraint StructureDefinitionDerivation = "constraint"
 )
+
+// Valid returns true if the value is a known StructureDefinitionDerivation.
+func (e StructureDefinitionDerivation) Valid() bool {
+	switch e {
+	case "specialization", "constraint":
+		return true
+	}
+	return false
+}
+
+// StructureDefinitionDerivationValues returns all known values for StructureDefinitionDerivation.
+func StructureDefinitionDerivationValues() []StructureDefinitionDerivation {
+	return []StructureDefinitionDerivation{"specialization", "constraint"}
+}
 
 // StructureDefinitionFhirVersion represents allowed values for the fhirVersion field.
 type StructureDefinitionFhirVersion string
@@ -3721,6 +6325,20 @@ const (
 	StructureDefinitionFhirVersionV401 StructureDefinitionFhirVersion = "4.0.1"
 )
 
+// Valid returns true if the value is a known StructureDefinitionFhirVersion.
+func (e StructureDefinitionFhirVersion) Valid() bool {
+	switch e {
+	case "0.01", "0.05", "0.06", "0.11", "0.0.80", "0.0.81", "0.0.82", "0.4.0", "0.5.0", "1.0.0", "1.0.1", "1.0.2", "1.1.0", "1.4.0", "1.6.0", "1.8.0", "3.0.0", "3.0.1", "3.3.0", "3.5.0", "4.0.0", "4.0.1":
+		return true
+	}
+	return false
+}
+
+// StructureDefinitionFhirVersionValues returns all known values for StructureDefinitionFhirVersion.
+func StructureDefinitionFhirVersionValues() []StructureDefinitionFhirVersion {
+	return []StructureDefinitionFhirVersion{"0.01", "0.05", "0.06", "0.11", "0.0.80", "0.0.81", "0.0.82", "0.4.0", "0.5.0", "1.0.0", "1.0.1", "1.0.2", "1.1.0", "1.4.0", "1.6.0", "1.8.0", "3.0.0", "3.0.1", "3.3.0", "3.5.0", "4.0.0", "4.0.1"}
+}
+
 // StructureDefinitionKind represents allowed values for the kind field.
 type StructureDefinitionKind string
 
@@ -3734,6 +6352,20 @@ const (
 	// StructureDefinitionKindLogical represents the "logical" value.
 	StructureDefinitionKindLogical StructureDefinitionKind = "logical"
 )
+
+// Valid returns true if the value is a known StructureDefinitionKind.
+func (e StructureDefinitionKind) Valid() bool {
+	switch e {
+	case "primitive-type", "complex-type", "resource", "logical":
+		return true
+	}
+	return false
+}
+
+// StructureDefinitionKindValues returns all known values for StructureDefinitionKind.
+func StructureDefinitionKindValues() []StructureDefinitionKind {
+	return []StructureDefinitionKind{"primitive-type", "complex-type", "resource", "logical"}
+}
 
 // StructureDefinitionStatus represents allowed values for the status field.
 type StructureDefinitionStatus string
@@ -3749,6 +6381,20 @@ const (
 	StructureDefinitionStatusUnknown StructureDefinitionStatus = "unknown"
 )
 
+// Valid returns true if the value is a known StructureDefinitionStatus.
+func (e StructureDefinitionStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// StructureDefinitionStatusValues returns all known values for StructureDefinitionStatus.
+func StructureDefinitionStatusValues() []StructureDefinitionStatus {
+	return []StructureDefinitionStatus{"draft", "active", "retired", "unknown"}
+}
+
 // StructureMapGroupTypeMode represents allowed values for the typeMode field.
 type StructureMapGroupTypeMode string
 
@@ -3761,6 +6407,20 @@ const (
 	StructureMapGroupTypeModeTypeandtypes StructureMapGroupTypeMode = "type-and-types"
 )
 
+// Valid returns true if the value is a known StructureMapGroupTypeMode.
+func (e StructureMapGroupTypeMode) Valid() bool {
+	switch e {
+	case "none", "types", "type-and-types":
+		return true
+	}
+	return false
+}
+
+// StructureMapGroupTypeModeValues returns all known values for StructureMapGroupTypeMode.
+func StructureMapGroupTypeModeValues() []StructureMapGroupTypeMode {
+	return []StructureMapGroupTypeMode{"none", "types", "type-and-types"}
+}
+
 // StructureMapInputMode represents allowed values for the mode field.
 type StructureMapInputMode string
 
@@ -3770,6 +6430,20 @@ const (
 	// StructureMapInputModeTarget represents the "target" value.
 	StructureMapInputModeTarget StructureMapInputMode = "target"
 )
+
+// Valid returns true if the value is a known StructureMapInputMode.
+func (e StructureMapInputMode) Valid() bool {
+	switch e {
+	case "source", "target":
+		return true
+	}
+	return false
+}
+
+// StructureMapInputModeValues returns all known values for StructureMapInputMode.
+func StructureMapInputModeValues() []StructureMapInputMode {
+	return []StructureMapInputMode{"source", "target"}
+}
 
 // StructureMapSourceListMode represents allowed values for the listMode field.
 type StructureMapSourceListMode string
@@ -3787,6 +6461,20 @@ const (
 	StructureMapSourceListModeOnly_one StructureMapSourceListMode = "only_one"
 )
 
+// Valid returns true if the value is a known StructureMapSourceListMode.
+func (e StructureMapSourceListMode) Valid() bool {
+	switch e {
+	case "first", "not_first", "last", "not_last", "only_one":
+		return true
+	}
+	return false
+}
+
+// StructureMapSourceListModeValues returns all known values for StructureMapSourceListMode.
+func StructureMapSourceListModeValues() []StructureMapSourceListMode {
+	return []StructureMapSourceListMode{"first", "not_first", "last", "not_last", "only_one"}
+}
+
 // StructureMapStatus represents allowed values for the status field.
 type StructureMapStatus string
 
@@ -3800,6 +6488,20 @@ const (
 	// StructureMapStatusUnknown represents the "unknown" value.
 	StructureMapStatusUnknown StructureMapStatus = "unknown"
 )
+
+// Valid returns true if the value is a known StructureMapStatus.
+func (e StructureMapStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// StructureMapStatusValues returns all known values for StructureMapStatus.
+func StructureMapStatusValues() []StructureMapStatus {
+	return []StructureMapStatus{"draft", "active", "retired", "unknown"}
+}
 
 // StructureMapStructureMode represents allowed values for the mode field.
 type StructureMapStructureMode string
@@ -3815,6 +6517,20 @@ const (
 	StructureMapStructureModeProduced StructureMapStructureMode = "produced"
 )
 
+// Valid returns true if the value is a known StructureMapStructureMode.
+func (e StructureMapStructureMode) Valid() bool {
+	switch e {
+	case "source", "queried", "target", "produced":
+		return true
+	}
+	return false
+}
+
+// StructureMapStructureModeValues returns all known values for StructureMapStructureMode.
+func StructureMapStructureModeValues() []StructureMapStructureMode {
+	return []StructureMapStructureMode{"source", "queried", "target", "produced"}
+}
+
 // StructureMapTargetContextType represents allowed values for the contextType field.
 type StructureMapTargetContextType string
 
@@ -3824,6 +6540,20 @@ const (
 	// StructureMapTargetContextTypeVariable represents the "variable" value.
 	StructureMapTargetContextTypeVariable StructureMapTargetContextType = "variable"
 )
+
+// Valid returns true if the value is a known StructureMapTargetContextType.
+func (e StructureMapTargetContextType) Valid() bool {
+	switch e {
+	case "type", "variable":
+		return true
+	}
+	return false
+}
+
+// StructureMapTargetContextTypeValues returns all known values for StructureMapTargetContextType.
+func StructureMapTargetContextTypeValues() []StructureMapTargetContextType {
+	return []StructureMapTargetContextType{"type", "variable"}
+}
 
 // StructureMapTargetListMode represents allowed values for the listMode field.
 type StructureMapTargetListMode string
@@ -3838,6 +6568,20 @@ const (
 	// StructureMapTargetListModeCollate represents the "collate" value.
 	StructureMapTargetListModeCollate StructureMapTargetListMode = "collate"
 )
+
+// Valid returns true if the value is a known StructureMapTargetListMode.
+func (e StructureMapTargetListMode) Valid() bool {
+	switch e {
+	case "first", "share", "last", "collate":
+		return true
+	}
+	return false
+}
+
+// StructureMapTargetListModeValues returns all known values for StructureMapTargetListMode.
+func StructureMapTargetListModeValues() []StructureMapTargetListMode {
+	return []StructureMapTargetListMode{"first", "share", "last", "collate"}
+}
 
 // StructureMapTargetTransform represents allowed values for the transform field.
 type StructureMapTargetTransform string
@@ -3879,6 +6623,20 @@ const (
 	StructureMapTargetTransformCp StructureMapTargetTransform = "cp"
 )
 
+// Valid returns true if the value is a known StructureMapTargetTransform.
+func (e StructureMapTargetTransform) Valid() bool {
+	switch e {
+	case "create", "copy", "truncate", "escape", "cast", "append", "translate", "reference", "dateOp", "uuid", "pointer", "evaluate", "cc", "c", "qty", "id", "cp":
+		return true
+	}
+	return false
+}
+
+// StructureMapTargetTransformValues returns all known values for StructureMapTargetTransform.
+func StructureMapTargetTransformValues() []StructureMapTargetTransform {
+	return []StructureMapTargetTransform{"create", "copy", "truncate", "escape", "cast", "append", "translate", "reference", "dateOp", "uuid", "pointer", "evaluate", "cc", "c", "qty", "id", "cp"}
+}
+
 // SubscriptionChannelType represents allowed values for the type field.
 type SubscriptionChannelType string
 
@@ -3895,6 +6653,20 @@ const (
 	SubscriptionChannelTypeMessage SubscriptionChannelType = "message"
 )
 
+// Valid returns true if the value is a known SubscriptionChannelType.
+func (e SubscriptionChannelType) Valid() bool {
+	switch e {
+	case "rest-hook", "websocket", "email", "sms", "message":
+		return true
+	}
+	return false
+}
+
+// SubscriptionChannelTypeValues returns all known values for SubscriptionChannelType.
+func SubscriptionChannelTypeValues() []SubscriptionChannelType {
+	return []SubscriptionChannelType{"rest-hook", "websocket", "email", "sms", "message"}
+}
+
 // SubscriptionStatus represents allowed values for the status field.
 type SubscriptionStatus string
 
@@ -3909,6 +6681,20 @@ const (
 	SubscriptionStatusOff SubscriptionStatus = "off"
 )
 
+// Valid returns true if the value is a known SubscriptionStatus.
+func (e SubscriptionStatus) Valid() bool {
+	switch e {
+	case "requested", "active", "error", "off":
+		return true
+	}
+	return false
+}
+
+// SubscriptionStatusValues returns all known values for SubscriptionStatus.
+func SubscriptionStatusValues() []SubscriptionStatus {
+	return []SubscriptionStatus{"requested", "active", "error", "off"}
+}
+
 // SubstanceStatus represents allowed values for the status field.
 type SubstanceStatus string
 
@@ -3920,6 +6706,20 @@ const (
 	// SubstanceStatusEnteredinerror represents the "entered-in-error" value.
 	SubstanceStatusEnteredinerror SubstanceStatus = "entered-in-error"
 )
+
+// Valid returns true if the value is a known SubstanceStatus.
+func (e SubstanceStatus) Valid() bool {
+	switch e {
+	case "active", "inactive", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// SubstanceStatusValues returns all known values for SubstanceStatus.
+func SubstanceStatusValues() []SubstanceStatus {
+	return []SubstanceStatus{"active", "inactive", "entered-in-error"}
+}
 
 // SupplyDeliveryStatus represents allowed values for the status field.
 type SupplyDeliveryStatus string
@@ -3934,6 +6734,20 @@ const (
 	// SupplyDeliveryStatusEnteredinerror represents the "entered-in-error" value.
 	SupplyDeliveryStatusEnteredinerror SupplyDeliveryStatus = "entered-in-error"
 )
+
+// Valid returns true if the value is a known SupplyDeliveryStatus.
+func (e SupplyDeliveryStatus) Valid() bool {
+	switch e {
+	case "in-progress", "completed", "abandoned", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// SupplyDeliveryStatusValues returns all known values for SupplyDeliveryStatus.
+func SupplyDeliveryStatusValues() []SupplyDeliveryStatus {
+	return []SupplyDeliveryStatus{"in-progress", "completed", "abandoned", "entered-in-error"}
+}
 
 // SupplyRequestStatus represents allowed values for the status field.
 type SupplyRequestStatus string
@@ -3954,6 +6768,20 @@ const (
 	// SupplyRequestStatusUnknown represents the "unknown" value.
 	SupplyRequestStatusUnknown SupplyRequestStatus = "unknown"
 )
+
+// Valid returns true if the value is a known SupplyRequestStatus.
+func (e SupplyRequestStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "suspended", "cancelled", "completed", "entered-in-error", "unknown":
+		return true
+	}
+	return false
+}
+
+// SupplyRequestStatusValues returns all known values for SupplyRequestStatus.
+func SupplyRequestStatusValues() []SupplyRequestStatus {
+	return []SupplyRequestStatus{"draft", "active", "suspended", "cancelled", "completed", "entered-in-error", "unknown"}
+}
 
 // TaskIntent represents allowed values for the intent field.
 type TaskIntent string
@@ -3978,6 +6806,20 @@ const (
 	// TaskIntentOption represents the "option" value.
 	TaskIntentOption TaskIntent = "option"
 )
+
+// Valid returns true if the value is a known TaskIntent.
+func (e TaskIntent) Valid() bool {
+	switch e {
+	case "unknown", "proposal", "plan", "order", "original-order", "reflex-order", "filler-order", "instance-order", "option":
+		return true
+	}
+	return false
+}
+
+// TaskIntentValues returns all known values for TaskIntent.
+func TaskIntentValues() []TaskIntent {
+	return []TaskIntent{"unknown", "proposal", "plan", "order", "original-order", "reflex-order", "filler-order", "instance-order", "option"}
+}
 
 // TaskStatus represents allowed values for the status field.
 type TaskStatus string
@@ -4009,6 +6851,20 @@ const (
 	TaskStatusEnteredinerror TaskStatus = "entered-in-error"
 )
 
+// Valid returns true if the value is a known TaskStatus.
+func (e TaskStatus) Valid() bool {
+	switch e {
+	case "draft", "requested", "received", "accepted", "rejected", "ready", "cancelled", "in-progress", "on-hold", "failed", "completed", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// TaskStatusValues returns all known values for TaskStatus.
+func TaskStatusValues() []TaskStatus {
+	return []TaskStatus{"draft", "requested", "received", "accepted", "rejected", "ready", "cancelled", "in-progress", "on-hold", "failed", "completed", "entered-in-error"}
+}
+
 // TerminologyCapabilitiesCodeSearch represents allowed values for the codeSearch field.
 type TerminologyCapabilitiesCodeSearch string
 
@@ -4018,6 +6874,20 @@ const (
 	// TerminologyCapabilitiesCodeSearchAll represents the "all" value.
 	TerminologyCapabilitiesCodeSearchAll TerminologyCapabilitiesCodeSearch = "all"
 )
+
+// Valid returns true if the value is a known TerminologyCapabilitiesCodeSearch.
+func (e TerminologyCapabilitiesCodeSearch) Valid() bool {
+	switch e {
+	case "explicit", "all":
+		return true
+	}
+	return false
+}
+
+// TerminologyCapabilitiesCodeSearchValues returns all known values for TerminologyCapabilitiesCodeSearch.
+func TerminologyCapabilitiesCodeSearchValues() []TerminologyCapabilitiesCodeSearch {
+	return []TerminologyCapabilitiesCodeSearch{"explicit", "all"}
+}
 
 // TerminologyCapabilitiesStatus represents allowed values for the status field.
 type TerminologyCapabilitiesStatus string
@@ -4032,6 +6902,20 @@ const (
 	// TerminologyCapabilitiesStatusUnknown represents the "unknown" value.
 	TerminologyCapabilitiesStatusUnknown TerminologyCapabilitiesStatus = "unknown"
 )
+
+// Valid returns true if the value is a known TerminologyCapabilitiesStatus.
+func (e TerminologyCapabilitiesStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// TerminologyCapabilitiesStatusValues returns all known values for TerminologyCapabilitiesStatus.
+func TerminologyCapabilitiesStatusValues() []TerminologyCapabilitiesStatus {
+	return []TerminologyCapabilitiesStatus{"draft", "active", "retired", "unknown"}
+}
 
 // TestReportAssertResult represents allowed values for the result field.
 type TestReportAssertResult string
@@ -4049,6 +6933,20 @@ const (
 	TestReportAssertResultError TestReportAssertResult = "error"
 )
 
+// Valid returns true if the value is a known TestReportAssertResult.
+func (e TestReportAssertResult) Valid() bool {
+	switch e {
+	case "pass", "skip", "fail", "warning", "error":
+		return true
+	}
+	return false
+}
+
+// TestReportAssertResultValues returns all known values for TestReportAssertResult.
+func TestReportAssertResultValues() []TestReportAssertResult {
+	return []TestReportAssertResult{"pass", "skip", "fail", "warning", "error"}
+}
+
 // TestReportOperationResult represents allowed values for the result field.
 type TestReportOperationResult string
 
@@ -4065,6 +6963,20 @@ const (
 	TestReportOperationResultError TestReportOperationResult = "error"
 )
 
+// Valid returns true if the value is a known TestReportOperationResult.
+func (e TestReportOperationResult) Valid() bool {
+	switch e {
+	case "pass", "skip", "fail", "warning", "error":
+		return true
+	}
+	return false
+}
+
+// TestReportOperationResultValues returns all known values for TestReportOperationResult.
+func TestReportOperationResultValues() []TestReportOperationResult {
+	return []TestReportOperationResult{"pass", "skip", "fail", "warning", "error"}
+}
+
 // TestReportParticipantType represents allowed values for the type field.
 type TestReportParticipantType string
 
@@ -4077,6 +6989,20 @@ const (
 	TestReportParticipantTypeServer TestReportParticipantType = "server"
 )
 
+// Valid returns true if the value is a known TestReportParticipantType.
+func (e TestReportParticipantType) Valid() bool {
+	switch e {
+	case "test-engine", "client", "server":
+		return true
+	}
+	return false
+}
+
+// TestReportParticipantTypeValues returns all known values for TestReportParticipantType.
+func TestReportParticipantTypeValues() []TestReportParticipantType {
+	return []TestReportParticipantType{"test-engine", "client", "server"}
+}
+
 // TestReportResult represents allowed values for the result field.
 type TestReportResult string
 
@@ -4088,6 +7014,20 @@ const (
 	// TestReportResultPending represents the "pending" value.
 	TestReportResultPending TestReportResult = "pending"
 )
+
+// Valid returns true if the value is a known TestReportResult.
+func (e TestReportResult) Valid() bool {
+	switch e {
+	case "pass", "fail", "pending":
+		return true
+	}
+	return false
+}
+
+// TestReportResultValues returns all known values for TestReportResult.
+func TestReportResultValues() []TestReportResult {
+	return []TestReportResult{"pass", "fail", "pending"}
+}
 
 // TestReportStatus represents allowed values for the status field.
 type TestReportStatus string
@@ -4105,6 +7045,20 @@ const (
 	TestReportStatusEnteredinerror TestReportStatus = "entered-in-error"
 )
 
+// Valid returns true if the value is a known TestReportStatus.
+func (e TestReportStatus) Valid() bool {
+	switch e {
+	case "completed", "in-progress", "waiting", "stopped", "entered-in-error":
+		return true
+	}
+	return false
+}
+
+// TestReportStatusValues returns all known values for TestReportStatus.
+func TestReportStatusValues() []TestReportStatus {
+	return []TestReportStatus{"completed", "in-progress", "waiting", "stopped", "entered-in-error"}
+}
+
 // TestScriptAssertDirection represents allowed values for the direction field.
 type TestScriptAssertDirection string
 
@@ -4114,6 +7068,20 @@ const (
 	// TestScriptAssertDirectionRequest represents the "request" value.
 	TestScriptAssertDirectionRequest TestScriptAssertDirection = "request"
 )
+
+// Valid returns true if the value is a known TestScriptAssertDirection.
+func (e TestScriptAssertDirection) Valid() bool {
+	switch e {
+	case "response", "request":
+		return true
+	}
+	return false
+}
+
+// TestScriptAssertDirectionValues returns all known values for TestScriptAssertDirection.
+func TestScriptAssertDirectionValues() []TestScriptAssertDirection {
+	return []TestScriptAssertDirection{"response", "request"}
+}
 
 // TestScriptAssertOperator represents allowed values for the operator field.
 type TestScriptAssertOperator string
@@ -4143,6 +7111,20 @@ const (
 	TestScriptAssertOperatorEval TestScriptAssertOperator = "eval"
 )
 
+// Valid returns true if the value is a known TestScriptAssertOperator.
+func (e TestScriptAssertOperator) Valid() bool {
+	switch e {
+	case "equals", "notEquals", "in", "notIn", "greaterThan", "lessThan", "empty", "notEmpty", "contains", "notContains", "eval":
+		return true
+	}
+	return false
+}
+
+// TestScriptAssertOperatorValues returns all known values for TestScriptAssertOperator.
+func TestScriptAssertOperatorValues() []TestScriptAssertOperator {
+	return []TestScriptAssertOperator{"equals", "notEquals", "in", "notIn", "greaterThan", "lessThan", "empty", "notEmpty", "contains", "notContains", "eval"}
+}
+
 // TestScriptAssertRequestMethod represents allowed values for the requestMethod field.
 type TestScriptAssertRequestMethod string
 
@@ -4162,6 +7144,20 @@ const (
 	// TestScriptAssertRequestMethodHead represents the "head" value.
 	TestScriptAssertRequestMethodHead TestScriptAssertRequestMethod = "head"
 )
+
+// Valid returns true if the value is a known TestScriptAssertRequestMethod.
+func (e TestScriptAssertRequestMethod) Valid() bool {
+	switch e {
+	case "delete", "get", "options", "patch", "post", "put", "head":
+		return true
+	}
+	return false
+}
+
+// TestScriptAssertRequestMethodValues returns all known values for TestScriptAssertRequestMethod.
+func TestScriptAssertRequestMethodValues() []TestScriptAssertRequestMethod {
+	return []TestScriptAssertRequestMethod{"delete", "get", "options", "patch", "post", "put", "head"}
+}
 
 // TestScriptAssertResponse represents allowed values for the response field.
 type TestScriptAssertResponse string
@@ -4193,6 +7189,20 @@ const (
 	TestScriptAssertResponseUnprocessable TestScriptAssertResponse = "unprocessable"
 )
 
+// Valid returns true if the value is a known TestScriptAssertResponse.
+func (e TestScriptAssertResponse) Valid() bool {
+	switch e {
+	case "okay", "created", "noContent", "notModified", "bad", "forbidden", "notFound", "methodNotAllowed", "conflict", "gone", "preconditionFailed", "unprocessable":
+		return true
+	}
+	return false
+}
+
+// TestScriptAssertResponseValues returns all known values for TestScriptAssertResponse.
+func TestScriptAssertResponseValues() []TestScriptAssertResponse {
+	return []TestScriptAssertResponse{"okay", "created", "noContent", "notModified", "bad", "forbidden", "notFound", "methodNotAllowed", "conflict", "gone", "preconditionFailed", "unprocessable"}
+}
+
 // TestScriptOperationMethod represents allowed values for the method field.
 type TestScriptOperationMethod string
 
@@ -4213,6 +7223,20 @@ const (
 	TestScriptOperationMethodHead TestScriptOperationMethod = "head"
 )
 
+// Valid returns true if the value is a known TestScriptOperationMethod.
+func (e TestScriptOperationMethod) Valid() bool {
+	switch e {
+	case "delete", "get", "options", "patch", "post", "put", "head":
+		return true
+	}
+	return false
+}
+
+// TestScriptOperationMethodValues returns all known values for TestScriptOperationMethod.
+func TestScriptOperationMethodValues() []TestScriptOperationMethod {
+	return []TestScriptOperationMethod{"delete", "get", "options", "patch", "post", "put", "head"}
+}
+
 // TestScriptStatus represents allowed values for the status field.
 type TestScriptStatus string
 
@@ -4226,6 +7250,20 @@ const (
 	// TestScriptStatusUnknown represents the "unknown" value.
 	TestScriptStatusUnknown TestScriptStatus = "unknown"
 )
+
+// Valid returns true if the value is a known TestScriptStatus.
+func (e TestScriptStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// TestScriptStatusValues returns all known values for TestScriptStatus.
+func TestScriptStatusValues() []TestScriptStatus {
+	return []TestScriptStatus{"draft", "active", "retired", "unknown"}
+}
 
 // TimingRepeatDurationUnit represents allowed values for the durationUnit field.
 type TimingRepeatDurationUnit string
@@ -4247,6 +7285,20 @@ const (
 	TimingRepeatDurationUnitA TimingRepeatDurationUnit = "a"
 )
 
+// Valid returns true if the value is a known TimingRepeatDurationUnit.
+func (e TimingRepeatDurationUnit) Valid() bool {
+	switch e {
+	case "s", "min", "h", "d", "wk", "mo", "a":
+		return true
+	}
+	return false
+}
+
+// TimingRepeatDurationUnitValues returns all known values for TimingRepeatDurationUnit.
+func TimingRepeatDurationUnitValues() []TimingRepeatDurationUnit {
+	return []TimingRepeatDurationUnit{"s", "min", "h", "d", "wk", "mo", "a"}
+}
+
 // TimingRepeatPeriodUnit represents allowed values for the periodUnit field.
 type TimingRepeatPeriodUnit string
 
@@ -4266,6 +7318,20 @@ const (
 	// TimingRepeatPeriodUnitA represents the "a" value.
 	TimingRepeatPeriodUnitA TimingRepeatPeriodUnit = "a"
 )
+
+// Valid returns true if the value is a known TimingRepeatPeriodUnit.
+func (e TimingRepeatPeriodUnit) Valid() bool {
+	switch e {
+	case "s", "min", "h", "d", "wk", "mo", "a":
+		return true
+	}
+	return false
+}
+
+// TimingRepeatPeriodUnitValues returns all known values for TimingRepeatPeriodUnit.
+func TimingRepeatPeriodUnitValues() []TimingRepeatPeriodUnit {
+	return []TimingRepeatPeriodUnit{"s", "min", "h", "d", "wk", "mo", "a"}
+}
 
 // TimingRepeatWhen represents allowed values for the when field.
 type TimingRepeatWhen string
@@ -4325,6 +7391,20 @@ const (
 	TimingRepeatWhenPCV TimingRepeatWhen = "PCV"
 )
 
+// Valid returns true if the value is a known TimingRepeatWhen.
+func (e TimingRepeatWhen) Valid() bool {
+	switch e {
+	case "MORN", "MORN.early", "MORN.late", "NOON", "AFT", "AFT.early", "AFT.late", "EVE", "EVE.early", "EVE.late", "NIGHT", "PHS", "HS", "WAKE", "C", "CM", "CD", "CV", "AC", "ACM", "ACD", "ACV", "PC", "PCM", "PCD", "PCV":
+		return true
+	}
+	return false
+}
+
+// TimingRepeatWhenValues returns all known values for TimingRepeatWhen.
+func TimingRepeatWhenValues() []TimingRepeatWhen {
+	return []TimingRepeatWhen{"MORN", "MORN.early", "MORN.late", "NOON", "AFT", "AFT.early", "AFT.late", "EVE", "EVE.early", "EVE.late", "NIGHT", "PHS", "HS", "WAKE", "C", "CM", "CD", "CV", "AC", "ACM", "ACD", "ACV", "PC", "PCM", "PCD", "PCV"}
+}
+
 // ValueSetFilterOp represents allowed values for the op field.
 type ValueSetFilterOp string
 
@@ -4349,6 +7429,20 @@ const (
 	ValueSetFilterOpExists ValueSetFilterOp = "exists"
 )
 
+// Valid returns true if the value is a known ValueSetFilterOp.
+func (e ValueSetFilterOp) Valid() bool {
+	switch e {
+	case "=", "is-a", "descendent-of", "is-not-a", "regex", "in", "not-in", "generalizes", "exists":
+		return true
+	}
+	return false
+}
+
+// ValueSetFilterOpValues returns all known values for ValueSetFilterOp.
+func ValueSetFilterOpValues() []ValueSetFilterOp {
+	return []ValueSetFilterOp{"=", "is-a", "descendent-of", "is-not-a", "regex", "in", "not-in", "generalizes", "exists"}
+}
+
 // ValueSetStatus represents allowed values for the status field.
 type ValueSetStatus string
 
@@ -4363,6 +7457,20 @@ const (
 	ValueSetStatusUnknown ValueSetStatus = "unknown"
 )
 
+// Valid returns true if the value is a known ValueSetStatus.
+func (e ValueSetStatus) Valid() bool {
+	switch e {
+	case "draft", "active", "retired", "unknown":
+		return true
+	}
+	return false
+}
+
+// ValueSetStatusValues returns all known values for ValueSetStatus.
+func ValueSetStatusValues() []ValueSetStatus {
+	return []ValueSetStatus{"draft", "active", "retired", "unknown"}
+}
+
 // VisionPrescriptionLensSpecificationEye represents allowed values for the eye field.
 type VisionPrescriptionLensSpecificationEye string
 
@@ -4372,6 +7480,20 @@ const (
 	// VisionPrescriptionLensSpecificationEyeLeft represents the "left" value.
 	VisionPrescriptionLensSpecificationEyeLeft VisionPrescriptionLensSpecificationEye = "left"
 )
+
+// Valid returns true if the value is a known VisionPrescriptionLensSpecificationEye.
+func (e VisionPrescriptionLensSpecificationEye) Valid() bool {
+	switch e {
+	case "right", "left":
+		return true
+	}
+	return false
+}
+
+// VisionPrescriptionLensSpecificationEyeValues returns all known values for VisionPrescriptionLensSpecificationEye.
+func VisionPrescriptionLensSpecificationEyeValues() []VisionPrescriptionLensSpecificationEye {
+	return []VisionPrescriptionLensSpecificationEye{"right", "left"}
+}
 
 // VisionPrescriptionPrismBase represents allowed values for the base field.
 type VisionPrescriptionPrismBase string
@@ -4386,3 +7508,17 @@ const (
 	// VisionPrescriptionPrismBaseOut represents the "out" value.
 	VisionPrescriptionPrismBaseOut VisionPrescriptionPrismBase = "out"
 )
+
+// Valid returns true if the value is a known VisionPrescriptionPrismBase.
+func (e VisionPrescriptionPrismBase) Valid() bool {
+	switch e {
+	case "up", "down", "in", "out":
+		return true
+	}
+	return false
+}
+
+// VisionPrescriptionPrismBaseValues returns all known values for VisionPrescriptionPrismBase.
+func VisionPrescriptionPrismBaseValues() []VisionPrescriptionPrismBase {
+	return []VisionPrescriptionPrismBase{"up", "down", "in", "out"}
+}

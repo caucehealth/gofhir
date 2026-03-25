@@ -92,21 +92,16 @@ func (r MedicationAdministration) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Collect additional fields to splice into JSON
+	var extra []byte
 	if r.Effective != nil {
 		vData, err := json.Marshal(r.Effective)
 		if err != nil {
 			return nil, err
 		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
 	if r.Medication != nil {
@@ -114,18 +109,26 @@ func (r MedicationAdministration) MarshalJSON() ([]byte, error) {
 		if err != nil {
 			return nil, err
 		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	if len(extra) == 0 {
+		return data, nil
+	}
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for MedicationAdministration.
@@ -137,19 +140,19 @@ func (r *MedicationAdministration) UnmarshalJSON(data []byte) error {
 	}
 	*r = MedicationAdministration(alias)
 	// Unmarshal polymorphic fields
-	var medicationVal MedicationAdministrationMedication
-	if err := medicationVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if medicationVal.CodeableConcept != nil || medicationVal.Reference != nil {
-		r.Medication = &medicationVal
-	}
 	var effectiveVal MedicationAdministrationEffective
 	if err := effectiveVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if effectiveVal.DateTime != nil || effectiveVal.Period != nil {
 		r.Effective = &effectiveVal
+	}
+	var medicationVal MedicationAdministrationMedication
+	if err := medicationVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if medicationVal.CodeableConcept != nil || medicationVal.Reference != nil {
+		r.Medication = &medicationVal
 	}
 	// Capture unknown fields
 	var raw map[string]json.RawMessage
@@ -538,47 +541,6 @@ type MedicationAdministrationPerformer struct {
 	Function *dt.CodeableConcept `json:"function,omitempty"`
 }
 
-// MedicationAdministrationEffective represents a polymorphic choice type in FHIR.
-type MedicationAdministrationEffective struct {
-	DateTime *string    `json:"effectiveDateTime,omitempty"` // A specific date/time or interval of time during which the administration took place (or did not take place, when the 'notGiven' attribute is true). For many administrations, such as swallowing a ta...
-	Period   *dt.Period `json:"effectivePeriod,omitempty"`   // A specific date/time or interval of time during which the administration took place (or did not take place, when the 'notGiven' attribute is true). For many administrations, such as swallowing a ta...
-}
-
-// MarshalJSON implements the json.Marshaler interface for MedicationAdministrationEffective.
-func (v MedicationAdministrationEffective) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.DateTime != nil {
-		m["effectiveDateTime"] = v.DateTime
-	}
-	if v.Period != nil {
-		m["effectivePeriod"] = v.Period
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for MedicationAdministrationEffective.
-func (v *MedicationAdministrationEffective) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["effectiveDateTime"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling effectiveDateTime: %w", err)
-		}
-		v.DateTime = &val
-	}
-	if d, ok := raw["effectivePeriod"]; ok {
-		var val dt.Period
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling effectivePeriod: %w", err)
-		}
-		v.Period = &val
-	}
-	return nil
-}
-
 // MedicationAdministrationMedication represents a polymorphic choice type in FHIR.
 type MedicationAdministrationMedication struct {
 	CodeableConcept *dt.CodeableConcept `json:"medicationCodeableConcept,omitempty"` // Identifies the medication that was administered. This is either a link to a resource representing the details of the medication or a simple attribute carrying a code that identifies the medication ...
@@ -616,6 +578,47 @@ func (v *MedicationAdministrationMedication) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling medicationReference: %w", err)
 		}
 		v.Reference = &val
+	}
+	return nil
+}
+
+// MedicationAdministrationEffective represents a polymorphic choice type in FHIR.
+type MedicationAdministrationEffective struct {
+	DateTime *string    `json:"effectiveDateTime,omitempty"` // A specific date/time or interval of time during which the administration took place (or did not take place, when the 'notGiven' attribute is true). For many administrations, such as swallowing a ta...
+	Period   *dt.Period `json:"effectivePeriod,omitempty"`   // A specific date/time or interval of time during which the administration took place (or did not take place, when the 'notGiven' attribute is true). For many administrations, such as swallowing a ta...
+}
+
+// MarshalJSON implements the json.Marshaler interface for MedicationAdministrationEffective.
+func (v MedicationAdministrationEffective) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.DateTime != nil {
+		m["effectiveDateTime"] = v.DateTime
+	}
+	if v.Period != nil {
+		m["effectivePeriod"] = v.Period
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for MedicationAdministrationEffective.
+func (v *MedicationAdministrationEffective) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["effectiveDateTime"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling effectiveDateTime: %w", err)
+		}
+		v.DateTime = &val
+	}
+	if d, ok := raw["effectivePeriod"]; ok {
+		var val dt.Period
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling effectivePeriod: %w", err)
+		}
+		v.Period = &val
 	}
 	return nil
 }
@@ -841,4 +844,14 @@ func (r *MedicationAdministration) GetSupportingInformation() []dt.Reference {
 		return r.SupportingInformation
 	}
 	return nil
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *MedicationAdministration) GetResourceType() string {
+	return "MedicationAdministration"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *MedicationAdministration) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

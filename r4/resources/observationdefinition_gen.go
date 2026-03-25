@@ -85,14 +85,21 @@ func (r ObservationDefinition) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ObservationDefinition.
@@ -339,7 +346,7 @@ type ObservationDefinitionQuantitativeDetails struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// ConversionFactor Factor for converting value expressed with SI unit to value expressed with customary unit.
-	ConversionFactor *float64 `json:"conversionFactor,omitempty"`
+	ConversionFactor *dt.Decimal `json:"conversionFactor,omitempty"`
 	// ConversionFactorElement contains element extensions for conversionFactor.
 	ConversionFactorElement *dt.Element `json:"_conversionFactor,omitempty"`
 	// CustomaryUnit Customary unit used to report quantitative results of observations conforming to this ObservationDefinition.
@@ -528,4 +535,14 @@ func (r *ObservationDefinition) GetValidCodedValueSet() dt.Reference {
 	}
 	var zero dt.Reference
 	return zero
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *ObservationDefinition) GetResourceType() string {
+	return "ObservationDefinition"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *ObservationDefinition) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

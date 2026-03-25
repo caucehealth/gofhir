@@ -57,9 +57,9 @@ func TestGenerateNarrativeObservation(t *testing.T) {
 }
 
 func TestGenerateNarrativeUnsupported(t *testing.T) {
-	// Unsupported resource type returns nil
-	type FakeResource struct{}
-	narrative := resources.GenerateNarrative(&FakeResource{})
+	// Resource type without narrative support returns nil
+	loc, _ := resources.NewLocation().Build()
+	narrative := resources.GenerateNarrative(loc)
 	if narrative != nil {
 		t.Error("unsupported type should return nil narrative")
 	}

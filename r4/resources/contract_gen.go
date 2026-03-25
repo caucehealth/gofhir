@@ -141,14 +141,21 @@ func (r Contract) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Contract.
@@ -730,8 +737,8 @@ type ContractAnswerValue struct {
 	Coding     *dt.Coding     `json:"valueCoding,omitempty"`     // Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whethe...
 	Date       *string        `json:"valueDate,omitempty"`       // Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whethe...
 	DateTime   *string        `json:"valueDateTime,omitempty"`   // Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whethe...
-	Decimal    *float64       `json:"valueDecimal,omitempty"`    // Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whethe...
-	Integer    *float64       `json:"valueInteger,omitempty"`    // Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whethe...
+	Decimal    *dt.Decimal    `json:"valueDecimal,omitempty"`    // Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whethe...
+	Integer    *int32         `json:"valueInteger,omitempty"`    // Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whethe...
 	Quantity   *dt.Quantity   `json:"valueQuantity,omitempty"`   // Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whethe...
 	Reference  *dt.Reference  `json:"valueReference,omitempty"`  // Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whethe...
 	String     *string        `json:"valueString,omitempty"`     // Response to an offer clause or question text,  which enables selection of values to be agreed to, e.g., the period of participation, the date of occupancy of a rental, warrently duration, or whethe...
@@ -823,14 +830,14 @@ func (v *ContractAnswerValue) UnmarshalJSON(data []byte) error {
 		v.DateTime = &val
 	}
 	if d, ok := raw["valueDecimal"]; ok {
-		var val float64
+		var val dt.Decimal
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueDecimal: %w", err)
 		}
 		v.Decimal = &val
 	}
 	if d, ok := raw["valueInteger"]; ok {
-		var val float64
+		var val int32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueInteger: %w", err)
 		}
@@ -1193,7 +1200,7 @@ type ContractValuedItem struct {
 	// Entity Specific type of Contract Valued Item that may be priced.
 	Entity *ContractValuedItemEntity `json:"-"` // polymorphic
 	// Factor A real number that represents a multiplier used in determining the overall value of the Contract Valued Item delivered. The concept of a Factor allows for a discount or surcharge multiplier to be a...
-	Factor *float64 `json:"factor,omitempty"`
+	Factor *dt.Decimal `json:"factor,omitempty"`
 	// FactorElement contains element extensions for factor.
 	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// LinkId Id  of the clause or question text related to the context of this valuedItem in the referenced form or QuestionnaireResponse.
@@ -1211,7 +1218,7 @@ type ContractValuedItem struct {
 	// PaymentDateElement contains element extensions for paymentDate.
 	PaymentDateElement *dt.Element `json:"_paymentDate,omitempty"`
 	// Points An amount that expresses the weighting (based on difficulty, cost and/or resource intensiveness) associated with the Contract Valued Item delivered. The concept of Points allows for assignment of p...
-	Points *float64 `json:"points,omitempty"`
+	Points *dt.Decimal `json:"points,omitempty"`
 	// PointsElement contains element extensions for points.
 	PointsElement *dt.Element `json:"_points,omitempty"`
 	// Quantity Specifies the units by which the Contract Valued Item is measured or counted, and quantifies the countable or measurable Contract Valued Item instances.
@@ -1682,4 +1689,14 @@ func (r *Contract) GetVersion() string {
 	}
 	var zero string
 	return zero
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *Contract) GetResourceType() string {
+	return "Contract"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *Contract) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

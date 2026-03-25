@@ -92,7 +92,7 @@ func TestQuantityBuilder(t *testing.T) {
 		WithCode("mm[Hg]").
 		Build()
 
-	if q.Value == nil || *q.Value != 120.0 {
+	if q.Value == nil || q.Value.Float64() != 120.0 {
 		t.Error("value should be 120")
 	}
 	if q.Unit == nil || *q.Unit != "mmHg" {
@@ -130,5 +130,115 @@ func TestAnnotationBuilder(t *testing.T) {
 	}
 	if a.Time == nil || string(*a.Time) != "2023-06-15T10:30:00Z" {
 		t.Error("time mismatch")
+	}
+}
+
+func TestDecimalPrecisionPreservation(t *testing.T) {
+	tests := []struct {
+		json     string
+		wantStr  string
+		wantF64  float64
+	}{
+		{`{"value":1.0}`, "1.0", 1.0},
+		{`{"value":1.00}`, "1.00", 1.0},
+		{`{"value":120}`, "120", 120.0},
+		{`{"value":0.123456789}`, "0.123456789", 0.123456789},
+		{`{"value":100.0}`, "100.0", 100.0},
+	}
+
+	for _, tt := range tests {
+		var q dt.Quantity
+		if err := json.Unmarshal([]byte(tt.json), &q); err != nil {
+			t.Fatalf("unmarshal %s: %v", tt.json, err)
+		}
+		if q.Value == nil {
+			t.Fatalf("value nil for %s", tt.json)
+		}
+		if q.Value.String() != tt.wantStr {
+			t.Errorf("precision lost: got %q, want %q", q.Value.String(), tt.wantStr)
+		}
+		if q.Value.Float64() != tt.wantF64 {
+			t.Errorf("float64: got %v, want %v", q.Value.Float64(), tt.wantF64)
+		}
+
+		// Round-trip: marshal and verify precision preserved
+		out, err := json.Marshal(&q)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var q2 dt.Quantity
+		json.Unmarshal(out, &q2)
+		if q2.Value.String() != tt.wantStr {
+			t.Errorf("round-trip precision lost: got %q, want %q", q2.Value.String(), tt.wantStr)
+		}
+	}
+}
+
+func TestDecimalMarshalAsNumber(t *testing.T) {
+	// Decimal should marshal as a bare JSON number, not a quoted string
+	d := dt.NewDecimal(3.14)
+	out, err := json.Marshal(&d)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(out) != "3.14" {
+		t.Errorf("marshal = %s, want 3.14 (bare number)", out)
+	}
+}
+
+func TestDecimalEdgeCases(t *testing.T) {
+	tests := []struct {
+		name    string
+		json    string
+		wantStr string
+	}{
+		{"scientific", `{"value":1.23e-4}`, "1.23e-4"},
+		{"negative", `{"value":-120.5}`, "-120.5"},
+		{"large_int", `{"value":99999999999999}`, "99999999999999"},
+		{"small", `{"value":0.000001}`, "0.000001"},
+		{"negative_zero", `{"value":-0}`, "-0"},
+		{"zero", `{"value":0}`, "0"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var q dt.Quantity
+			if err := json.Unmarshal([]byte(tt.json), &q); err != nil {
+				t.Fatal(err)
+			}
+			if q.Value == nil {
+				t.Fatal("value nil")
+			}
+			if q.Value.String() != tt.wantStr {
+				t.Errorf("got %q, want %q", q.Value.String(), tt.wantStr)
+			}
+			// Round-trip
+			out, _ := json.Marshal(&q)
+			var q2 dt.Quantity
+			json.Unmarshal(out, &q2)
+			if q2.Value.String() != tt.wantStr {
+				t.Errorf("round-trip: got %q, want %q", q2.Value.String(), tt.wantStr)
+			}
+		})
+	}
+}
+
+func TestDecimalInvalidValues(t *testing.T) {
+	var d dt.Decimal
+	if err := d.UnmarshalJSON([]byte(`"not_a_number"`)); err == nil {
+		t.Error("should reject non-numeric string")
+	}
+	if err := d.UnmarshalJSON([]byte(`"NaN"`)); err == nil {
+		t.Error("should reject NaN")
+	}
+	if err := d.UnmarshalJSON([]byte(`"Infinity"`)); err == nil {
+		t.Error("should reject Infinity")
+	}
+}
+
+func TestDecimalMarshalInvalid(t *testing.T) {
+	d := dt.Decimal("not_a_number")
+	_, err := d.MarshalJSON()
+	if err == nil {
+		t.Error("should reject invalid decimal on marshal")
 	}
 }

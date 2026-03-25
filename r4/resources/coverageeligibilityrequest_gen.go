@@ -84,27 +84,33 @@ func (r CoverageEligibilityRequest) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Collect additional fields to splice into JSON
+	var extra []byte
 	if r.Serviced != nil {
 		vData, err := json.Marshal(r.Serviced)
 		if err != nil {
 			return nil, err
 		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	if len(extra) == 0 {
+		return data, nil
+	}
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for CoverageEligibilityRequest.
@@ -735,4 +741,14 @@ func (r *CoverageEligibilityRequest) GetSupportingInfo() []CoverageEligibilityRe
 		return r.SupportingInfo
 	}
 	return nil
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *CoverageEligibilityRequest) GetResourceType() string {
+	return "CoverageEligibilityRequest"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *CoverageEligibilityRequest) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

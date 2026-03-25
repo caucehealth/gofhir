@@ -92,27 +92,33 @@ func (r CoverageEligibilityResponse) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Collect additional fields to splice into JSON
+	var extra []byte
 	if r.Serviced != nil {
 		vData, err := json.Marshal(r.Serviced)
 		if err != nil {
 			return nil, err
 		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	if len(extra) == 0 {
+		return data, nil
+	}
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for CoverageEligibilityResponse.
@@ -421,19 +427,19 @@ func (r *CoverageEligibilityResponseBenefit) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = CoverageEligibilityResponseBenefit(alias)
-	var usedVal CoverageEligibilityResponseBenefitUsed
-	if err := usedVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if usedVal.Money != nil || usedVal.String != nil || usedVal.UnsignedInt != nil {
-		r.Used = &usedVal
-	}
 	var allowedVal CoverageEligibilityResponseBenefitAllowed
 	if err := allowedVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if allowedVal.Money != nil || allowedVal.String != nil || allowedVal.UnsignedInt != nil {
 		r.Allowed = &allowedVal
+	}
+	var usedVal CoverageEligibilityResponseBenefitUsed
+	if err := usedVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if usedVal.Money != nil || usedVal.String != nil || usedVal.UnsignedInt != nil {
+		r.Used = &usedVal
 	}
 	return nil
 }
@@ -442,7 +448,7 @@ func (r *CoverageEligibilityResponseBenefit) UnmarshalJSON(data []byte) error {
 type CoverageEligibilityResponseBenefitAllowed struct {
 	Money       *dt.Money `json:"allowedMoney,omitempty"`       // The quantity of the benefit which is permitted under the coverage.
 	String      *string   `json:"allowedString,omitempty"`      // The quantity of the benefit which is permitted under the coverage.
-	UnsignedInt *float64  `json:"allowedUnsignedInt,omitempty"` // The quantity of the benefit which is permitted under the coverage.
+	UnsignedInt *uint32   `json:"allowedUnsignedInt,omitempty"` // The quantity of the benefit which is permitted under the coverage.
 }
 
 // MarshalJSON implements the json.Marshaler interface for CoverageEligibilityResponseBenefitAllowed.
@@ -481,7 +487,7 @@ func (v *CoverageEligibilityResponseBenefitAllowed) UnmarshalJSON(data []byte) e
 		v.String = &val
 	}
 	if d, ok := raw["allowedUnsignedInt"]; ok {
-		var val float64
+		var val uint32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling allowedUnsignedInt: %w", err)
 		}
@@ -494,7 +500,7 @@ func (v *CoverageEligibilityResponseBenefitAllowed) UnmarshalJSON(data []byte) e
 type CoverageEligibilityResponseBenefitUsed struct {
 	Money       *dt.Money `json:"usedMoney,omitempty"`       // The quantity of the benefit which have been consumed to date.
 	String      *string   `json:"usedString,omitempty"`      // The quantity of the benefit which have been consumed to date.
-	UnsignedInt *float64  `json:"usedUnsignedInt,omitempty"` // The quantity of the benefit which have been consumed to date.
+	UnsignedInt *uint32   `json:"usedUnsignedInt,omitempty"` // The quantity of the benefit which have been consumed to date.
 }
 
 // MarshalJSON implements the json.Marshaler interface for CoverageEligibilityResponseBenefitUsed.
@@ -533,7 +539,7 @@ func (v *CoverageEligibilityResponseBenefitUsed) UnmarshalJSON(data []byte) erro
 		v.String = &val
 	}
 	if d, ok := raw["usedUnsignedInt"]; ok {
-		var val float64
+		var val uint32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling usedUnsignedInt: %w", err)
 		}
@@ -854,4 +860,14 @@ func (r *CoverageEligibilityResponse) GetServiced() CoverageEligibilityResponseS
 		return *r.Serviced
 	}
 	return CoverageEligibilityResponseServiced{}
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *CoverageEligibilityResponse) GetResourceType() string {
+	return "CoverageEligibilityResponse"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *CoverageEligibilityResponse) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

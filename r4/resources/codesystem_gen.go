@@ -143,14 +143,21 @@ func (r CodeSystem) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for CodeSystem.
@@ -609,13 +616,13 @@ func (r *CodeSystemProperty1) UnmarshalJSON(data []byte) error {
 
 // CodeSystemProperty1Value represents a polymorphic choice type in FHIR.
 type CodeSystemProperty1Value struct {
-	Boolean  *bool      `json:"valueBoolean,omitempty"`  // The value of this property.
-	Code     *string    `json:"valueCode,omitempty"`     // The value of this property.
-	Coding   *dt.Coding `json:"valueCoding,omitempty"`   // The value of this property.
-	DateTime *string    `json:"valueDateTime,omitempty"` // The value of this property.
-	Decimal  *float64   `json:"valueDecimal,omitempty"`  // The value of this property.
-	Integer  *float64   `json:"valueInteger,omitempty"`  // The value of this property.
-	String   *string    `json:"valueString,omitempty"`   // The value of this property.
+	Boolean  *bool       `json:"valueBoolean,omitempty"`  // The value of this property.
+	Code     *string     `json:"valueCode,omitempty"`     // The value of this property.
+	Coding   *dt.Coding  `json:"valueCoding,omitempty"`   // The value of this property.
+	DateTime *string     `json:"valueDateTime,omitempty"` // The value of this property.
+	Decimal  *dt.Decimal `json:"valueDecimal,omitempty"`  // The value of this property.
+	Integer  *int32      `json:"valueInteger,omitempty"`  // The value of this property.
+	String   *string     `json:"valueString,omitempty"`   // The value of this property.
 }
 
 // MarshalJSON implements the json.Marshaler interface for CodeSystemProperty1Value.
@@ -680,14 +687,14 @@ func (v *CodeSystemProperty1Value) UnmarshalJSON(data []byte) error {
 		v.DateTime = &val
 	}
 	if d, ok := raw["valueDecimal"]; ok {
-		var val float64
+		var val dt.Decimal
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueDecimal: %w", err)
 		}
 		v.Decimal = &val
 	}
 	if d, ok := raw["valueInteger"]; ok {
-		var val float64
+		var val int32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueInteger: %w", err)
 		}
@@ -997,4 +1004,14 @@ func (r *CodeSystem) GetVersionNeeded() bool {
 	}
 	var zero bool
 	return zero
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *CodeSystem) GetResourceType() string {
+	return "CodeSystem"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *CodeSystem) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

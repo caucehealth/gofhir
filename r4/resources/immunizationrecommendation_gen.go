@@ -65,14 +65,21 @@ func (r ImmunizationRecommendation) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ImmunizationRecommendation.
@@ -268,7 +275,7 @@ type ImmunizationRecommendationRecommendation struct {
 	// SeriesElement contains element extensions for series.
 	SeriesElement *dt.Element `json:"_series,omitempty"`
 	// SeriesDosesPositiveInt The recommended number of doses to achieve immunity.
-	SeriesDosesPositiveInt *float64 `json:"seriesDosesPositiveInt,omitempty"`
+	SeriesDosesPositiveInt *uint32 `json:"seriesDosesPositiveInt,omitempty"`
 	// SeriesDosesPositiveIntElement contains element extensions for seriesDosesPositiveInt.
 	SeriesDosesPositiveIntElement *dt.Element `json:"_seriesDosesPositiveInt,omitempty"`
 	// SeriesDosesString The recommended number of doses to achieve immunity.
@@ -332,8 +339,8 @@ func (r *ImmunizationRecommendationRecommendation) UnmarshalJSON(data []byte) er
 
 // ImmunizationRecommendationRecommendationDose represents a polymorphic choice type in FHIR.
 type ImmunizationRecommendationRecommendationDose struct {
-	NumberPositiveInt *float64 `json:"doseNumberPositiveInt,omitempty"` // Nominal position of the recommended dose in a series (e.g. dose 2 is the next recommended dose).
-	NumberString      *string  `json:"doseNumberString,omitempty"`      // Nominal position of the recommended dose in a series (e.g. dose 2 is the next recommended dose).
+	NumberPositiveInt *uint32 `json:"doseNumberPositiveInt,omitempty"` // Nominal position of the recommended dose in a series (e.g. dose 2 is the next recommended dose).
+	NumberString      *string `json:"doseNumberString,omitempty"`      // Nominal position of the recommended dose in a series (e.g. dose 2 is the next recommended dose).
 }
 
 // MarshalJSON implements the json.Marshaler interface for ImmunizationRecommendationRecommendationDose.
@@ -355,7 +362,7 @@ func (v *ImmunizationRecommendationRecommendationDose) UnmarshalJSON(data []byte
 		return err
 	}
 	if d, ok := raw["doseNumberPositiveInt"]; ok {
-		var val float64
+		var val uint32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling doseNumberPositiveInt: %w", err)
 		}
@@ -477,4 +484,14 @@ func (r *ImmunizationRecommendation) GetRecommendation() []ImmunizationRecommend
 		return r.Recommendation
 	}
 	return nil
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *ImmunizationRecommendation) GetResourceType() string {
+	return "ImmunizationRecommendation"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *ImmunizationRecommendation) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

@@ -147,7 +147,7 @@ type Age struct {
 	// UnitElement contains element extensions for unit.
 	UnitElement *Element `json:"_unit,omitempty"`
 	// Value The value of the measured amount. The value includes an implicit precision in the presentation of the value.
-	Value *float64 `json:"value,omitempty"`
+	Value *Decimal `json:"value,omitempty"`
 	// ValueElement contains element extensions for value.
 	ValueElement *Element `json:"_value,omitempty"`
 }
@@ -353,7 +353,7 @@ type Count struct {
 	// UnitElement contains element extensions for unit.
 	UnitElement *Element `json:"_unit,omitempty"`
 	// Value The value of the measured amount. The value includes an implicit precision in the presentation of the value.
-	Value *float64 `json:"value,omitempty"`
+	Value *Decimal `json:"value,omitempty"`
 	// ValueElement contains element extensions for value.
 	ValueElement *Element `json:"_value,omitempty"`
 }
@@ -419,7 +419,7 @@ type Distance struct {
 	// UnitElement contains element extensions for unit.
 	UnitElement *Element `json:"_unit,omitempty"`
 	// Value The value of the measured amount. The value includes an implicit precision in the presentation of the value.
-	Value *float64 `json:"value,omitempty"`
+	Value *Decimal `json:"value,omitempty"`
 	// ValueElement contains element extensions for value.
 	ValueElement *Element `json:"_value,omitempty"`
 }
@@ -497,7 +497,7 @@ type Duration struct {
 	// UnitElement contains element extensions for unit.
 	UnitElement *Element `json:"_unit,omitempty"`
 	// Value The value of the measured amount. The value includes an implicit precision in the presentation of the value.
-	Value *float64 `json:"value,omitempty"`
+	Value *Decimal `json:"value,omitempty"`
 	// ValueElement contains element extensions for value.
 	ValueElement *Element `json:"_value,omitempty"`
 }
@@ -583,7 +583,7 @@ type ElementDefinition struct {
 	// DefaultValueDateTimeElement contains element extensions for defaultValueDateTime.
 	DefaultValueDateTimeElement *Element `json:"_defaultValueDateTime,omitempty"`
 	// DefaultValueDecimal The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
-	DefaultValueDecimal *float64 `json:"defaultValueDecimal,omitempty"`
+	DefaultValueDecimal *Decimal `json:"defaultValueDecimal,omitempty"`
 	// DefaultValueDecimalElement contains element extensions for defaultValueDecimal.
 	DefaultValueDecimalElement *Element `json:"_defaultValueDecimal,omitempty"`
 	// DefaultValueDistance The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
@@ -607,7 +607,7 @@ type ElementDefinition struct {
 	// DefaultValueInstantElement contains element extensions for defaultValueInstant.
 	DefaultValueInstantElement *Element `json:"_defaultValueInstant,omitempty"`
 	// DefaultValueInteger The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
-	DefaultValueInteger *float64 `json:"defaultValueInteger,omitempty"`
+	DefaultValueInteger *int32 `json:"defaultValueInteger,omitempty"`
 	// DefaultValueIntegerElement contains element extensions for defaultValueInteger.
 	DefaultValueIntegerElement *Element `json:"_defaultValueInteger,omitempty"`
 	// DefaultValueMarkdown The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
@@ -627,7 +627,7 @@ type ElementDefinition struct {
 	// DefaultValuePeriod The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValuePeriod *Period `json:"defaultValuePeriod,omitempty"`
 	// DefaultValuePositiveInt The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
-	DefaultValuePositiveInt *float64 `json:"defaultValuePositiveInt,omitempty"`
+	DefaultValuePositiveInt *uint32 `json:"defaultValuePositiveInt,omitempty"`
 	// DefaultValuePositiveIntElement contains element extensions for defaultValuePositiveInt.
 	DefaultValuePositiveIntElement *Element `json:"_defaultValuePositiveInt,omitempty"`
 	// DefaultValueQuantity The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
@@ -657,7 +657,7 @@ type ElementDefinition struct {
 	// DefaultValueTriggerDefinition The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
 	DefaultValueTriggerDefinition *TriggerDefinition `json:"defaultValueTriggerDefinition,omitempty"`
 	// DefaultValueUnsignedInt The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
-	DefaultValueUnsignedInt *float64 `json:"defaultValueUnsignedInt,omitempty"`
+	DefaultValueUnsignedInt *uint32 `json:"defaultValueUnsignedInt,omitempty"`
 	// DefaultValueUnsignedIntElement contains element extensions for defaultValueUnsignedInt.
 	DefaultValueUnsignedIntElement *Element `json:"_defaultValueUnsignedInt,omitempty"`
 	// DefaultValueUri The value that should be used if there is no value stated in the instance (e.g. 'if not otherwise specified, the abstract is false').
@@ -727,7 +727,7 @@ type ElementDefinition struct {
 	// FixedDateTimeElement contains element extensions for fixedDateTime.
 	FixedDateTimeElement *Element `json:"_fixedDateTime,omitempty"`
 	// FixedDecimal Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
-	FixedDecimal *float64 `json:"fixedDecimal,omitempty"`
+	FixedDecimal *Decimal `json:"fixedDecimal,omitempty"`
 	// FixedDecimalElement contains element extensions for fixedDecimal.
 	FixedDecimalElement *Element `json:"_fixedDecimal,omitempty"`
 	// FixedDistance Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
@@ -751,7 +751,7 @@ type ElementDefinition struct {
 	// FixedInstantElement contains element extensions for fixedInstant.
 	FixedInstantElement *Element `json:"_fixedInstant,omitempty"`
 	// FixedInteger Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
-	FixedInteger *float64 `json:"fixedInteger,omitempty"`
+	FixedInteger *int32 `json:"fixedInteger,omitempty"`
 	// FixedIntegerElement contains element extensions for fixedInteger.
 	FixedIntegerElement *Element `json:"_fixedInteger,omitempty"`
 	// FixedMarkdown Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
@@ -771,7 +771,7 @@ type ElementDefinition struct {
 	// FixedPeriod Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedPeriod *Period `json:"fixedPeriod,omitempty"`
 	// FixedPositiveInt Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
-	FixedPositiveInt *float64 `json:"fixedPositiveInt,omitempty"`
+	FixedPositiveInt *uint32 `json:"fixedPositiveInt,omitempty"`
 	// FixedPositiveIntElement contains element extensions for fixedPositiveInt.
 	FixedPositiveIntElement *Element `json:"_fixedPositiveInt,omitempty"`
 	// FixedQuantity Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
@@ -801,7 +801,7 @@ type ElementDefinition struct {
 	// FixedTriggerDefinition Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
 	FixedTriggerDefinition *TriggerDefinition `json:"fixedTriggerDefinition,omitempty"`
 	// FixedUnsignedInt Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
-	FixedUnsignedInt *float64 `json:"fixedUnsignedInt,omitempty"`
+	FixedUnsignedInt *uint32 `json:"fixedUnsignedInt,omitempty"`
 	// FixedUnsignedIntElement contains element extensions for fixedUnsignedInt.
 	FixedUnsignedIntElement *Element `json:"_fixedUnsignedInt,omitempty"`
 	// FixedUri Specifies a value that SHALL be exactly the value  for this element in the instance. For purposes of comparison, non-significant whitespace is ignored, and all values must be an exact match (case a...
@@ -853,7 +853,7 @@ type ElementDefinition struct {
 	// MaxValueDateTimeElement contains element extensions for maxValueDateTime.
 	MaxValueDateTimeElement *Element `json:"_maxValueDateTime,omitempty"`
 	// MaxValueDecimal The maximum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
-	MaxValueDecimal *float64 `json:"maxValueDecimal,omitempty"`
+	MaxValueDecimal *Decimal `json:"maxValueDecimal,omitempty"`
 	// MaxValueDecimalElement contains element extensions for maxValueDecimal.
 	MaxValueDecimalElement *Element `json:"_maxValueDecimal,omitempty"`
 	// MaxValueInstant The maximum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
@@ -861,11 +861,11 @@ type ElementDefinition struct {
 	// MaxValueInstantElement contains element extensions for maxValueInstant.
 	MaxValueInstantElement *Element `json:"_maxValueInstant,omitempty"`
 	// MaxValueInteger The maximum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
-	MaxValueInteger *float64 `json:"maxValueInteger,omitempty"`
+	MaxValueInteger *int32 `json:"maxValueInteger,omitempty"`
 	// MaxValueIntegerElement contains element extensions for maxValueInteger.
 	MaxValueIntegerElement *Element `json:"_maxValueInteger,omitempty"`
 	// MaxValuePositiveInt The maximum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
-	MaxValuePositiveInt *float64 `json:"maxValuePositiveInt,omitempty"`
+	MaxValuePositiveInt *uint32 `json:"maxValuePositiveInt,omitempty"`
 	// MaxValuePositiveIntElement contains element extensions for maxValuePositiveInt.
 	MaxValuePositiveIntElement *Element `json:"_maxValuePositiveInt,omitempty"`
 	// MaxValueQuantity The maximum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
@@ -875,7 +875,7 @@ type ElementDefinition struct {
 	// MaxValueTimeElement contains element extensions for maxValueTime.
 	MaxValueTimeElement *Element `json:"_maxValueTime,omitempty"`
 	// MaxValueUnsignedInt The maximum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
-	MaxValueUnsignedInt *float64 `json:"maxValueUnsignedInt,omitempty"`
+	MaxValueUnsignedInt *uint32 `json:"maxValueUnsignedInt,omitempty"`
 	// MaxValueUnsignedIntElement contains element extensions for maxValueUnsignedInt.
 	MaxValueUnsignedIntElement *Element `json:"_maxValueUnsignedInt,omitempty"`
 	// MeaningWhenMissing The Implicit meaning that is to be understood when this element is missing (e.g. 'when this element is missing, the period is ongoing').
@@ -895,7 +895,7 @@ type ElementDefinition struct {
 	// MinValueDateTimeElement contains element extensions for minValueDateTime.
 	MinValueDateTimeElement *Element `json:"_minValueDateTime,omitempty"`
 	// MinValueDecimal The minimum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
-	MinValueDecimal *float64 `json:"minValueDecimal,omitempty"`
+	MinValueDecimal *Decimal `json:"minValueDecimal,omitempty"`
 	// MinValueDecimalElement contains element extensions for minValueDecimal.
 	MinValueDecimalElement *Element `json:"_minValueDecimal,omitempty"`
 	// MinValueInstant The minimum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
@@ -903,11 +903,11 @@ type ElementDefinition struct {
 	// MinValueInstantElement contains element extensions for minValueInstant.
 	MinValueInstantElement *Element `json:"_minValueInstant,omitempty"`
 	// MinValueInteger The minimum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
-	MinValueInteger *float64 `json:"minValueInteger,omitempty"`
+	MinValueInteger *int32 `json:"minValueInteger,omitempty"`
 	// MinValueIntegerElement contains element extensions for minValueInteger.
 	MinValueIntegerElement *Element `json:"_minValueInteger,omitempty"`
 	// MinValuePositiveInt The minimum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
-	MinValuePositiveInt *float64 `json:"minValuePositiveInt,omitempty"`
+	MinValuePositiveInt *uint32 `json:"minValuePositiveInt,omitempty"`
 	// MinValuePositiveIntElement contains element extensions for minValuePositiveInt.
 	MinValuePositiveIntElement *Element `json:"_minValuePositiveInt,omitempty"`
 	// MinValueQuantity The minimum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
@@ -917,7 +917,7 @@ type ElementDefinition struct {
 	// MinValueTimeElement contains element extensions for minValueTime.
 	MinValueTimeElement *Element `json:"_minValueTime,omitempty"`
 	// MinValueUnsignedInt The minimum allowed value for the element. The value is inclusive. This is allowed for the types date, dateTime, instant, time, decimal, integer, and Quantity.
-	MinValueUnsignedInt *float64 `json:"minValueUnsignedInt,omitempty"`
+	MinValueUnsignedInt *uint32 `json:"minValueUnsignedInt,omitempty"`
 	// MinValueUnsignedIntElement contains element extensions for minValueUnsignedInt.
 	MinValueUnsignedIntElement *Element `json:"_minValueUnsignedInt,omitempty"`
 	// MustSupport If true, implementations that produce or consume resources SHALL provide "support" for the element in some meaningful way.  If false, the element may be ignored and not supported. If false, whether...
@@ -979,7 +979,7 @@ type ElementDefinition struct {
 	// PatternDateTimeElement contains element extensions for patternDateTime.
 	PatternDateTimeElement *Element `json:"_patternDateTime,omitempty"`
 	// PatternDecimal Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
-	PatternDecimal *float64 `json:"patternDecimal,omitempty"`
+	PatternDecimal *Decimal `json:"patternDecimal,omitempty"`
 	// PatternDecimalElement contains element extensions for patternDecimal.
 	PatternDecimalElement *Element `json:"_patternDecimal,omitempty"`
 	// PatternDistance Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
@@ -1003,7 +1003,7 @@ type ElementDefinition struct {
 	// PatternInstantElement contains element extensions for patternInstant.
 	PatternInstantElement *Element `json:"_patternInstant,omitempty"`
 	// PatternInteger Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
-	PatternInteger *float64 `json:"patternInteger,omitempty"`
+	PatternInteger *int32 `json:"patternInteger,omitempty"`
 	// PatternIntegerElement contains element extensions for patternInteger.
 	PatternIntegerElement *Element `json:"_patternInteger,omitempty"`
 	// PatternMarkdown Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
@@ -1023,7 +1023,7 @@ type ElementDefinition struct {
 	// PatternPeriod Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternPeriod *Period `json:"patternPeriod,omitempty"`
 	// PatternPositiveInt Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
-	PatternPositiveInt *float64 `json:"patternPositiveInt,omitempty"`
+	PatternPositiveInt *uint32 `json:"patternPositiveInt,omitempty"`
 	// PatternPositiveIntElement contains element extensions for patternPositiveInt.
 	PatternPositiveIntElement *Element `json:"_patternPositiveInt,omitempty"`
 	// PatternQuantity Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
@@ -1053,7 +1053,7 @@ type ElementDefinition struct {
 	// PatternTriggerDefinition Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
 	PatternTriggerDefinition *TriggerDefinition `json:"patternTriggerDefinition,omitempty"`
 	// PatternUnsignedInt Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
-	PatternUnsignedInt *float64 `json:"patternUnsignedInt,omitempty"`
+	PatternUnsignedInt *uint32 `json:"patternUnsignedInt,omitempty"`
 	// PatternUnsignedIntElement contains element extensions for patternUnsignedInt.
 	PatternUnsignedIntElement *Element `json:"_patternUnsignedInt,omitempty"`
 	// PatternUri Specifies a value that the value in the instance SHALL follow - that is, any value in the pattern must be found in the instance. Other additional values may be found too. This is effectively constr...
@@ -1185,7 +1185,7 @@ type Extension struct {
 	// ValueDateTimeElement contains element extensions for valueDateTime.
 	ValueDateTimeElement *Element `json:"_valueDateTime,omitempty"`
 	// ValueDecimal Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
-	ValueDecimal *float64 `json:"valueDecimal,omitempty"`
+	ValueDecimal *Decimal `json:"valueDecimal,omitempty"`
 	// ValueDecimalElement contains element extensions for valueDecimal.
 	ValueDecimalElement *Element `json:"_valueDecimal,omitempty"`
 	// ValueDistance Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).
@@ -1409,7 +1409,7 @@ type Money struct {
 	// CurrencyElement contains element extensions for currency.
 	CurrencyElement *Element `json:"_currency,omitempty"`
 	// Value Numerical value (with implicit precision).
-	Value *float64 `json:"value,omitempty"`
+	Value *Decimal `json:"value,omitempty"`
 	// ValueElement contains element extensions for value.
 	ValueElement *Element `json:"_value,omitempty"`
 }
@@ -1595,7 +1595,7 @@ type Quantity struct {
 	// UnitElement contains element extensions for unit.
 	UnitElement *Element `json:"_unit,omitempty"`
 	// Value The value of the measured amount. The value includes an implicit precision in the presentation of the value.
-	Value *float64 `json:"value,omitempty"`
+	Value *Decimal `json:"value,omitempty"`
 	// ValueElement contains element extensions for value.
 	ValueElement *Element `json:"_value,omitempty"`
 }
@@ -1705,21 +1705,21 @@ type SampledData struct {
 	// DimensionsElement contains element extensions for dimensions.
 	DimensionsElement *Element `json:"_dimensions,omitempty"`
 	// Factor A correction factor that is applied to the sampled data points before they are added to the origin.
-	Factor *float64 `json:"factor,omitempty"`
+	Factor *Decimal `json:"factor,omitempty"`
 	// FactorElement contains element extensions for factor.
 	FactorElement *Element `json:"_factor,omitempty"`
 	// LowerLimit The lower limit of detection of the measured points. This is needed if any of the data points have the value "L" (lower than detection limit).
-	LowerLimit *float64 `json:"lowerLimit,omitempty"`
+	LowerLimit *Decimal `json:"lowerLimit,omitempty"`
 	// LowerLimitElement contains element extensions for lowerLimit.
 	LowerLimitElement *Element `json:"_lowerLimit,omitempty"`
 	// Origin The base quantity that a measured value of zero represents. In addition, this provides the units of the entire measurement series.
 	Origin Quantity `json:"origin"`
 	// Period The length of time between sampling times, measured in milliseconds.
-	Period *float64 `json:"period,omitempty"`
+	Period *Decimal `json:"period,omitempty"`
 	// PeriodElement contains element extensions for period.
 	PeriodElement *Element `json:"_period,omitempty"`
 	// UpperLimit The upper limit of detection of the measured points. This is needed if any of the data points have the value "U" (higher than detection limit).
-	UpperLimit *float64 `json:"upperLimit,omitempty"`
+	UpperLimit *Decimal `json:"upperLimit,omitempty"`
 	// UpperLimitElement contains element extensions for upperLimit.
 	UpperLimitElement *Element `json:"_upperLimit,omitempty"`
 }
@@ -2125,7 +2125,7 @@ type ElementDefinitionExample struct {
 	// ValueDateTimeElement contains element extensions for valueDateTime.
 	ValueDateTimeElement *Element `json:"_valueDateTime,omitempty"`
 	// ValueDecimal The actual value for the element, which must be one of the types allowed for this element.
-	ValueDecimal *float64 `json:"valueDecimal,omitempty"`
+	ValueDecimal *Decimal `json:"valueDecimal,omitempty"`
 	// ValueDecimalElement contains element extensions for valueDecimal.
 	ValueDecimalElement *Element `json:"_valueDecimal,omitempty"`
 	// ValueDistance The actual value for the element, which must be one of the types allowed for this element.
@@ -2149,7 +2149,7 @@ type ElementDefinitionExample struct {
 	// ValueInstantElement contains element extensions for valueInstant.
 	ValueInstantElement *Element `json:"_valueInstant,omitempty"`
 	// ValueInteger The actual value for the element, which must be one of the types allowed for this element.
-	ValueInteger *float64 `json:"valueInteger,omitempty"`
+	ValueInteger *int32 `json:"valueInteger,omitempty"`
 	// ValueIntegerElement contains element extensions for valueInteger.
 	ValueIntegerElement *Element `json:"_valueInteger,omitempty"`
 	// ValueMarkdown The actual value for the element, which must be one of the types allowed for this element.
@@ -2169,7 +2169,7 @@ type ElementDefinitionExample struct {
 	// ValuePeriod The actual value for the element, which must be one of the types allowed for this element.
 	ValuePeriod *Period `json:"valuePeriod,omitempty"`
 	// ValuePositiveInt The actual value for the element, which must be one of the types allowed for this element.
-	ValuePositiveInt *float64 `json:"valuePositiveInt,omitempty"`
+	ValuePositiveInt *uint32 `json:"valuePositiveInt,omitempty"`
 	// ValuePositiveIntElement contains element extensions for valuePositiveInt.
 	ValuePositiveIntElement *Element `json:"_valuePositiveInt,omitempty"`
 	// ValueQuantity The actual value for the element, which must be one of the types allowed for this element.
@@ -2199,7 +2199,7 @@ type ElementDefinitionExample struct {
 	// ValueTriggerDefinition The actual value for the element, which must be one of the types allowed for this element.
 	ValueTriggerDefinition *TriggerDefinition `json:"valueTriggerDefinition,omitempty"`
 	// ValueUnsignedInt The actual value for the element, which must be one of the types allowed for this element.
-	ValueUnsignedInt *float64 `json:"valueUnsignedInt,omitempty"`
+	ValueUnsignedInt *uint32 `json:"valueUnsignedInt,omitempty"`
 	// ValueUnsignedIntElement contains element extensions for valueUnsignedInt.
 	ValueUnsignedIntElement *Element `json:"_valueUnsignedInt,omitempty"`
 	// ValueUri The actual value for the element, which must be one of the types allowed for this element.
@@ -2349,11 +2349,11 @@ type TimingRepeat struct {
 	// DayOfWeekElement contains element extensions for each dayOfWeek.
 	DayOfWeekElement []Element `json:"_dayOfWeek,omitempty"`
 	// Duration How long this thing happens for when it happens. If durationMax is present, this element indicates the lower bound of the allowed range of the duration.
-	Duration *float64 `json:"duration,omitempty"`
+	Duration *Decimal `json:"duration,omitempty"`
 	// DurationElement contains element extensions for duration.
 	DurationElement *Element `json:"_duration,omitempty"`
 	// DurationMax If present, indicates that the duration is a range - so to perform the action between [duration] and [durationMax] time length.
-	DurationMax *float64 `json:"durationMax,omitempty"`
+	DurationMax *Decimal `json:"durationMax,omitempty"`
 	// DurationMaxElement contains element extensions for durationMax.
 	DurationMaxElement *Element `json:"_durationMax,omitempty"`
 	// DurationUnit The units of time for the duration, in UCUM units.
@@ -2373,11 +2373,11 @@ type TimingRepeat struct {
 	// OffsetElement contains element extensions for offset.
 	OffsetElement *Element `json:"_offset,omitempty"`
 	// Period Indicates the duration of time over which repetitions are to occur; e.g. to express "3 times per day", 3 would be the frequency and "1 day" would be the period. If periodMax is present, this elemen...
-	Period *float64 `json:"period,omitempty"`
+	Period *Decimal `json:"period,omitempty"`
 	// PeriodElement contains element extensions for period.
 	PeriodElement *Element `json:"_period,omitempty"`
 	// PeriodMax If present, indicates that the period is a range from [period] to [periodMax], allowing expressing concepts such as "do this once every 3-5 days.
-	PeriodMax *float64 `json:"periodMax,omitempty"`
+	PeriodMax *Decimal `json:"periodMax,omitempty"`
 	// PeriodMaxElement contains element extensions for periodMax.
 	PeriodMaxElement *Element `json:"_periodMax,omitempty"`
 	// PeriodUnit The units of time for the period in UCUM units.

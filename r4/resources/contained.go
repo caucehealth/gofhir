@@ -24,10 +24,10 @@ func ContainedResourceType(raw json.RawMessage) (string, error) {
 }
 
 // ParseContained unmarshals a contained resource as the appropriate type
-// based on its resourceType field. Returns the typed resource as an any value.
-// The caller should type-assert to the expected resource type.
-// Supports all 145 FHIR R4 resource types via the generated registry.
-func ParseContained(raw json.RawMessage) (any, error) {
+// based on its resourceType field. Returns the typed resource implementing
+// the Resource interface. Supports all 145 FHIR R4 resource types via the
+// generated registry.
+func ParseContained(raw json.RawMessage) (Resource, error) {
 	return ParseResource(raw)
 }
 

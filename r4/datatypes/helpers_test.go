@@ -92,3 +92,62 @@ func TestNewReference(t *testing.T) {
 func strPtr(s string) *string {
 	return &s
 }
+
+func TestDatePrecision(t *testing.T) {
+	tests := []struct {
+		input string
+		want  dt.DatePrecision
+	}{
+		{"2024", dt.PrecisionYear},
+		{"2024-03", dt.PrecisionMonth},
+		{"2024-03-15", dt.PrecisionDay},
+	}
+	for _, tt := range tests {
+		d := dt.Date(tt.input)
+		if got := d.Precision(); got != tt.want {
+			t.Errorf("Date(%q).Precision() = %v, want %v", tt.input, got, tt.want)
+		}
+	}
+}
+
+func TestDateTimePrecision(t *testing.T) {
+	tests := []struct {
+		input string
+		want  dt.DatePrecision
+	}{
+		{"2024", dt.PrecisionYear},
+		{"2024-03", dt.PrecisionMonth},
+		{"2024-03-15", dt.PrecisionDay},
+		{"2024-03-15T10:30:00Z", dt.PrecisionSecond},
+		{"2024-03-15T10:30:00+05:00", dt.PrecisionSecond},
+		{"2024-03-15T10:30:00.123Z", dt.PrecisionMilli},
+		{"2024-03-15T10:30:00.123456+01:00", dt.PrecisionMilli},
+	}
+	for _, tt := range tests {
+		d := dt.DateTime(tt.input)
+		if got := d.Precision(); got != tt.want {
+			t.Errorf("DateTime(%q).Precision() = %v, want %v", tt.input, got, tt.want)
+		}
+	}
+}
+
+func TestDateTimeTime(t *testing.T) {
+	d := dt.DateTime("2024-03-15T10:30:00Z")
+	tm, err := d.Time()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if tm.Year() != 2024 || tm.Month() != 3 || tm.Day() != 15 {
+		t.Errorf("parsed date = %v, want 2024-03-15", tm)
+	}
+
+	// Year-only
+	d2 := dt.Date("2024")
+	tm2, err := d2.Time()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if tm2.Year() != 2024 {
+		t.Errorf("year = %d, want 2024", tm2.Year())
+	}
+}

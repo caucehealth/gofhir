@@ -65,7 +65,7 @@ type ImmunizationEvaluation struct {
 	// SeriesElement contains element extensions for series.
 	SeriesElement *dt.Element `json:"_series,omitempty"`
 	// SeriesDosesPositiveInt The recommended number of doses to achieve immunity.
-	SeriesDosesPositiveInt *float64 `json:"seriesDosesPositiveInt,omitempty"`
+	SeriesDosesPositiveInt *uint32 `json:"seriesDosesPositiveInt,omitempty"`
 	// SeriesDosesPositiveIntElement contains element extensions for seriesDosesPositiveInt.
 	SeriesDosesPositiveIntElement *dt.Element `json:"_seriesDosesPositiveInt,omitempty"`
 	// SeriesDosesString The recommended number of doses to achieve immunity.
@@ -86,27 +86,33 @@ func (r ImmunizationEvaluation) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Collect additional fields to splice into JSON
+	var extra []byte
 	if r.Dose != nil {
 		vData, err := json.Marshal(r.Dose)
 		if err != nil {
 			return nil, err
 		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	if len(extra) == 0 {
+		return data, nil
+	}
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ImmunizationEvaluation.
@@ -247,7 +253,7 @@ func (b *ImmunizationEvaluationBuilder) WithDescription(v string) *ImmunizationE
 }
 
 // WithDoseNumberPositiveInt sets the doseNumberPositiveInt polymorphic field.
-func (b *ImmunizationEvaluationBuilder) WithDoseNumberPositiveInt(v float64) *ImmunizationEvaluationBuilder {
+func (b *ImmunizationEvaluationBuilder) WithDoseNumberPositiveInt(v uint32) *ImmunizationEvaluationBuilder {
 	if b.resource.Dose == nil {
 		b.resource.Dose = &ImmunizationEvaluationDose{}
 	}
@@ -308,7 +314,7 @@ func (b *ImmunizationEvaluationBuilder) WithSeries(v string) *ImmunizationEvalua
 }
 
 // WithSeriesDosesPositiveInt sets the seriesDosesPositiveInt field.
-func (b *ImmunizationEvaluationBuilder) WithSeriesDosesPositiveInt(v float64) *ImmunizationEvaluationBuilder {
+func (b *ImmunizationEvaluationBuilder) WithSeriesDosesPositiveInt(v uint32) *ImmunizationEvaluationBuilder {
 	b.resource.SeriesDosesPositiveInt = &v
 	b.fieldsSet["seriesDosesPositiveInt"] = true
 	return b
@@ -353,7 +359,7 @@ func (b *ImmunizationEvaluationBuilder) Build() (*ImmunizationEvaluation, error)
 
 // ImmunizationEvaluationDose represents a polymorphic choice type in FHIR.
 type ImmunizationEvaluationDose struct {
-	NumberPositiveInt *float64             `json:"doseNumberPositiveInt,omitempty"` // Nominal position in a series.
+	NumberPositiveInt *uint32              `json:"doseNumberPositiveInt,omitempty"` // Nominal position in a series.
 	NumberString      *string              `json:"doseNumberString,omitempty"`      // Nominal position in a series.
 	Status            *dt.CodeableConcept  `json:"doseStatus,omitempty"`            // Indicates if the dose is valid or not valid with respect to the published recommendations.
 	StatusReason      []dt.CodeableConcept `json:"doseStatusReason,omitempty"`      // Provides an explanation as to why the vaccine administration event is valid or not relative to the published recommendations.
@@ -384,7 +390,7 @@ func (v *ImmunizationEvaluationDose) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if d, ok := raw["doseNumberPositiveInt"]; ok {
-		var val float64
+		var val uint32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling doseNumberPositiveInt: %w", err)
 		}
@@ -555,11 +561,11 @@ func (r *ImmunizationEvaluation) GetSeries() string {
 }
 
 // GetSeriesDosesPositiveInt returns the seriesDosesPositiveInt field value, or the zero value if nil.
-func (r *ImmunizationEvaluation) GetSeriesDosesPositiveInt() float64 {
+func (r *ImmunizationEvaluation) GetSeriesDosesPositiveInt() uint32 {
 	if r.SeriesDosesPositiveInt != nil {
 		return *r.SeriesDosesPositiveInt
 	}
-	var zero float64
+	var zero uint32
 	return zero
 }
 
@@ -575,4 +581,14 @@ func (r *ImmunizationEvaluation) GetSeriesDosesString() string {
 // GetTargetDisease returns the targetDisease field value.
 func (r *ImmunizationEvaluation) GetTargetDisease() dt.CodeableConcept {
 	return r.TargetDisease
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *ImmunizationEvaluation) GetResourceType() string {
+	return "ImmunizationEvaluation"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *ImmunizationEvaluation) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

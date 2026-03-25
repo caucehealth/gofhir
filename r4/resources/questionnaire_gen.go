@@ -127,14 +127,21 @@ func (r Questionnaire) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Questionnaire.
@@ -459,7 +466,7 @@ func (r *QuestionnaireAnswerOption) UnmarshalJSON(data []byte) error {
 type QuestionnaireAnswerOptionValue struct {
 	Coding    *dt.Coding    `json:"valueCoding,omitempty"`    // A potential answer that's allowed as the answer to this question.
 	Date      *string       `json:"valueDate,omitempty"`      // A potential answer that's allowed as the answer to this question.
-	Integer   *float64      `json:"valueInteger,omitempty"`   // A potential answer that's allowed as the answer to this question.
+	Integer   *int32        `json:"valueInteger,omitempty"`   // A potential answer that's allowed as the answer to this question.
 	Reference *dt.Reference `json:"valueReference,omitempty"` // A potential answer that's allowed as the answer to this question.
 	String    *string       `json:"valueString,omitempty"`    // A potential answer that's allowed as the answer to this question.
 	Time      *string       `json:"valueTime,omitempty"`      // A potential answer that's allowed as the answer to this question.
@@ -510,7 +517,7 @@ func (v *QuestionnaireAnswerOptionValue) UnmarshalJSON(data []byte) error {
 		v.Date = &val
 	}
 	if d, ok := raw["valueInteger"]; ok {
-		var val float64
+		var val int32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueInteger: %w", err)
 		}
@@ -565,11 +572,11 @@ type QuestionnaireEnableWhen struct {
 	// AnswerDateTimeElement contains element extensions for answerDateTime.
 	AnswerDateTimeElement *dt.Element `json:"_answerDateTime,omitempty"`
 	// AnswerDecimal A value that the referenced question is tested using the specified operator in order for the item to be enabled.
-	AnswerDecimal *float64 `json:"answerDecimal,omitempty"`
+	AnswerDecimal *dt.Decimal `json:"answerDecimal,omitempty"`
 	// AnswerDecimalElement contains element extensions for answerDecimal.
 	AnswerDecimalElement *dt.Element `json:"_answerDecimal,omitempty"`
 	// AnswerInteger A value that the referenced question is tested using the specified operator in order for the item to be enabled.
-	AnswerInteger *float64 `json:"answerInteger,omitempty"`
+	AnswerInteger *int32 `json:"answerInteger,omitempty"`
 	// AnswerIntegerElement contains element extensions for answerInteger.
 	AnswerIntegerElement *dt.Element `json:"_answerInteger,omitempty"`
 	// AnswerQuantity A value that the referenced question is tested using the specified operator in order for the item to be enabled.
@@ -660,8 +667,8 @@ type QuestionnaireInitialValue struct {
 	Coding     *dt.Coding     `json:"valueCoding,omitempty"`     // The actual value to for an initial answer.
 	Date       *string        `json:"valueDate,omitempty"`       // The actual value to for an initial answer.
 	DateTime   *string        `json:"valueDateTime,omitempty"`   // The actual value to for an initial answer.
-	Decimal    *float64       `json:"valueDecimal,omitempty"`    // The actual value to for an initial answer.
-	Integer    *float64       `json:"valueInteger,omitempty"`    // The actual value to for an initial answer.
+	Decimal    *dt.Decimal    `json:"valueDecimal,omitempty"`    // The actual value to for an initial answer.
+	Integer    *int32         `json:"valueInteger,omitempty"`    // The actual value to for an initial answer.
 	Quantity   *dt.Quantity   `json:"valueQuantity,omitempty"`   // The actual value to for an initial answer.
 	Reference  *dt.Reference  `json:"valueReference,omitempty"`  // The actual value to for an initial answer.
 	String     *string        `json:"valueString,omitempty"`     // The actual value to for an initial answer.
@@ -753,14 +760,14 @@ func (v *QuestionnaireInitialValue) UnmarshalJSON(data []byte) error {
 		v.DateTime = &val
 	}
 	if d, ok := raw["valueDecimal"]; ok {
-		var val float64
+		var val dt.Decimal
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueDecimal: %w", err)
 		}
 		v.Decimal = &val
 	}
 	if d, ok := raw["valueInteger"]; ok {
-		var val float64
+		var val int32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueInteger: %w", err)
 		}
@@ -1127,4 +1134,14 @@ func (r *Questionnaire) GetVersion() string {
 	}
 	var zero string
 	return zero
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *Questionnaire) GetResourceType() string {
+	return "Questionnaire"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *Questionnaire) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

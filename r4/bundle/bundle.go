@@ -93,7 +93,7 @@ type BundleSearch struct {
 	// the search criteria or for some other reason.
 	Mode *string `json:"mode,omitempty"`
 	// Score is the search ranking score (between 0 and 1).
-	Score *float64 `json:"score,omitempty"`
+	Score *dt.Decimal `json:"score,omitempty"`
 }
 
 // BundleRequest contains HTTP request details for transaction/batch entries.

@@ -113,14 +113,21 @@ func (r ValueSet) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ValueSet.
@@ -607,13 +614,13 @@ func (r *ValueSetParameter) UnmarshalJSON(data []byte) error {
 
 // ValueSetParameterValue represents a polymorphic choice type in FHIR.
 type ValueSetParameterValue struct {
-	Boolean  *bool    `json:"valueBoolean,omitempty"`  // The value of the parameter.
-	Code     *string  `json:"valueCode,omitempty"`     // The value of the parameter.
-	DateTime *string  `json:"valueDateTime,omitempty"` // The value of the parameter.
-	Decimal  *float64 `json:"valueDecimal,omitempty"`  // The value of the parameter.
-	Integer  *float64 `json:"valueInteger,omitempty"`  // The value of the parameter.
-	String   *string  `json:"valueString,omitempty"`   // The value of the parameter.
-	Uri      *string  `json:"valueUri,omitempty"`      // The value of the parameter.
+	Boolean  *bool       `json:"valueBoolean,omitempty"`  // The value of the parameter.
+	Code     *string     `json:"valueCode,omitempty"`     // The value of the parameter.
+	DateTime *string     `json:"valueDateTime,omitempty"` // The value of the parameter.
+	Decimal  *dt.Decimal `json:"valueDecimal,omitempty"`  // The value of the parameter.
+	Integer  *int32      `json:"valueInteger,omitempty"`  // The value of the parameter.
+	String   *string     `json:"valueString,omitempty"`   // The value of the parameter.
+	Uri      *string     `json:"valueUri,omitempty"`      // The value of the parameter.
 }
 
 // MarshalJSON implements the json.Marshaler interface for ValueSetParameterValue.
@@ -671,14 +678,14 @@ func (v *ValueSetParameterValue) UnmarshalJSON(data []byte) error {
 		v.DateTime = &val
 	}
 	if d, ok := raw["valueDecimal"]; ok {
-		var val float64
+		var val dt.Decimal
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueDecimal: %w", err)
 		}
 		v.Decimal = &val
 	}
 	if d, ok := raw["valueInteger"]; ok {
-		var val float64
+		var val int32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueInteger: %w", err)
 		}
@@ -926,4 +933,14 @@ func (r *ValueSet) GetVersion() string {
 	}
 	var zero string
 	return zero
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *ValueSet) GetResourceType() string {
+	return "ValueSet"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *ValueSet) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

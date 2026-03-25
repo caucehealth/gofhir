@@ -88,27 +88,33 @@ func (r RiskAssessment) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Collect additional fields to splice into JSON
+	var extra []byte
 	if r.Occurrence != nil {
 		vData, err := json.Marshal(r.Occurrence)
 		if err != nil {
 			return nil, err
 		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	if len(extra) == 0 {
+		return data, nil
+	}
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for RiskAssessment.
@@ -372,7 +378,7 @@ type RiskAssessmentPrediction struct {
 	// Outcome One of the potential outcomes for the patient (e.g. remission, death,  a particular condition).
 	Outcome *dt.CodeableConcept `json:"outcome,omitempty"`
 	// ProbabilityDecimal Indicates how likely the outcome is (in the specified timeframe).
-	ProbabilityDecimal *float64 `json:"probabilityDecimal,omitempty"`
+	ProbabilityDecimal *dt.Decimal `json:"probabilityDecimal,omitempty"`
 	// ProbabilityDecimalElement contains element extensions for probabilityDecimal.
 	ProbabilityDecimalElement *dt.Element `json:"_probabilityDecimal,omitempty"`
 	// ProbabilityRange Indicates how likely the outcome is (in the specified timeframe).
@@ -384,7 +390,7 @@ type RiskAssessmentPrediction struct {
 	// RationaleElement contains element extensions for rationale.
 	RationaleElement *dt.Element `json:"_rationale,omitempty"`
 	// RelativeRisk Indicates the risk for this particular subject (with their specific characteristics) divided by the risk of the population in general.  (Numbers greater than 1 = higher risk than the population, nu...
-	RelativeRisk *float64 `json:"relativeRisk,omitempty"`
+	RelativeRisk *dt.Decimal `json:"relativeRisk,omitempty"`
 	// RelativeRiskElement contains element extensions for relativeRisk.
 	RelativeRiskElement *dt.Element `json:"_relativeRisk,omitempty"`
 	// WhenPeriod Indicates the period of time or age range of the subject to which the specified probability applies.
@@ -643,4 +649,14 @@ func (r *RiskAssessment) GetReasonReference() []dt.Reference {
 // GetSubject returns the subject field value.
 func (r *RiskAssessment) GetSubject() dt.Reference {
 	return r.Subject
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *RiskAssessment) GetResourceType() string {
+	return "RiskAssessment"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *RiskAssessment) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

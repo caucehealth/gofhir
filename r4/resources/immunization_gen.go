@@ -118,27 +118,33 @@ func (r Immunization) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Collect additional fields to splice into JSON
+	var extra []byte
 	if r.Occurrence != nil {
 		vData, err := json.Marshal(r.Occurrence)
 		if err != nil {
 			return nil, err
 		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	if len(extra) == 0 {
+		return data, nil
+	}
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Immunization.
@@ -532,7 +538,7 @@ type ImmunizationProtocolApplied struct {
 	// SeriesElement contains element extensions for series.
 	SeriesElement *dt.Element `json:"_series,omitempty"`
 	// SeriesDosesPositiveInt The recommended number of doses to achieve immunity.
-	SeriesDosesPositiveInt *float64 `json:"seriesDosesPositiveInt,omitempty"`
+	SeriesDosesPositiveInt *uint32 `json:"seriesDosesPositiveInt,omitempty"`
 	// SeriesDosesPositiveIntElement contains element extensions for seriesDosesPositiveInt.
 	SeriesDosesPositiveIntElement *dt.Element `json:"_seriesDosesPositiveInt,omitempty"`
 	// SeriesDosesString The recommended number of doses to achieve immunity.
@@ -590,8 +596,8 @@ func (r *ImmunizationProtocolApplied) UnmarshalJSON(data []byte) error {
 
 // ImmunizationProtocolAppliedDose represents a polymorphic choice type in FHIR.
 type ImmunizationProtocolAppliedDose struct {
-	NumberPositiveInt *float64 `json:"doseNumberPositiveInt,omitempty"` // Nominal position in a series.
-	NumberString      *string  `json:"doseNumberString,omitempty"`      // Nominal position in a series.
+	NumberPositiveInt *uint32 `json:"doseNumberPositiveInt,omitempty"` // Nominal position in a series.
+	NumberString      *string `json:"doseNumberString,omitempty"`      // Nominal position in a series.
 }
 
 // MarshalJSON implements the json.Marshaler interface for ImmunizationProtocolAppliedDose.
@@ -613,7 +619,7 @@ func (v *ImmunizationProtocolAppliedDose) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if d, ok := raw["doseNumberPositiveInt"]; ok {
-		var val float64
+		var val uint32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling doseNumberPositiveInt: %w", err)
 		}
@@ -992,4 +998,14 @@ func (r *Immunization) GetSubpotentReason() []dt.CodeableConcept {
 // GetVaccineCode returns the vaccineCode field value.
 func (r *Immunization) GetVaccineCode() dt.CodeableConcept {
 	return r.VaccineCode
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *Immunization) GetResourceType() string {
+	return "Immunization"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *Immunization) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

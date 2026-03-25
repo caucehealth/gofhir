@@ -5,12 +5,14 @@
 
 package resources
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 // ParseResource unmarshals a FHIR resource from JSON based on its resourceType.
-// Returns the typed resource as an any value. The caller should type-assert
-// to the expected resource type.
-func ParseResource(data json.RawMessage) (any, error) {
+// Returns the typed resource implementing the Resource interface.
+func ParseResource(data json.RawMessage) (Resource, error) {
 	var header struct {
 		ResourceType string `json:"resourceType"`
 	}
@@ -454,7 +456,6 @@ func ParseResource(data json.RawMessage) (any, error) {
 		var r VisionPrescription
 		return &r, json.Unmarshal(data, &r)
 	default:
-		var m map[string]any
-		return m, json.Unmarshal(data, &m)
+		return nil, fmt.Errorf("unknown resource type: %s", header.ResourceType)
 	}
 }

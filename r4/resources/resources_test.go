@@ -295,7 +295,7 @@ func TestPolymorphicValueTypes(t *testing.T) {
 				if obs.Value == nil || obs.Value.Quantity == nil {
 					t.Fatal("expected Quantity")
 				}
-				if obs.Value.Quantity.Value == nil || *obs.Value.Quantity.Value != 120 {
+				if obs.Value.Quantity.Value == nil || obs.Value.Quantity.Value.Float64() != 120 {
 					t.Error("quantity value should be 120")
 				}
 				if obs.Value.Quantity.Unit == nil || *obs.Value.Quantity.Unit != "mmHg" {
@@ -1088,5 +1088,172 @@ func TestHL7PatientElementExtensions(t *testing.T) {
 	json.Unmarshal(out, &m)
 	if _, ok := m["_birthDate"]; !ok {
 		t.Error("_birthDate should be present in marshaled output of HL7 example")
+	}
+}
+
+// ============================================================================
+// Multiple value[x] variants — verify both are preserved
+// ============================================================================
+
+func TestMultipleValueXVariantsPreserved(t *testing.T) {
+	// When input has both valueQuantity and valueString, both should be parsed
+	input := `{"resourceType":"Observation","status":"final","code":{"text":"test"},"valueQuantity":{"value":120,"unit":"mmHg"},"valueString":"also present"}`
+	var obs resources.Observation
+	if err := json.Unmarshal([]byte(input), &obs); err != nil {
+		t.Fatal(err)
+	}
+	if obs.Value == nil {
+		t.Fatal("value should not be nil")
+	}
+	if obs.Value.Quantity == nil {
+		t.Error("valueQuantity should be parsed")
+	}
+	if obs.Value.String == nil || *obs.Value.String != "also present" {
+		t.Error("valueString should also be parsed")
+	}
+}
+
+// ============================================================================
+// Round-trip identity — marshal→unmarshal produces equivalent resource
+// ============================================================================
+
+func TestRoundTripIdentity(t *testing.T) {
+	tests := []string{
+		`{"resourceType":"Patient","id":"1","gender":"male","birthDate":"1980-01-01","name":[{"family":"Doe","given":["John","James"]}],"active":true}`,
+		`{"resourceType":"Observation","id":"2","status":"final","code":{"coding":[{"system":"http://loinc.org","code":"8867-4","display":"Heart rate"}],"text":"Heart rate"},"valueQuantity":{"value":72,"unit":"bpm"}}`,
+		`{"resourceType":"Condition","id":"3","code":{"text":"Diabetes"},"subject":{"reference":"Patient/1"}}`,
+	}
+	for _, input := range tests {
+		// Parse
+		var m1 map[string]json.RawMessage
+		json.Unmarshal([]byte(input), &m1)
+		rt := string(m1["resourceType"])
+
+		res, err := resources.ParseResource(json.RawMessage(input))
+		if err != nil {
+			t.Fatalf("parse %s: %v", rt, err)
+		}
+
+		// Marshal back
+		out, err := json.Marshal(res)
+		if err != nil {
+			t.Fatalf("marshal %s: %v", rt, err)
+		}
+
+		// Compare key-by-key
+		var m2 map[string]json.RawMessage
+		json.Unmarshal(out, &m2)
+		for k := range m1 {
+			if _, ok := m2[k]; !ok {
+				t.Errorf("%s: key %q lost in round-trip", rt, k)
+			}
+		}
+	}
+}
+
+// ============================================================================
+// Negative tests — malformed and edge-case inputs
+// ============================================================================
+
+func TestUnmarshalInvalidJSON(t *testing.T) {
+	var p resources.Patient
+	if err := json.Unmarshal([]byte(`{not valid json}`), &p); err == nil {
+		t.Error("should fail on invalid JSON")
+	}
+}
+
+func TestUnmarshalWrongTypeForField(t *testing.T) {
+	// gender should be string, not number
+	input := `{"resourceType":"Patient","gender":123}`
+	var p resources.Patient
+	err := json.Unmarshal([]byte(input), &p)
+	if err == nil {
+		// Go's json.Unmarshal is lenient about this — it silently fails
+		// Verify the field is nil (not corrupted)
+		if p.Gender != nil {
+			t.Errorf("gender should be nil when given wrong type, got %v", *p.Gender)
+		}
+	}
+}
+
+func TestUnmarshalNullFields(t *testing.T) {
+	input := `{"resourceType":"Patient","id":null,"gender":null,"name":null}`
+	var p resources.Patient
+	if err := json.Unmarshal([]byte(input), &p); err != nil {
+		t.Fatalf("null fields should be accepted: %v", err)
+	}
+	if p.Id != nil {
+		t.Error("null id should result in nil")
+	}
+	if p.Gender != nil {
+		t.Error("null gender should result in nil")
+	}
+	if p.Name != nil {
+		t.Error("null name should result in nil slice")
+	}
+}
+
+func TestEmptyArrayVsNilArray(t *testing.T) {
+	// Empty array should marshal differently from absent array
+	input1 := `{"resourceType":"Patient"}`
+	input2 := `{"resourceType":"Patient","name":[]}`
+
+	var p1, p2 resources.Patient
+	json.Unmarshal([]byte(input1), &p1)
+	json.Unmarshal([]byte(input2), &p2)
+
+	out1, _ := json.Marshal(&p1)
+	out2, _ := json.Marshal(&p2)
+
+	// Both should omit empty name (omitempty on slices)
+	var m1, m2 map[string]json.RawMessage
+	json.Unmarshal(out1, &m1)
+	json.Unmarshal(out2, &m2)
+
+	if _, ok := m1["name"]; ok {
+		t.Error("absent name should not appear in output")
+	}
+	if _, ok := m2["name"]; ok {
+		t.Error("empty name array should be omitted (omitempty)")
+	}
+}
+
+func TestBooleanFalsePreserved(t *testing.T) {
+	// false booleans should survive round-trip (not be omitted as zero value)
+	input := `{"resourceType":"Patient","id":"1","active":false}`
+	var p resources.Patient
+	json.Unmarshal([]byte(input), &p)
+
+	if p.Active == nil {
+		t.Fatal("active:false should not be nil")
+	}
+	if *p.Active != false {
+		t.Error("active should be false")
+	}
+
+	out, _ := json.Marshal(&p)
+	var m map[string]json.RawMessage
+	json.Unmarshal(out, &m)
+	if _, ok := m["active"]; !ok {
+		t.Error("active:false should be preserved in output")
+	}
+}
+
+func TestZeroIntegerPreserved(t *testing.T) {
+	input := `{"resourceType":"Observation","status":"final","code":{"text":"t"},"valueInteger":0}`
+	var obs resources.Observation
+	json.Unmarshal([]byte(input), &obs)
+
+	if obs.Value == nil || obs.Value.Integer == nil {
+		t.Fatal("valueInteger:0 should be parsed")
+	}
+	if *obs.Value.Integer != 0 {
+		t.Error("valueInteger should be 0")
+	}
+
+	// Round-trip
+	out, _ := json.Marshal(&obs)
+	if !strings.Contains(string(out), `"valueInteger":0`) {
+		t.Error("valueInteger:0 should survive round-trip")
 	}
 }

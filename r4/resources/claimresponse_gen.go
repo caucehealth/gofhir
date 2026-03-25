@@ -119,14 +119,21 @@ func (r ClaimResponse) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ClaimResponse.
@@ -453,7 +460,7 @@ type ClaimResponseAddItem struct {
 	// DetailSequenceElement contains element extensions for each detailSequence.
 	DetailSequenceElement []dt.Element `json:"_detailSequence,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
-	Factor *float64 `json:"factor,omitempty"`
+	Factor *dt.Decimal `json:"factor,omitempty"`
 	// FactorElement contains element extensions for factor.
 	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// ItemSequence Claim items which this service line is intended to replace.
@@ -501,8 +508,8 @@ func (r ClaimResponseAddItem) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Serviced != nil {
-		vData, err := json.Marshal(r.Serviced)
+	if r.Location != nil {
+		vData, err := json.Marshal(r.Location)
 		if err != nil {
 			return nil, err
 		}
@@ -514,8 +521,8 @@ func (r ClaimResponseAddItem) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Location != nil {
-		vData, err := json.Marshal(r.Location)
+	if r.Serviced != nil {
+		vData, err := json.Marshal(r.Serviced)
 		if err != nil {
 			return nil, err
 		}
@@ -665,7 +672,7 @@ type ClaimResponseAdjudication struct {
 	// Reason A code supporting the understanding of the adjudication result and explaining variance from expected amount.
 	Reason *dt.CodeableConcept `json:"reason,omitempty"`
 	// Value A non-monetary value associated with the category. Mutually exclusive to the amount element above.
-	Value *float64 `json:"value,omitempty"`
+	Value *dt.Decimal `json:"value,omitempty"`
 	// ValueElement contains element extensions for value.
 	ValueElement *dt.Element `json:"_value,omitempty"`
 }
@@ -707,7 +714,7 @@ type ClaimResponseDetail1 struct {
 	// Adjudication The adjudication results.
 	Adjudication []ClaimResponseAdjudication `json:"adjudication,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
-	Factor *float64 `json:"factor,omitempty"`
+	Factor *dt.Decimal `json:"factor,omitempty"`
 	// FactorElement contains element extensions for factor.
 	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
@@ -893,7 +900,7 @@ type ClaimResponseSubDetail1 struct {
 	// Adjudication The adjudication results.
 	Adjudication []ClaimResponseAdjudication `json:"adjudication,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
-	Factor *float64 `json:"factor,omitempty"`
+	Factor *dt.Decimal `json:"factor,omitempty"`
 	// FactorElement contains element extensions for factor.
 	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
@@ -1217,4 +1224,14 @@ func (r *ClaimResponse) GetUse() dt.Code {
 	}
 	var zero dt.Code
 	return zero
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *ClaimResponse) GetResourceType() string {
+	return "ClaimResponse"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *ClaimResponse) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

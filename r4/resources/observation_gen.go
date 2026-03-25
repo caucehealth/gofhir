@@ -102,40 +102,43 @@ func (r Observation) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
+	// Collect additional fields to splice into JSON
+	var extra []byte
+	if r.Value != nil {
+		vData, err := json.Marshal(r.Value)
+		if err != nil {
+			return nil, err
+		}
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
+		}
 	}
 	if r.Effective != nil {
 		vData, err := json.Marshal(r.Effective)
 		if err != nil {
 			return nil, err
 		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
-		}
-	}
-	if r.Value != nil {
-		vData, err := json.Marshal(r.Value)
-		if err != nil {
-			return nil, err
-		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	if len(extra) == 0 {
+		return data, nil
+	}
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Observation.
@@ -480,7 +483,7 @@ func (b *ObservationBuilder) WithValueDateTime(v string) *ObservationBuilder {
 }
 
 // WithValueInteger sets the valueInteger polymorphic field.
-func (b *ObservationBuilder) WithValueInteger(v float64) *ObservationBuilder {
+func (b *ObservationBuilder) WithValueInteger(v int32) *ObservationBuilder {
 	if b.resource.Value == nil {
 		b.resource.Value = &ObservationValue{}
 	}
@@ -645,7 +648,7 @@ type ObservationComponentValue struct {
 	Boolean         *bool               `json:"valueBoolean,omitempty"`         // The information determined as a result of making the observation, if the information has a simple value.
 	CodeableConcept *dt.CodeableConcept `json:"valueCodeableConcept,omitempty"` // The information determined as a result of making the observation, if the information has a simple value.
 	DateTime        *string             `json:"valueDateTime,omitempty"`        // The information determined as a result of making the observation, if the information has a simple value.
-	Integer         *float64            `json:"valueInteger,omitempty"`         // The information determined as a result of making the observation, if the information has a simple value.
+	Integer         *int32              `json:"valueInteger,omitempty"`         // The information determined as a result of making the observation, if the information has a simple value.
 	Period          *dt.Period          `json:"valuePeriod,omitempty"`          // The information determined as a result of making the observation, if the information has a simple value.
 	Quantity        *dt.Quantity        `json:"valueQuantity,omitempty"`        // The information determined as a result of making the observation, if the information has a simple value.
 	Range           *dt.Range           `json:"valueRange,omitempty"`           // The information determined as a result of making the observation, if the information has a simple value.
@@ -722,7 +725,7 @@ func (v *ObservationComponentValue) UnmarshalJSON(data []byte) error {
 		v.DateTime = &val
 	}
 	if d, ok := raw["valueInteger"]; ok {
-		var val float64
+		var val int32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueInteger: %w", err)
 		}
@@ -874,7 +877,7 @@ type ObservationValue struct {
 	Boolean         *bool               `json:"valueBoolean,omitempty"`         // The information determined as a result of making the observation, if the information has a simple value.
 	CodeableConcept *dt.CodeableConcept `json:"valueCodeableConcept,omitempty"` // The information determined as a result of making the observation, if the information has a simple value.
 	DateTime        *string             `json:"valueDateTime,omitempty"`        // The information determined as a result of making the observation, if the information has a simple value.
-	Integer         *float64            `json:"valueInteger,omitempty"`         // The information determined as a result of making the observation, if the information has a simple value.
+	Integer         *int32              `json:"valueInteger,omitempty"`         // The information determined as a result of making the observation, if the information has a simple value.
 	Period          *dt.Period          `json:"valuePeriod,omitempty"`          // The information determined as a result of making the observation, if the information has a simple value.
 	Quantity        *dt.Quantity        `json:"valueQuantity,omitempty"`        // The information determined as a result of making the observation, if the information has a simple value.
 	Range           *dt.Range           `json:"valueRange,omitempty"`           // The information determined as a result of making the observation, if the information has a simple value.
@@ -951,7 +954,7 @@ func (v *ObservationValue) UnmarshalJSON(data []byte) error {
 		v.DateTime = &val
 	}
 	if d, ok := raw["valueInteger"]; ok {
-		var val float64
+		var val int32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling valueInteger: %w", err)
 		}
@@ -1274,4 +1277,14 @@ func (r *Observation) GetValue() ObservationValue {
 		return *r.Value
 	}
 	return ObservationValue{}
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *Observation) GetResourceType() string {
+	return "Observation"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *Observation) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

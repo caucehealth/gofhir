@@ -86,21 +86,16 @@ func (r SupplyRequest) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Collect additional fields to splice into JSON
+	var extra []byte
 	if r.Item != nil {
 		vData, err := json.Marshal(r.Item)
 		if err != nil {
 			return nil, err
 		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
 	if r.Occurrence != nil {
@@ -108,18 +103,26 @@ func (r SupplyRequest) MarshalJSON() ([]byte, error) {
 		if err != nil {
 			return nil, err
 		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	if len(extra) == 0 {
+		return data, nil
+	}
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for SupplyRequest.
@@ -510,6 +513,47 @@ func (v *SupplyRequestParameterValue) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// SupplyRequestItem represents a polymorphic choice type in FHIR.
+type SupplyRequestItem struct {
+	CodeableConcept *dt.CodeableConcept `json:"itemCodeableConcept,omitempty"` // The item that is requested to be supplied. This is either a link to a resource representing the details of the item or a code that identifies the item from a known list.
+	Reference       *dt.Reference       `json:"itemReference,omitempty"`       // The item that is requested to be supplied. This is either a link to a resource representing the details of the item or a code that identifies the item from a known list.
+}
+
+// MarshalJSON implements the json.Marshaler interface for SupplyRequestItem.
+func (v SupplyRequestItem) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.CodeableConcept != nil {
+		m["itemCodeableConcept"] = v.CodeableConcept
+	}
+	if v.Reference != nil {
+		m["itemReference"] = v.Reference
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for SupplyRequestItem.
+func (v *SupplyRequestItem) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["itemCodeableConcept"]; ok {
+		var val dt.CodeableConcept
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling itemCodeableConcept: %w", err)
+		}
+		v.CodeableConcept = &val
+	}
+	if d, ok := raw["itemReference"]; ok {
+		var val dt.Reference
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling itemReference: %w", err)
+		}
+		v.Reference = &val
+	}
+	return nil
+}
+
 // SupplyRequestOccurrence represents a polymorphic choice type in FHIR.
 type SupplyRequestOccurrence struct {
 	DateTime *string    `json:"occurrenceDateTime,omitempty"` // When the request should be fulfilled.
@@ -558,47 +602,6 @@ func (v *SupplyRequestOccurrence) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling occurrenceTiming: %w", err)
 		}
 		v.Timing = &val
-	}
-	return nil
-}
-
-// SupplyRequestItem represents a polymorphic choice type in FHIR.
-type SupplyRequestItem struct {
-	CodeableConcept *dt.CodeableConcept `json:"itemCodeableConcept,omitempty"` // The item that is requested to be supplied. This is either a link to a resource representing the details of the item or a code that identifies the item from a known list.
-	Reference       *dt.Reference       `json:"itemReference,omitempty"`       // The item that is requested to be supplied. This is either a link to a resource representing the details of the item or a code that identifies the item from a known list.
-}
-
-// MarshalJSON implements the json.Marshaler interface for SupplyRequestItem.
-func (v SupplyRequestItem) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.CodeableConcept != nil {
-		m["itemCodeableConcept"] = v.CodeableConcept
-	}
-	if v.Reference != nil {
-		m["itemReference"] = v.Reference
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for SupplyRequestItem.
-func (v *SupplyRequestItem) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["itemCodeableConcept"]; ok {
-		var val dt.CodeableConcept
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling itemCodeableConcept: %w", err)
-		}
-		v.CodeableConcept = &val
-	}
-	if d, ok := raw["itemReference"]; ok {
-		var val dt.Reference
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling itemReference: %w", err)
-		}
-		v.Reference = &val
 	}
 	return nil
 }
@@ -794,4 +797,14 @@ func (r *SupplyRequest) GetSupplier() []dt.Reference {
 		return r.Supplier
 	}
 	return nil
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *SupplyRequest) GetResourceType() string {
+	return "SupplyRequest"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *SupplyRequest) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

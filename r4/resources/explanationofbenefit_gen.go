@@ -153,14 +153,21 @@ func (r ExplanationOfBenefit) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ExplanationOfBenefit.
@@ -711,7 +718,7 @@ type ExplanationOfBenefitAddItem struct {
 	// DetailSequenceElement contains element extensions for each detailSequence.
 	DetailSequenceElement []dt.Element `json:"_detailSequence,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
-	Factor *float64 `json:"factor,omitempty"`
+	Factor *dt.Decimal `json:"factor,omitempty"`
 	// FactorElement contains element extensions for factor.
 	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// ItemSequence Claim items which this service line is intended to replace.
@@ -759,8 +766,8 @@ func (r ExplanationOfBenefitAddItem) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Location != nil {
-		vData, err := json.Marshal(r.Location)
+	if r.Serviced != nil {
+		vData, err := json.Marshal(r.Serviced)
 		if err != nil {
 			return nil, err
 		}
@@ -772,8 +779,8 @@ func (r ExplanationOfBenefitAddItem) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Serviced != nil {
-		vData, err := json.Marshal(r.Serviced)
+	if r.Location != nil {
+		vData, err := json.Marshal(r.Location)
 		if err != nil {
 			return nil, err
 		}
@@ -923,7 +930,7 @@ type ExplanationOfBenefitAdjudication struct {
 	// Reason A code supporting the understanding of the adjudication result and explaining variance from expected amount.
 	Reason *dt.CodeableConcept `json:"reason,omitempty"`
 	// Value A non-monetary value associated with the category. Mutually exclusive to the amount element above.
-	Value *float64 `json:"value,omitempty"`
+	Value *dt.Decimal `json:"value,omitempty"`
 	// ValueElement contains element extensions for value.
 	ValueElement *dt.Element `json:"_value,omitempty"`
 }
@@ -1003,7 +1010,7 @@ type ExplanationOfBenefitDetail struct {
 	// Category Code to identify the general type of benefits under which products and services are provided.
 	Category *dt.CodeableConcept `json:"category,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
-	Factor *float64 `json:"factor,omitempty"`
+	Factor *dt.Decimal `json:"factor,omitempty"`
 	// FactorElement contains element extensions for factor.
 	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
@@ -1047,7 +1054,7 @@ type ExplanationOfBenefitDetail1 struct {
 	// Adjudication The adjudication results.
 	Adjudication []ExplanationOfBenefitAdjudication `json:"adjudication,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
-	Factor *float64 `json:"factor,omitempty"`
+	Factor *dt.Decimal `json:"factor,omitempty"`
 	// FactorElement contains element extensions for factor.
 	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
@@ -1244,19 +1251,19 @@ func (r *ExplanationOfBenefitFinancial) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ExplanationOfBenefitFinancial(alias)
-	var allowedVal ExplanationOfBenefitFinancialAllowed
-	if err := allowedVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if allowedVal.Money != nil || allowedVal.String != nil || allowedVal.UnsignedInt != nil {
-		r.Allowed = &allowedVal
-	}
 	var usedVal ExplanationOfBenefitFinancialUsed
 	if err := usedVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if usedVal.Money != nil || usedVal.UnsignedInt != nil {
 		r.Used = &usedVal
+	}
+	var allowedVal ExplanationOfBenefitFinancialAllowed
+	if err := allowedVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if allowedVal.Money != nil || allowedVal.String != nil || allowedVal.UnsignedInt != nil {
+		r.Allowed = &allowedVal
 	}
 	return nil
 }
@@ -1265,7 +1272,7 @@ func (r *ExplanationOfBenefitFinancial) UnmarshalJSON(data []byte) error {
 type ExplanationOfBenefitFinancialAllowed struct {
 	Money       *dt.Money `json:"allowedMoney,omitempty"`       // The quantity of the benefit which is permitted under the coverage.
 	String      *string   `json:"allowedString,omitempty"`      // The quantity of the benefit which is permitted under the coverage.
-	UnsignedInt *float64  `json:"allowedUnsignedInt,omitempty"` // The quantity of the benefit which is permitted under the coverage.
+	UnsignedInt *uint32   `json:"allowedUnsignedInt,omitempty"` // The quantity of the benefit which is permitted under the coverage.
 }
 
 // MarshalJSON implements the json.Marshaler interface for ExplanationOfBenefitFinancialAllowed.
@@ -1304,7 +1311,7 @@ func (v *ExplanationOfBenefitFinancialAllowed) UnmarshalJSON(data []byte) error 
 		v.String = &val
 	}
 	if d, ok := raw["allowedUnsignedInt"]; ok {
-		var val float64
+		var val uint32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling allowedUnsignedInt: %w", err)
 		}
@@ -1316,7 +1323,7 @@ func (v *ExplanationOfBenefitFinancialAllowed) UnmarshalJSON(data []byte) error 
 // ExplanationOfBenefitFinancialUsed represents a polymorphic choice type in FHIR.
 type ExplanationOfBenefitFinancialUsed struct {
 	Money       *dt.Money `json:"usedMoney,omitempty"`       // The quantity of the benefit which have been consumed to date.
-	UnsignedInt *float64  `json:"usedUnsignedInt,omitempty"` // The quantity of the benefit which have been consumed to date.
+	UnsignedInt *uint32   `json:"usedUnsignedInt,omitempty"` // The quantity of the benefit which have been consumed to date.
 }
 
 // MarshalJSON implements the json.Marshaler interface for ExplanationOfBenefitFinancialUsed.
@@ -1345,7 +1352,7 @@ func (v *ExplanationOfBenefitFinancialUsed) UnmarshalJSON(data []byte) error {
 		v.Money = &val
 	}
 	if d, ok := raw["usedUnsignedInt"]; ok {
-		var val float64
+		var val uint32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling usedUnsignedInt: %w", err)
 		}
@@ -1405,7 +1412,7 @@ type ExplanationOfBenefitItem struct {
 	// Encounter A billed item may include goods or services provided in multiple encounters.
 	Encounter []dt.Reference `json:"encounter,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
-	Factor *float64 `json:"factor,omitempty"`
+	Factor *dt.Decimal `json:"factor,omitempty"`
 	// FactorElement contains element extensions for factor.
 	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// InformationSequence Exceptions, special conditions and supporting information applicable for this service or product.
@@ -1496,13 +1503,6 @@ func (r *ExplanationOfBenefitItem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ExplanationOfBenefitItem(alias)
-	var servicedVal ExplanationOfBenefitItemServiced
-	if err := servicedVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if servicedVal.Date != nil || servicedVal.Period != nil {
-		r.Serviced = &servicedVal
-	}
 	var locationVal ExplanationOfBenefitItemLocation
 	if err := locationVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -1510,46 +1510,12 @@ func (r *ExplanationOfBenefitItem) UnmarshalJSON(data []byte) error {
 	if locationVal.Address != nil || locationVal.CodeableConcept != nil || locationVal.Reference != nil {
 		r.Location = &locationVal
 	}
-	return nil
-}
-
-// ExplanationOfBenefitItemServiced represents a polymorphic choice type in FHIR.
-type ExplanationOfBenefitItemServiced struct {
-	Date   *string    `json:"servicedDate,omitempty"`   // The date or dates when the service or product was supplied, performed or completed.
-	Period *dt.Period `json:"servicedPeriod,omitempty"` // The date or dates when the service or product was supplied, performed or completed.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ExplanationOfBenefitItemServiced.
-func (v ExplanationOfBenefitItemServiced) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Date != nil {
-		m["servicedDate"] = v.Date
-	}
-	if v.Period != nil {
-		m["servicedPeriod"] = v.Period
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ExplanationOfBenefitItemServiced.
-func (v *ExplanationOfBenefitItemServiced) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
+	var servicedVal ExplanationOfBenefitItemServiced
+	if err := servicedVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
-	if d, ok := raw["servicedDate"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling servicedDate: %w", err)
-		}
-		v.Date = &val
-	}
-	if d, ok := raw["servicedPeriod"]; ok {
-		var val dt.Period
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling servicedPeriod: %w", err)
-		}
-		v.Period = &val
+	if servicedVal.Date != nil || servicedVal.Period != nil {
+		r.Serviced = &servicedVal
 	}
 	return nil
 }
@@ -1602,6 +1568,47 @@ func (v *ExplanationOfBenefitItemLocation) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling locationReference: %w", err)
 		}
 		v.Reference = &val
+	}
+	return nil
+}
+
+// ExplanationOfBenefitItemServiced represents a polymorphic choice type in FHIR.
+type ExplanationOfBenefitItemServiced struct {
+	Date   *string    `json:"servicedDate,omitempty"`   // The date or dates when the service or product was supplied, performed or completed.
+	Period *dt.Period `json:"servicedPeriod,omitempty"` // The date or dates when the service or product was supplied, performed or completed.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ExplanationOfBenefitItemServiced.
+func (v ExplanationOfBenefitItemServiced) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Date != nil {
+		m["servicedDate"] = v.Date
+	}
+	if v.Period != nil {
+		m["servicedPeriod"] = v.Period
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ExplanationOfBenefitItemServiced.
+func (v *ExplanationOfBenefitItemServiced) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["servicedDate"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling servicedDate: %w", err)
+		}
+		v.Date = &val
+	}
+	if d, ok := raw["servicedPeriod"]; ok {
+		var val dt.Period
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling servicedPeriod: %w", err)
+		}
+		v.Period = &val
 	}
 	return nil
 }
@@ -1819,7 +1826,7 @@ type ExplanationOfBenefitSubDetail struct {
 	// Category Code to identify the general type of benefits under which products and services are provided.
 	Category *dt.CodeableConcept `json:"category,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
-	Factor *float64 `json:"factor,omitempty"`
+	Factor *dt.Decimal `json:"factor,omitempty"`
 	// FactorElement contains element extensions for factor.
 	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
@@ -1861,7 +1868,7 @@ type ExplanationOfBenefitSubDetail1 struct {
 	// Adjudication The adjudication results.
 	Adjudication []ExplanationOfBenefitAdjudication `json:"adjudication,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
-	Factor *float64 `json:"factor,omitempty"`
+	Factor *dt.Decimal `json:"factor,omitempty"`
 	// FactorElement contains element extensions for factor.
 	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
@@ -1954,19 +1961,19 @@ func (r *ExplanationOfBenefitSupportingInfo) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ExplanationOfBenefitSupportingInfo(alias)
-	var valueVal ExplanationOfBenefitSupportingInfoValue
-	if err := valueVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if valueVal.Attachment != nil || valueVal.Boolean != nil || valueVal.Quantity != nil || valueVal.Reference != nil || valueVal.String != nil {
-		r.Value = &valueVal
-	}
 	var timingVal ExplanationOfBenefitSupportingInfoTiming
 	if err := timingVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if timingVal.Date != nil || timingVal.Period != nil {
 		r.Timing = &timingVal
+	}
+	var valueVal ExplanationOfBenefitSupportingInfoValue
+	if err := valueVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if valueVal.Attachment != nil || valueVal.Boolean != nil || valueVal.Quantity != nil || valueVal.Reference != nil || valueVal.String != nil {
+		r.Value = &valueVal
 	}
 	return nil
 }
@@ -2525,4 +2532,14 @@ func (r *ExplanationOfBenefit) GetUse() dt.Code {
 	}
 	var zero dt.Code
 	return zero
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *ExplanationOfBenefit) GetResourceType() string {
+	return "ExplanationOfBenefit"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *ExplanationOfBenefit) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

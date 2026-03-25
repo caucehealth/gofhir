@@ -67,14 +67,21 @@ func (r MedicinalProductPharmaceutical) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for MedicinalProductPharmaceutical.
@@ -436,4 +443,14 @@ func (r *MedicinalProductPharmaceutical) GetUnitOfPresentation() dt.CodeableConc
 	}
 	var zero dt.CodeableConcept
 	return zero
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *MedicinalProductPharmaceutical) GetResourceType() string {
+	return "MedicinalProductPharmaceutical"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *MedicinalProductPharmaceutical) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

@@ -113,14 +113,21 @@ func (r Claim) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Claim.
@@ -577,7 +584,7 @@ type ClaimDetail struct {
 	// Category Code to identify the general type of benefits under which products and services are provided.
 	Category *dt.CodeableConcept `json:"category,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
-	Factor *float64 `json:"factor,omitempty"`
+	Factor *dt.Decimal `json:"factor,omitempty"`
 	// FactorElement contains element extensions for factor.
 	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
@@ -775,7 +782,7 @@ type ClaimItem struct {
 	// Encounter The Encounters during which this Claim was created or to which the creation of this record is tightly associated.
 	Encounter []dt.Reference `json:"encounter,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
-	Factor *float64 `json:"factor,omitempty"`
+	Factor *dt.Decimal `json:"factor,omitempty"`
 	// FactorElement contains element extensions for factor.
 	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// InformationSequence Exceptions, special conditions and supporting information applicable for this service or product.
@@ -1131,7 +1138,7 @@ type ClaimSubDetail struct {
 	// Category Code to identify the general type of benefits under which products and services are provided.
 	Category *dt.CodeableConcept `json:"category,omitempty"`
 	// Factor A real number that represents a multiplier used in determining the overall value of services delivered and/or goods received. The concept of a Factor allows for a discount or surcharge multiplier t...
-	Factor *float64 `json:"factor,omitempty"`
+	Factor *dt.Decimal `json:"factor,omitempty"`
 	// FactorElement contains element extensions for factor.
 	FactorElement *dt.Element `json:"_factor,omitempty"`
 	// Modifier Item typification or modifiers codes to convey additional context for the product or service.
@@ -1230,19 +1237,19 @@ func (r *ClaimSupportingInfo) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ClaimSupportingInfo(alias)
-	var valueVal ClaimSupportingInfoValue
-	if err := valueVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if valueVal.Attachment != nil || valueVal.Boolean != nil || valueVal.Quantity != nil || valueVal.Reference != nil || valueVal.String != nil {
-		r.Value = &valueVal
-	}
 	var timingVal ClaimSupportingInfoTiming
 	if err := timingVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if timingVal.Date != nil || timingVal.Period != nil {
 		r.Timing = &timingVal
+	}
+	var valueVal ClaimSupportingInfoValue
+	if err := valueVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if valueVal.Attachment != nil || valueVal.Boolean != nil || valueVal.Quantity != nil || valueVal.Reference != nil || valueVal.String != nil {
+		r.Value = &valueVal
 	}
 	return nil
 }
@@ -1648,4 +1655,14 @@ func (r *Claim) GetUse() ClaimUse {
 	}
 	var zero ClaimUse
 	return zero
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *Claim) GetResourceType() string {
+	return "Claim"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *Claim) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

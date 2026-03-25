@@ -74,27 +74,33 @@ func (r BiologicallyDerivedProduct) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Collect additional fields to splice into JSON
+	var extra []byte
 	if r.Product != nil {
 		vData, err := json.Marshal(r.Product)
 		if err != nil {
 			return nil, err
 		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	if len(extra) == 0 {
+		return data, nil
+	}
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for BiologicallyDerivedProduct.
@@ -380,7 +386,7 @@ type BiologicallyDerivedProductStorage struct {
 	// ScaleElement contains element extensions for scale.
 	ScaleElement *dt.Element `json:"_scale,omitempty"`
 	// Temperature Storage temperature.
-	Temperature *float64 `json:"temperature,omitempty"`
+	Temperature *dt.Decimal `json:"temperature,omitempty"`
 	// TemperatureElement contains element extensions for temperature.
 	TemperatureElement *dt.Element `json:"_temperature,omitempty"`
 }
@@ -577,4 +583,14 @@ func (r *BiologicallyDerivedProduct) GetStorage() []BiologicallyDerivedProductSt
 		return r.Storage
 	}
 	return nil
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *BiologicallyDerivedProduct) GetResourceType() string {
+	return "BiologicallyDerivedProduct"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *BiologicallyDerivedProduct) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

@@ -15,7 +15,7 @@ import (
 // based on its key fields. The narrative status is set to "generated".
 // Supports Patient, Observation, Condition, Encounter, Practitioner,
 // DiagnosticReport, and MedicationRequest.
-func GenerateNarrative(resource any) *dt.Narrative {
+func GenerateNarrative(resource Resource) *dt.Narrative {
 	var rows []string
 
 	switch r := resource.(type) {

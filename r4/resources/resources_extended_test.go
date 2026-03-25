@@ -73,10 +73,10 @@ func TestLocationHL7ExampleRoundTrip(t *testing.T) {
 	if loc.Position == nil || loc.Position.Longitude == nil {
 		t.Fatal("position should be present with longitude")
 	}
-	if *loc.Position.Longitude != -83.6945691 {
+	if loc.Position.Longitude.Float64() != -83.6945691 {
 		t.Error("longitude mismatch")
 	}
-	if loc.Position.Altitude == nil || *loc.Position.Altitude != 0 {
+	if loc.Position.Altitude == nil || loc.Position.Altitude.Float64() != 0 {
 		t.Error("altitude 0 should not be omitted")
 	}
 }
@@ -181,7 +181,7 @@ func TestImmunizationRoundTrip(t *testing.T) {
 	if imm.PrimarySource == nil || !*imm.PrimarySource {
 		t.Error("primarySource should be true")
 	}
-	if imm.DoseQuantity == nil || imm.DoseQuantity.Value == nil || *imm.DoseQuantity.Value != 5 {
+	if imm.DoseQuantity == nil || imm.DoseQuantity.Value == nil || imm.DoseQuantity.Value.Float64() != 5 {
 		t.Error("doseQuantity.value should be 5")
 	}
 
@@ -480,6 +480,170 @@ func TestOrganizationUnknownFieldsPreserved(t *testing.T) {
 	out, _ := json.Marshal(&org)
 	if !strings.Contains(string(out), "futureField") {
 		t.Error("futureField should survive round-trip")
+	}
+}
+
+// ============================================================================
+// Resource and DomainResource interface compliance
+// ============================================================================
+
+func TestResourceInterface(t *testing.T) {
+	p, _ := resources.NewPatient().
+		WithName("John", "Doe").
+		WithGender(resources.AdministrativeGenderMale).
+		Build()
+
+	// Patient satisfies Resource interface
+	var r resources.Resource = p
+	if r.GetResourceType() != "Patient" {
+		t.Errorf("GetResourceType() = %q, want Patient", r.GetResourceType())
+	}
+	if r.GetId() != "" {
+		t.Error("unset id should return empty string")
+	}
+
+	// ParseResource returns Resource interface
+	parsed, err := resources.ParseResource(json.RawMessage(`{"resourceType":"Observation","status":"final","code":{"text":"test"}}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if parsed.GetResourceType() != "Observation" {
+		t.Errorf("parsed.GetResourceType() = %q, want Observation", parsed.GetResourceType())
+	}
+}
+
+func TestDomainResourceInterface(t *testing.T) {
+	p, _ := resources.NewPatient().
+		WithName("Jane", "Doe").
+		Build()
+
+	// Patient satisfies DomainResource interface
+	var dr resources.DomainResource = p
+	if dr.GetResourceType() != "Patient" {
+		t.Errorf("GetResourceType() = %q, want Patient", dr.GetResourceType())
+	}
+
+	// DomainResource methods return zero values when unset
+	text := dr.GetText()
+	if text.Div != "" {
+		t.Error("unset text should have empty div")
+	}
+	if dr.GetContained() != nil {
+		t.Error("unset contained should be nil")
+	}
+	if dr.GetExtension() != nil {
+		t.Error("unset extension should be nil")
+	}
+	if dr.GetModifierExtension() != nil {
+		t.Error("unset modifierExtension should be nil")
+	}
+}
+
+func TestResourceInterfacePolymorphicDispatch(t *testing.T) {
+	// Demonstrate type-safe polymorphic handling via interface
+	inputs := []string{
+		`{"resourceType":"Patient","id":"p1","gender":"male"}`,
+		`{"resourceType":"Observation","id":"o1","status":"final","code":{"text":"BP"}}`,
+		`{"resourceType":"Condition","id":"c1","code":{"text":"Diabetes"}}`,
+	}
+
+	var allResources []resources.Resource
+	for _, input := range inputs {
+		r, err := resources.ParseResource(json.RawMessage(input))
+		if err != nil {
+			t.Fatal(err)
+		}
+		allResources = append(allResources, r)
+	}
+
+	if len(allResources) != 3 {
+		t.Fatalf("expected 3 resources, got %d", len(allResources))
+	}
+
+	// All implement Resource — can access common fields without type assertion
+	types := make([]string, len(allResources))
+	for i, r := range allResources {
+		types[i] = r.GetResourceType()
+	}
+	if types[0] != "Patient" || types[1] != "Observation" || types[2] != "Condition" {
+		t.Errorf("types = %v, want [Patient Observation Condition]", types)
+	}
+
+	// All are DomainResources — can narrow the interface
+	for _, r := range allResources {
+		dr, ok := r.(resources.DomainResource)
+		if !ok {
+			t.Errorf("%s should implement DomainResource", r.GetResourceType())
+		}
+		// Access DomainResource-level fields
+		_ = dr.GetExtension()
+	}
+}
+
+func TestNonDomainResourceTypes(t *testing.T) {
+	// Binary and Parameters are Resource but NOT DomainResource
+	bin, err := resources.ParseResource(json.RawMessage(`{"resourceType":"Binary"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if bin.GetResourceType() != "Binary" {
+		t.Errorf("Binary.GetResourceType() = %q", bin.GetResourceType())
+	}
+	if _, ok := bin.(resources.DomainResource); ok {
+		t.Error("Binary should NOT implement DomainResource")
+	}
+
+	params, err := resources.ParseResource(json.RawMessage(`{"resourceType":"Parameters"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if params.GetResourceType() != "Parameters" {
+		t.Errorf("Parameters.GetResourceType() = %q", params.GetResourceType())
+	}
+	if _, ok := params.(resources.DomainResource); ok {
+		t.Error("Parameters should NOT implement DomainResource")
+	}
+}
+
+func TestParseResourceUnknownType(t *testing.T) {
+	_, err := resources.ParseResource(json.RawMessage(`{"resourceType":"FakeType"}`))
+	if err == nil {
+		t.Error("unknown resource type should return error")
+	}
+}
+
+// ============================================================================
+// Enum validation
+// ============================================================================
+
+func TestEnumValid(t *testing.T) {
+	if !resources.AdministrativeGenderMale.Valid() {
+		t.Error("'male' should be valid")
+	}
+	if !resources.ObservationStatusFinal.Valid() {
+		t.Error("'final' should be valid")
+	}
+	if resources.AdministrativeGender("invalid").Valid() {
+		t.Error("'invalid' should not be valid")
+	}
+	if resources.AdministrativeGender("").Valid() {
+		t.Error("empty string should not be valid")
+	}
+}
+
+func TestEnumValues(t *testing.T) {
+	genders := resources.AdministrativeGenderValues()
+	if len(genders) != 4 {
+		t.Fatalf("expected 4 genders, got %d", len(genders))
+	}
+	found := false
+	for _, g := range genders {
+		if g == resources.AdministrativeGenderFemale {
+			found = true
+		}
+	}
+	if !found {
+		t.Error("'female' should be in AdministrativeGenderValues()")
 	}
 }
 

@@ -188,40 +188,43 @@ func (r ActivityDefinition) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
+	// Collect additional fields to splice into JSON
+	var extra []byte
+	if r.Timing != nil {
+		vData, err := json.Marshal(r.Timing)
+		if err != nil {
+			return nil, err
+		}
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
+		}
 	}
 	if r.Product != nil {
 		vData, err := json.Marshal(r.Product)
 		if err != nil {
 			return nil, err
 		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
-		}
-	}
-	if r.Timing != nil {
-		vData, err := json.Marshal(r.Timing)
-		if err != nil {
-			return nil, err
-		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	if len(extra) == 0 {
+		return data, nil
+	}
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for ActivityDefinition.
@@ -771,6 +774,47 @@ type ActivityDefinitionParticipant struct {
 	TypeElement *dt.Element `json:"_type,omitempty"`
 }
 
+// ActivityDefinitionProduct represents a polymorphic choice type in FHIR.
+type ActivityDefinitionProduct struct {
+	CodeableConcept *dt.CodeableConcept `json:"productCodeableConcept,omitempty"` // Identifies the food, drug or other product being consumed or supplied in the activity.
+	Reference       *dt.Reference       `json:"productReference,omitempty"`       // Identifies the food, drug or other product being consumed or supplied in the activity.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ActivityDefinitionProduct.
+func (v ActivityDefinitionProduct) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.CodeableConcept != nil {
+		m["productCodeableConcept"] = v.CodeableConcept
+	}
+	if v.Reference != nil {
+		m["productReference"] = v.Reference
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ActivityDefinitionProduct.
+func (v *ActivityDefinitionProduct) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["productCodeableConcept"]; ok {
+		var val dt.CodeableConcept
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling productCodeableConcept: %w", err)
+		}
+		v.CodeableConcept = &val
+	}
+	if d, ok := raw["productReference"]; ok {
+		var val dt.Reference
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling productReference: %w", err)
+		}
+		v.Reference = &val
+	}
+	return nil
+}
+
 // ActivityDefinitionTiming represents a polymorphic choice type in FHIR.
 type ActivityDefinitionTiming struct {
 	Age      *dt.Age      `json:"timingAge,omitempty"`      // The period, timing or frequency upon which the described activity is to occur.
@@ -852,47 +896,6 @@ func (v *ActivityDefinitionTiming) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling timingTiming: %w", err)
 		}
 		v.Timing = &val
-	}
-	return nil
-}
-
-// ActivityDefinitionProduct represents a polymorphic choice type in FHIR.
-type ActivityDefinitionProduct struct {
-	CodeableConcept *dt.CodeableConcept `json:"productCodeableConcept,omitempty"` // Identifies the food, drug or other product being consumed or supplied in the activity.
-	Reference       *dt.Reference       `json:"productReference,omitempty"`       // Identifies the food, drug or other product being consumed or supplied in the activity.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ActivityDefinitionProduct.
-func (v ActivityDefinitionProduct) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.CodeableConcept != nil {
-		m["productCodeableConcept"] = v.CodeableConcept
-	}
-	if v.Reference != nil {
-		m["productReference"] = v.Reference
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ActivityDefinitionProduct.
-func (v *ActivityDefinitionProduct) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["productCodeableConcept"]; ok {
-		var val dt.CodeableConcept
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling productCodeableConcept: %w", err)
-		}
-		v.CodeableConcept = &val
-	}
-	if d, ok := raw["productReference"]; ok {
-		var val dt.Reference
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling productReference: %w", err)
-		}
-		v.Reference = &val
 	}
 	return nil
 }
@@ -1367,4 +1370,14 @@ func (r *ActivityDefinition) GetVersion() string {
 	}
 	var zero string
 	return zero
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *ActivityDefinition) GetResourceType() string {
+	return "ActivityDefinition"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *ActivityDefinition) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

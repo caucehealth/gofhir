@@ -88,40 +88,43 @@ func (r Patient) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
+	// Collect additional fields to splice into JSON
+	var extra []byte
+	if r.MultipleBirth != nil {
+		vData, err := json.Marshal(r.MultipleBirth)
+		if err != nil {
+			return nil, err
+		}
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
+		}
 	}
 	if r.Deceased != nil {
 		vData, err := json.Marshal(r.Deceased)
 		if err != nil {
 			return nil, err
 		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
-		}
-	}
-	if r.MultipleBirth != nil {
-		vData, err := json.Marshal(r.MultipleBirth)
-		if err != nil {
-			return nil, err
-		}
-		var vm map[string]json.RawMessage
-		if err := json.Unmarshal(vData, &vm); err != nil {
-			return nil, err
-		}
-		for k, v := range vm {
-			m[k] = v
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	if len(extra) == 0 {
+		return data, nil
+	}
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Patient.
@@ -133,19 +136,19 @@ func (r *Patient) UnmarshalJSON(data []byte) error {
 	}
 	*r = Patient(alias)
 	// Unmarshal polymorphic fields
-	var multipleBirthVal PatientMultipleBirth
-	if err := multipleBirthVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if multipleBirthVal.Boolean != nil || multipleBirthVal.Integer != nil {
-		r.MultipleBirth = &multipleBirthVal
-	}
 	var deceasedVal PatientDeceased
 	if err := deceasedVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if deceasedVal.Boolean != nil || deceasedVal.DateTime != nil {
 		r.Deceased = &deceasedVal
+	}
+	var multipleBirthVal PatientMultipleBirth
+	if err := multipleBirthVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if multipleBirthVal.Boolean != nil || multipleBirthVal.Integer != nil {
+		r.MultipleBirth = &multipleBirthVal
 	}
 	// Capture unknown fields
 	var raw map[string]json.RawMessage
@@ -353,7 +356,7 @@ func (b *PatientBuilder) WithMultipleBirthBoolean(v bool) *PatientBuilder {
 }
 
 // WithMultipleBirthInteger sets the multipleBirthInteger polymorphic field.
-func (b *PatientBuilder) WithMultipleBirthInteger(v float64) *PatientBuilder {
+func (b *PatientBuilder) WithMultipleBirthInteger(v int32) *PatientBuilder {
 	if b.resource.MultipleBirth == nil {
 		b.resource.MultipleBirth = &PatientMultipleBirth{}
 	}
@@ -490,8 +493,8 @@ func (v *PatientDeceased) UnmarshalJSON(data []byte) error {
 
 // PatientMultipleBirth represents a polymorphic choice type in FHIR.
 type PatientMultipleBirth struct {
-	Boolean *bool    `json:"multipleBirthBoolean,omitempty"` // Indicates whether the patient is part of a multiple (boolean) or indicates the actual birth order (integer).
-	Integer *float64 `json:"multipleBirthInteger,omitempty"` // Indicates whether the patient is part of a multiple (boolean) or indicates the actual birth order (integer).
+	Boolean *bool  `json:"multipleBirthBoolean,omitempty"` // Indicates whether the patient is part of a multiple (boolean) or indicates the actual birth order (integer).
+	Integer *int32 `json:"multipleBirthInteger,omitempty"` // Indicates whether the patient is part of a multiple (boolean) or indicates the actual birth order (integer).
 }
 
 // MarshalJSON implements the json.Marshaler interface for PatientMultipleBirth.
@@ -520,7 +523,7 @@ func (v *PatientMultipleBirth) UnmarshalJSON(data []byte) error {
 		v.Boolean = &val
 	}
 	if d, ok := raw["multipleBirthInteger"]; ok {
-		var val float64
+		var val int32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling multipleBirthInteger: %w", err)
 		}
@@ -729,4 +732,14 @@ func (r *Patient) GetTelecom() []dt.ContactPoint {
 		return r.Telecom
 	}
 	return nil
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *Patient) GetResourceType() string {
+	return "Patient"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *Patient) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

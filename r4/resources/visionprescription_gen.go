@@ -75,14 +75,21 @@ func (r VisionPrescription) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for VisionPrescription.
@@ -266,7 +273,7 @@ type VisionPrescriptionLensSpecification struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Add Power adjustment for multifocal lenses measured in dioptres (0.25 units).
-	Add *float64 `json:"add,omitempty"`
+	Add *dt.Decimal `json:"add,omitempty"`
 	// AddElement contains element extensions for add.
 	AddElement *dt.Element `json:"_add,omitempty"`
 	// Axis Adjustment for astigmatism measured in integer degrees.
@@ -274,7 +281,7 @@ type VisionPrescriptionLensSpecification struct {
 	// AxisElement contains element extensions for axis.
 	AxisElement *dt.Element `json:"_axis,omitempty"`
 	// BackCurve Back curvature measured in millimetres.
-	BackCurve *float64 `json:"backCurve,omitempty"`
+	BackCurve *dt.Decimal `json:"backCurve,omitempty"`
 	// BackCurveElement contains element extensions for backCurve.
 	BackCurveElement *dt.Element `json:"_backCurve,omitempty"`
 	// Brand Brand recommendations or restrictions.
@@ -286,11 +293,11 @@ type VisionPrescriptionLensSpecification struct {
 	// ColorElement contains element extensions for color.
 	ColorElement *dt.Element `json:"_color,omitempty"`
 	// Cylinder Power adjustment for astigmatism measured in dioptres (0.25 units).
-	Cylinder *float64 `json:"cylinder,omitempty"`
+	Cylinder *dt.Decimal `json:"cylinder,omitempty"`
 	// CylinderElement contains element extensions for cylinder.
 	CylinderElement *dt.Element `json:"_cylinder,omitempty"`
 	// Diameter Contact lens diameter measured in millimetres.
-	Diameter *float64 `json:"diameter,omitempty"`
+	Diameter *dt.Decimal `json:"diameter,omitempty"`
 	// DiameterElement contains element extensions for diameter.
 	DiameterElement *dt.Element `json:"_diameter,omitempty"`
 	// Duration The recommended maximum wear period for the lens.
@@ -302,7 +309,7 @@ type VisionPrescriptionLensSpecification struct {
 	// Note Notes for special requirements such as coatings and lens materials.
 	Note []dt.Annotation `json:"note,omitempty"`
 	// Power Contact lens power measured in dioptres (0.25 units).
-	Power *float64 `json:"power,omitempty"`
+	Power *dt.Decimal `json:"power,omitempty"`
 	// PowerElement contains element extensions for power.
 	PowerElement *dt.Element `json:"_power,omitempty"`
 	// Prism Allows for adjustment on two axis.
@@ -310,7 +317,7 @@ type VisionPrescriptionLensSpecification struct {
 	// Product Identifies the type of vision correction product which is required for the patient.
 	Product dt.CodeableConcept `json:"product"`
 	// Sphere Lens power measured in dioptres (0.25 units).
-	Sphere *float64 `json:"sphere,omitempty"`
+	Sphere *dt.Decimal `json:"sphere,omitempty"`
 	// SphereElement contains element extensions for sphere.
 	SphereElement *dt.Element `json:"_sphere,omitempty"`
 }
@@ -326,7 +333,7 @@ type VisionPrescriptionPrism struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Amount Amount of prism to compensate for eye alignment in fractional units.
-	Amount *float64 `json:"amount,omitempty"`
+	Amount *dt.Decimal `json:"amount,omitempty"`
 	// AmountElement contains element extensions for amount.
 	AmountElement *dt.Element `json:"_amount,omitempty"`
 	// Base The relative base, or reference lens edge, for the prism.
@@ -464,4 +471,14 @@ func (r *VisionPrescription) GetPatient() dt.Reference {
 // GetPrescriber returns the prescriber field value.
 func (r *VisionPrescription) GetPrescriber() dt.Reference {
 	return r.Prescriber
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *VisionPrescription) GetResourceType() string {
+	return "VisionPrescription"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *VisionPrescription) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

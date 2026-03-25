@@ -148,7 +148,7 @@ func TestXMLObservationWithValueQuantity(t *testing.T) {
 	if obs.Value == nil || obs.Value.Quantity == nil {
 		t.Fatal("value.quantity should be parsed from XML")
 	}
-	if obs.Value.Quantity.Value == nil || *obs.Value.Quantity.Value != 120 {
+	if obs.Value.Quantity.Value == nil || obs.Value.Quantity.Value.Float64() != 120 {
 		t.Errorf("quantity.value = %v, want 120", obs.Value.Quantity.Value)
 	}
 	if obs.Value.Quantity.Unit == nil || *obs.Value.Quantity.Unit != "mmHg" {
@@ -271,5 +271,70 @@ func TestXMLElementExtensionRoundTrip(t *testing.T) {
 	}
 	if len(p2.BirthDateElement.Extension) == 0 {
 		t.Fatal("_birthDate extensions should survive XML round-trip")
+	}
+}
+
+func TestXMLSpecialCharacters(t *testing.T) {
+	input := `{"resourceType":"Patient","id":"1","name":[{"family":"O'Brien & Sons <LLC>"}]}`
+	var p resources.Patient
+	parser.Unmarshal([]byte(input), &p)
+
+	xmlData, err := parser.MarshalXML(&p, parser.Options{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	xml := string(xmlData)
+	if !strings.Contains(xml, "&amp;") {
+		t.Error("& should be escaped to &amp;")
+	}
+	if !strings.Contains(xml, "&lt;") {
+		t.Error("< should be escaped to &lt;")
+	}
+	if !strings.Contains(xml, "&apos;") {
+		t.Error("' should be escaped to &apos;")
+	}
+
+	// Round-trip: XML → struct → verify
+	var p2 resources.Patient
+	if err := parser.UnmarshalXML(xmlData, &p2); err != nil {
+		t.Fatal(err)
+	}
+	if p2.Name[0].Family == nil || *p2.Name[0].Family != "O'Brien & Sons <LLC>" {
+		t.Errorf("family = %v, want O'Brien & Sons <LLC>", p2.Name[0].Family)
+	}
+}
+
+func TestXMLMalformedInput(t *testing.T) {
+	tests := []struct {
+		name string
+		xml  string
+	}{
+		{"empty", ""},
+		{"not_xml", "this is not xml"},
+		{"unclosed", `<?xml version="1.0"?><Patient xmlns="http://hl7.org/fhir"><id value="1"`},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var p resources.Patient
+			err := parser.UnmarshalXML([]byte(tt.xml), &p)
+			if err == nil && tt.name != "unclosed" {
+				t.Error("should fail for malformed XML")
+			}
+		})
+	}
+}
+
+func TestXMLEmptyResource(t *testing.T) {
+	xmlInput := `<?xml version="1.0" encoding="UTF-8"?>
+<Patient xmlns="http://hl7.org/fhir">
+</Patient>`
+
+	var p resources.Patient
+	if err := parser.UnmarshalXML([]byte(xmlInput), &p); err != nil {
+		t.Fatal(err)
+	}
+	if p.ResourceType != "Patient" {
+		t.Errorf("resourceType = %q, want Patient", p.ResourceType)
 	}
 }

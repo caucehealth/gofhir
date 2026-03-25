@@ -98,14 +98,21 @@ func (r Location) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for Location.
@@ -367,15 +374,15 @@ type LocationPosition struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// Altitude Altitude. The value domain and the interpretation are the same as for the text of the altitude element in KML (see notes below).
-	Altitude *float64 `json:"altitude,omitempty"`
+	Altitude *dt.Decimal `json:"altitude,omitempty"`
 	// AltitudeElement contains element extensions for altitude.
 	AltitudeElement *dt.Element `json:"_altitude,omitempty"`
 	// Latitude Latitude. The value domain and the interpretation are the same as for the text of the latitude element in KML (see notes below).
-	Latitude *float64 `json:"latitude,omitempty"`
+	Latitude *dt.Decimal `json:"latitude,omitempty"`
 	// LatitudeElement contains element extensions for latitude.
 	LatitudeElement *dt.Element `json:"_latitude,omitempty"`
 	// Longitude Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes below).
-	Longitude *float64 `json:"longitude,omitempty"`
+	Longitude *dt.Decimal `json:"longitude,omitempty"`
 	// LongitudeElement contains element extensions for longitude.
 	LongitudeElement *dt.Element `json:"_longitude,omitempty"`
 }
@@ -594,4 +601,14 @@ func (r *Location) GetType() []dt.CodeableConcept {
 		return r.Type
 	}
 	return nil
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *Location) GetResourceType() string {
+	return "Location"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *Location) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

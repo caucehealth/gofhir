@@ -92,14 +92,21 @@ func (r MolecularSequence) MarshalJSON() ([]byte, error) {
 	if len(r.Extra) == 0 {
 		return data, nil
 	}
-	var m map[string]json.RawMessage
-	if err := json.Unmarshal(data, &m); err != nil {
-		return nil, err
-	}
+	// Splice Extra fields into JSON output
+	var extra []byte
 	for k, v := range r.Extra {
-		m[k] = v
+		key, _ := json.Marshal(k)
+		extra = append(extra, ',')
+		extra = append(extra, key...)
+		extra = append(extra, ':')
+		extra = append(extra, v...)
 	}
-	return json.Marshal(m)
+	// Insert before final '}'
+	result := make([]byte, 0, len(data)+len(extra))
+	result = append(result, data[:len(data)-1]...)
+	result = append(result, extra...)
+	result = append(result, '}')
+	return result, nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for MolecularSequence.
@@ -370,29 +377,29 @@ type MolecularSequenceQuality struct {
 	// EndElement contains element extensions for end.
 	EndElement *dt.Element `json:"_end,omitempty"`
 	// FScore Harmonic mean of Recall and Precision, computed as: 2 * precision * recall / (precision + recall).
-	FScore *float64 `json:"fScore,omitempty"`
+	FScore *dt.Decimal `json:"fScore,omitempty"`
 	// FScoreElement contains element extensions for fScore.
 	FScoreElement *dt.Element `json:"_fScore,omitempty"`
 	// GtFP The number of false positives where the non-REF alleles in the Truth and Query Call Sets match (i.e. cases where the truth is 1/1 and the query is 0/1 or similar).
-	GtFP *float64 `json:"gtFP,omitempty"`
+	GtFP *dt.Decimal `json:"gtFP,omitempty"`
 	// GtFPElement contains element extensions for gtFP.
 	GtFPElement *dt.Element `json:"_gtFP,omitempty"`
 	// Method Which method is used to get sequence quality.
 	Method *dt.CodeableConcept `json:"method,omitempty"`
 	// Precision QUERY.TP / (QUERY.TP + QUERY.FP).
-	Precision *float64 `json:"precision,omitempty"`
+	Precision *dt.Decimal `json:"precision,omitempty"`
 	// PrecisionElement contains element extensions for precision.
 	PrecisionElement *dt.Element `json:"_precision,omitempty"`
 	// QueryFP False positives, i.e. the number of sites in the Query Call Set for which there is no path through the Truth Call Set that is consistent with this site. Sites with correct variant but incorrect gen...
-	QueryFP *float64 `json:"queryFP,omitempty"`
+	QueryFP *dt.Decimal `json:"queryFP,omitempty"`
 	// QueryFPElement contains element extensions for queryFP.
 	QueryFPElement *dt.Element `json:"_queryFP,omitempty"`
 	// QueryTP True positives, from the perspective of the query data, i.e. the number of sites in the Query Call Set for which there are paths through the Truth Call Set that are consistent with all of the allel...
-	QueryTP *float64 `json:"queryTP,omitempty"`
+	QueryTP *dt.Decimal `json:"queryTP,omitempty"`
 	// QueryTPElement contains element extensions for queryTP.
 	QueryTPElement *dt.Element `json:"_queryTP,omitempty"`
 	// Recall TRUTH.TP / (TRUTH.TP + TRUTH.FN).
-	Recall *float64 `json:"recall,omitempty"`
+	Recall *dt.Decimal `json:"recall,omitempty"`
 	// RecallElement contains element extensions for recall.
 	RecallElement *dt.Element `json:"_recall,omitempty"`
 	// Roc Receiver Operator Characteristic (ROC) Curve  to give sensitivity/specificity tradeoff.
@@ -406,11 +413,11 @@ type MolecularSequenceQuality struct {
 	// StartElement contains element extensions for start.
 	StartElement *dt.Element `json:"_start,omitempty"`
 	// TruthFN False negatives, i.e. the number of sites in the Truth Call Set for which there is no path through the Query Call Set that is consistent with all of the alleles at this site, or sites for which the...
-	TruthFN *float64 `json:"truthFN,omitempty"`
+	TruthFN *dt.Decimal `json:"truthFN,omitempty"`
 	// TruthFNElement contains element extensions for truthFN.
 	TruthFNElement *dt.Element `json:"_truthFN,omitempty"`
 	// TruthTP True positives, from the perspective of the truth data, i.e. the number of sites in the Truth Call Set for which there are paths through the Query Call Set that are consistent with all of the allel...
-	TruthTP *float64 `json:"truthTP,omitempty"`
+	TruthTP *dt.Decimal `json:"truthTP,omitempty"`
 	// TruthTPElement contains element extensions for truthTP.
 	TruthTPElement *dt.Element `json:"_truthTP,omitempty"`
 	// Type INDEL / SNP / Undefined variant.
@@ -508,7 +515,7 @@ type MolecularSequenceRoc struct {
 	// ModifierExtension May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the unders...
 	ModifierExtension []dt.Extension `json:"modifierExtension,omitempty"`
 	// FMeasure Calculated fScore if the GQ score threshold was set to "score" field value.
-	FMeasure []float64 `json:"fMeasure,omitempty"`
+	FMeasure []dt.Decimal `json:"fMeasure,omitempty"`
 	// FMeasureElement contains element extensions for each fMeasure.
 	FMeasureElement []dt.Element `json:"_fMeasure,omitempty"`
 	// NumFN The number of false negatives if the GQ score threshold was set to "score" field value.
@@ -524,7 +531,7 @@ type MolecularSequenceRoc struct {
 	// NumTPElement contains element extensions for each numTP.
 	NumTPElement []dt.Element `json:"_numTP,omitempty"`
 	// Precision Calculated precision if the GQ score threshold was set to "score" field value.
-	Precision []float64 `json:"precision,omitempty"`
+	Precision []dt.Decimal `json:"precision,omitempty"`
 	// PrecisionElement contains element extensions for each precision.
 	PrecisionElement []dt.Element `json:"_precision,omitempty"`
 	// Score Invidual data point representing the GQ (genotype quality) score threshold.
@@ -532,7 +539,7 @@ type MolecularSequenceRoc struct {
 	// ScoreElement contains element extensions for each score.
 	ScoreElement []dt.Element `json:"_score,omitempty"`
 	// Sensitivity Calculated sensitivity if the GQ score threshold was set to "score" field value.
-	Sensitivity []float64 `json:"sensitivity,omitempty"`
+	Sensitivity []dt.Decimal `json:"sensitivity,omitempty"`
 	// SensitivityElement contains element extensions for each sensitivity.
 	SensitivityElement []dt.Element `json:"_sensitivity,omitempty"`
 }
@@ -802,4 +809,14 @@ func (r *MolecularSequence) GetVariant() []MolecularSequenceVariant {
 		return r.Variant
 	}
 	return nil
+}
+
+// GetResourceType returns the FHIR resource type name.
+func (r *MolecularSequence) GetResourceType() string {
+	return "MolecularSequence"
+}
+
+// GetExtra returns unknown fields captured during JSON unmarshaling.
+func (r *MolecularSequence) GetExtra() map[string]json.RawMessage {
+	return r.Extra
 }

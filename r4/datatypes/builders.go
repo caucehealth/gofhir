@@ -299,7 +299,8 @@ func NewQuantity() *QuantityBuilder {
 
 // WithValue sets the numeric value.
 func (b *QuantityBuilder) WithValue(value float64) *QuantityBuilder {
-	b.q.Value = &value
+	d := NewDecimal(value)
+	b.q.Value = &d
 	return b
 }
 
