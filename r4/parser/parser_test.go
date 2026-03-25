@@ -10,6 +10,7 @@ import (
 
 	"github.com/caucehealth/gofhir/r4/parser"
 	"github.com/caucehealth/gofhir/r4/resources"
+	"github.com/caucehealth/gofhir/r4/validate"
 )
 
 func buildTestPatient(t *testing.T) *resources.Patient {
@@ -371,5 +372,65 @@ func TestSummaryModePlusIncludeElements(t *testing.T) {
 	}
 	if _, ok := m["gender"]; !ok {
 		t.Error("gender should be included")
+	}
+}
+
+func TestFullIntegrationRoundTrip(t *testing.T) {
+	// JSON → parse → validate → XML marshal → XML unmarshal → JSON marshal → compare
+	input := `{"resourceType":"Patient","id":"int-1","gender":"male","birthDate":"1980-01-01","name":[{"family":"Doe","given":["John"]}],"active":true}`
+
+	// Step 1: Parse JSON
+	res, err := resources.ParseResource(json.RawMessage(input))
+	if err != nil {
+		t.Fatalf("JSON parse: %v", err)
+	}
+
+	// Step 2: Validate
+	v := validate.New()
+	result := v.Validate(res)
+	if result.HasErrors() {
+		t.Fatalf("validation errors: %v", result.Errors())
+	}
+
+	// Step 3: Marshal to XML
+	xmlData, err := parser.MarshalXML(res, parser.Options{})
+	if err != nil {
+		t.Fatalf("XML marshal: %v", err)
+	}
+	if !strings.Contains(string(xmlData), `<Patient xmlns="http://hl7.org/fhir">`) {
+		t.Error("XML should have Patient root")
+	}
+
+	// Step 4: Unmarshal from XML
+	var p2 resources.Patient
+	if err := parser.UnmarshalXML(xmlData, &p2); err != nil {
+		t.Fatalf("XML unmarshal: %v", err)
+	}
+
+	// Step 5: Marshal back to JSON
+	out, err := json.Marshal(&p2)
+	if err != nil {
+		t.Fatalf("JSON re-marshal: %v", err)
+	}
+
+	// Step 6: Compare keys
+	var m1, m2 map[string]json.RawMessage
+	json.Unmarshal([]byte(input), &m1)
+	json.Unmarshal(out, &m2)
+	for k := range m1 {
+		if k == "text" {
+			continue // narrative may be added
+		}
+		if _, ok := m2[k]; !ok {
+			t.Errorf("key %q lost in full round-trip (JSON→XML→JSON)", k)
+		}
+	}
+
+	// Verify specific values survived
+	if p2.GetGender() != resources.AdministrativeGenderMale {
+		t.Errorf("gender = %q after round-trip", p2.GetGender())
+	}
+	if p2.GetBirthDate() != "1980-01-01" {
+		t.Errorf("birthDate = %q after round-trip", p2.GetBirthDate())
 	}
 }

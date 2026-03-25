@@ -376,3 +376,67 @@ func TestXMLDecimalPrecisionRoundTrip(t *testing.T) {
 		t.Errorf("decimal precision lost in XML round-trip: got %q, want 1.00", obs2.Value.Quantity.Value.String())
 	}
 }
+
+func TestXMLComplexResourceRoundTrip(t *testing.T) {
+	// ExplanationOfBenefit: deeply nested backbone elements, value[x], arrays
+	input := `{
+		"resourceType":"ExplanationOfBenefit",
+		"id":"eob-1",
+		"status":"active",
+		"type":{"coding":[{"system":"http://terminology.hl7.org/CodeSystem/claim-type","code":"professional"}]},
+		"use":"claim",
+		"patient":{"reference":"Patient/1"},
+		"created":"2024-01-15",
+		"insurer":{"reference":"Organization/ins-1"},
+		"provider":{"reference":"Practitioner/prov-1"},
+		"outcome":"complete",
+		"insurance":[{"focal":true,"coverage":{"reference":"Coverage/cov-1"}}],
+		"item":[{
+			"sequence":1,
+			"productOrService":{"text":"Office Visit"},
+			"net":{"value":150.00,"currency":"USD"},
+			"adjudication":[{
+				"category":{"coding":[{"code":"benefit"}]},
+				"amount":{"value":120.50,"currency":"USD"}
+			}]
+		}]
+	}`
+
+	var eob resources.ExplanationOfBenefit
+	if err := parser.Unmarshal([]byte(input), &eob); err != nil {
+		t.Fatal(err)
+	}
+
+	// Marshal to XML
+	xmlData, err := parser.MarshalXML(&eob, parser.Options{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	xml := string(xmlData)
+	if !strings.Contains(xml, `<ExplanationOfBenefit xmlns="http://hl7.org/fhir">`) {
+		t.Error("should have correct root element")
+	}
+	if !strings.Contains(xml, `<status value="active"/>`) {
+		t.Error("should contain status")
+	}
+	if !strings.Contains(xml, `value="150.00"`) {
+		t.Error("should preserve net.value decimal precision")
+	}
+	if !strings.Contains(xml, `value="120.50"`) {
+		t.Error("should preserve adjudication amount decimal precision")
+	}
+
+	// Unmarshal back
+	var eob2 resources.ExplanationOfBenefit
+	if err := parser.UnmarshalXML(xmlData, &eob2); err != nil {
+		t.Fatalf("XML unmarshal: %v\nXML: %s", err, xmlData[:min(500, len(xmlData))])
+	}
+
+	if eob2.GetStatus() != "active" {
+		t.Errorf("status = %q after round-trip", eob2.GetStatus())
+	}
+	if len(eob2.Item) == 0 {
+		t.Fatal("item should survive round-trip")
+	}
+}

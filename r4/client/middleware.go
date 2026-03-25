@@ -14,6 +14,7 @@ type Middleware func(http.RoundTripper) http.RoundTripper
 
 // Wrap applies middlewares to the client's HTTP transport.
 // Middlewares are applied in order: first middleware is outermost.
+// Wrap must be called during initialization, not concurrently at runtime.
 func (c *Client) Wrap(middlewares ...Middleware) *Client {
 	transport := c.httpClient.Transport
 	if transport == nil {

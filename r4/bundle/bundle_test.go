@@ -397,3 +397,46 @@ func TestEntryIteratorLargeBundle(t *testing.T) {
 		t.Errorf("expected 100 entries, got %d", count)
 	}
 }
+
+func TestEntryIteratorFieldsAfterEntry(t *testing.T) {
+	// Fields appear AFTER the entry array — must still be read
+	input := `{
+		"resourceType": "Bundle",
+		"entry": [
+			{"resource": {"resourceType": "Patient", "id": "1"}}
+		],
+		"type": "searchset",
+		"total": 42,
+		"link": [{"relation": "self", "url": "http://example.com"}]
+	}`
+
+	it, err := bundle.NewEntryIterator(strings.NewReader(input))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Drain entries
+	count := 0
+	for {
+		_, err := it.Next()
+		if err != nil {
+			break
+		}
+		count++
+	}
+	if count != 1 {
+		t.Fatalf("expected 1 entry, got %d", count)
+	}
+
+	// Header should now have trailing fields
+	hdr := it.Header()
+	if hdr.Type != bundle.TypeSearchset {
+		t.Errorf("type = %q, want searchset (field after entry array)", hdr.Type)
+	}
+	if hdr.Total == nil || *hdr.Total != 42 {
+		t.Error("total should be 42 (field after entry array)")
+	}
+	if len(hdr.Link) != 1 {
+		t.Error("should have 1 link (field after entry array)")
+	}
+}
