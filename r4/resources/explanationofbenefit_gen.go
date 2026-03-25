@@ -766,8 +766,8 @@ func (r ExplanationOfBenefitAddItem) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Serviced != nil {
-		vData, err := json.Marshal(r.Serviced)
+	if r.Location != nil {
+		vData, err := json.Marshal(r.Location)
 		if err != nil {
 			return nil, err
 		}
@@ -779,8 +779,8 @@ func (r ExplanationOfBenefitAddItem) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Location != nil {
-		vData, err := json.Marshal(r.Location)
+	if r.Serviced != nil {
+		vData, err := json.Marshal(r.Serviced)
 		if err != nil {
 			return nil, err
 		}
@@ -803,13 +803,6 @@ func (r *ExplanationOfBenefitAddItem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ExplanationOfBenefitAddItem(alias)
-	var servicedVal ExplanationOfBenefitAddItemServiced
-	if err := servicedVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if servicedVal.Date != nil || servicedVal.Period != nil {
-		r.Serviced = &servicedVal
-	}
 	var locationVal ExplanationOfBenefitAddItemLocation
 	if err := locationVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -817,46 +810,12 @@ func (r *ExplanationOfBenefitAddItem) UnmarshalJSON(data []byte) error {
 	if locationVal.Address != nil || locationVal.CodeableConcept != nil || locationVal.Reference != nil {
 		r.Location = &locationVal
 	}
-	return nil
-}
-
-// ExplanationOfBenefitAddItemServiced represents a polymorphic choice type in FHIR.
-type ExplanationOfBenefitAddItemServiced struct {
-	Date   *string    `json:"servicedDate,omitempty"`   // The date or dates when the service or product was supplied, performed or completed.
-	Period *dt.Period `json:"servicedPeriod,omitempty"` // The date or dates when the service or product was supplied, performed or completed.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ExplanationOfBenefitAddItemServiced.
-func (v ExplanationOfBenefitAddItemServiced) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Date != nil {
-		m["servicedDate"] = v.Date
-	}
-	if v.Period != nil {
-		m["servicedPeriod"] = v.Period
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ExplanationOfBenefitAddItemServiced.
-func (v *ExplanationOfBenefitAddItemServiced) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
+	var servicedVal ExplanationOfBenefitAddItemServiced
+	if err := servicedVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
-	if d, ok := raw["servicedDate"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling servicedDate: %w", err)
-		}
-		v.Date = &val
-	}
-	if d, ok := raw["servicedPeriod"]; ok {
-		var val dt.Period
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling servicedPeriod: %w", err)
-		}
-		v.Period = &val
+	if servicedVal.Date != nil || servicedVal.Period != nil {
+		r.Serviced = &servicedVal
 	}
 	return nil
 }
@@ -909,6 +868,47 @@ func (v *ExplanationOfBenefitAddItemLocation) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling locationReference: %w", err)
 		}
 		v.Reference = &val
+	}
+	return nil
+}
+
+// ExplanationOfBenefitAddItemServiced represents a polymorphic choice type in FHIR.
+type ExplanationOfBenefitAddItemServiced struct {
+	Date   *string    `json:"servicedDate,omitempty"`   // The date or dates when the service or product was supplied, performed or completed.
+	Period *dt.Period `json:"servicedPeriod,omitempty"` // The date or dates when the service or product was supplied, performed or completed.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ExplanationOfBenefitAddItemServiced.
+func (v ExplanationOfBenefitAddItemServiced) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Date != nil {
+		m["servicedDate"] = v.Date
+	}
+	if v.Period != nil {
+		m["servicedPeriod"] = v.Period
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ExplanationOfBenefitAddItemServiced.
+func (v *ExplanationOfBenefitAddItemServiced) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["servicedDate"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling servicedDate: %w", err)
+		}
+		v.Date = &val
+	}
+	if d, ok := raw["servicedPeriod"]; ok {
+		var val dt.Period
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling servicedPeriod: %w", err)
+		}
+		v.Period = &val
 	}
 	return nil
 }
@@ -1251,6 +1251,13 @@ func (r *ExplanationOfBenefitFinancial) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ExplanationOfBenefitFinancial(alias)
+	var allowedVal ExplanationOfBenefitFinancialAllowed
+	if err := allowedVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if allowedVal.Money != nil || allowedVal.String != nil || allowedVal.UnsignedInt != nil {
+		r.Allowed = &allowedVal
+	}
 	var usedVal ExplanationOfBenefitFinancialUsed
 	if err := usedVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -1258,12 +1265,46 @@ func (r *ExplanationOfBenefitFinancial) UnmarshalJSON(data []byte) error {
 	if usedVal.Money != nil || usedVal.UnsignedInt != nil {
 		r.Used = &usedVal
 	}
-	var allowedVal ExplanationOfBenefitFinancialAllowed
-	if err := allowedVal.UnmarshalJSON(data); err != nil {
+	return nil
+}
+
+// ExplanationOfBenefitFinancialUsed represents a polymorphic choice type in FHIR.
+type ExplanationOfBenefitFinancialUsed struct {
+	Money       *dt.Money `json:"usedMoney,omitempty"`       // The quantity of the benefit which have been consumed to date.
+	UnsignedInt *uint32   `json:"usedUnsignedInt,omitempty"` // The quantity of the benefit which have been consumed to date.
+}
+
+// MarshalJSON implements the json.Marshaler interface for ExplanationOfBenefitFinancialUsed.
+func (v ExplanationOfBenefitFinancialUsed) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.Money != nil {
+		m["usedMoney"] = v.Money
+	}
+	if v.UnsignedInt != nil {
+		m["usedUnsignedInt"] = v.UnsignedInt
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ExplanationOfBenefitFinancialUsed.
+func (v *ExplanationOfBenefitFinancialUsed) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
 		return err
 	}
-	if allowedVal.Money != nil || allowedVal.String != nil || allowedVal.UnsignedInt != nil {
-		r.Allowed = &allowedVal
+	if d, ok := raw["usedMoney"]; ok {
+		var val dt.Money
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling usedMoney: %w", err)
+		}
+		v.Money = &val
+	}
+	if d, ok := raw["usedUnsignedInt"]; ok {
+		var val uint32
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling usedUnsignedInt: %w", err)
+		}
+		v.UnsignedInt = &val
 	}
 	return nil
 }
@@ -1314,47 +1355,6 @@ func (v *ExplanationOfBenefitFinancialAllowed) UnmarshalJSON(data []byte) error 
 		var val uint32
 		if err := json.Unmarshal(d, &val); err != nil {
 			return fmt.Errorf("unmarshaling allowedUnsignedInt: %w", err)
-		}
-		v.UnsignedInt = &val
-	}
-	return nil
-}
-
-// ExplanationOfBenefitFinancialUsed represents a polymorphic choice type in FHIR.
-type ExplanationOfBenefitFinancialUsed struct {
-	Money       *dt.Money `json:"usedMoney,omitempty"`       // The quantity of the benefit which have been consumed to date.
-	UnsignedInt *uint32   `json:"usedUnsignedInt,omitempty"` // The quantity of the benefit which have been consumed to date.
-}
-
-// MarshalJSON implements the json.Marshaler interface for ExplanationOfBenefitFinancialUsed.
-func (v ExplanationOfBenefitFinancialUsed) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.Money != nil {
-		m["usedMoney"] = v.Money
-	}
-	if v.UnsignedInt != nil {
-		m["usedUnsignedInt"] = v.UnsignedInt
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ExplanationOfBenefitFinancialUsed.
-func (v *ExplanationOfBenefitFinancialUsed) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["usedMoney"]; ok {
-		var val dt.Money
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling usedMoney: %w", err)
-		}
-		v.Money = &val
-	}
-	if d, ok := raw["usedUnsignedInt"]; ok {
-		var val uint32
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling usedUnsignedInt: %w", err)
 		}
 		v.UnsignedInt = &val
 	}
@@ -1503,19 +1503,19 @@ func (r *ExplanationOfBenefitItem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = ExplanationOfBenefitItem(alias)
-	var locationVal ExplanationOfBenefitItemLocation
-	if err := locationVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if locationVal.Address != nil || locationVal.CodeableConcept != nil || locationVal.Reference != nil {
-		r.Location = &locationVal
-	}
 	var servicedVal ExplanationOfBenefitItemServiced
 	if err := servicedVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if servicedVal.Date != nil || servicedVal.Period != nil {
 		r.Serviced = &servicedVal
+	}
+	var locationVal ExplanationOfBenefitItemLocation
+	if err := locationVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if locationVal.Address != nil || locationVal.CodeableConcept != nil || locationVal.Reference != nil {
+		r.Location = &locationVal
 	}
 	return nil
 }

@@ -136,19 +136,19 @@ func (r *MedicationStatement) UnmarshalJSON(data []byte) error {
 	}
 	*r = MedicationStatement(alias)
 	// Unmarshal polymorphic fields
-	var effectiveVal MedicationStatementEffective
-	if err := effectiveVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if effectiveVal.DateTime != nil || effectiveVal.Period != nil {
-		r.Effective = &effectiveVal
-	}
 	var medicationVal MedicationStatementMedication
 	if err := medicationVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if medicationVal.CodeableConcept != nil || medicationVal.Reference != nil {
 		r.Medication = &medicationVal
+	}
+	var effectiveVal MedicationStatementEffective
+	if err := effectiveVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if effectiveVal.DateTime != nil || effectiveVal.Period != nil {
+		r.Effective = &effectiveVal
 	}
 	// Capture unknown fields
 	var raw map[string]json.RawMessage

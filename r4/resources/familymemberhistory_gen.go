@@ -100,6 +100,16 @@ func (r FamilyMemberHistory) MarshalJSON() ([]byte, error) {
 	}
 	// Collect additional fields to splice into JSON
 	var extra []byte
+	if r.Deceased != nil {
+		vData, err := json.Marshal(r.Deceased)
+		if err != nil {
+			return nil, err
+		}
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
+		}
+	}
 	if r.Age != nil {
 		vData, err := json.Marshal(r.Age)
 		if err != nil {
@@ -112,16 +122,6 @@ func (r FamilyMemberHistory) MarshalJSON() ([]byte, error) {
 	}
 	if r.Born != nil {
 		vData, err := json.Marshal(r.Born)
-		if err != nil {
-			return nil, err
-		}
-		if len(vData) > 2 { // not empty {}
-			extra = append(extra, ',')
-			extra = append(extra, vData[1:len(vData)-1]...)
-		}
-	}
-	if r.Deceased != nil {
-		vData, err := json.Marshal(r.Deceased)
 		if err != nil {
 			return nil, err
 		}

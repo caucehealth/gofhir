@@ -110,6 +110,16 @@ func (r ChargeItem) MarshalJSON() ([]byte, error) {
 	}
 	// Collect additional fields to splice into JSON
 	var extra []byte
+	if r.Definition != nil {
+		vData, err := json.Marshal(r.Definition)
+		if err != nil {
+			return nil, err
+		}
+		if len(vData) > 2 { // not empty {}
+			extra = append(extra, ',')
+			extra = append(extra, vData[1:len(vData)-1]...)
+		}
+	}
 	if r.Occurrence != nil {
 		vData, err := json.Marshal(r.Occurrence)
 		if err != nil {
@@ -122,16 +132,6 @@ func (r ChargeItem) MarshalJSON() ([]byte, error) {
 	}
 	if r.Product != nil {
 		vData, err := json.Marshal(r.Product)
-		if err != nil {
-			return nil, err
-		}
-		if len(vData) > 2 { // not empty {}
-			extra = append(extra, ',')
-			extra = append(extra, vData[1:len(vData)-1]...)
-		}
-	}
-	if r.Definition != nil {
-		vData, err := json.Marshal(r.Definition)
 		if err != nil {
 			return nil, err
 		}
@@ -166,13 +166,6 @@ func (r *ChargeItem) UnmarshalJSON(data []byte) error {
 	}
 	*r = ChargeItem(alias)
 	// Unmarshal polymorphic fields
-	var productVal ChargeItemProduct
-	if err := productVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if productVal.CodeableConcept != nil || productVal.Reference != nil {
-		r.Product = &productVal
-	}
 	var definitionVal ChargeItemDefinitionChoice
 	if err := definitionVal.UnmarshalJSON(data); err != nil {
 		return err
@@ -186,6 +179,13 @@ func (r *ChargeItem) UnmarshalJSON(data []byte) error {
 	}
 	if occurrenceVal.DateTime != nil || occurrenceVal.Period != nil || occurrenceVal.Timing != nil {
 		r.Occurrence = &occurrenceVal
+	}
+	var productVal ChargeItemProduct
+	if err := productVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if productVal.CodeableConcept != nil || productVal.Reference != nil {
+		r.Product = &productVal
 	}
 	// Capture unknown fields
 	var raw map[string]json.RawMessage

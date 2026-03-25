@@ -594,8 +594,8 @@ func (r PlanDefinitionAction) MarshalJSON() ([]byte, error) {
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
 	}
-	if r.Definition != nil {
-		vData, err := json.Marshal(r.Definition)
+	if r.Timing != nil {
+		vData, err := json.Marshal(r.Timing)
 		if err != nil {
 			return nil, err
 		}
@@ -607,8 +607,8 @@ func (r PlanDefinitionAction) MarshalJSON() ([]byte, error) {
 			m[k] = v
 		}
 	}
-	if r.Timing != nil {
-		vData, err := json.Marshal(r.Timing)
+	if r.Definition != nil {
+		vData, err := json.Marshal(r.Definition)
 		if err != nil {
 			return nil, err
 		}
@@ -631,19 +631,19 @@ func (r *PlanDefinitionAction) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*r = PlanDefinitionAction(alias)
-	var definitionVal PlanDefinitionActionDefinition
-	if err := definitionVal.UnmarshalJSON(data); err != nil {
-		return err
-	}
-	if definitionVal.Canonical != nil || definitionVal.Uri != nil {
-		r.Definition = &definitionVal
-	}
 	var timingVal PlanDefinitionActionTiming
 	if err := timingVal.UnmarshalJSON(data); err != nil {
 		return err
 	}
 	if timingVal.Age != nil || timingVal.DateTime != nil || timingVal.Duration != nil || timingVal.Period != nil || timingVal.Range != nil || timingVal.Timing != nil {
 		r.Timing = &timingVal
+	}
+	var definitionVal PlanDefinitionActionDefinition
+	if err := definitionVal.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	if definitionVal.Canonical != nil || definitionVal.Uri != nil {
+		r.Definition = &definitionVal
 	}
 	return nil
 }

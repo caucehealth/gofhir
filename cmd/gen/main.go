@@ -190,6 +190,11 @@ func main() {
 		log.Fatalf("Failed to generate schema metadata: %v", err)
 	}
 
+	// Generate validation metadata
+	if err := generateValidationMeta(fhirSpec, skipResources); err != nil {
+		log.Fatalf("Failed to generate validation metadata: %v", err)
+	}
+
 	log.Println("Generation complete.")
 }
 
@@ -1836,4 +1841,60 @@ func cleanDescription(s string) string {
 		return "is defined by the FHIR specification."
 	}
 	return s
+}
+
+const validateDir = "r4/validate"
+
+func generateValidationMeta(fhirSpec *spec.FHIRSpec, skip map[string]bool) error {
+	var buf bytes.Buffer
+	buf.WriteString(licenseHeader)
+	buf.WriteString("\npackage validate\n\n")
+	buf.WriteString("func init() {\n")
+
+	for _, name := range fhirSpec.ResourceNames {
+		if skip[name] {
+			continue
+		}
+		res := fhirSpec.Resources[name]
+		valueGroups := detectValueGroups(res.Fields)
+
+		fmt.Fprintf(&buf, "\tRegisterResourceMeta(&ResourceMeta{\n")
+		fmt.Fprintf(&buf, "\t\tName: %q,\n", res.Name)
+		fmt.Fprintf(&buf, "\t\tFields: []FieldMeta{\n")
+
+		for _, f := range res.Fields {
+			// Skip value[x] group members — they're dynamically present
+			if group := getValueGroup(f.JSONName, valueGroups); group != "" {
+				continue
+			}
+			if f.JSONName == "resourceType" {
+				continue
+			}
+			// Skip element companion fields
+			if strings.HasPrefix(f.JSONName, "_") {
+				continue
+			}
+
+			fmt.Fprintf(&buf, "\t\t\t{JSONName: %q, FHIRType: %q, Required: %v, IsArray: %v",
+				f.JSONName, f.FHIRType, f.IsRequired, f.IsArray)
+			if len(f.Enum) > 0 {
+				fmt.Fprintf(&buf, ", Enum: []string{")
+				for i, e := range f.Enum {
+					if i > 0 {
+						buf.WriteString(", ")
+					}
+					fmt.Fprintf(&buf, "%q", e)
+				}
+				buf.WriteString("}")
+			}
+			buf.WriteString("},\n")
+		}
+
+		buf.WriteString("\t\t},\n")
+		buf.WriteString("\t})\n")
+	}
+
+	buf.WriteString("}\n")
+
+	return writeGoFile(filepath.Join(validateDir, "meta_gen.go"), buf.Bytes())
 }

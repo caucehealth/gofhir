@@ -190,8 +190,8 @@ func (r ActivityDefinition) MarshalJSON() ([]byte, error) {
 	}
 	// Collect additional fields to splice into JSON
 	var extra []byte
-	if r.Timing != nil {
-		vData, err := json.Marshal(r.Timing)
+	if r.Product != nil {
+		vData, err := json.Marshal(r.Product)
 		if err != nil {
 			return nil, err
 		}
@@ -200,8 +200,8 @@ func (r ActivityDefinition) MarshalJSON() ([]byte, error) {
 			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
-	if r.Product != nil {
-		vData, err := json.Marshal(r.Product)
+	if r.Timing != nil {
+		vData, err := json.Marshal(r.Timing)
 		if err != nil {
 			return nil, err
 		}

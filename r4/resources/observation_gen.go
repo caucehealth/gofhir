@@ -104,8 +104,8 @@ func (r Observation) MarshalJSON() ([]byte, error) {
 	}
 	// Collect additional fields to splice into JSON
 	var extra []byte
-	if r.Value != nil {
-		vData, err := json.Marshal(r.Value)
+	if r.Effective != nil {
+		vData, err := json.Marshal(r.Effective)
 		if err != nil {
 			return nil, err
 		}
@@ -114,8 +114,8 @@ func (r Observation) MarshalJSON() ([]byte, error) {
 			extra = append(extra, vData[1:len(vData)-1]...)
 		}
 	}
-	if r.Effective != nil {
-		vData, err := json.Marshal(r.Effective)
+	if r.Value != nil {
+		vData, err := json.Marshal(r.Value)
 		if err != nil {
 			return nil, err
 		}
@@ -809,69 +809,6 @@ type ObservationReferenceRange struct {
 	Type *dt.CodeableConcept `json:"type,omitempty"`
 }
 
-// ObservationEffective represents a polymorphic choice type in FHIR.
-type ObservationEffective struct {
-	DateTime *string    `json:"effectiveDateTime,omitempty"` // The time or time-period the observed value is asserted as being true. For biological subjects - e.g. human patients - this is usually called the "physiologically relevant time". This is usually eit...
-	Instant  *string    `json:"effectiveInstant,omitempty"`  // The time or time-period the observed value is asserted as being true. For biological subjects - e.g. human patients - this is usually called the "physiologically relevant time". This is usually eit...
-	Period   *dt.Period `json:"effectivePeriod,omitempty"`   // The time or time-period the observed value is asserted as being true. For biological subjects - e.g. human patients - this is usually called the "physiologically relevant time". This is usually eit...
-	Timing   *dt.Timing `json:"effectiveTiming,omitempty"`   // The time or time-period the observed value is asserted as being true. For biological subjects - e.g. human patients - this is usually called the "physiologically relevant time". This is usually eit...
-}
-
-// MarshalJSON implements the json.Marshaler interface for ObservationEffective.
-func (v ObservationEffective) MarshalJSON() ([]byte, error) {
-	m := make(map[string]interface{})
-	if v.DateTime != nil {
-		m["effectiveDateTime"] = v.DateTime
-	}
-	if v.Instant != nil {
-		m["effectiveInstant"] = v.Instant
-	}
-	if v.Period != nil {
-		m["effectivePeriod"] = v.Period
-	}
-	if v.Timing != nil {
-		m["effectiveTiming"] = v.Timing
-	}
-	return json.Marshal(m)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for ObservationEffective.
-func (v *ObservationEffective) UnmarshalJSON(data []byte) error {
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	if d, ok := raw["effectiveDateTime"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling effectiveDateTime: %w", err)
-		}
-		v.DateTime = &val
-	}
-	if d, ok := raw["effectiveInstant"]; ok {
-		var val string
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling effectiveInstant: %w", err)
-		}
-		v.Instant = &val
-	}
-	if d, ok := raw["effectivePeriod"]; ok {
-		var val dt.Period
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling effectivePeriod: %w", err)
-		}
-		v.Period = &val
-	}
-	if d, ok := raw["effectiveTiming"]; ok {
-		var val dt.Timing
-		if err := json.Unmarshal(d, &val); err != nil {
-			return fmt.Errorf("unmarshaling effectiveTiming: %w", err)
-		}
-		v.Timing = &val
-	}
-	return nil
-}
-
 // ObservationValue represents a polymorphic choice type in FHIR.
 type ObservationValue struct {
 	Boolean         *bool               `json:"valueBoolean,omitempty"`         // The information determined as a result of making the observation, if the information has a simple value.
@@ -1008,6 +945,69 @@ func (v *ObservationValue) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("unmarshaling valueTime: %w", err)
 		}
 		v.Time = &val
+	}
+	return nil
+}
+
+// ObservationEffective represents a polymorphic choice type in FHIR.
+type ObservationEffective struct {
+	DateTime *string    `json:"effectiveDateTime,omitempty"` // The time or time-period the observed value is asserted as being true. For biological subjects - e.g. human patients - this is usually called the "physiologically relevant time". This is usually eit...
+	Instant  *string    `json:"effectiveInstant,omitempty"`  // The time or time-period the observed value is asserted as being true. For biological subjects - e.g. human patients - this is usually called the "physiologically relevant time". This is usually eit...
+	Period   *dt.Period `json:"effectivePeriod,omitempty"`   // The time or time-period the observed value is asserted as being true. For biological subjects - e.g. human patients - this is usually called the "physiologically relevant time". This is usually eit...
+	Timing   *dt.Timing `json:"effectiveTiming,omitempty"`   // The time or time-period the observed value is asserted as being true. For biological subjects - e.g. human patients - this is usually called the "physiologically relevant time". This is usually eit...
+}
+
+// MarshalJSON implements the json.Marshaler interface for ObservationEffective.
+func (v ObservationEffective) MarshalJSON() ([]byte, error) {
+	m := make(map[string]interface{})
+	if v.DateTime != nil {
+		m["effectiveDateTime"] = v.DateTime
+	}
+	if v.Instant != nil {
+		m["effectiveInstant"] = v.Instant
+	}
+	if v.Period != nil {
+		m["effectivePeriod"] = v.Period
+	}
+	if v.Timing != nil {
+		m["effectiveTiming"] = v.Timing
+	}
+	return json.Marshal(m)
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for ObservationEffective.
+func (v *ObservationEffective) UnmarshalJSON(data []byte) error {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	if d, ok := raw["effectiveDateTime"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling effectiveDateTime: %w", err)
+		}
+		v.DateTime = &val
+	}
+	if d, ok := raw["effectiveInstant"]; ok {
+		var val string
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling effectiveInstant: %w", err)
+		}
+		v.Instant = &val
+	}
+	if d, ok := raw["effectivePeriod"]; ok {
+		var val dt.Period
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling effectivePeriod: %w", err)
+		}
+		v.Period = &val
+	}
+	if d, ok := raw["effectiveTiming"]; ok {
+		var val dt.Timing
+		if err := json.Unmarshal(d, &val); err != nil {
+			return fmt.Errorf("unmarshaling effectiveTiming: %w", err)
+		}
+		v.Timing = &val
 	}
 	return nil
 }
