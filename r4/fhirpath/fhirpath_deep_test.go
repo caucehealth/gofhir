@@ -602,6 +602,123 @@ func TestQuantityFromResource(t *testing.T) {
 	}
 }
 
+// ============================================================================
+// Date arithmetic
+// ============================================================================
+
+func TestDateArithmeticYears(t *testing.T) {
+	tests := []struct {
+		expr string
+		want string
+	}{
+		{"@2024-01-15 + 1 'year'", "2025-01-15"},
+		{"@2024-01-15 + 2 'years'", "2026-01-15"},
+		{"@2024-01-15 - 1 'year'", "2023-01-15"},
+		{"@2020-06-15 + 10 'years'", "2030-06-15"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.expr, func(t *testing.T) {
+			result, err := fhirpath.Evaluate(patient(), tt.expr)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if result.String() != tt.want {
+				t.Errorf("got %q, want %q", result.String(), tt.want)
+			}
+		})
+	}
+}
+
+func TestDateArithmeticMonths(t *testing.T) {
+	tests := []struct {
+		expr string
+		want string
+	}{
+		{"@2024-01-15 + 1 'month'", "2024-02-15"},
+		{"@2024-01-15 + 6 'months'", "2024-07-15"},
+		{"@2024-03-31 + 1 'month'", "2024-05-01"}, // March 31 + 1 month → April 31 → May 1
+		{"@2024-01-15 - 1 'month'", "2023-12-15"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.expr, func(t *testing.T) {
+			result, err := fhirpath.Evaluate(patient(), tt.expr)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if result.String() != tt.want {
+				t.Errorf("got %q, want %q", result.String(), tt.want)
+			}
+		})
+	}
+}
+
+func TestDateArithmeticDays(t *testing.T) {
+	tests := []struct {
+		expr string
+		want string
+	}{
+		{"@2024-01-15 + 10 'days'", "2024-01-25"},
+		{"@2024-01-31 + 1 'day'", "2024-02-01"},
+		{"@2024-03-01 - 1 'day'", "2024-02-29"}, // leap year
+		{"@2024-01-15 + 1 'week'", "2024-01-22"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.expr, func(t *testing.T) {
+			result, err := fhirpath.Evaluate(patient(), tt.expr)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if result.String() != tt.want {
+				t.Errorf("got %q, want %q", result.String(), tt.want)
+			}
+		})
+	}
+}
+
+func TestDateArithmeticLeapYear(t *testing.T) {
+	// Feb 29 exists in 2024 (leap year) but not 2025
+	result, _ := fhirpath.Evaluate(patient(), "@2024-02-29 + 1 'year'")
+	got := result.String()
+	// Go's AddDate: 2024-02-29 + 1 year = 2025-03-01
+	if got != "2025-03-01" {
+		t.Errorf("leap year: got %q, want 2025-03-01", got)
+	}
+
+	// Subtracting back: 2025-03-01 - 1 year = 2024-03-01 (not Feb 29)
+	result, _ = fhirpath.Evaluate(patient(), "@2025-03-01 - 1 'year'")
+	got = result.String()
+	if got != "2024-03-01" {
+		t.Errorf("reverse leap: got %q, want 2024-03-01", got)
+	}
+}
+
+func TestDateArithmeticPrecisionPreserved(t *testing.T) {
+	// Year-only: + 1 year stays year-only
+	result, _ := fhirpath.Evaluate(patient(), "@2024 + 1 'year'")
+	if result.String() != "2025" {
+		t.Errorf("year precision: got %q, want 2025", result.String())
+	}
+
+	// Month-only
+	result, _ = fhirpath.Evaluate(patient(), "@2024-06 + 3 'months'")
+	if result.String() != "2024-09" {
+		t.Errorf("month precision: got %q, want 2024-09", result.String())
+	}
+}
+
+func TestDateArithmeticWithBirthDate(t *testing.T) {
+	// Real-world: is patient older than 18?
+	// birthDate is 1980-01-01, so birthDate + 18 years < today
+	b, err := fhirpath.EvaluateBool(patient(), "birthDate + 18 'years' < @2024-01-01")
+	if err != nil {
+		// birthDate is a string field, arithmetic should work
+		t.Fatal(err)
+	}
+	if !b {
+		t.Error("1980-01-01 + 18 years = 1998-01-01 should be < 2024-01-01")
+	}
+}
+
 func TestCompiledWithResolver(t *testing.T) {
 	expr, _ := fhirpath.Compile("subject.resolve().name.family")
 	expr.WithResolver(func(ref string) any {

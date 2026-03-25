@@ -379,6 +379,13 @@ func (ctx *evalContext) evalArith(op string, lval, rval Collection) (Collection,
 		return nil, nil
 	}
 
+	// Date arithmetic: date + duration quantity → new date
+	if op == "+" || op == "-" {
+		if result, ok := tryDateArith(op, lval[0], rval[0]); ok {
+			return Collection{result}, nil
+		}
+	}
+
 	// String concatenation with +
 	if op == "+" {
 		if _, ok := lval[0].(string); ok {
@@ -1037,6 +1044,103 @@ func (ctx *evalContext) evalExtension(input Collection, url string) (Collection,
 		}
 	}
 	return result, nil
+}
+
+// tryDateArith attempts date arithmetic: date +/- duration quantity.
+// Returns (result, true) if the operation was a date+duration, (nil, false) otherwise.
+func tryDateArith(op string, left, right any) (string, bool) {
+	// Left must be a date string, right must be a duration quantity
+	dateStr := ""
+	var dur quantityValue
+	hasDur := false
+
+	if s, ok := left.(string); ok && isDateLike(s) {
+		dateStr = s
+		if q, ok := right.(quantityValue); ok && isDurationUnit(q.Unit) {
+			dur = q
+			hasDur = true
+		}
+	}
+
+	if !hasDur {
+		return "", false
+	}
+
+	// Parse the date
+	t, err := parseDate(dateStr)
+	if err != nil {
+		return "", false
+	}
+
+	amount := int(dur.Value)
+	if op == "-" {
+		amount = -amount
+	}
+
+	switch dur.Unit {
+	case "year", "years":
+		t = t.AddDate(amount, 0, 0)
+	case "month", "months":
+		t = t.AddDate(0, amount, 0)
+	case "week", "weeks":
+		t = t.AddDate(0, 0, amount*7)
+	case "day", "days":
+		t = t.AddDate(0, 0, amount)
+	case "hour", "hours":
+		t = t.Add(time.Duration(amount) * time.Hour)
+	case "minute", "minutes":
+		t = t.Add(time.Duration(amount) * time.Minute)
+	case "second", "seconds":
+		t = t.Add(time.Duration(amount) * time.Second)
+	default:
+		return "", false
+	}
+
+	// Format back to original precision
+	return formatDateLike(t, dateStr), true
+}
+
+func isDurationUnit(unit string) bool {
+	switch unit {
+	case "year", "years", "month", "months", "week", "weeks",
+		"day", "days", "hour", "hours", "minute", "minutes",
+		"second", "seconds":
+		return true
+	}
+	return false
+}
+
+func parseDate(s string) (time.Time, error) {
+	formats := []string{
+		"2006-01-02T15:04:05Z07:00",
+		"2006-01-02T15:04:05",
+		"2006-01-02",
+		"2006-01",
+		"2006",
+	}
+	for _, f := range formats {
+		if t, err := time.Parse(f, s); err == nil {
+			return t, nil
+		}
+	}
+	return time.Time{}, fmt.Errorf("cannot parse date %q", s)
+}
+
+func formatDateLike(t time.Time, original string) string {
+	switch {
+	case len(original) == 4: // YYYY
+		return t.Format("2006")
+	case len(original) == 7: // YYYY-MM
+		return t.Format("2006-01")
+	case len(original) == 10: // YYYY-MM-DD
+		return t.Format("2006-01-02")
+	case strings.Contains(original, "T") && strings.Contains(original, "Z"):
+		return t.Format("2006-01-02T15:04:05Z07:00")
+	case strings.Contains(original, "T"):
+		return t.Format("2006-01-02T15:04:05")
+	default:
+		return t.Format("2006-01-02")
+	}
 }
 
 // quantityValue represents a FHIRPath quantity literal (e.g., 5 'mg').
