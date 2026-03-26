@@ -391,6 +391,92 @@ func TestValidateCodeNoWhitespace(t *testing.T) {
 	}
 }
 
+func TestProfileValidation(t *testing.T) {
+	// Define a simple profile: Patient must have name (min=1) and gender (min=1)
+	profileJSON := `{
+		"resourceType": "StructureDefinition",
+		"url": "http://example.org/StructureDefinition/required-patient",
+		"name": "RequiredPatient",
+		"type": "Patient",
+		"snapshot": {
+			"element": [
+				{"path": "Patient", "min": 0, "max": "*"},
+				{"path": "Patient.name", "min": 1, "max": "*", "type": [{"code": "HumanName"}]},
+				{"path": "Patient.gender", "min": 1, "max": "1", "type": [{"code": "code"}],
+				 "binding": {"strength": "required", "valueSet": "http://hl7.org/fhir/ValueSet/administrative-gender"}},
+				{"path": "Patient.identifier", "min": 1, "max": "*", "type": [{"code": "Identifier"}]},
+				{"path": "Patient.name.family", "min": 1, "max": "1", "type": [{"code": "string"}],
+				 "constraint": [{"key": "custom-1", "expression": "length() > 0", "severity": "error", "human": "family name must not be empty"}]}
+			]
+		}
+	}`
+
+	registry := validate.NewProfileRegistry()
+	if err := registry.Load(json.RawMessage(profileJSON)); err != nil {
+		t.Fatal(err)
+	}
+
+	// Valid patient
+	p, _ := resources.NewPatient().
+		WithName("John", "Doe").
+		WithGender(resources.AdministrativeGenderMale).
+		Build()
+	id := dt.Identifier{Value: strPtr("12345")}
+	p.Identifier = append(p.Identifier, id)
+
+	v := validate.New(validate.WithProfile(registry, "http://example.org/StructureDefinition/required-patient"))
+	result := v.Validate(p)
+	for _, issue := range result.Errors() {
+		if issue.Code == validate.CodeRequired {
+			t.Errorf("valid patient should not have required errors: %s", issue.Message)
+		}
+	}
+
+	// Invalid patient — missing name, gender, identifier
+	empty := &resources.Patient{ResourceType: "Patient"}
+	result = v.Validate(empty)
+
+	missingFields := map[string]bool{}
+	for _, issue := range result.Errors() {
+		if issue.Code == validate.CodeRequired {
+			missingFields[issue.Path] = true
+		}
+	}
+	if !missingFields["Patient.name"] {
+		t.Error("should flag missing name")
+	}
+	if !missingFields["Patient.gender"] {
+		t.Error("should flag missing gender")
+	}
+	if !missingFields["Patient.identifier"] {
+		t.Error("should flag missing identifier")
+	}
+}
+
+func TestProfileWrongResourceType(t *testing.T) {
+	registry := validate.NewProfileRegistry()
+	registry.Register(&validate.Profile{
+		URL:  "http://example.org/obs-profile",
+		Type: "Observation",
+	})
+
+	p := &resources.Patient{ResourceType: "Patient"}
+	v := validate.New(validate.WithProfile(registry, "http://example.org/obs-profile"))
+	result := v.Validate(p)
+
+	found := false
+	for _, issue := range result.Issues {
+		if strings.Contains(issue.Message, "does not match") {
+			found = true
+		}
+	}
+	if !found {
+		t.Error("should reject Patient against Observation profile")
+	}
+}
+
+func strPtr(s string) *string { return &s }
+
 func TestFHIRPathInvariants(t *testing.T) {
 	// obs-6: value exists or dataAbsentReason exists
 	v := validate.New(validate.WithInvariants(map[string]string{
