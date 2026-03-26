@@ -28,6 +28,7 @@ import (
 	"github.com/caucehealth/gofhir/r4/resources"
 )
 
+
 // Client is a FHIR R4 REST client.
 type Client struct {
 	baseURL    string
@@ -131,9 +132,72 @@ func Update(ctx context.Context, c *Client, resource resources.Resource) (*Metho
 
 // Delete removes a resource by type and ID.
 func Delete(ctx context.Context, c *Client, resourceType, id string) error {
-	url := fmt.Sprintf("%s/%s/%s", c.baseURL, resourceType, id)
-	_, err := c.doRequest(ctx, "DELETE", url, nil)
+	reqURL := fmt.Sprintf("%s/%s/%s", c.baseURL, resourceType, id)
+	_, err := c.doRequest(ctx, "DELETE", reqURL, nil)
 	return err
+}
+
+// --- Conditional CRUD ---
+
+// CreateConditional creates a resource only if no match exists (If-None-Exist).
+func CreateConditional(ctx context.Context, c *Client, resource resources.Resource, ifNoneExist string) (*MethodOutcome, error) {
+	rt := resource.GetResourceType()
+	reqURL := fmt.Sprintf("%s/%s", c.baseURL, rt)
+	data, err := json.Marshal(resource)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := c.doRequestWithHeaders(ctx, "POST", reqURL, data, map[string]string{
+		"If-None-Exist": ifNoneExist,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return parseMethodOutcome(resp)
+}
+
+// UpdateConditional updates a resource with optimistic locking (If-Match).
+func UpdateConditional(ctx context.Context, c *Client, resource resources.Resource, ifMatch string) (*MethodOutcome, error) {
+	rt := resource.GetResourceType()
+	id := string(resource.GetId())
+	if id == "" {
+		return nil, fmt.Errorf("resource %s has no id for update", rt)
+	}
+	reqURL := fmt.Sprintf("%s/%s/%s", c.baseURL, rt, id)
+	data, err := json.Marshal(resource)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := c.doRequestWithHeaders(ctx, "PUT", reqURL, data, map[string]string{
+		"If-Match": ifMatch,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return parseMethodOutcome(resp)
+}
+
+// --- Operations ---
+
+// Operation invokes a FHIR operation (e.g., $validate, $everything, $expand).
+// For type-level operations: Operation(ctx, c, "Patient", "$everything", params)
+// For instance-level: Operation(ctx, c, "Patient/123", "$everything", params)
+func Operation(ctx context.Context, c *Client, target, operation string, params url.Values) (json.RawMessage, error) {
+	reqURL := fmt.Sprintf("%s/%s/%s", c.baseURL, target, operation)
+	if params != nil && len(params) > 0 {
+		reqURL += "?" + params.Encode()
+	}
+	return c.doGet(ctx, reqURL)
+}
+
+// OperationPost invokes a FHIR operation with a POST body.
+func OperationPost(ctx context.Context, c *Client, target, operation string, body any) (json.RawMessage, error) {
+	reqURL := fmt.Sprintf("%s/%s/%s", c.baseURL, target, operation)
+	data, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	return c.doRequest(ctx, "POST", reqURL, data)
 }
 
 // Transaction sends a Bundle of type transaction to the server.
@@ -305,6 +369,37 @@ func (c *Client) doGet(ctx context.Context, url string) ([]byte, error) {
 		return nil, &ServerError{StatusCode: resp.StatusCode, Body: body}
 	}
 	return body, nil
+}
+
+func (c *Client) doRequestWithHeaders(ctx context.Context, method, reqURL string, body []byte, headers map[string]string) ([]byte, error) {
+	var bodyReader io.Reader
+	if body != nil {
+		bodyReader = bytes.NewReader(body)
+	}
+	req, err := http.NewRequestWithContext(ctx, method, reqURL, bodyReader)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Accept", "application/fhir+json")
+	if body != nil {
+		req.Header.Set("Content-Type", "application/fhir+json")
+	}
+	for k, v := range headers {
+		req.Header.Set(k, v)
+	}
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("%s %s: %w", method, reqURL, err)
+	}
+	defer resp.Body.Close()
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode >= 400 {
+		return nil, &ServerError{StatusCode: resp.StatusCode, Body: respBody}
+	}
+	return respBody, nil
 }
 
 func (c *Client) doRequest(ctx context.Context, method, reqURL string, body []byte) ([]byte, error) {

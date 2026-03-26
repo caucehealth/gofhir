@@ -375,6 +375,47 @@ func TestRetryMiddleware(t *testing.T) {
 	}
 }
 
+func TestOperation(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/Patient/123/$everything" {
+			t.Errorf("unexpected path: %s", r.URL.Path)
+		}
+		json.NewEncoder(w).Encode(map[string]any{
+			"resourceType": "Bundle", "type": "searchset",
+		})
+	}))
+	defer srv.Close()
+
+	c := client.New(srv.URL)
+	data, err := client.Operation(context.Background(), c, "Patient/123", "$everything", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(data), "searchset") {
+		t.Error("should return bundle")
+	}
+}
+
+func TestConditionalCreate(t *testing.T) {
+	var ifNoneExist string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ifNoneExist = r.Header.Get("If-None-Exist")
+		w.WriteHeader(201)
+		w.Write([]byte(`{"resourceType":"Patient","id":"new"}`))
+	}))
+	defer srv.Close()
+
+	p, _ := resources.NewPatient().WithName("Test", "User").Build()
+	c := client.New(srv.URL)
+	_, err := client.CreateConditional(context.Background(), c, p, "identifier=http://example.org|123")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if ifNoneExist != "identifier=http://example.org|123" {
+		t.Errorf("If-None-Exist = %q", ifNoneExist)
+	}
+}
+
 func TestRetryMiddlewareExhausted(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(503)

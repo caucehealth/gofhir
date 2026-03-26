@@ -235,6 +235,47 @@ func (b *BundleBuilder) WithTransactionEntry(method, url string, resource any) *
 	return b
 }
 
+// WithBatchEntry adds a batch entry (independent operation, partial success allowed).
+func (b *BundleBuilder) WithBatchEntry(method, url string, resource any) *BundleBuilder {
+	return b.WithTransactionEntry(method, url, resource)
+}
+
+// WithConditionalCreate adds a conditional create entry (POST with If-None-Exist).
+func (b *BundleBuilder) WithConditionalCreate(url, ifNoneExist string, resource any) *BundleBuilder {
+	data, err := json.Marshal(resource)
+	if err != nil {
+		b.bundle.Entry = append(b.bundle.Entry, BundleEntry{})
+		return b
+	}
+	b.bundle.Entry = append(b.bundle.Entry, BundleEntry{
+		Resource: data,
+		Request: &BundleRequest{
+			Method:      "POST",
+			URL:         dt.URL(url),
+			IfNoneExist: &ifNoneExist,
+		},
+	})
+	return b
+}
+
+// WithConditionalUpdate adds a conditional update entry (PUT with If-Match).
+func (b *BundleBuilder) WithConditionalUpdate(url, ifMatch string, resource any) *BundleBuilder {
+	data, err := json.Marshal(resource)
+	if err != nil {
+		b.bundle.Entry = append(b.bundle.Entry, BundleEntry{})
+		return b
+	}
+	b.bundle.Entry = append(b.bundle.Entry, BundleEntry{
+		Resource: data,
+		Request: &BundleRequest{
+			Method:  "PUT",
+			URL:     dt.URL(url),
+			IfMatch: &ifMatch,
+		},
+	})
+	return b
+}
+
 // WithRawEntry adds a pre-marshaled JSON resource entry to the bundle.
 func (b *BundleBuilder) WithRawEntry(raw json.RawMessage) *BundleBuilder {
 	b.bundle.Entry = append(b.bundle.Entry, BundleEntry{
