@@ -416,6 +416,206 @@ func TestConditionalCreate(t *testing.T) {
 	}
 }
 
+func TestVRead(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/Patient/123/_history/2" {
+			t.Errorf("unexpected path: %s", r.URL.Path)
+		}
+		json.NewEncoder(w).Encode(map[string]any{
+			"resourceType": "Patient", "id": "123",
+			"meta": map[string]any{"versionId": "2"},
+		})
+	}))
+	defer srv.Close()
+
+	c := client.New(srv.URL)
+	res, err := client.VRead(context.Background(), c, "Patient", "123", "2")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.GetResourceType() != "Patient" {
+		t.Errorf("type = %q, want Patient", res.GetResourceType())
+	}
+}
+
+func TestVReadAs(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		json.NewEncoder(w).Encode(map[string]any{
+			"resourceType": "Patient", "id": "123", "gender": "female",
+		})
+	}))
+	defer srv.Close()
+
+	c := client.New(srv.URL)
+	p, err := client.VReadAs[resources.Patient](context.Background(), c, "Patient", "123", "2")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p.GetGender() != resources.AdministrativeGenderFemale {
+		t.Errorf("gender = %q, want female", p.GetGender())
+	}
+}
+
+func TestHistory(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/Patient/123/_history" {
+			t.Errorf("unexpected path: %s", r.URL.Path)
+		}
+		json.NewEncoder(w).Encode(map[string]any{
+			"resourceType": "Bundle", "type": "history", "total": 2,
+			"entry": []map[string]any{
+				{"resource": map[string]any{"resourceType": "Patient", "id": "123"}},
+			},
+		})
+	}))
+	defer srv.Close()
+
+	c := client.New(srv.URL)
+	b, err := client.History(context.Background(), c, "Patient", "123")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if b.Type != bundle.TypeHistory {
+		t.Errorf("type = %q, want history", b.Type)
+	}
+	if len(b.Entry) != 1 {
+		t.Errorf("expected 1 entry, got %d", len(b.Entry))
+	}
+}
+
+func TestTypeHistory(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/Patient/_history" {
+			t.Errorf("unexpected path: %s", r.URL.Path)
+		}
+		json.NewEncoder(w).Encode(map[string]any{
+			"resourceType": "Bundle", "type": "history",
+		})
+	}))
+	defer srv.Close()
+
+	c := client.New(srv.URL)
+	_, err := client.TypeHistory(context.Background(), c, "Patient")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestSystemHistory(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/_history" {
+			t.Errorf("unexpected path: %s", r.URL.Path)
+		}
+		json.NewEncoder(w).Encode(map[string]any{
+			"resourceType": "Bundle", "type": "history",
+		})
+	}))
+	defer srv.Close()
+
+	c := client.New(srv.URL)
+	_, err := client.SystemHistory(context.Background(), c)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestPatch(t *testing.T) {
+	var receivedContentType string
+	var receivedBody []byte
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "PATCH" {
+			t.Errorf("expected PATCH, got %s", r.Method)
+		}
+		if r.URL.Path != "/Patient/123" {
+			t.Errorf("unexpected path: %s", r.URL.Path)
+		}
+		receivedContentType = r.Header.Get("Content-Type")
+		receivedBody, _ = io.ReadAll(r.Body)
+		w.Write([]byte(`{"resourceType":"Patient","id":"123"}`))
+	}))
+	defer srv.Close()
+
+	patchBody := []byte(`[{"op":"replace","path":"/gender","value":"female"}]`)
+	c := client.New(srv.URL)
+	_, err := client.Patch(context.Background(), c, "Patient", "123", patchBody, "application/json-patch+json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if receivedContentType != "application/json-patch+json" {
+		t.Errorf("content-type = %q", receivedContentType)
+	}
+	if !strings.Contains(string(receivedBody), "replace") {
+		t.Error("body should contain patch operations")
+	}
+}
+
+func TestLoggingMiddleware(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		json.NewEncoder(w).Encode(map[string]any{"resourceType": "Patient", "id": "1"})
+	}))
+	defer srv.Close()
+
+	var logged bool
+	var loggedMethod string
+	var loggedStatus int
+	c := client.New(srv.URL)
+	c.Wrap(client.Logging(func(method, url string, statusCode int, duration time.Duration) {
+		logged = true
+		loggedMethod = method
+		loggedStatus = statusCode
+	}))
+
+	client.Read(context.Background(), c, "Patient", "1")
+	if !logged {
+		t.Error("logging callback should have been called")
+	}
+	if loggedMethod != "GET" {
+		t.Errorf("method = %q, want GET", loggedMethod)
+	}
+	if loggedStatus != 200 {
+		t.Errorf("status = %d, want 200", loggedStatus)
+	}
+}
+
+func TestETagCacheMiddleware(t *testing.T) {
+	callCount := 0
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		callCount++
+		if etag := r.Header.Get("If-None-Match"); etag == `"v1"` {
+			w.WriteHeader(304)
+			return
+		}
+		w.Header().Set("ETag", `"v1"`)
+		json.NewEncoder(w).Encode(map[string]any{"resourceType": "Patient", "id": "1"})
+	}))
+	defer srv.Close()
+
+	c := client.New(srv.URL)
+	c.Wrap(client.ETagCache(100))
+
+	// First request — cache miss
+	res1, err := client.Read(context.Background(), c, "Patient", "1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(res1.GetId()) != "1" {
+		t.Errorf("id = %q, want 1", res1.GetId())
+	}
+
+	// Second request — should use cache (304)
+	res2, err := client.Read(context.Background(), c, "Patient", "1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(res2.GetId()) != "1" {
+		t.Errorf("cached id = %q, want 1", res2.GetId())
+	}
+
+	if callCount != 2 {
+		t.Errorf("expected 2 server calls, got %d", callCount)
+	}
+}
+
 func TestRetryMiddlewareExhausted(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(503)
@@ -435,5 +635,51 @@ func TestRetryMiddlewareExhausted(t *testing.T) {
 	}
 	if srvErr.StatusCode != 503 {
 		t.Errorf("status = %d, want 503", srvErr.StatusCode)
+	}
+}
+
+func TestReadBinary(t *testing.T) {
+	pdfContent := []byte("%PDF-1.4 fake content")
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/Binary/doc-1" {
+			t.Errorf("unexpected path: %s", r.URL.Path)
+		}
+		w.Header().Set("Content-Type", "application/pdf")
+		w.Write(pdfContent)
+	}))
+	defer srv.Close()
+
+	c := client.New(srv.URL)
+	data, contentType, err := client.ReadBinary(context.Background(), c, "doc-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if contentType != "application/pdf" {
+		t.Errorf("content-type = %q, want application/pdf", contentType)
+	}
+	if string(data) != string(pdfContent) {
+		t.Error("content mismatch")
+	}
+}
+
+func TestCreateBinary(t *testing.T) {
+	var receivedContentType string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" {
+			t.Errorf("expected POST, got %s", r.Method)
+		}
+		receivedContentType = r.Header.Get("Content-Type")
+		w.WriteHeader(201)
+		w.Write([]byte(`{"resourceType":"Binary","id":"new-1"}`))
+	}))
+	defer srv.Close()
+
+	c := client.New(srv.URL)
+	_, err := client.CreateBinary(context.Background(), c, []byte("image data"), "image/png")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if receivedContentType != "image/png" {
+		t.Errorf("content-type = %q, want image/png", receivedContentType)
 	}
 }

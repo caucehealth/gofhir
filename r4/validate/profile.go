@@ -37,7 +37,42 @@ type ProfileElement struct {
 	Strength   string // "required", "extensible", "preferred", "example"
 	FixedValue any
 	Invariants []ProfileInvariant
+	Slicing    *Slicing // non-nil if this element introduces slicing
+	SliceName  string   // non-empty if this element is a named slice
 }
+
+// Slicing describes how a repeating element is divided into slices.
+type Slicing struct {
+	Discriminators []Discriminator
+	Rules          SlicingRules // "open", "closed", "openAtEnd"
+	Ordered        bool
+}
+
+// Discriminator identifies how array elements are assigned to slices.
+type Discriminator struct {
+	Type DiscriminatorType
+	Path string
+}
+
+// DiscriminatorType is the method used to match elements to slices.
+type DiscriminatorType string
+
+const (
+	DiscriminatorValue   DiscriminatorType = "value"
+	DiscriminatorPattern DiscriminatorType = "pattern"
+	DiscriminatorType_   DiscriminatorType = "type"
+	DiscriminatorProfile DiscriminatorType = "profile"
+	DiscriminatorExists  DiscriminatorType = "exists"
+)
+
+// SlicingRules defines whether additional content is allowed beyond defined slices.
+type SlicingRules string
+
+const (
+	SlicingOpen      SlicingRules = "open"
+	SlicingClosed    SlicingRules = "closed"
+	SlicingOpenAtEnd SlicingRules = "openAtEnd"
+)
 
 // ProfileInvariant is a FHIRPath constraint on an element.
 type ProfileInvariant struct {
@@ -97,6 +132,15 @@ func parseProfile(data json.RawMessage) (*Profile, error) {
 					ValueSet string `json:"valueSet"`
 				} `json:"binding"`
 				Fixed      json.RawMessage `json:"fixedValue,omitempty"`
+				SliceName  string          `json:"sliceName,omitempty"`
+				Slicing    *struct {
+					Discriminator []struct {
+						Type string `json:"type"`
+						Path string `json:"path"`
+					} `json:"discriminator"`
+					Rules   string `json:"rules"`
+					Ordered bool   `json:"ordered"`
+				} `json:"slicing,omitempty"`
 				Constraint []struct {
 					Key        string `json:"key"`
 					Expression string `json:"expression"`
@@ -123,9 +167,10 @@ func parseProfile(data json.RawMessage) (*Profile, error) {
 
 	for _, elem := range sd.Snapshot.Element {
 		pe := ProfileElement{
-			Path: elem.Path,
-			Min:  elem.Min,
-			Max:  elem.Max,
+			Path:      elem.Path,
+			Min:       elem.Min,
+			Max:       elem.Max,
+			SliceName: elem.SliceName,
 		}
 
 		for _, t := range elem.Type {
@@ -139,6 +184,20 @@ func parseProfile(data json.RawMessage) (*Profile, error) {
 
 		if elem.Fixed != nil {
 			pe.FixedValue = elem.Fixed
+		}
+
+		if elem.Slicing != nil {
+			s := &Slicing{
+				Rules:   SlicingRules(elem.Slicing.Rules),
+				Ordered: elem.Slicing.Ordered,
+			}
+			for _, d := range elem.Slicing.Discriminator {
+				s.Discriminators = append(s.Discriminators, Discriminator{
+					Type: DiscriminatorType(d.Type),
+					Path: d.Path,
+				})
+			}
+			pe.Slicing = s
 		}
 
 		for _, c := range elem.Constraint {
@@ -266,5 +325,274 @@ func (r *profileRule) Validate(resource resources.Resource) []Issue {
 		}
 	}
 
+	// Validate slicing constraints
+	issues = append(issues, validateSlicing(resource, profile)...)
+
 	return issues
+}
+
+// validateSlicing checks that array elements satisfy slice definitions.
+func validateSlicing(resource resources.Resource, profile *Profile) []Issue {
+	var issues []Issue
+
+	// Find elements that define slicing
+	slicedPaths := map[string]*Slicing{}     // base path → slicing definition
+	slices := map[string][]ProfileElement{}   // base path → slice elements
+
+	for i := range profile.Elements {
+		elem := &profile.Elements[i]
+		if elem.Slicing != nil {
+			slicedPaths[elem.Path] = elem.Slicing
+		}
+		if elem.SliceName != "" {
+			// Find the base path (remove :sliceName from the path)
+			basePath := elem.Path
+			if idx := strings.LastIndex(basePath, ":"); idx > 0 {
+				basePath = basePath[:idx]
+			} else {
+				// The slice element may share the same path as the sliced element
+				// (e.g. Patient.identifier with sliceName="SSN")
+				basePath = elem.Path
+			}
+			slices[basePath] = append(slices[basePath], *elem)
+		}
+	}
+
+	for basePath, slicing := range slicedPaths {
+		sliceElems, hasSlices := slices[basePath]
+		if !hasSlices {
+			continue
+		}
+
+		// Get the array via FHIRPath
+		parts := strings.SplitN(basePath, ".", 2)
+		if len(parts) < 2 {
+			continue
+		}
+		fieldPath := parts[1]
+
+		result, err := fhirpath.Evaluate(resource, fieldPath)
+		if err != nil || len(result) == 0 {
+			// Check if any slice has min > 0
+			for _, slice := range sliceElems {
+				if slice.Min > 0 {
+					issues = append(issues, Issue{
+						Severity: SeverityError,
+						Code:     CodeRequired,
+						Path:     basePath + ":" + slice.SliceName,
+						Message:  fmt.Sprintf("%s: slice %q requires min %d elements but array is empty", basePath, slice.SliceName, slice.Min),
+					})
+				}
+			}
+			continue
+		}
+
+		// Marshal each array element to JSON for matching
+		arrayJSON := marshalArrayElements(result)
+
+		// Match array elements to slices
+		matched := make([]string, len(arrayJSON)) // which slice each element matched
+		sliceCounts := map[string]int{}
+
+		for i, elemJSON := range arrayJSON {
+			for _, slice := range sliceElems {
+				if matchesSlice(elemJSON, slice, slicing.Discriminators) {
+					matched[i] = slice.SliceName
+					sliceCounts[slice.SliceName]++
+					break
+				}
+			}
+		}
+
+		// Check slice cardinality
+		for _, slice := range sliceElems {
+			count := sliceCounts[slice.SliceName]
+			if slice.Min > 0 && count < slice.Min {
+				issues = append(issues, Issue{
+					Severity: SeverityError,
+					Code:     CodeRequired,
+					Path:     basePath + ":" + slice.SliceName,
+					Message:  fmt.Sprintf("%s: slice %q requires min %d, found %d", basePath, slice.SliceName, slice.Min, count),
+				})
+			}
+			if slice.Max != "*" && slice.Max != "" {
+				var maxVal int
+				fmt.Sscanf(slice.Max, "%d", &maxVal)
+				if maxVal > 0 && count > maxVal {
+					issues = append(issues, Issue{
+						Severity: SeverityError,
+						Code:     CodeStructure,
+						Path:     basePath + ":" + slice.SliceName,
+						Message:  fmt.Sprintf("%s: slice %q allows max %s, found %d", basePath, slice.SliceName, slice.Max, count),
+					})
+				}
+			}
+		}
+
+		// For closed slicing, unmatched elements are an error
+		if slicing.Rules == SlicingClosed {
+			for i, sliceName := range matched {
+				if sliceName == "" {
+					issues = append(issues, Issue{
+						Severity: SeverityError,
+						Code:     CodeStructure,
+						Path:     fmt.Sprintf("%s[%d]", basePath, i),
+						Message:  fmt.Sprintf("%s[%d]: element does not match any defined slice (closed slicing)", basePath, i),
+					})
+				}
+			}
+		}
+	}
+
+	return issues
+}
+
+// marshalArrayElements converts FHIRPath results to JSON maps for matching.
+func marshalArrayElements(results []any) []map[string]any {
+	var out []map[string]any
+	for _, r := range results {
+		data, err := json.Marshal(r)
+		if err != nil {
+			out = append(out, nil)
+			continue
+		}
+		var m map[string]any
+		if err := json.Unmarshal(data, &m); err != nil {
+			out = append(out, nil)
+			continue
+		}
+		out = append(out, m)
+	}
+	return out
+}
+
+// matchesSlice checks if a JSON element matches a slice definition based on discriminators.
+func matchesSlice(elemJSON map[string]any, slice ProfileElement, discriminators []Discriminator) bool {
+	if elemJSON == nil {
+		return false
+	}
+	for _, disc := range discriminators {
+		switch disc.Type {
+		case DiscriminatorValue:
+			if !matchDiscriminatorValue(elemJSON, disc.Path, slice) {
+				return false
+			}
+		case DiscriminatorPattern:
+			if !matchDiscriminatorPattern(elemJSON, disc.Path, slice) {
+				return false
+			}
+		case DiscriminatorType_:
+			if !matchDiscriminatorType(elemJSON, slice) {
+				return false
+			}
+		case DiscriminatorExists:
+			if !matchDiscriminatorExists(elemJSON, disc.Path) {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+// matchDiscriminatorValue matches by exact value at a path.
+func matchDiscriminatorValue(elem map[string]any, path string, slice ProfileElement) bool {
+	if slice.FixedValue == nil {
+		return false
+	}
+	val := navigateJSON(elem, path)
+	if val == nil {
+		return false
+	}
+	// Compare via JSON serialization
+	expectedJSON, _ := json.Marshal(slice.FixedValue)
+	actualJSON, _ := json.Marshal(val)
+	return string(expectedJSON) == string(actualJSON)
+}
+
+// matchDiscriminatorPattern matches by partial object match at a path.
+func matchDiscriminatorPattern(elem map[string]any, path string, slice ProfileElement) bool {
+	if slice.FixedValue == nil {
+		return false
+	}
+	val := navigateJSON(elem, path)
+	if val == nil {
+		return false
+	}
+	// Pattern match: all fields in the pattern must match
+	patternJSON, _ := json.Marshal(slice.FixedValue)
+	var pattern map[string]any
+	if err := json.Unmarshal(patternJSON, &pattern); err != nil {
+		// Simple value pattern
+		actualJSON, _ := json.Marshal(val)
+		return string(patternJSON) == string(actualJSON)
+	}
+	actualMap, ok := val.(map[string]any)
+	if !ok {
+		return false
+	}
+	return mapContains(actualMap, pattern)
+}
+
+// matchDiscriminatorType matches by the type of the element.
+func matchDiscriminatorType(elem map[string]any, slice ProfileElement) bool {
+	if len(slice.Types) == 0 {
+		return false
+	}
+	// Check if the element has a resourceType or system that matches
+	for _, t := range slice.Types {
+		if rt, ok := elem["resourceType"].(string); ok && rt == t {
+			return true
+		}
+		// For CodeableConcept/Coding discriminators, check system
+		if sys, ok := elem["system"].(string); ok && strings.Contains(sys, t) {
+			return true
+		}
+	}
+	return false
+}
+
+// matchDiscriminatorExists matches by whether a path exists.
+func matchDiscriminatorExists(elem map[string]any, path string) bool {
+	return navigateJSON(elem, path) != nil
+}
+
+// navigateJSON walks a JSON object by a dot-separated path.
+func navigateJSON(obj map[string]any, path string) any {
+	parts := strings.Split(path, ".")
+	var current any = obj
+	for _, part := range parts {
+		m, ok := current.(map[string]any)
+		if !ok {
+			return nil
+		}
+		current = m[part]
+		if current == nil {
+			return nil
+		}
+	}
+	return current
+}
+
+// mapContains returns true if all keys in pattern exist in actual with equal values.
+func mapContains(actual, pattern map[string]any) bool {
+	for k, pv := range pattern {
+		av, exists := actual[k]
+		if !exists {
+			return false
+		}
+		pMap, pIsMap := pv.(map[string]any)
+		aMap, aIsMap := av.(map[string]any)
+		if pIsMap && aIsMap {
+			if !mapContains(aMap, pMap) {
+				return false
+			}
+		} else {
+			pJSON, _ := json.Marshal(pv)
+			aJSON, _ := json.Marshal(av)
+			if string(pJSON) != string(aJSON) {
+				return false
+			}
+		}
+	}
+	return true
 }

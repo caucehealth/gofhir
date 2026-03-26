@@ -137,6 +137,78 @@ func Delete(ctx context.Context, c *Client, resourceType, id string) error {
 	return err
 }
 
+// --- Version Read & History ---
+
+// VRead fetches a specific version of a resource.
+func VRead(ctx context.Context, c *Client, resourceType, id, versionID string) (resources.Resource, error) {
+	reqURL := fmt.Sprintf("%s/%s/%s/_history/%s", c.baseURL, resourceType, id, versionID)
+	data, err := c.doGet(ctx, reqURL)
+	if err != nil {
+		return nil, err
+	}
+	return resources.ParseResource(data)
+}
+
+// VReadAs fetches a specific version of a resource and unmarshals it into the given type.
+func VReadAs[T any](ctx context.Context, c *Client, resourceType, id, versionID string) (*T, error) {
+	reqURL := fmt.Sprintf("%s/%s/%s/_history/%s", c.baseURL, resourceType, id, versionID)
+	data, err := c.doGet(ctx, reqURL)
+	if err != nil {
+		return nil, err
+	}
+	var result T
+	if err := json.Unmarshal(data, &result); err != nil {
+		return nil, fmt.Errorf("unmarshal %s: %w", resourceType, err)
+	}
+	return &result, nil
+}
+
+// History fetches the version history of a specific resource instance.
+func History(ctx context.Context, c *Client, resourceType, id string) (*bundle.Bundle, error) {
+	reqURL := fmt.Sprintf("%s/%s/%s/_history", c.baseURL, resourceType, id)
+	return fetchBundle(ctx, c, reqURL)
+}
+
+// TypeHistory fetches the version history of all resources of a given type.
+func TypeHistory(ctx context.Context, c *Client, resourceType string) (*bundle.Bundle, error) {
+	reqURL := fmt.Sprintf("%s/%s/_history", c.baseURL, resourceType)
+	return fetchBundle(ctx, c, reqURL)
+}
+
+// SystemHistory fetches the version history of all resources on the server.
+func SystemHistory(ctx context.Context, c *Client) (*bundle.Bundle, error) {
+	reqURL := fmt.Sprintf("%s/_history", c.baseURL)
+	return fetchBundle(ctx, c, reqURL)
+}
+
+func fetchBundle(ctx context.Context, c *Client, reqURL string) (*bundle.Bundle, error) {
+	data, err := c.doGet(ctx, reqURL)
+	if err != nil {
+		return nil, err
+	}
+	var b bundle.Bundle
+	if err := json.Unmarshal(data, &b); err != nil {
+		return nil, fmt.Errorf("unmarshal bundle: %w", err)
+	}
+	return &b, nil
+}
+
+// --- Patch ---
+
+// Patch sends a JSON Patch (RFC 6902) or FHIR Patch to the server.
+// The contentType should be "application/json-patch+json" for JSON Patch
+// or "application/fhir+json" for FHIR Patch (Parameters resource).
+func Patch(ctx context.Context, c *Client, resourceType, id string, patchBody []byte, contentType string) (*MethodOutcome, error) {
+	reqURL := fmt.Sprintf("%s/%s/%s", c.baseURL, resourceType, id)
+	resp, err := c.doRequestWithHeaders(ctx, "PATCH", reqURL, patchBody, map[string]string{
+		"Content-Type": contentType,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return parseMethodOutcome(resp)
+}
+
 // --- Conditional CRUD ---
 
 // CreateConditional creates a resource only if no match exists (If-None-Exist).
@@ -170,6 +242,48 @@ func UpdateConditional(ctx context.Context, c *Client, resource resources.Resour
 	}
 	resp, err := c.doRequestWithHeaders(ctx, "PUT", reqURL, data, map[string]string{
 		"If-Match": ifMatch,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return parseMethodOutcome(resp)
+}
+
+// --- Binary ---
+
+// ReadBinary fetches a Binary resource's raw content with the native content type.
+// Returns the raw bytes and the content type.
+func ReadBinary(ctx context.Context, c *Client, id string) ([]byte, string, error) {
+	reqURL := fmt.Sprintf("%s/Binary/%s", c.baseURL, id)
+	req, err := http.NewRequestWithContext(ctx, "GET", reqURL, nil)
+	if err != nil {
+		return nil, "", err
+	}
+	req.Header.Set("Accept", "*/*")
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, "", fmt.Errorf("GET %s: %w", reqURL, err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, "", err
+	}
+
+	if resp.StatusCode >= 400 {
+		return nil, "", &ServerError{StatusCode: resp.StatusCode, Body: body}
+	}
+	return body, resp.Header.Get("Content-Type"), nil
+}
+
+// CreateBinary uploads raw binary content as a Binary resource.
+// The contentType is the MIME type of the data (e.g. "application/pdf").
+func CreateBinary(ctx context.Context, c *Client, data []byte, contentType string) (*MethodOutcome, error) {
+	reqURL := fmt.Sprintf("%s/Binary", c.baseURL)
+	resp, err := c.doRequestWithHeaders(ctx, "POST", reqURL, data, map[string]string{
+		"Content-Type": contentType,
 	})
 	if err != nil {
 		return nil, err

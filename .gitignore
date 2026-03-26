@@ -33,6 +33,8 @@ vendor/
 # Build output
 /bin/
 /dist/
+/gen
+/fhirlint
 
 # FHIR schema and examples (downloaded, not committed)
 internal/spec/fhir.schema.json

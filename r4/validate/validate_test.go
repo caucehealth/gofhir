@@ -476,6 +476,7 @@ func TestProfileWrongResourceType(t *testing.T) {
 }
 
 func strPtr(s string) *string { return &s }
+func uriPtr(s string) *dt.URI { v := dt.URI(s); return &v }
 
 func TestFHIRPathInvariants(t *testing.T) {
 	// obs-6: value exists or dataAbsentReason exists
@@ -505,5 +506,163 @@ func TestFHIRPathInvariants(t *testing.T) {
 	}
 	if !found {
 		t.Error("empty observation should fail obs-6 invariant")
+	}
+}
+
+func TestSlicingClosedValidation(t *testing.T) {
+	// Profile with sliced identifier: SSN (required) and MRN (optional)
+	profileJSON := `{
+		"resourceType": "StructureDefinition",
+		"url": "http://example.org/StructureDefinition/sliced-patient",
+		"name": "SlicedPatient",
+		"type": "Patient",
+		"snapshot": {
+			"element": [
+				{"path": "Patient", "min": 0, "max": "*"},
+				{"path": "Patient.identifier", "min": 1, "max": "*",
+				 "slicing": {
+					"discriminator": [{"type": "value", "path": "system"}],
+					"rules": "closed"
+				 }
+				},
+				{"path": "Patient.identifier", "sliceName": "SSN", "min": 1, "max": "1",
+				 "fixedValue": "http://hl7.org/fhir/sid/us-ssn",
+				 "type": [{"code": "Identifier"}]
+				},
+				{"path": "Patient.identifier", "sliceName": "MRN", "min": 0, "max": "1",
+				 "fixedValue": "http://hospital.example.org/mrn",
+				 "type": [{"code": "Identifier"}]
+				}
+			]
+		}
+	}`
+
+	registry := validate.NewProfileRegistry()
+	if err := registry.Load(json.RawMessage(profileJSON)); err != nil {
+		t.Fatal(err)
+	}
+
+	v := validate.New(validate.WithProfile(registry, "http://example.org/StructureDefinition/sliced-patient"))
+
+	// Patient with SSN — should pass
+	p := &resources.Patient{ResourceType: "Patient"}
+	p.Identifier = append(p.Identifier, dt.Identifier{
+		System: uriPtr("http://hl7.org/fhir/sid/us-ssn"),
+		Value:  strPtr("123-45-6789"),
+	})
+
+	result := v.Validate(p)
+	for _, issue := range result.Errors() {
+		if strings.Contains(issue.Path, "SSN") && issue.Code == validate.CodeRequired {
+			t.Errorf("patient with SSN should not have SSN required error: %s", issue.Message)
+		}
+	}
+
+	// Patient without identifiers — should fail (SSN min=1)
+	empty := &resources.Patient{ResourceType: "Patient"}
+	result = v.Validate(empty)
+	foundSSN := false
+	for _, issue := range result.Errors() {
+		if strings.Contains(issue.Message, "SSN") {
+			foundSSN = true
+		}
+	}
+	if !foundSSN {
+		t.Error("patient without identifiers should fail SSN slice requirement")
+	}
+}
+
+func TestSlicingOpenValidation(t *testing.T) {
+	// Open slicing — unmatched elements are allowed
+	profileJSON := `{
+		"resourceType": "StructureDefinition",
+		"url": "http://example.org/StructureDefinition/open-sliced",
+		"name": "OpenSlicedPatient",
+		"type": "Patient",
+		"snapshot": {
+			"element": [
+				{"path": "Patient", "min": 0, "max": "*"},
+				{"path": "Patient.identifier", "min": 0, "max": "*",
+				 "slicing": {
+					"discriminator": [{"type": "value", "path": "system"}],
+					"rules": "open"
+				 }
+				},
+				{"path": "Patient.identifier", "sliceName": "MRN", "min": 0, "max": "1",
+				 "fixedValue": "http://hospital.example.org/mrn",
+				 "type": [{"code": "Identifier"}]
+				}
+			]
+		}
+	}`
+
+	registry := validate.NewProfileRegistry()
+	if err := registry.Load(json.RawMessage(profileJSON)); err != nil {
+		t.Fatal(err)
+	}
+
+	v := validate.New(validate.WithProfile(registry, "http://example.org/StructureDefinition/open-sliced"))
+
+	// Patient with unmatched identifier — should pass (open slicing)
+	p := &resources.Patient{ResourceType: "Patient"}
+	p.Identifier = append(p.Identifier, dt.Identifier{
+		System: uriPtr("http://other.org/id"),
+		Value:  strPtr("XYZ"),
+	})
+
+	result := v.Validate(p)
+	for _, issue := range result.Errors() {
+		if strings.Contains(issue.Message, "does not match any defined slice") {
+			t.Errorf("open slicing should allow unmatched elements: %s", issue.Message)
+		}
+	}
+}
+
+func TestSlicingMaxExceeded(t *testing.T) {
+	profileJSON := `{
+		"resourceType": "StructureDefinition",
+		"url": "http://example.org/StructureDefinition/max-sliced",
+		"name": "MaxSlicedPatient",
+		"type": "Patient",
+		"snapshot": {
+			"element": [
+				{"path": "Patient", "min": 0, "max": "*"},
+				{"path": "Patient.identifier", "min": 0, "max": "*",
+				 "slicing": {
+					"discriminator": [{"type": "value", "path": "system"}],
+					"rules": "open"
+				 }
+				},
+				{"path": "Patient.identifier", "sliceName": "SSN", "min": 0, "max": "1",
+				 "fixedValue": "http://hl7.org/fhir/sid/us-ssn",
+				 "type": [{"code": "Identifier"}]
+				}
+			]
+		}
+	}`
+
+	registry := validate.NewProfileRegistry()
+	if err := registry.Load(json.RawMessage(profileJSON)); err != nil {
+		t.Fatal(err)
+	}
+
+	v := validate.New(validate.WithProfile(registry, "http://example.org/StructureDefinition/max-sliced"))
+
+	// Patient with 2 SSNs — should fail (max=1)
+	p := &resources.Patient{ResourceType: "Patient"}
+	p.Identifier = append(p.Identifier,
+		dt.Identifier{System: uriPtr("http://hl7.org/fhir/sid/us-ssn"), Value: strPtr("111-11-1111")},
+		dt.Identifier{System: uriPtr("http://hl7.org/fhir/sid/us-ssn"), Value: strPtr("222-22-2222")},
+	)
+
+	result := v.Validate(p)
+	foundMax := false
+	for _, issue := range result.Errors() {
+		if strings.Contains(issue.Message, "max") && strings.Contains(issue.Message, "SSN") {
+			foundMax = true
+		}
+	}
+	if !foundMax {
+		t.Error("two SSN identifiers should exceed max=1 for SSN slice")
 	}
 }

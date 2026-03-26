@@ -4,8 +4,11 @@
 package client
 
 import (
+	"bytes"
 	"encoding/base64"
+	"io"
 	"net/http"
+	"sync"
 	"time"
 )
 
@@ -115,6 +118,104 @@ func Retry(maxRetries int, initialDelay time.Duration) Middleware {
 			return nil, lastErr
 		})
 	}
+}
+
+// Logging adds request/response logging via a LogFunc callback.
+// The callback receives method, URL, status code, and duration.
+func Logging(logFn func(method, url string, statusCode int, duration time.Duration)) Middleware {
+	return func(next http.RoundTripper) http.RoundTripper {
+		return roundTripperFunc(func(req *http.Request) (*http.Response, error) {
+			start := time.Now()
+			resp, err := next.RoundTrip(req)
+			elapsed := time.Since(start)
+			if err != nil {
+				logFn(req.Method, req.URL.String(), 0, elapsed)
+				return resp, err
+			}
+			logFn(req.Method, req.URL.String(), resp.StatusCode, elapsed)
+			return resp, nil
+		})
+	}
+}
+
+// ETagCache adds ETag-based conditional reads. On GET responses with an ETag
+// header, the ETag and body are cached. Subsequent GETs send If-None-Match;
+// on 304 the cached body is returned. The cache is bounded by maxEntries.
+func ETagCache(maxEntries int) Middleware {
+	return func(next http.RoundTripper) http.RoundTripper {
+		cache := &etagCache{
+			entries:    make(map[string]*cacheEntry),
+			maxEntries: maxEntries,
+		}
+		return roundTripperFunc(func(req *http.Request) (*http.Response, error) {
+			if req.Method != "GET" {
+				return next.RoundTrip(req)
+			}
+
+			key := req.URL.String()
+			if entry := cache.get(key); entry != nil {
+				req = req.Clone(req.Context())
+				req.Header.Set("If-None-Match", entry.etag)
+			}
+
+			resp, err := next.RoundTrip(req)
+			if err != nil {
+				return resp, err
+			}
+
+			if resp.StatusCode == http.StatusNotModified {
+				if entry := cache.get(key); entry != nil {
+					resp.StatusCode = http.StatusOK
+					resp.Body = io.NopCloser(bytes.NewReader(entry.body))
+					resp.ContentLength = int64(len(entry.body))
+					return resp, nil
+				}
+			}
+
+			if etag := resp.Header.Get("ETag"); etag != "" && resp.StatusCode < 400 {
+				body, readErr := io.ReadAll(resp.Body)
+				resp.Body.Close()
+				if readErr != nil {
+					return nil, readErr
+				}
+				cache.put(key, etag, body)
+				resp.Body = io.NopCloser(bytes.NewReader(body))
+				resp.ContentLength = int64(len(body))
+			}
+
+			return resp, nil
+		})
+	}
+}
+
+type cacheEntry struct {
+	etag string
+	body []byte
+}
+
+type etagCache struct {
+	mu         sync.RWMutex
+	entries    map[string]*cacheEntry
+	maxEntries int
+}
+
+func (c *etagCache) get(key string) *cacheEntry {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+	return c.entries[key]
+}
+
+func (c *etagCache) put(key, etag string, body []byte) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if len(c.entries) >= c.maxEntries {
+		// Evict one entry (simple strategy: delete first found)
+		for k := range c.entries {
+			delete(c.entries, k)
+			break
+		}
+	}
+	c.entries[key] = &cacheEntry{etag: etag, body: body}
 }
 
 // roundTripperFunc adapts a function to http.RoundTripper.
