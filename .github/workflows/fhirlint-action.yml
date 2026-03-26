@@ -1,0 +1,57 @@
+name: FHIR Lint
+
+description: Validate FHIR R4 resources in your repository using gofhir
+
+on:
+  workflow_call:
+    inputs:
+      files:
+        description: 'Glob pattern for FHIR JSON files to validate'
+        required: false
+        default: '**/*.fhir.json'
+        type: string
+      format:
+        description: 'Output format: text or json'
+        required: false
+        default: 'text'
+        type: string
+      fail-on-warning:
+        description: 'Fail if warnings are found'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  validate:
+    name: Validate FHIR Resources
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+
+      - name: Install fhirlint
+        run: go install github.com/caucehealth/gofhir/cmd/fhirlint@latest
+
+      - name: Find FHIR files
+        id: find
+        run: |
+          files=$(find . -name "$(echo '${{ inputs.files }}' | sed 's/\*\*\///')" -type f 2>/dev/null | head -100)
+          if [ -z "$files" ]; then
+            echo "No FHIR files found matching pattern: ${{ inputs.files }}"
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            echo "$files" | wc -l | xargs echo "Files found:"
+          fi
+
+      - name: Validate
+        if: steps.find.outputs.found == 'true'
+        run: |
+          flags="-format ${{ inputs.format }}"
+          if [ "${{ inputs.fail-on-warning }}" != "true" ]; then
+            flags="$flags -q"
+          fi
+          find . -name "$(echo '${{ inputs.files }}' | sed 's/\*\*\///')" -type f | xargs fhirlint $flags
