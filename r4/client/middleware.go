@@ -6,6 +6,7 @@ package client
 import (
 	"encoding/base64"
 	"net/http"
+	"time"
 )
 
 // Middleware wraps an http.RoundTripper to intercept requests.
@@ -71,6 +72,49 @@ func CustomHeaders(headers map[string]string) Middleware {
 // UserAgent sets the User-Agent header on every request.
 func UserAgent(agent string) Middleware {
 	return CustomHeaders(map[string]string{"User-Agent": agent})
+}
+
+// Retry adds automatic retry with exponential backoff for transient errors
+// (5xx status codes and network errors). MaxRetries of 0 means no retries.
+func Retry(maxRetries int, initialDelay time.Duration) Middleware {
+	return func(next http.RoundTripper) http.RoundTripper {
+		return roundTripperFunc(func(req *http.Request) (*http.Response, error) {
+			var lastErr error
+			var lastResp *http.Response
+			delay := initialDelay
+
+			for attempt := 0; attempt <= maxRetries; attempt++ {
+				if attempt > 0 {
+					select {
+					case <-req.Context().Done():
+						return nil, req.Context().Err()
+					case <-time.After(delay):
+					}
+					delay *= 2 // exponential backoff
+				}
+
+				resp, err := next.RoundTrip(req)
+				if err != nil {
+					lastErr = err
+					continue // network error, retry
+				}
+
+				// Don't retry client errors (4xx)
+				if resp.StatusCode < 500 {
+					return resp, nil
+				}
+
+				// Server error (5xx) — retry
+				lastResp = resp
+				lastErr = nil
+			}
+
+			if lastResp != nil {
+				return lastResp, nil
+			}
+			return nil, lastErr
+		})
+	}
 }
 
 // roundTripperFunc adapts a function to http.RoundTripper.

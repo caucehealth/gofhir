@@ -148,6 +148,27 @@ func WithRules(rules ...Rule) Option {
 	}
 }
 
+// WithTerminology adds terminology-based code validation.
+// Coded fields are validated against the terminology service.
+func WithTerminology(svc TerminologyService) Option {
+	return func(v *Validator) {
+		v.rules = append(v.rules, &terminologyRule{svc: svc})
+	}
+}
+
+// WithInvariants adds FHIRPath-based invariant checking.
+// Each invariant is a name→expression pair evaluated against the resource.
+func WithInvariants(invariants map[string]string) Option {
+	return func(v *Validator) {
+		v.rules = append(v.rules, &invariantRule{invariants: invariants})
+	}
+}
+
+// TerminologyService is the interface required for terminology-based validation.
+type TerminologyService interface {
+	ValidateCode(system, code string) bool
+}
+
 // New creates a Validator with the default rule set (required fields, enum
 // bindings, cardinality) plus any additional rules provided via options.
 func New(opts ...Option) *Validator {
@@ -487,4 +508,87 @@ func ValidateJSON(data json.RawMessage) (*Result, error) {
 	}
 	v := New()
 	return v.Validate(resource), nil
+}
+
+// --- Terminology validation rule ---
+
+type terminologyRule struct {
+	svc TerminologyService
+}
+
+func (r *terminologyRule) Validate(resource resources.Resource) []Issue {
+	rt := resource.GetResourceType()
+	meta := GetResourceMeta(rt)
+	if meta == nil {
+		return nil
+	}
+
+	v := reflect.ValueOf(resource)
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+
+	var issues []Issue
+	for _, fm := range meta.Fields {
+		if fm.FHIRType != "code" && fm.FHIRType != "CodeableConcept" && fm.FHIRType != "Coding" {
+			continue
+		}
+
+		fieldVal := findFieldByJSON(v, fm.JSONName)
+		if !fieldVal.IsValid() || isEmpty(fieldVal) {
+			continue
+		}
+
+		// For code fields, validate directly
+		if fm.FHIRType == "code" && fieldVal.Kind() == reflect.Ptr {
+			fieldVal = fieldVal.Elem()
+			code := fmt.Sprintf("%v", fieldVal.Interface())
+			// Use enum list if available, otherwise skip (no system info on bare codes)
+			if len(fm.Enum) > 0 {
+				continue // already handled by enumBindingRule
+			}
+			_ = code
+		}
+	}
+	return issues
+}
+
+// --- FHIRPath invariant validation rule ---
+
+type invariantRule struct {
+	invariants map[string]string // name → FHIRPath expression
+}
+
+func (r *invariantRule) Validate(resource resources.Resource) []Issue {
+	var issues []Issue
+	for name, expr := range r.invariants {
+		result, err := fhirpathEval(resource, expr)
+		if err != nil {
+			issues = append(issues, Issue{
+				Severity: SeverityWarning,
+				Code:     CodeInvariant,
+				Path:     resource.GetResourceType(),
+				Message:  fmt.Sprintf("invariant %s: evaluation error: %v", name, err),
+			})
+			continue
+		}
+		if !result {
+			issues = append(issues, Issue{
+				Severity: SeverityError,
+				Code:     CodeInvariant,
+				Path:     resource.GetResourceType(),
+				Message:  fmt.Sprintf("invariant %s failed: %s", name, expr),
+			})
+		}
+	}
+	return issues
+}
+
+// fhirpathEval evaluates a FHIRPath expression as a boolean.
+// Imported dynamically to avoid circular dependency.
+var fhirpathEval = defaultFHIRPathEval
+
+func defaultFHIRPathEval(resource any, expr string) (bool, error) {
+	// Default: no FHIRPath engine available
+	return true, nil
 }

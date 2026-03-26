@@ -11,6 +11,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/caucehealth/gofhir/r4/bundle"
 	"github.com/caucehealth/gofhir/r4/client"
@@ -344,5 +345,54 @@ func TestContextCancellation(t *testing.T) {
 	_, err := client.Read(ctx, c, "Patient", "1")
 	if err == nil {
 		t.Error("should fail with cancelled context")
+	}
+}
+
+func TestRetryMiddleware(t *testing.T) {
+	attempts := 0
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		attempts++
+		if attempts < 3 {
+			w.WriteHeader(503) // Service Unavailable
+			return
+		}
+		json.NewEncoder(w).Encode(map[string]any{"resourceType": "Patient", "id": "1"})
+	}))
+	defer srv.Close()
+
+	c := client.New(srv.URL)
+	c.Wrap(client.Retry(3, 1*time.Millisecond))
+
+	res, err := client.Read(context.Background(), c, "Patient", "1")
+	if err != nil {
+		t.Fatalf("should succeed after retries: %v", err)
+	}
+	if string(res.GetId()) != "1" {
+		t.Error("should get patient after retry")
+	}
+	if attempts != 3 {
+		t.Errorf("expected 3 attempts, got %d", attempts)
+	}
+}
+
+func TestRetryMiddlewareExhausted(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(503)
+	}))
+	defer srv.Close()
+
+	c := client.New(srv.URL)
+	c.Wrap(client.Retry(2, 1*time.Millisecond))
+
+	_, err := client.Read(context.Background(), c, "Patient", "1")
+	if err == nil {
+		t.Error("should fail after exhausting retries")
+	}
+	srvErr, ok := err.(*client.ServerError)
+	if !ok {
+		t.Fatalf("expected ServerError, got %T", err)
+	}
+	if srvErr.StatusCode != 503 {
+		t.Errorf("status = %d, want 503", srvErr.StatusCode)
 	}
 }

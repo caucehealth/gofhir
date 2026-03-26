@@ -39,9 +39,39 @@ func (d Decimal) String() string {
 }
 
 // Equal returns true if two decimals represent the same numeric value,
-// regardless of trailing zeros.
+// regardless of trailing zeros. Uses string normalization to avoid
+// float64 precision loss.
 func (d Decimal) Equal(other Decimal) bool {
-	return d.Float64() == other.Float64()
+	return normalizeDecimal(string(d)) == normalizeDecimal(string(other))
+}
+
+// normalizeDecimal removes trailing zeros for comparison.
+// "1.00" → "1", "1.10" → "1.1", "100" → "100"
+func normalizeDecimal(s string) string {
+	if s == "" {
+		return "0"
+	}
+	// Only normalize if there's a decimal point
+	dot := -1
+	for i, c := range s {
+		if c == '.' {
+			dot = i
+			break
+		}
+	}
+	if dot < 0 {
+		return s
+	}
+	// Trim trailing zeros after decimal point
+	end := len(s)
+	for end > dot+1 && s[end-1] == '0' {
+		end--
+	}
+	// If only the dot remains, remove it too
+	if end == dot+1 {
+		end = dot
+	}
+	return s[:end]
 }
 
 // MarshalJSON writes the decimal as a bare JSON number (no quotes).

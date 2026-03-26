@@ -719,6 +719,45 @@ func TestDateArithmeticWithBirthDate(t *testing.T) {
 	}
 }
 
+// ============================================================================
+// Custom function registry
+// ============================================================================
+
+func TestCustomFunction(t *testing.T) {
+	// Register a custom "age" function
+	fhirpath.RegisterFunction("age", func(input fhirpath.Collection, args []fhirpath.Collection) (fhirpath.Collection, error) {
+		// Simplified: return 44 for our test patient born 1980
+		return fhirpath.Collection{int64(44)}, nil
+	})
+
+	result, err := fhirpath.Evaluate(patient(), "age()")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result[0].(int64) != 44 {
+		t.Errorf("custom age() = %v, want 44", result[0])
+	}
+}
+
+func TestCustomFunctionWithArgs(t *testing.T) {
+	fhirpath.RegisterFunction("multiply", func(input fhirpath.Collection, args []fhirpath.Collection) (fhirpath.Collection, error) {
+		if len(input) == 0 || len(args) == 0 || len(args[0]) == 0 {
+			return nil, nil
+		}
+		a := fhirpath.ToFloat(input[0])
+		b := fhirpath.ToFloat(args[0][0])
+		return fhirpath.Collection{a * b}, nil
+	})
+
+	result, err := fhirpath.Evaluate(patient(), "5.multiply(3)")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fhirpath.ToFloat(result[0]) != 15 {
+		t.Errorf("5.multiply(3) = %v, want 15", result[0])
+	}
+}
+
 func TestCompiledWithResolver(t *testing.T) {
 	expr, _ := fhirpath.Compile("subject.resolve().name.family")
 	expr.WithResolver(func(ref string) any {

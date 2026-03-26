@@ -390,3 +390,34 @@ func TestValidateCodeNoWhitespace(t *testing.T) {
 		t.Error("code with spaces should fail validation")
 	}
 }
+
+func TestFHIRPathInvariants(t *testing.T) {
+	// obs-6: value exists or dataAbsentReason exists
+	v := validate.New(validate.WithInvariants(map[string]string{
+		"obs-6": "value.exists() or dataAbsentReason.exists()",
+	}))
+
+	// Observation WITH value — should pass
+	input := `{"resourceType":"Observation","status":"final","code":{"text":"test"},"valueQuantity":{"value":120}}`
+	var obs resources.Observation
+	json.Unmarshal([]byte(input), &obs)
+	result := v.Validate(&obs)
+	for _, issue := range result.Issues {
+		if issue.Code == validate.CodeInvariant && strings.Contains(issue.Message, "obs-6 failed") {
+			t.Error("obs with value should pass obs-6")
+		}
+	}
+
+	// Empty Observation — should fail obs-6
+	empty := &resources.Observation{ResourceType: "Observation"}
+	result = v.Validate(empty)
+	found := false
+	for _, issue := range result.Issues {
+		if issue.Code == validate.CodeInvariant && strings.Contains(issue.Message, "obs-6") {
+			found = true
+		}
+	}
+	if !found {
+		t.Error("empty observation should fail obs-6 invariant")
+	}
+}

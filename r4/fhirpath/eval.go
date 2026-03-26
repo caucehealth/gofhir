@@ -23,6 +23,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -33,6 +34,31 @@ type Collection []any
 // Resolver resolves a FHIR reference (e.g., "Patient/123") to a resource.
 // Used by the resolve() function. Return nil if the reference cannot be resolved.
 type Resolver func(reference string) any
+
+// CustomFunction is a user-defined FHIRPath function.
+// It receives the input collection and evaluated arguments, and returns a collection.
+type CustomFunction func(input Collection, args []Collection) (Collection, error)
+
+// customFunctions is the global registry of user-defined functions.
+var (
+	customFunctionsMu   sync.RWMutex
+	customFunctionsMap  = map[string]CustomFunction{}
+)
+
+// RegisterFunction registers a custom FHIRPath function globally.
+// Custom functions are available in all expressions.
+//
+// Example:
+//
+//	fhirpath.RegisterFunction("age", func(input fhirpath.Collection, args []fhirpath.Collection) (fhirpath.Collection, error) {
+//	    // Calculate age from birthDate
+//	    return fhirpath.Collection{42}, nil
+//	})
+func RegisterFunction(name string, fn CustomFunction) {
+	customFunctionsMu.Lock()
+	defer customFunctionsMu.Unlock()
+	customFunctionsMap[name] = fn
+}
 
 // Expression is a compiled FHIRPath expression.
 type Expression struct {
@@ -1013,6 +1039,21 @@ func (ctx *evalContext) evalFunction(name string, args []Node, input Collection)
 		return Collection{strings.Join(parts, sep)}, nil
 
 	default:
+		// Check custom function registry
+		customFunctionsMu.RLock()
+		fn, ok := customFunctionsMap[name]
+		customFunctionsMu.RUnlock()
+		if ok {
+			var evalArgs []Collection
+			for _, arg := range args {
+				argColl, err := ctx.eval(arg, input)
+				if err != nil {
+					return nil, err
+				}
+				evalArgs = append(evalArgs, argColl)
+			}
+			return fn(input, evalArgs)
+		}
 		return nil, fmt.Errorf("fhirpath: unknown function %q", name)
 	}
 }
